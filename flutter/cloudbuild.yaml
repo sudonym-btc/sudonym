@@ -1,4 +1,11 @@
 steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+          echo "enter 1 bash command per line"
+          ls -la
   - name: "bash"
     args:
       [
