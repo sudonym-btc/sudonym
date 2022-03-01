@@ -6,8 +6,4 @@ steps:
       - |
           echo "enter 1 bash command per line"
           ls -la
-  - name: "bash"
-    args:
-      [
-        './setup.sh -c "${{ inputs.cache-path }}" ${{ inputs.channel }} ${{ inputs.flutter-version }}',
-      ]
+          ./setup.sh -c "${{ inputs.cache-path }}" ${{ inputs.channel }} ${{ inputs.flutter-version }}
