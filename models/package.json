@@ -1,0 +1,15 @@
+{
+  "name": "@sudonym/models",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ts2dart": "cd ts/src && ts2dart ./** --destination=../../dart/lib"
+  },
+  "devDependencies": {
+    "ts2dart": "^0.9.11"
+  },
+  "author": "",
+  "license": "ISC"
+}
