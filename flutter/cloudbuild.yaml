@@ -4,4 +4,4 @@ steps:
     args:
       - "-c"
       - |
-          bash ./setup.sh -c "${{ inputs.cache-path }}" stable 2.8
+          bash ./setup.sh -c "cache" stable 2.8
