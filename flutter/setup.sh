@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OS_NAME=$(echo "$RUNNER_OS" | awk '{print tolower($0)}')
+OS_NAME=$(echo "macos" | awk '{print tolower($0)}')
 MANIFEST_BASE_URL="https://storage.googleapis.com/flutter_infra_release/releases"
 MANIFEST_URL="${MANIFEST_BASE_URL}/releases_${OS_NAME}.json"
 
@@ -48,7 +48,7 @@ get_version_manifest() {
 download_archive() {
   archive_url="$MANIFEST_BASE_URL/$1"
   archive_name=$(basename $1)
-  archive_local="$RUNNER_TEMP/$archive_name"
+  archive_local="temp/$archive_name"
 
   curl --connect-timeout 15 --retry 5 $archive_url >$archive_local
 
@@ -56,13 +56,13 @@ download_archive() {
   mkdir -p "$2"
 
   if [[ $archive_name == *zip ]]; then
-    unzip -q -o "$archive_local" -d "$RUNNER_TEMP"
+    unzip -q -o "$archive_local" -d "temp"
     # Remove the folder again so that the move command can do a simple rename
     # instead of moving the content into the target folder.
     # This is a little bit of a hack since the "mv --no-target-directory"
     # linux option is not available here
     rm -r "$2"
-    mv ${RUNNER_TEMP}/flutter "$2"
+    mv temp/flutter "$2"
   else
     tar xf "$archive_local" -C "$2" --strip-components=1
   fi
