@@ -6,7 +6,7 @@ steps:
   - |
     for d in */; do
       config="${d}cloudbuild.yaml"
-      ls
+      ls ${d}
       if [[ ! -f "${config}" ]]; then
         continue
       fi
