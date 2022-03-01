@@ -10,5 +10,5 @@
 #     --build-config=/cloudbuild.yaml \
 #     --require-approval
 
-# gcloud builds submit ops/cloud-builders-community/fastlane --config=cloudbuild.yaml
-gcloud builds submit ops/cloud-builders-community/flutter --config=cloudbuild.yaml
+# gcloud builds submit ops/cloud-builders-community/fastlane --config=ops/cloud-builders-community/fastlane/cloudbuild.yaml
+gcloud builds submit ops/cloud-builders-community/flutter --config=ops/cloud-builders-community/flutter/cloudbuild.yaml
