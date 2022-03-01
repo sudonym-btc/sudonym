@@ -1,9 +1,6 @@
 steps:
-  # using flutter builder Docker image we have built previously to compile the repo
-  - name: 'gcr.io/$PROJECT_ID/flutter'
-    entrypoint: '/bin/bash'
-    args: ['build.sh', 'sudonym-btc']
-
-  # - name: 'gcr.io/cloud-builders-community/fastlane'
-  #   entrypoint: '/bin/bash'
-  #   args: ['build.sh', '${_REPO_NAME}']
+  - name: "bash"
+    args:
+      [
+        './setup.sh -c "${{ inputs.cache-path }}" ${{ inputs.channel }} ${{ inputs.flutter-version }}',
+      ]
