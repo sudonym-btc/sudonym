@@ -23,6 +23,7 @@ dependencies:
     path: ../models/dart
 
 dev_dependencies:
+  test: ^1.19.0
   flutter_test:
     sdk: flutter
 
