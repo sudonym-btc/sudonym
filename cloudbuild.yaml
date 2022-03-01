@@ -1,4 +1,4 @@
 steps:
 - name: 'gcr.io/$PROJECT_ID/flutter'
   entrypoint: 'bash'
-  args: ['ls -a']
+  args: ['bash ls -a']
