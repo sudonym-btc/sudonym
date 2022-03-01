@@ -1,4 +1,4 @@
-import 'package:flutter_test/test.dart'; 
+import 'package:test/test.dart';
 
 void main() {
   group('Group', () {
