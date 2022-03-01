@@ -4,6 +4,4 @@ steps:
     args:
       - "-c"
       - |
-          echo "enter 1 bash command per line"
-          ls -la
-          bash ./setup.sh 
+          bash ./setup.sh -c "${{ inputs.cache-path }}" stable 2.8
