@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mgogolowicz.bank_ui">
+    package="com.sudonym.sudonym">
    <application
-        android:label="bank_ui"
+        android:label="sudonym"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

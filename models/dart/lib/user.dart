@@ -1,6 +1,8 @@
-// Does it do comments?
 class User {
   String id;
   String firebaseId;
-  String email;
+  User(this.id, this.firebaseId) {}
+  static fromJson(Map<String, dynamic> json) {
+    return new User(json["id"], json["firebaseId"]);
+  }
 }

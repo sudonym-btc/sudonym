@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "ts2dart": "cd ts/src && ts2dart ./** --destination=../../dart/lib"
+    "convert": "bash convert.sh",
+    "genMocks": "ts-node ./ts/src/mock/exporter.ts"
   },
   "devDependencies": {
-    "ts2dart": "^0.9.11"
+    "factory.ts": "^0.5.2",
+    "ts-node": "^10.6.0",
+    "ts2dart": "^0.9.11",
+    "typescript": "^4.6.2"
   },
   "author": "",
   "license": "ISC"

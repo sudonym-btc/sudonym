@@ -1,4 +1,4 @@
-package com.mgogolowicz.bank_ui
+package com.sudonym.sudonym
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,6 @@
 {
-    "name": "bank_ui",
-    "short_name": "bank_ui",
+    "name": "sudonym",
+    "short_name": "sudonym",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,4 +1,4 @@
-name: bank_ui
+name: sudonym
 description: A simple bank UI template with a little of backend. Created by Martin Gogolowicz.
 
 publish_to: 'none' 
@@ -12,33 +12,43 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  salomon_bottom_bar: ^3.1.0
-  carousel_slider: ^4.0.0
-  google_fonts: ^2.1.0
-  intl: ^0.17.0
-  checkdigit: ^0.3.1
-
+  equatable: ^2.0.3
+  flutter_bloc: ^8.0.1
+  flutter_signin_button: ^2.0.0
+  dartz: ^0.10.1
+  injectable: ^1.5.3
+  get_it: ^7.2.0
   sudonym.models: 
     path: ../models/dart
-
+  firebase_auth: ^3.3.9
+  firebase_core: ^1.13.1
+  http: ^0.13.4
 dev_dependencies:
-  test: ^1.19.0
+  test: ^1.19.5
   flutter_test:
     sdk: flutter
-
+  injectable_generator:  
+  # add build runner if not already added  
+  build_runner:  
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
 
 flutter:
 
   uses-material-design: true
 
-
+  fonts:
+    - family: Satoshi
+      fonts:
+        - asset: assets/fonts/Satoshi-Black.ttf
+        - asset: assets/fonts/Satoshi-BlackItalic.ttf
+          style: italic
+        - asset: assets/fonts/Satoshi-Bold.ttf
+          weight: 700
   assets:
     - assets/mastercardLogo.png
     - assets/visaLogo.png
