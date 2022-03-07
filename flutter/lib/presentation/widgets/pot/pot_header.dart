@@ -11,6 +11,19 @@ class PotHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(height: 200, child: Center(child: Text("丰 1,000", style: Theme.of(context).textTheme.headline2,)));
+    return Container(
+        margin: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.ce,
+          children: [
+          Text(
+            "Your balance",
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          Text(
+            "1,090 sats",
+            style: Theme.of(context).textTheme.headline3,
+          )
+        ]));
   }
 }

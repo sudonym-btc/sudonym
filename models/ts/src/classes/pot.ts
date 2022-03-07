@@ -1,4 +1,3 @@
-import { CurrencyCode } from "./types/currency";
 
 export class Pot {
 
@@ -6,7 +5,7 @@ export class Pot {
         private id: string,
         private userId: string,
         private name: string,
-        private currency: CurrencyCode,
+        private currency: string,
         private balance: number
     ) { }
 

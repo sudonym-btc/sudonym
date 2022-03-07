@@ -7,9 +7,10 @@ import '../../repository/crud_repository.dart' as real;
 // ignore: camel_case_types
 abstract class crud_repository<T> extends real.crud_repository<T> {
   List<T> data = [];
+  dynamic availableData = [];
 
   crud_repository() {
-   print(Mockdata.getData(endpoint));
+    availableData = Mockdata.getData<T>(endpoint);
   }
   @override
   Future<T> create() async {
@@ -19,7 +20,8 @@ abstract class crud_repository<T> extends real.crud_repository<T> {
 
   @override
   Future<ListState<T>> list() async {
-    return ListState(data, {});
+    await Future.delayed(Duration(seconds: 1));
+    return ListState(availableData, {});
   }
 
   @override
@@ -27,5 +29,4 @@ abstract class crud_repository<T> extends real.crud_repository<T> {
     // TODO: implement update
     throw UnimplementedError();
   }
-
 }

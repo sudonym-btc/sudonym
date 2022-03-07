@@ -1,4 +1,1 @@
-export enum CurrencyCode {
-    BTC,
-    USD
-}
+export type CurrencyCode = 'BTC' | 'USD';

@@ -1,1 +1,1 @@
-enum CurrencyCode { BTC, USD }
+

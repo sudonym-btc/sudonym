@@ -7,12 +7,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-          child: Column(children: [
-            const Pot()
-          ]),
-        ),
-      );
+    return Container(
+        color: Theme.of(context).colorScheme.background,
+        child: const SafeArea(
+            child: Scaffold(
+          body: Pot(),
+        )));
   }
 }

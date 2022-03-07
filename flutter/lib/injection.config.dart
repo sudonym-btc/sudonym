@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart' as _i2;
 
 import 'data/mock/repository/auth.repository.dart' as _i4;
 import 'data/mock/repository/pot.repository.dart' as _i6;
-import 'data/mock/repository/transation.repository.dart' as _i8;
+import 'data/mock/repository/transaction.repository.dart' as _i8;
 import 'data/repository/auth.repository.dart' as _i3;
 import 'data/repository/pot.repository.dart' as _i5;
 import 'data/repository/transaction.repository.dart' as _i7;

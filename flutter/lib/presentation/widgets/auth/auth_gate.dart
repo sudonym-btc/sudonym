@@ -17,7 +17,6 @@ class AuthGate extends StatelessWidget {
           builder: (context, state) {
             // Render application if authenticated
             if (state is LoadedState && state.user != null) {
-              print(state.user?.id);
               return const HomePage();
             }
             return const SigninPage();

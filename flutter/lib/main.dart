@@ -25,7 +25,14 @@ class _AppState extends State<App> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Sudonym',
-        theme: ThemeData(fontFamily: 'Satoshi'),
+        theme: ThemeData(
+          elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                shadowColor: MaterialStateProperty.all<Color>(Colors.transparent)
+          )),
+          fontFamily: 'Satoshi',
+          backgroundColor: Colors.white,
+        ),
         home: const AuthGate());
   }
 }
