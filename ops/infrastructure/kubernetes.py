@@ -5,6 +5,7 @@
 from common import getConfig
 from dns import dns
 from kubernetes_ride_the_lightning import ride_the_lightning
+from kubernetes_lightning_rest import lightning_rest
 from kubernetes_cluster import cluster
 from kubernetes_bitcoin import bitcoin
 from kubernetes_lightning import lightning
@@ -61,6 +62,9 @@ def GenerateConfig(context):
     ride_the_lightning_base_name = ride_the_lightning(config, cluster_types)[
         "base_name"
     ]
+    lightning_rest_base_name = lightning_rest(config, cluster_types)[
+        "base_name"
+    ]
 
     resources = (
         [
@@ -85,7 +89,26 @@ def GenerateConfig(context):
                                 "name": ride_the_lightning_base_name + "-service",
                                 "port": {"number": 3000},
                             }
-                        }
+                        },
+                        "rules": [
+                            {
+                                "host": "lightning-rest." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": lightning_rest_base_name + "-service",
+                                                    "port": {"number": 3001},
+                                                }
+                                            },
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
                     },
                 },
             },

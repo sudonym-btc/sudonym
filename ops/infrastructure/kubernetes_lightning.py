@@ -78,6 +78,7 @@ def lightning(config, cluster_types):
                                             "--network=regtest",
                                             "--log-level=debug",
                                             "--rpc-file=/rpc/lightning-rpc",
+                                            "--experimental-offers",
                                         ],
                                         "env": [
                                             {

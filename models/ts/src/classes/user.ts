@@ -1,11 +1,12 @@
 export class User  {
 
     constructor(
-        private id: String, 
-        private firebaseId: String
+        public id: number, 
+        public passHash?: String, 
+        public firebaseId?: String
     ) {}
 
     static fromJson(json: Object) {
-        return new User(json["id"], json["firebaseId"]);
+        return new User(json["id"], json["passHash"], json["firebaseId"]);
     }
 }

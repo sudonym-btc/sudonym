@@ -14,7 +14,8 @@
     "app:mock": "cd flutter && flutter run",
     "app:development": "flutter run --backend=development",
     "app:staging": "flutter run --backend=staging",
-    "app:production": "flutter run --backend=production"
+    "app:production": "flutter run --backend=production",
+    "api:development": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs && npm run start:dev -- -- --lightning '$(minikube service development-c-lightning-rest-service --https --url)'"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,13 @@
   "bugs": {
     "url": "https://github.com/sudonym-btc/sudonym/issues"
   },
-  "homepage": "https://github.com/sudonym-btc/sudonym#readme"
+  "homepage": "https://github.com/sudonym-btc/sudonym#readme",
+  "dependencies": {
+    "@therms/rpc-client": "^2.2.3",
+    "clightningjs": "^0.2.2"
+  },
+  "workspaces": [
+    "api",
+    "models/ts"
+  ]
 }

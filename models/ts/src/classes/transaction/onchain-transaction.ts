@@ -1,6 +1,7 @@
 export abstract class OnchainTransaction {
+    txId: string;
     fromAddress: string;
     toAddress: string;
-    amount: string;
+    amount: number;
     data: JSON;
 }

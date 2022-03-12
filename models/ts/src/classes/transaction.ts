@@ -1,13 +1,14 @@
 export class Transaction {
 
     constructor(
-        private id: string,
-        private transactionId: string,
-        private potId: string,
-        private amount: number,
-        private OnchainTransactionId: string,
-        private LightningTransactionId: string,
-        private createdAt: Date
+        public id: string,
+        public transactionId: string,
+        public potId: string,
+        public amount: number,
+        public spendable: boolean,
+        public OnchainTransactionId: string,
+        public LightningInvoiceId: string,
+        public createdAt: Date
     ) { }
 
     static fromJson(json: Object) {
@@ -16,8 +17,9 @@ export class Transaction {
             json["transactionId"],
             json["potId"],
             json["amount"],
+            json["spendable"],
             json["OnchainTransactionId"],
-            json["LightningTransactionId"],
+            json["LightningInvoiceId"],
             json["createdAt"]
         );
     }

@@ -3,7 +3,6 @@ import { Pot } from "../classes/pot";
 
 export const factory = Factory.Sync.makeFactory<Pot>({
     id: Factory.each(i => i.toString()),
-    userId: Factory.each(i => i.toString()),
     name: 'test pot',
     currency: 'BTC',
     balance: Math.random()

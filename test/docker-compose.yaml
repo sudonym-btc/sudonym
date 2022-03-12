@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  lightning:
+    image: "elementsproject/lightningd:latest"
+    command: "--bitcoin-rpcuser=test --bitcoin-rpcpassword=test --bitcoin-rpcconnect=http://192.168.64.6 --bitcoin-rpcport=30404 --network=regtest --log-level=debug --experimental-offers"
+
+  bitcoin:
+    image: "ruimarinho/bitcoin-core:22.0"
+    command: "-server -rest -txindex -rpcuser=test -rpcpassword=test -rpcallowip=0.0.0.0/0 -rpcallowip=::/0 -rpcbind=0.0.0.0 -regtest=1 -zmqpubhashblock=tcp://*:18496 -debug=1"
+    ports:
+      - 32207:18496

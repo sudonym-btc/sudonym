@@ -6,15 +6,18 @@ config = {
     },
     "production": {
         "env": "production",
+        "domain": "sudonym.app",
     },
     "staging": {
         "env": "staging",
+        "domain": "sudonym.app",
     },
     "test": {
         "env": "test",
     },
     "development": {
         "env": "development",
+        "domain": "local.app",
     }
 }
 

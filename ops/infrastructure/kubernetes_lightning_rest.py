@@ -38,7 +38,7 @@ def lightning_rest(config, cluster_types):
     "PORT": 3001,
     "DOCPORT": 4001,
     "PROTOCOL": "https",
-    "EXECMODE": "production",
+    "EXECMODE": "test",
     "LNRPCPATH": "/rpc/lightning-rpc",
     "RPCCOMMANDS": ["*"]
 }
@@ -62,6 +62,7 @@ def lightning_rest(config, cluster_types):
                         "type": "NodePort",
                         "ports": [
                             {"port": 3001, "name": "ln-rest"},
+                            {"port": 4001, "name": "ln-rest-doc"},
                         ],
                         "selector": {"app": base_name},
                     },

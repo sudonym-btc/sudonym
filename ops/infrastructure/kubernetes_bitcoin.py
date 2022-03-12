@@ -51,6 +51,7 @@ def bitcoin(config, cluster_types):
                             {"port": 8332, "name": "rpc"},
                             {"port": 18443, "name": "regtest"},
                             {"port": 18444, "name": "rpc-regtest"},
+                            {"port": 5555, "name": "zeromq", "protocol": "TCP"},
                         ],
                         "selector": {"app": base_name},
                     },
@@ -80,7 +81,7 @@ def bitcoin(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "ruimarinho/bitcoin-core:0.17",
+                                        "image": "ruimarinho/bitcoin-core:22.0",
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "args": [
                                             "-server",
@@ -93,6 +94,11 @@ def bitcoin(config, cluster_types):
                                             "-rpcbind=0.0.0.0",
                                             "-rpcbind=" + base_name,
                                             "-regtest=1",
+                                            "-zmqpubrawtx=tcp://*:5555",
+                                            "-zmqpubhashblock=tcp://*:5555",
+                                            "-zmqpubhashtx=tcp://*:5555",
+                                            "-zmqpubrawblock=tcp://*:5555",
+                                            "-debug=1"
                                         ],
                                         "env": [
                                             {
@@ -126,6 +132,10 @@ def bitcoin(config, cluster_types):
                                             {
                                                 "containerPort": 18444,
                                                 "name": "regtest-rpc",
+                                            },
+                                            {
+                                                "containerPort": 5555,
+                                                "name": "zeromq",
                                             },
                                         ],
                                         "volumeMounts": [

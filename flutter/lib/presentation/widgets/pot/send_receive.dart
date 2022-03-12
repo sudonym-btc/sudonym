@@ -48,7 +48,9 @@ class SendReceive extends StatelessWidget {
                   label: Text('Receive'),
                   style: raisedButtonStyle,
                   icon: FaIcon(FontAwesomeIcons.inbox, size: 14),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/receive');
+                  },
                 ),
                 SizedBox(
                   width: 10,
@@ -57,7 +59,9 @@ class SendReceive extends StatelessWidget {
                   label: Text('Send'),
                   style: raisedButtonStyle,
                   icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/send');
+                  },
                 )
               ],
             )

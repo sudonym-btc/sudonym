@@ -1,0 +1,8 @@
+class User {
+  String id;
+  String firebaseId;
+  User(this.id, this.firebaseId) {}
+  static fromJson(Object json) {
+    return new User(json["id"], json["firebaseId"]);
+  }
+}
