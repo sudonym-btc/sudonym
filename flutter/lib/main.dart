@@ -4,6 +4,8 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/pages/home_page.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
 import 'package:sudonym/presentation/pages/send.dart';
+import 'package:sudonym/presentation/pages/send_confirm.dart';
+import 'package:sudonym/presentation/pages/settings.dart';
 import 'firebase_options.dart';
 import 'presentation/widgets/auth/auth_gate.dart';
 
@@ -39,6 +41,7 @@ class _AppState extends State<App> {
           backgroundColor: Colors.white,
           elevation: 0
         ),
+        scaffoldBackgroundColor: Colors.white,
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
@@ -51,6 +54,8 @@ class _AppState extends State<App> {
       routes: {
         '/receive': (context) => const ReceivePage(),
         '/send': (context) => const SendPage(),
+        '/confirmSend': (context) => const SendConfirmPage(),
+        '/settings': (context) => const SettingsPage(),
       },
     );
   }

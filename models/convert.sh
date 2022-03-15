@@ -23,3 +23,6 @@ do
     sed -i .bak "s/json\[\"createdAt\"\]/$ESCAPED_REPLACE/g" ../../../dart/lib/${file//.ts/.dart}
 
 done
+
+cd ../../
+npm run build

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
+import 'package:sudonym/logic/bloc/pot.cubit.dart';
 
 import '../../../injection.dart';
+import '../../../logic/currency/btc_formatter.dart';
 import '../../pages/home_page.dart';
 import '../../pages/signin.dart';
 
@@ -11,19 +13,22 @@ class PotHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.ce,
-          children: [
-          Text(
-            "Your balance",
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          Text(
-            "1,090 sats",
-            style: Theme.of(context).textTheme.headline3,
-          )
-        ]));
+    return BlocBuilder<PotCubit, PotCubitState>(
+        builder: (BuildContext context, state) {
+      return Container(
+          margin: const EdgeInsets.only(top: 0.0, bottom: 30.0),
+          child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.ce,
+              children: [
+                Text(
+                  state.entity?.name ?? "",
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                Text(
+                  formatBTC(state.entity?.balance as num),
+                  style: Theme.of(context).textTheme.headline3,
+                )
+              ]));
+    });
   }
 }

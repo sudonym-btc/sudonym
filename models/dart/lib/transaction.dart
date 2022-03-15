@@ -3,19 +3,28 @@ class Transaction {
   String transactionId;
   String potId;
   num amount;
+  bool spendable;
   String OnchainTransactionId;
-  String LightningTransactionId;
+  String LightningInvoiceId;
   DateTime createdAt;
-  Transaction(this.id, this.transactionId, this.potId, this.amount,
-      this.OnchainTransactionId, this.LightningTransactionId, this.createdAt) {}
+  Transaction(
+      this.id,
+      this.transactionId,
+      this.potId,
+      this.amount,
+      this.spendable,
+      this.OnchainTransactionId,
+      this.LightningInvoiceId,
+      this.createdAt) {}
   static fromJson(Map<String, dynamic> json) {
     return new Transaction(
         json["id"],
         json["transactionId"],
         json["potId"],
         json["amount"],
+        json["spendable"],
         json["OnchainTransactionId"],
-        json["LightningTransactionId"],
+        json["LightningInvoiceId"],
         DateTime.parse(json["createdAt"]));
   }
 }

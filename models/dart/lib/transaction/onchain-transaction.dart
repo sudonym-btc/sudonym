@@ -1,6 +1,13 @@
-abstract class OnchainTransaction {
-  String fromAddress;
-  String toAddress;
-  String amount;
-  JSON data;
-}
+// export abstract class OnchainTransaction {
+
+//     txId: string;
+
+//     fromAddress: string;
+
+//     toAddress: string;
+
+//     amount: number;
+
+//     data: Map<String, dynamic>;
+
+// }

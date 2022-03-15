@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../widgets/receive/bolt12.dart';
+
+class ReceivePageArgs {
+  num potId;
+
+  ReceivePageArgs(@required this.potId);
+}
 
 class ReceivePage extends StatelessWidget {
   const ReceivePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ReceivePageArgs data =
+        ModalRoute.of(context)!.settings.arguments as ReceivePageArgs;
+
     return Container(
         color: Theme.of(context).colorScheme.background,
         child: SafeArea(
@@ -17,23 +27,23 @@ class ReceivePage extends StatelessWidget {
                     title: const Text('Receive'),
                     bottom: const TabBar(
                       tabs: [
-                        Tab(text: 'Bolt 11'),
-                        Tab(text: 'Bolt 12'),
+                        Tab(text: 'Bolt 11', icon: FaIcon(FontAwesomeIcons.bolt, size: 12,)),
+                        Tab(text: 'Bolt 12', icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
                         Tab(
-                          text: 'LnUrl',
+                          text: 'LnUrl', icon: FaIcon(FontAwesomeIcons.wifi, size: 12)
                         ),
                         Tab(
-                          text: 'Onchain',
+                          text: 'Onchain', icon: FaIcon(FontAwesomeIcons.link, size: 12)
                         ),
                       ],
                     ),
                   ),
-                  body: const TabBarView(
+                  body: TabBarView(
                     children: [
-                      ReceiveBolt12(),
-                      ReceiveBolt12(),
-                      ReceiveBolt12(),
-                      ReceiveBolt12(),
+                      ReceiveBolt12(potId: data.potId),
+                      ReceiveBolt12(potId: data.potId),
+                      ReceiveBolt12(potId: data.potId),
+                      ReceiveBolt12(potId: data.potId),
                     ],
                   ),
                 ))));

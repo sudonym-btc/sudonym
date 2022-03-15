@@ -4,7 +4,9 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { LightningModule } from './lightning/lightning.module';
 import { AuthModule } from './module/auth/auth.module';
+import { PayModule } from './module/pay/pay.module';
 import { PotModule } from './module/pot/pot.module';
+import { ReceiveModule } from './module/receive/receive.module';
 import { UserModule } from './module/user/user.module';
 
 @Module({
@@ -13,7 +15,9 @@ import { UserModule } from './module/user/user.module';
     LightningModule,
     AuthModule, 
     UserModule,
-    PotModule
+    PotModule,
+    PayModule,
+    ReceiveModule
   ],
   controllers: [AppController],
   providers: [AppService],

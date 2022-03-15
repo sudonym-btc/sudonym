@@ -5,6 +5,7 @@ import * as WebSocket from 'ws';
 import { BitcoinListener } from './bitcoin-listener';
 import { getConfig } from '../config/config';
 import { Inject, Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class LightningService {
@@ -53,46 +54,57 @@ export class LightningService {
         });
     }
 
-    async createInvoice() {
+    async createInvoice(amount, label = null, description = null) {
         return this.makeRequest({
             path: '/v1/invoice/genInvoice',
             method: 'POST',
             data: {
-                amount: 1000,
-                label: "test-invoice3",
-                description: "test-description"
+                amount,
+                label: label || uuid(),
+                description: description || "test-description"
             }
         });
     }
 
-    async getRoute() {
+    async getRoute(pubkey) {
         return this.makeRequest({
             path: '/v1/network/getRoute',
             method: 'GET',
             data: {
                 msats: 1000,
-                pubkey: "dsfd"
+                pubkey: pubkey
             }
         });
     }
 
-    async createOffer() {
+    async pay(invoice) {
+        return this.makeRequest({
+            path: '/v1/pay',
+            method: 'POST',
+            data: {
+                invoice,
+                retry_for: 20 //seconds
+            }
+        });
+    }
+
+    async createOffer(amount, description = null) {
         return this.makeRequest({
             path: '/v1/offers/offer',
             method: 'POST',
             data: {
-                amount: 1000,
-                description: "test-description"
+                amount,
+                description: description || "test-description"
             }
         });
     }
 
-    async fetchOfferInvoice() {
+    async fetchOfferInvoice(offer) {
         return this.makeRequest({
             path: '/v1/offers/fetchInvoice',
             method: 'POST',
             data: {
-                offer: 'lno1...'
+                offer
             }
         });
     }

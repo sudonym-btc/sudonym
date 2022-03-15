@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym.models/types/list.dart';
@@ -8,6 +9,8 @@ import '../../injection.dart';
 @prod
 @Injectable(as: PotRepository, env: [Env.prod])
 class PotRepositoryImpl extends PotRepository {
+  PotRepositoryImpl(Dio dio) : super(dio);
+
   @override
   Future<Pot> create() {
     // TODO: implement create
@@ -26,6 +29,16 @@ class PotRepositoryImpl extends PotRepository {
     throw UnimplementedError();
   }
 
+  @override
+  String getInvoice(id, type, amount) {
+    // TODO: implement getInvoice
+    throw UnimplementedError();
+  }
+
 }
 
-abstract class PotRepository extends crud_repository<Pot> {}
+abstract class PotRepository extends crud_repository<Pot> {
+  PotRepository(Dio dio) : super(dio);
+
+  String getInvoice(id, type, amount);
+}

@@ -1,0 +1,15 @@
+import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class AuthInterceptor extends Interceptor {
+  AuthInterceptor() {}
+
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      String bearer = await FirebaseAuth.instance.currentUser!.getIdToken();
+      options.headers["token"] = bearer;
+    }
+  }
+}

@@ -35,9 +35,9 @@ export class LnUrlController {
         }
     }
     @Get('/lnurlp/:id')
-    getInvoice(@Query('amount') amount: number, @Param('id') id) {
+    async getInvoice(@Query('amount') amount: number, @Param('id') id) {
         return {
-            pr: this.lightningService.createInvoice(), // bech32-serialized lightning invoice
+            pr: await this.lightningService.createInvoice(amount), // bech32-serialized lightning invoice
             routes: [], // an empty array
         }
     }

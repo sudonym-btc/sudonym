@@ -1,15 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym.models/mock/parsed_data.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 import '../../repository/crud_repository.dart' as real;
 
+const requestDelay = Duration(seconds: 1);
 // ignore: camel_case_types
 abstract class crud_repository<T> extends real.crud_repository<T> {
   List<T> data = [];
   dynamic availableData = [];
 
-  crud_repository() {
+  crud_repository(Dio dio) : super(dio);
+
+  onInit() {
     availableData = Mockdata.getData<T>(endpoint);
   }
   @override
@@ -19,8 +22,14 @@ abstract class crud_repository<T> extends real.crud_repository<T> {
   }
 
   @override
+  Future<T> fetch(String id) async {
+    await Future.delayed(requestDelay);
+    return availableData[0];
+  }
+
+  @override
   Future<ListState<T>> list() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(requestDelay);
     return ListState(availableData, {});
   }
 

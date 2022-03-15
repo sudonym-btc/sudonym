@@ -20,4 +20,5 @@ export class Offer extends Model implements Models.Offer {
 
   @Column
   bolt12Unsigned: string;
+
 }

@@ -1,4 +1,6 @@
 PODS:
+  - clipboard_listener (0.0.1):
+    - Flutter
   - Firebase/Auth (8.11.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 8.11.0)
@@ -97,12 +99,19 @@ PODS:
   - nanopb/encode (2.30908.0)
   - PromisesObjC (2.0.0)
   - Protobuf (3.19.4)
+  - share_plus (0.0.1):
+    - Flutter
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
+  - clipboard_listener (from `.symlinks/plugins/clipboard_listener/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
+  - share_plus (from `.symlinks/plugins/share_plus/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -125,6 +134,8 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
+  clipboard_listener:
+    :path: ".symlinks/plugins/clipboard_listener/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
@@ -133,8 +144,13 @@ EXTERNAL SOURCES:
     :path: Flutter
   mobile_scanner:
     :path: ".symlinks/plugins/mobile_scanner/ios"
+  share_plus:
+    :path: ".symlinks/plugins/share_plus/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  clipboard_listener: 5bdabc3b4ebabf4b4055ca17aa97b9b4b55160e2
   Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
   firebase_auth: 99c9cdc8cc2e59f6fd4960b6e183f5430d237838
   firebase_core: 08f6a85f62060111de5e98d6a214810d11365de9
@@ -156,6 +172,8 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   Protobuf: 235750e4696ff59fb07d949a9dbbc92b3c0700fe
+  share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
+  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
 PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
