@@ -6,7 +6,7 @@ import 'package:sudonym/presentation/widgets/auth/auth_gate.dart';
 
 void main() {
   setUpAll(() {
-    configureInjection(Env.dev);
+    configureInjection(Env.mock);
   });
 
   testWidgets("Auth page routes to sign in and homepage",

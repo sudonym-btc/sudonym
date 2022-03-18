@@ -1,21 +1,18 @@
-import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
-import { getConfig } from "src/config/config";
-import { LightningService } from "./lightning.service";
+import { Inject, Injectable } from '@nestjs/common';
+import { getConfig } from 'src/config/config';
 
-@Controller('')
-export class LnUrlController {
-    @Inject(LightningService) lightningService: LightningService;
+@Injectable()
+export class LnUrlService {
+    getPayRequest(potId: string) {
 
-    @Get('.well-known/lnurlp/:user')
-    pay(@Param('user') user) {
         return {
-            callback: getConfig().apiUrl + '', // The URL from LN SERVICE which will accept the pay request parameters
+            callback: getConfig().apiUrl + '/receive/lnurlp/' + potId, // The URL from LN SERVICE which will accept the pay request parameters
             maxSendable: 100000000, // Max amount LN SERVICE is willing to receive
-            minSendable: 1000, // Min amount LN SERVICE is willing to receive, can not be less than 1 or more than `maxSendable`
+            minSendable: 1, // Min amount LN SERVICE is willing to receive, can not be less than 1 or more than `maxSendable`
             metadata: [
                 [
                     "text/plain", // mandatory, short description displayed when paying and in transaction log
-                    "paying user " + user // actual metadata content
+                    "paying user " // actual metadata content
                 ],
                 [
                     "text/long-desc", // optional longer description of the payment, MAY contain newlines
@@ -32,13 +29,6 @@ export class LnUrlController {
                 // ... // more objects for future types
             ], // Metadata json which must be presented as raw string here, this is required to pass signature verification at a later step
             tag: "payRequest" // Type of LNURL
-        }
-    }
-    @Get('/lnurlp/:id')
-    async getInvoice(@Query('amount') amount: number, @Param('id') id) {
-        return {
-            pr: await this.lightningService.createInvoice(amount), // bech32-serialized lightning invoice
-            routes: [], // an empty array
         }
     }
 }

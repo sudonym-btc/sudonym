@@ -20,12 +20,7 @@ abstract class EntityCubit<StateType> extends Cubit<StateType> {
   }
 
   fetch() async {
-    print("settingloading");
-    print(repository);
     emit(stateClass(entity: null, loading: true));
-    print("fetching it");
-
     emit(stateClass(entity: await repository.fetch("1"), loading: false));
-    print("fetched");
   }
 }

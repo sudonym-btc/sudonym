@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym/logic/bloc/auth.cubit.dart';
 import 'package:sudonym/logic/bloc/pot.cubit.dart';
 
-import '../../../injection.dart';
 import '../../../logic/currency/btc_formatter.dart';
-import '../../pages/home_page.dart';
-import '../../pages/signin.dart';
 
 class PotHeader extends StatelessWidget {
   const PotHeader({Key? key}) : super(key: key);

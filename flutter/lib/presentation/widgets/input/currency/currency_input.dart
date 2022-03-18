@@ -37,6 +37,12 @@ class _CurrencyInputState extends State<CurrencyInput> {
       _controller.updateValue(_controller.numberValue + v);
     }
 
+    bool negativeEnabled = _controller.numberValue > 0;
+    bool positiveEnabled = true;
+
+    List<MaterialState> negativeButtonState = negativeEnabled ? [] : [MaterialState.disabled];
+    List<MaterialState> positiveButtonState = positiveEnabled ? [] : [MaterialState.disabled];
+
     return Row(children: <Widget>[
       Expanded(
         child: TextField(
@@ -51,24 +57,20 @@ class _CurrencyInputState extends State<CurrencyInput> {
         width: padding / 2,
       ),
       Ink(
-          decoration: buttonDecoration,
+          decoration: buttonDecoration(context, negativeEnabled),
           child: IconButton(
-            onPressed: () {
-              updateValue(-1);
-            },
-            color: Colors.white,
+            onPressed: negativeEnabled ? () => updateValue(-1) : null,
+            color: Theme.of(context).elevatedButtonTheme.style!.foregroundColor!.resolve(Set.of(negativeButtonState)),
             icon: const Icon(Icons.remove),
           )),
       const SizedBox(
         width: padding / 2,
       ),
       Ink(
-          decoration: buttonDecoration,
+          decoration: buttonDecoration(context, positiveEnabled),
           child: IconButton(
-            onPressed: () {
-              updateValue(1);
-            },
-            color: Colors.white,
+            onPressed: () => updateValue(1),
+            color: Theme.of(context).elevatedButtonTheme.style!.foregroundColor!.resolve(Set.of(positiveButtonState)),
             icon: const Icon(Icons.add),
           ))
     ]);

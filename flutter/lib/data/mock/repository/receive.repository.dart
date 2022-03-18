@@ -5,8 +5,7 @@ import 'package:sudonym/data/mock/repository/crud_repository.dart';
 import 'package:sudonym/data/repository/receive.repository.dart';
 import 'package:sudonym/injection.dart';
 
-@dev
-@Injectable(as: ReceiveRepository, env: [Env.dev])
+@Injectable(as: ReceiveRepository, env: [Env.mock])
 class MockReceiveRepository implements ReceiveRepository {
   
   MockReceiveRepository(this.dio);

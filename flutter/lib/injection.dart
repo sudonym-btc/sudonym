@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import 'injection.config.dart';
 
-final getIt = GetIt.instance;  
+final getIt = GetIt.instance;
 
 @injectableInit
 void configureInjection(String environment) {
@@ -11,9 +11,9 @@ void configureInjection(String environment) {
 }
 
 abstract class Env {
+  static const mock = 'mock';
   static const dev = 'dev';
+  static const staging = 'staging';
   static const prod = 'prod';
+  static const allButMock = [Env.dev, Env.staging, Env.prod];
 }
-
-// const prod = Environment(Env.prod);
-// const dev = Environment(Env.dev);

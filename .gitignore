@@ -2,5 +2,5 @@ __pycache__
 node_modules
 build
 dist
-
+**.icloud
 ops/infrastructure/minikube.yaml

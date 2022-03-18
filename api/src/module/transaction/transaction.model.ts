@@ -1,8 +1,9 @@
-import { Table, Column, Model, HasMany, CreatedAt } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany, CreatedAt, PrimaryKey } from 'sequelize-typescript'
 import * as Models from '@sudonym/models';
 
 @Table
 export class Transaction extends Model implements Models.Transaction {
+  @PrimaryKey
   @Column
   id: string;
 

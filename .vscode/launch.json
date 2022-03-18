@@ -5,10 +5,44 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter",
+            "name": "flutter - mock",
             "cwd": "flutter",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=mock",
+            ]
+        },
+        {
+            "name": "flutter - development",
+            "cwd": "flutter",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=dev",
+            ]
+        },
+        {
+            "name": "flutter - staging",
+            "cwd": "flutter",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=staging",
+            ]
+        },
+        {
+            "name": "flutter - production",
+            "cwd": "flutter",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=prod",
+            ]
         },
         {
             "name": "flutter (profile mode)",

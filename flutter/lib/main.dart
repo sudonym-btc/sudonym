@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get_it/get_it.dart';
+import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/presentation/pages/home_page.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
 import 'package:sudonym/presentation/pages/send.dart';
 import 'package:sudonym/presentation/pages/send_confirm.dart';
@@ -14,7 +15,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  configureInjection(Env.dev);
+  String? env = const String.fromEnvironment('ENV');
+  if(env == "") {
+    env = Env.mock;
+  }
+  configureInjection(env);
   runApp(const App());
 }
 
@@ -31,20 +36,28 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       title: 'Sudonym',
       theme: ThemeData(
-        tabBarTheme: TabBarTheme(labelColor: Colors.black),
+        tabBarTheme: TabBarTheme(labelColor: textColor),
         appBarTheme: const AppBarTheme(
-          foregroundColor: Colors.black,
-          toolbarTextStyle: TextStyle(color: Colors.black),
-          titleTextStyle: TextStyle(color: Colors.black),
-          iconTheme: IconThemeData(color: Colors.black),
-          actionsIconTheme: IconThemeData(color: Colors.black),
-          backgroundColor: Colors.white,
-          elevation: 0
-        ),
+            foregroundColor: textColor,
+            toolbarTextStyle: TextStyle(color: textColor),
+            titleTextStyle: TextStyle(color: textColor),
+            iconTheme: IconThemeData(color: textColor),
+            actionsIconTheme: IconThemeData(color: textColor),
+            backgroundColor: Colors.white,
+            elevation: 0),
         scaffoldBackgroundColor: Colors.white,
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                foregroundColor: MaterialStateProperty.resolveWith<Color?>((s) {
+                  if (s.contains(MaterialState.disabled))
+                    return Colors.black; // Disabled button color
+                  return Colors.white; // Enabled button color
+                }),
+                backgroundColor: MaterialStateProperty.resolveWith<Color?>((s) {
+                  if (s.contains(MaterialState.disabled))
+                    return primary.shade100; // Disabled button color
+                  return primary; // Enabled button color
+                }),
                 shadowColor:
                     MaterialStateProperty.all<Color>(Colors.transparent))),
         fontFamily: 'Satoshi',

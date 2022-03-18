@@ -5,8 +5,7 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/mock/repository/crud_repository.dart';
 import 'package:sudonym/data/repository/pay.repository.dart';
 
-@dev
-@Injectable(as: PayRepository, env: [Env.dev])
+@Injectable(as: PayRepository, env: [Env.mock])
 class MockPayRepository implements PayRepository {
 
   MockPayRepository(this.dio);

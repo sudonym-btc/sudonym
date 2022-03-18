@@ -5,7 +5,6 @@ import { CurrencyCode } from '@sudonym/models';
 @Table
 export class Pot extends Model implements Models.Pot {
     @PrimaryKey
-    @AutoIncrement
     @Column
     id: string
 

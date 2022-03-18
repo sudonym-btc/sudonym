@@ -5,8 +5,7 @@ import 'package:sudonym.models/transaction.dart';
 
 import '../../injection.dart';
 
-@prod
-@Injectable(as: PayRepository, env: [Env.prod])
+@Injectable(as: PayRepository, env: Env.allButMock)
 class PayRepositoryImpl extends PayRepository {
   PayRepositoryImpl(Dio dio) : super(dio);
 

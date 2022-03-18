@@ -4,16 +4,17 @@ import 'package:sudonym.models/index.dart';
 
 import '../../injection.dart';
 
-@prod
-@Injectable(as: ReceiveRepository, env: [Env.prod])
+@Injectable(as: ReceiveRepository, env: Env.allButMock)
 class ReceiveRepositoryImpl extends ReceiveRepository {
   ReceiveRepositoryImpl(Dio dio) : super(dio);
 
   @override
   Future<Receiver> getInvoice(potId, type, amount) {
-    return dio
-        .get('/receive/info?amount=' + amount)
-        .then((value) => Receiver.fromJson(value.data));
+    return dio.get('/receive/invoice', queryParameters: {
+      "potId": potId.toString(),
+      "type": type.toString(),
+      "amount": amount.toString()
+    }).then((value) => Receiver.fromJson(value.data));
   }
 }
 

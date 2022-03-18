@@ -31,7 +31,7 @@ export const BaseService = <TModel extends Model>(repository: ModelType<TModel>)
         }
 
         list() {
-            return this.repo.create();
+            return this.repo.findAll();
         }
     }
 

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LightningService } from 'src/lightning/lightning.service';
 import bolt11 from 'bolt11';
 import lnurl from 'lnurl';
+import { LightningService } from '../lightning/lightning.service';
 console.log(lnurl);
 
 @Injectable()
@@ -26,6 +26,7 @@ export class PayService {
         
     }
 }
+export const ADDRESS_TYPES = ['lnurl', 'bolt11', 'bolt12', 'onchain'];
 export type TAddressType= 'lnurl' | 'bolt12' | 'onchain' | 'bolt11';
 
 export const getAddressType = (address: string): TAddressType => {

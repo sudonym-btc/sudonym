@@ -3,42 +3,22 @@ import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/data/repository/crud_repository.dart';
+import 'package:sudonym/data/repository/websocket.dart';
 
 import '../../injection.dart';
 
-@prod
-@Injectable(as: PotRepository, env: [Env.prod])
+@Injectable(as: PotRepository, env: Env.allButMock)
 class PotRepositoryImpl extends PotRepository {
-  PotRepositoryImpl(Dio dio) : super(dio);
+  @override
+  String get endpoint => "pot";
 
   @override
-  Future<Pot> create() {
-    // TODO: implement create
-    throw UnimplementedError();
-  }
+  Function converter = Pot.fromJson;
 
-  @override
-  Future<ListState<Pot>> list() {
-    // TODO: implement list
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Pot> update() {
-    // TODO: implement update
-    throw UnimplementedError();
-  }
-
-  @override
-  String getInvoice(id, type, amount) {
-    // TODO: implement getInvoice
-    throw UnimplementedError();
-  }
+  PotRepositoryImpl(Dio dio, Websocket websocket) : super(dio, websocket);
 
 }
 
 abstract class PotRepository extends crud_repository<Pot> {
-  PotRepository(Dio dio) : super(dio);
-
-  String getInvoice(id, type, amount);
+  PotRepository(Dio dio, Websocket websocket) : super(dio, websocket);
 }

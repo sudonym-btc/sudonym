@@ -25,12 +25,7 @@ class SendPage extends StatelessWidget {
                     children: [
                       Expanded(child: QRView()),
                       const SizedBox(height: padding),
-                      const TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Lightning address/snippet',
-                        ),
-                      ),
+                      _InvoiceInput(),
                       Expanded(child: new Container()),
                       ButtonBar(children: [
                         ElevatedButton.icon(
@@ -38,12 +33,39 @@ class SendPage extends StatelessWidget {
                           style: raisedButtonStyle,
                           icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/confirmSend',arguments: {"address" : "random"});
+                            Navigator.pushNamed(context, '/confirmSend',
+                                arguments: {"address": "random"});
                           },
                         )
                       ])
                     ],
                   ))),
         ));
+  }
+}
+
+class _InvoiceInput extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _InvoiceInputState();
+  }
+}
+
+class _InvoiceInputState extends State<_InvoiceInput> {
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const TextField(
+      decoration: InputDecoration(
+        // border: OutlineInputBorder(),
+        hintText: 'Lightning address/snippet',
+      ),
+    );
   }
 }

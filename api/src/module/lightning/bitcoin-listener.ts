@@ -1,4 +1,4 @@
-import { options } from "src/command-line-args";
+import { options } from "../../command-line-args";
 import * as bitcoin from 'bitcoinjs-lib';
 import * as zmq from 'zeromq';
 import { Injectable } from "@nestjs/common";

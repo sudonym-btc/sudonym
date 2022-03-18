@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
-import 'package:sudonym/injection.dart';
 
-@prod
-@Injectable(as: AuthRepository, env: [Env.prod])
+import '../../injection.dart';
+
+@Injectable(as: AuthRepository, env: Env.allButMock)
 class AuthRepositoryImpl implements AuthRepository {
   @override
   String loginWithGoogle() {

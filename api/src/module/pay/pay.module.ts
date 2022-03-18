@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LightningModule } from 'src/lightning/lightning.module';
+import { LightningModule } from 'src/module/lightning/lightning.module';
 import { PayController } from './pay.controller';
 import { PayService } from './pay.service';
 

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import axios from 'axios';
 import * as WebSocket from 'ws';
 import { BitcoinListener } from './bitcoin-listener';
-import { getConfig } from '../config/config';
+import { getConfig } from '../../config/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
@@ -94,7 +94,7 @@ export class LightningService {
             method: 'POST',
             data: {
                 amount,
-                description: description || "test-description"
+                description: description || "test-description-" + uuid()
             }
         });
     }
@@ -137,6 +137,9 @@ export class LightningService {
                 'macaroon': this.macaroon
             },
             ...options,
+        }).catch(e => {
+            console.error('LIGHTNING ERROR');
+            throw e;
         });
         return response.data;
     }

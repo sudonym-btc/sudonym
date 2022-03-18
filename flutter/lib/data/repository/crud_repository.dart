@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/data/repository/websocket.dart';
-import 'package:sudonym/injection.dart';
 
 const apiEndpoint = "http://localhost";
 
@@ -9,27 +8,42 @@ abstract class crud_repository<T> {
   String endpoint = "";
   Function converter = <T>(obj) {};
   Dio dio;
+  Websocket websocket;
   Stream<T> updated = Stream<T>.empty();
   Stream<T> created = Stream<T>.empty();
 
-  crud_repository(this.dio) {
-    getIt<Websocket>().getStream().listen((event) {
-      print(event);
-    });
+  crud_repository(this.dio, this.websocket) {
     onInit();
   }
 
-  onInit() {
+  onInit() {}
 
+  Future<T> fetch(String id) async {
+    return dio.get("/" + endpoint + "/" + id).then((value) {
+      return converter(value.data);
+    });
   }
 
-  Future<T> fetch(String id) {
-    return dio
-        .get(endpoint + "/" + id)
-        .then((value) => converter(value.data));
+  Future<ListState<T>> list() async {
+
+    return dio.get("/" + endpoint).then((value) {
+      var list = (value.data as List).map((e) {
+        return converter(e) as T;
+      }).toList();
+
+      return ListState(list, {});
+    });
   }
 
-  Future<ListState<T>> list();
-  Future<T> create();
-  Future<T> update();
+  Future<T> create(T entity) async {
+    return dio.post("/" + endpoint, data: entity).then((value) {
+      return converter(value.data);
+    });
+  }
+
+  Future<T> update(T entity) async {
+    return dio.put("/" + endpoint, data: entity).then((value) {
+      return converter(value.data);
+    });
+  }
 }

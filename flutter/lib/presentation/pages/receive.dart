@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym/presentation/widgets/receive/lnurl.dart';
+import 'package:sudonym/presentation/widgets/receive/onchain.dart';
 
+import '../widgets/receive/bolt11.dart';
 import '../widgets/receive/bolt12.dart';
 
 class ReceivePageArgs {
@@ -40,10 +43,10 @@ class ReceivePage extends StatelessWidget {
                   ),
                   body: TabBarView(
                     children: [
+                      ReceiveBolt11(potId: data.potId),
                       ReceiveBolt12(potId: data.potId),
-                      ReceiveBolt12(potId: data.potId),
-                      ReceiveBolt12(potId: data.potId),
-                      ReceiveBolt12(potId: data.potId),
+                      ReceiveLnUrl(potId: data.potId),
+                      ReceiveOnchain(potId: data.potId),
                     ],
                   ),
                 ))));

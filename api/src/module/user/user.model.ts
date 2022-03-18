@@ -9,8 +9,11 @@ export class User extends Model implements Models.User  {
     id: number
 
     @Column
-    passHash?: string
+    passHash: string
 
     @Column
-    firebaseId?: string
+    firebaseId: string
+
+    @Column
+    lightningAddress: string
 }
