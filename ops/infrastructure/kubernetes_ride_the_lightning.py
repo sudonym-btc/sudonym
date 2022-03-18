@@ -5,7 +5,7 @@ from kubernetes_lightning_rest import lightning_rest
 def ride_the_lightning(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-ride-the-lightning"
-    c_lightning_basename = lightning_rest(config, cluster_types)["base_name"]
+    lightning_rest_basename = lightning_rest(config, cluster_types)["base_name"]
 
     return {
         "resources": [
@@ -42,7 +42,7 @@ def ride_the_lightning(config, cluster_types):
         "themeColor": "PURPLE",
         "logLevel": "ERROR",
         "lnServerUrl": "https://"""
-                        + c_lightning_basename
+                        + lightning_rest_basename
                         + """-service:3001",
         "fiatConversion": false,
         "enableOffers": true

@@ -5,10 +5,12 @@ config = {
         "domain": "sudonym.app",
     },
     "production": {
+        "project": "sudonym-lightning-test",
         "env": "production",
         "domain": "sudonym.app",
     },
     "staging": {
+        "project": "sudonym-lightning-test",
         "env": "staging",
         "domain": "sudonym.app",
     },
