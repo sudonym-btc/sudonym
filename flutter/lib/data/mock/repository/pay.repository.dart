@@ -13,7 +13,7 @@ class MockPayRepository implements PayRepository {
   @override
   getInfo(address) async {
     await Future.delayed(requestDelay);
-    return TransactionConfirm(100);
+    return TransactionConfirm("MockReceiver", address, 1000, 100);
   }
 
   @override

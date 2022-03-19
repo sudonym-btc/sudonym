@@ -1,5 +1,4 @@
 import 'package:clipboard/clipboard.dart';
-import 'package:clipboard_listener/clipboard_listener.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -59,9 +58,6 @@ class ReceiveWidget extends StatelessWidget {
                         onPressed: state.loading
                             ? null
                             : () {
-                                ClipboardListener.addListener(() async {
-                                  // await Clipboard.getData(Clipboard.kTextPlain))!.text;
-                                });
                                 FlutterClipboard.copy("example").then((value) {
                                   final snackBar = SnackBar(
                                     content: Text('Copied to Clipboard'),

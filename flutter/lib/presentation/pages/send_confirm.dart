@@ -35,43 +35,76 @@ class SendConfirmPage extends StatelessWidget {
                         ],
                         child: BlocBuilder<SendCubit, SendCubitState>(
                             builder: (BuildContext context, state) {
-                          if (state.completed) {
-                            return _CompletedWidget();
-                          } else if (state.loadingSend) {
-                            return _SendingWidget();
-                          } else if (state.loadingInfo) {
+                          if (state.transactionData != null) {
+                            return state.transactionData!.fold(
+                                (l) => new Text('Failed to send transaction'),
+                                (r) => new Text('transaction created'));
+                          } else if (state.infoData != null) {
+                            return state.infoData!.fold(
+                                (l) => new Text('Failed to load info'),
+                                (r) => Column(
+                                      children: [
+                                        Table(
+                                          children: [
+                                            TableRow(children: [
+                                              new Text('address'),
+                                              new Text(r.address)
+                                            ]),
+                                            TableRow(children: [
+                                              new Text('fee'),
+                                              new Text(r.feeMSat.toString())
+                                            ]),
+                                            TableRow(children: [
+                                              new Text('name'),
+                                              new Text(r.name)
+                                            ])
+                                          ],
+                                        ),
+                                        Expanded(child: Container()),
+                                        ButtonBar(children: [
+                                          ElevatedButton.icon(
+                                            label: Text('Confirm'),
+                                            style: raisedButtonStyle,
+                                            icon: FaIcon(
+                                                FontAwesomeIcons.paperPlane,
+                                                size: iconSize),
+                                            onPressed: state.loadingInfo ||
+                                                    state.loadingSend
+                                                ? null
+                                                : () {
+                                                    BlocProvider.of<SendCubit>(
+                                                            context)
+                                                        .pay("");
+                                                  },
+                                          )
+                                        ])
+                                      ],
+                                    ));
+                          } else {
                             return Center(
                                 child: const CircularProgressIndicator());
                           }
 
-                          if (state.transactionData != null) {
-                            state.transactionData!
-                                .fold((l) => Text(l.toString()), (r) => Text('success'));
-                          } else if (state.infoData != null) {
-                            state.infoData!
-                                .fold((l) => Text(l.toString()), (r) => Text('success'));
-                          }
-
-                          return Column(
-                            children: [
-                              Expanded(child: Container()),
-                              ButtonBar(children: [
-                                ElevatedButton.icon(
-                                  label: Text('Confirm'),
-                                  style: raisedButtonStyle,
-                                  icon: FaIcon(FontAwesomeIcons.paperPlane,
-                                      size: iconSize),
-                                  onPressed: state.loadingInfo ||
-                                          state.loadingSend
-                                      ? null
-                                      : () {
-                                          BlocProvider.of<SendCubit>(context)
-                                              .pay("");
-                                        },
-                                )
-                              ])
-                            ],
-                          );
+                          // if (state.completed) {
+                          //   return _CompletedWidget();
+                          // } else if (state.loadingSend) {
+                          //   return _SendingWidget();
+                          // } else if (state.loadingInfo) {
+                          //   return Center(
+                          //       child: const CircularProgressIndicator());
+                          // }
+                          // Widget info;
+                          // if (state.transactionData != null) {
+                          //   info = state.transactionData!.fold(
+                          //       (l) => Text(l.toString()),
+                          //       (r) => Text('success'));
+                          // } else if (state.infoData != null) {
+                          //   info = state.infoData!.fold(
+                          //       (l) => Text(l.toString()),
+                          //       (r) =>
+                          // } else {
+                          //   info = Text('loading');
+                          // }
                         }))))));
   }
 }
