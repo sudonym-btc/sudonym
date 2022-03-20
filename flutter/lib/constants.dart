@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const padding = 12.0;
-const buttonRadius = padding / 2;
+const buttonRadius = 44 / 2;
 const textColor = Colors.black;
 const textColorLight = Colors.black;
 const primary = Colors.blue;

@@ -11,6 +11,7 @@ class HomePage extends StatelessWidget {
     return Container(
         color: Theme.of(context).colorScheme.background,
         child: SafeArea(
+          bottom: false,
             child: Scaffold(
           appBar: AppBar(actions: [
             IconButton(

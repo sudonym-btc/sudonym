@@ -4,7 +4,7 @@ from kubernetes_cluster import cluster
 def bitcoin(config, cluster_types):
 
     kube_type_name = cluster(config)["kube_type_name"]
-    base_name = config["env"] + "-bitcoin" 
+    base_name = config["env"] + "-bitcoin"
     return {
         "resources": [
             {
@@ -87,19 +87,29 @@ def bitcoin(config, cluster_types):
                                             "-server",
                                             "-rest",
                                             "-txindex",
-                                            "-rpcuser=test",
-                                            "-rpcpassword=test",
+                                            "-datadir=/home/bitcoin/.bitcoin",
+                                            "-rpcuser=$(BITCOIN_RPC_USER)",
+                                            "-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
                                             "-rpcallowip=0.0.0.0/0",
                                             "-rpcallowip=::/0",
                                             "-rpcbind=0.0.0.0",
                                             "-rpcbind=" + base_name,
-                                            "-regtest=1",
                                             "-zmqpubrawtx=tcp://*:5555",
                                             "-zmqpubhashblock=tcp://*:5555",
                                             "-zmqpubhashtx=tcp://*:5555",
                                             "-zmqpubrawblock=tcp://*:5555",
-                                            "-debug=1"
-                                        ],
+                                            "-debug=1",
+                                        ]
+                                        + (
+                                            ["-regtest=1"]
+                                            if config["env"] == "development"
+                                            else []
+                                        )
+                                        + (
+                                            ["-testnet=1"]
+                                            if config["env"] == "testing"
+                                            else []
+                                        ),
                                         "env": [
                                             {
                                                 "name": "BITCOIN_RPC_USER",

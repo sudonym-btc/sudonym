@@ -45,7 +45,7 @@ class SendReceive extends StatelessWidget {
                     .center, //Center Column contents horizontally,
                 children: [
                   Center(child: image),
-                  SizedBox(height: padding),
+                  SizedBox(height: padding*2),
                   ButtonBar(
                     children: [
                       ElevatedButton.icon(

@@ -1,6 +1,7 @@
 from kubernetes_cluster import cluster
 from kubernetes_bitcoin import bitcoin
 
+
 def lightning(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
@@ -17,6 +18,21 @@ def lightning(config, cluster_types):
                     "kind": "PersistentVolumeClaim",
                     "namespace": "default",
                     "metadata": {"name": base_name + "-volume-claim"},
+                    "spec": {
+                        "accessModes": ["ReadWriteOnce"],
+                        "resources": {"requests": {"storage": "10Gi"}},
+                    },
+                },
+            },
+            {
+                "name": base_name + "-backup-volume-claim",
+                "type": cluster_types["PersistentVolumeClaim"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "namespace": "default",
+                    "metadata": {"name": base_name + "-backup-volume-claim"},
                     "spec": {
                         "accessModes": ["ReadWriteOnce"],
                         "resources": {"requests": {"storage": "10Gi"}},
@@ -51,6 +67,10 @@ def lightning(config, cluster_types):
                     "dependsOn": [
                         kube_type_name,
                         base_name + "-volume-claim",
+                    ],
+                    "dependsOn": [
+                        kube_type_name,
+                        base_name + "-backup-volume-claim",
                     ]
                 },
                 "properties": {
@@ -74,18 +94,26 @@ def lightning(config, cluster_types):
                                             "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
                                             "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
                                             "--bitcoin-rpcconnect=" + bitcoin_base_name,
-                                            "--bitcoin-rpcport=18443",
-                                            "--network=regtest",
                                             "--log-level=debug",
+                                            "--lightning-dir=/lightning",
                                             "--rpc-file=/rpc/lightning-rpc",
                                             "--experimental-offers",
-                                        ],
+                                        ]
+                                        + (
+                                            [
+                                                "--network=regtest",
+                                                "--bitcoin-rpcport=18443",
+                                            ]
+                                            if config["env"] == "development"
+                                            else []
+                                        ),
                                         "env": [
                                             {
                                                 "name": "BITCOIN_RPC_USER",
                                                 "valueFrom": {
                                                     "secretKeyRef": {
-                                                        "name": bitcoin_base_name + "-secret",
+                                                        "name": bitcoin_base_name
+                                                        + "-secret",
                                                         "key": "rpcuser",
                                                     }
                                                 },
@@ -94,7 +122,8 @@ def lightning(config, cluster_types):
                                                 "name": "BITCOIN_RPC_PASSWORD",
                                                 "valueFrom": {
                                                     "secretKeyRef": {
-                                                        "name": bitcoin_base_name + "-secret",
+                                                        "name": bitcoin_base_name
+                                                        + "-secret",
                                                         "key": "rpcpass",
                                                     }
                                                 },
@@ -107,6 +136,10 @@ def lightning(config, cluster_types):
                                             {
                                                 "name": base_name + "-data",
                                                 "mountPath": "/rpc",
+                                            },
+                                             {
+                                                "name": base_name + "-backup-data",
+                                                "mountPath": "/lightning",
                                             }
                                         ],
                                     }
@@ -116,6 +149,12 @@ def lightning(config, cluster_types):
                                         "name": base_name + "-data",
                                         "persistentVolumeClaim": {
                                             "claimName": base_name + "-volume-claim"
+                                        },
+                                    },
+                                    {
+                                        "name": base_name + "-backup-data",
+                                        "persistentVolumeClaim": {
+                                            "claimName": base_name + "-backup-volume-claim"
                                         },
                                     }
                                 ],

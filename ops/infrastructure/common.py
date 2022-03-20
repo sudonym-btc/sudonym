@@ -12,7 +12,7 @@ config = {
     "staging": {
         "project": "sudonym-lightning-test",
         "env": "staging",
-        "domain": "sudonym.app",
+        "domain": "staging.sudonym.app",
     },
     "test": {
         "env": "test",

@@ -7,7 +7,7 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState> {
   ClipboardListener clipboard = ClipboardListener();
 
   TransactionListenerCubit() : super(TransactionListenerCubitState()) {
-    clipboard.init();
+    // clipboard.init();
     listen();
   }
 

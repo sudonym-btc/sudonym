@@ -10,6 +10,7 @@ from kubernetes_cluster import cluster
 from kubernetes_bitcoin import bitcoin
 from kubernetes_lightning import lightning
 from kubernetes_lightning_rest import lightning_rest
+from kubernetes_api import api
 
 
 def GenerateConfig(context):
@@ -65,6 +66,9 @@ def GenerateConfig(context):
     lightning_rest_base_name = lightning_rest(config, cluster_types)[
         "base_name"
     ]
+    api_base_name = api(config, cluster_types)[
+        "base_name"
+    ]
 
     resources = (
         [
@@ -106,7 +110,41 @@ def GenerateConfig(context):
                                             },
                                         }
                                     ]
-                                }
+                                },
+                            },
+
+                            # Forward .well-known on base domain to API
+                            {
+                                "host": config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/.well-known",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": api_base_name + "-service",
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },
+                            {
+                                "host": "api." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": api_base_name + "-service",
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
                             }
                         ],
                     },
@@ -118,6 +156,7 @@ def GenerateConfig(context):
         + lightning(config, cluster_types)["resources"]
         + lightning_rest(config, cluster_types)["resources"]
         + ride_the_lightning(config, cluster_types)["resources"]
+        + api(config, cluster_types)["resources"]
         + dns(config, cluster_types)["resources"]
     )
 
