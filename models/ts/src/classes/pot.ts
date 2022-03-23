@@ -8,10 +8,10 @@ export class Pot {
         public balance: number
     ) { }
 
-    static fromJson(json: Object) {
+    static fromJson(json: Object): Pot {
         return new Pot(
-            json["id"], 
-            json["name"], 
+            json["id"],
+            json["name"],
             json["currency"],
             json["balance"]
         );

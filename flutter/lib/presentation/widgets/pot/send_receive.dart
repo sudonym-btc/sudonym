@@ -44,7 +44,7 @@ class SendReceive extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment
                     .center, //Center Column contents horizontally,
                 children: [
-                  Center(child: image),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.8, child: Center(child: image)),
                   SizedBox(height: padding*2),
                   ButtonBar(
                     children: [

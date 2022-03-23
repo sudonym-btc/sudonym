@@ -16,8 +16,6 @@ class ReceiveWidget extends StatelessWidget {
   final String type;
   const ReceiveWidget({required this.potId, required this.type, Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

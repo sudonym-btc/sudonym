@@ -14,7 +14,6 @@ class PotHeader extends StatelessWidget {
       return Container(
           margin: const EdgeInsets.only(top: 0.0, bottom: 30.0),
           child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.ce,
               children: [
                 Text(
                   state.entity?.name ?? "",

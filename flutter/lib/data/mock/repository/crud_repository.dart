@@ -34,6 +34,12 @@ abstract class crud_repository<T> extends real.crud_repository<T> {
     return ListState(availableData, {});
   }
 
+  @override
+  Future<ListState<T>> search(String search) async {
+    await Future.delayed(requestDelay);
+    return ListState(availableData, {});
+  }
+
   // @override
   // Future<T> update() async {
   //   // TODO: implement update

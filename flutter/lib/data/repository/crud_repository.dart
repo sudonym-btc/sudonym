@@ -25,7 +25,6 @@ abstract class crud_repository<T> {
   }
 
   Future<ListState<T>> list() async {
-
     return dio.get("/" + endpoint).then((value) {
       var list = (value.data as List).map((e) {
         return converter(e) as T;
@@ -44,6 +43,16 @@ abstract class crud_repository<T> {
   Future<T> update(T entity) async {
     return dio.put("/" + endpoint, data: entity).then((value) {
       return converter(value.data);
+    });
+  }
+
+  Future<ListState<T>> search(String term) async {
+    return dio.get("/" + endpoint).then((value) {
+      var list = (value.data as List).map((e) {
+        return converter(e) as T;
+      }).toList();
+
+      return ListState(list, {});
     });
   }
 }

@@ -1,3 +1,5 @@
+export * from './contact';
+export * from './contact-address';
 export * from './transaction';
 export * from './transaction-confirm';
 export * from './receiver';

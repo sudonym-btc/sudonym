@@ -40,8 +40,7 @@ class _LoggedInWidget extends StatelessWidget {
             action: SnackBarAction(
                 label: 'Send',
                 onPressed: () {
-                  Navigator.pushNamed(context, '/confirmSend',
-                      arguments: {"address": "random"});
+                  Navigator.pushNamed(context, '/confirmSend');
                 }),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);

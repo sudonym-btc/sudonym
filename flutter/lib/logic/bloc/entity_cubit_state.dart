@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/data/repository/crud_repository.dart';
 
 class EntityCubitState<T> {
-  // EntityCubitState.init() : this(null,false);
-
   T? entity;
   bool loading = false;
 
@@ -15,12 +13,11 @@ abstract class EntityCubit<StateType> extends Cubit<StateType> {
   late crud_repository repository;
   late Function stateClass;
 
-  EntityCubit(StateType initialState, this.stateClass) : super(initialState) {
-    fetch();
-  }
+  EntityCubit(StateType initialState, this.stateClass)
+      : super(initialState) {}
 
-  fetch() async {
+  fetch(dynamic id) async {
     emit(stateClass(entity: null, loading: true));
-    emit(stateClass(entity: await repository.fetch("1"), loading: false));
+    emit(stateClass(entity: await repository.fetch(id), loading: false));
   }
 }

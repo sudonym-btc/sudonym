@@ -1,27 +1,39 @@
 class Transaction {
   String id;
+  bool outgoing;
+  String addressType;
+  String address;
   String transactionId;
   String potId;
   num amount;
+  bool confirmed;
   bool spendable;
   String OnchainTransactionId;
   String LightningInvoiceId;
   DateTime createdAt;
   Transaction(
       this.id,
+      this.outgoing,
+      this.addressType,
+      this.address,
       this.transactionId,
       this.potId,
       this.amount,
+      this.confirmed,
       this.spendable,
       this.OnchainTransactionId,
       this.LightningInvoiceId,
       this.createdAt) {}
-  static fromJson(Map<String, dynamic> json) {
+  static Transaction fromJson(Map<String, dynamic> json) {
     return new Transaction(
         json["id"],
+        json["outgoing"],
+        json["addressType"],
+        json["address"],
         json["transactionId"],
         json["potId"],
         json["amount"],
+        json["confirmed"],
         json["spendable"],
         json["OnchainTransactionId"],
         json["LightningInvoiceId"],

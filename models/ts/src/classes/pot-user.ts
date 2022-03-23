@@ -7,10 +7,10 @@ export class PotUser {
         public userId: number,
     ) { }
 
-    static fromJson(json: Object) {
+    static fromJson(json: Object): PotUser {
         return new PotUser(
-            json["id"], 
-            json["potId"], 
+            json["id"],
+            json["potId"],
             json["userId"],
         );
     }

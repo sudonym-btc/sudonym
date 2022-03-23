@@ -8,6 +8,7 @@
     "genMocks": "ts-node ./ts/src/mock/exporter.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0",
     "factory.ts": "^0.5.2",
     "ts-node": "^10.6.0",
     "ts2dart": "^0.9.11",

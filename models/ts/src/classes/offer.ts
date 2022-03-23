@@ -9,7 +9,7 @@ export class Offer {
         public bolt12Unsigned: string,
     ) { }
 
-    static fromJson(json: Object) {
+    static fromJson(json: Object): Offer {
         return new Offer(
             json["id"],
             json["potId"],

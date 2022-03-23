@@ -16,6 +16,12 @@ def dns(config, cluster_types):
     
     records = [
         {
+            "name": "api." + domain + ".",
+            "type": "A",
+            "ttl": 3600,
+            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+        },
+        {
             "name": "rtl." + domain + ".",
             "type": "A",
             "ttl": 3600,

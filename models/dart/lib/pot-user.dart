@@ -3,7 +3,7 @@ class PotUser {
   num potId;
   num userId;
   PotUser(this.id, this.potId, this.userId) {}
-  static fromJson(Map<String, dynamic> json) {
+  static PotUser fromJson(Map<String, dynamic> json) {
     return new PotUser(json["id"], json["potId"], json["userId"]);
   }
 }

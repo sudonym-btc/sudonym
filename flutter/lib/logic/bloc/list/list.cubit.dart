@@ -9,16 +9,22 @@ class ListCubit<T> extends Cubit<ListCubitState> {
       : super(ListCubitState(data: [], metadata: {}, loading: false));
 
   loadNext() async {
-    emit(ListCubitState(
-        data: this.state.data, metadata: this.state.metadata, loading: true));
-    var response = await _repository.list();
-    emit(ListCube(
-        data: response.data, metadata: response.metadata, loading: false));
+
+    if (!state.loading) {
+      emit(ListCubitState(
+          data: state.data, metadata: state.metadata, loading: true));
+      var response = await _repository.list();
+      List elements = [...state.data, ...response.data];
+      emit(ListCubitState(
+          data: elements, metadata: response.metadata, loading: false));
+    }
   }
 }
 
 class ListCubitState<T> extends Equatable implements ListState<T> {
+  @override
   List<T> data;
+  @override
   dynamic metadata;
   bool loading;
 
@@ -27,8 +33,4 @@ class ListCubitState<T> extends Equatable implements ListState<T> {
 
   @override
   List<Object?> get props => [data, metadata, loading];
-}
-class ListCube<T> extends ListCubitState<T> {
-  ListCube({required List<T> data, required metadata, required bool loading}) : super(data: data, metadata: metadata, loading: loading);
-
 }

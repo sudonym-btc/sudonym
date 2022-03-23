@@ -1,3 +1,5 @@
+export "contact.dart";
+export "contact-address.dart";
 export "transaction.dart";
 export "transaction-confirm.dart";
 export "receiver.dart";

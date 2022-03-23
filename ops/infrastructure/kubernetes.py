@@ -63,12 +63,8 @@ def GenerateConfig(context):
     ride_the_lightning_base_name = ride_the_lightning(config, cluster_types)[
         "base_name"
     ]
-    lightning_rest_base_name = lightning_rest(config, cluster_types)[
-        "base_name"
-    ]
-    api_base_name = api(config, cluster_types)[
-        "base_name"
-    ]
+    lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
+    api_base_name = api(config, cluster_types)["base_name"]
 
     resources = (
         [
@@ -77,7 +73,7 @@ def GenerateConfig(context):
                 "type": cluster_types["Ingress"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
-                    "apiVersion": "networking.k8s.io/v1",
+                    "apiVersion": "networking.k8s.io/v1beta1",
                     "kind": "Ingress",
                     "namespace": "default",
                     "metadata": {
@@ -94,7 +90,35 @@ def GenerateConfig(context):
                                 "port": {"number": 3000},
                             }
                         },
+                        "tls": [
+                            {
+                                "hosts": [
+                                    "api." + config["domain"],
+                                    "rtl." + config["domain"],
+                                    "lightning-rest." + config["domain"],
+                                ],
+                                "secretName": "self-signed-tls",
+                            }
+                        ],
                         "rules": [
+                            {
+                                "host": "rtl." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": ride_the_lightning_base_name
+                                                    + "-service",
+                                                    "port": {"number": 3000},
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },
                             {
                                 "host": "lightning-rest." + config["domain"],
                                 "http": {
@@ -104,7 +128,8 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": lightning_rest_base_name + "-service",
+                                                    "name": lightning_rest_base_name
+                                                    + "-service",
                                                     "port": {"number": 3001},
                                                 }
                                             },
@@ -112,7 +137,6 @@ def GenerateConfig(context):
                                     ]
                                 },
                             },
-
                             # Forward .well-known on base domain to API
                             {
                                 "host": config["domain"],
@@ -124,6 +148,7 @@ def GenerateConfig(context):
                                             "backend": {
                                                 "service": {
                                                     "name": api_base_name + "-service",
+                                                    "port": {"number": 3000},
                                                 }
                                             },
                                         }
@@ -140,12 +165,13 @@ def GenerateConfig(context):
                                             "backend": {
                                                 "service": {
                                                     "name": api_base_name + "-service",
+                                                    "port": {"number": 3000},
                                                 }
                                             },
                                         }
                                     ]
                                 },
-                            }
+                            },
                         ],
                     },
                 },

@@ -7,7 +7,7 @@ export class TransactionConfirm {
         public ContactId: number | null,
     ) { }
 
-    static fromJson(json: Object) {
+    static fromJson(json: Object): TransactionConfirm {
         return new TransactionConfirm(
             json["name"],
             json["address"],

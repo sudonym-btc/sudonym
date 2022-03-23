@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: self-signed-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: self-signed-tls
+spec:
+  secretName: self-signed-tls
+  dnsNames:
+  - "*.staging.sudonym.app"
+  issuerRef:
+    name: self-signed-issuer

@@ -3,4 +3,5 @@ node_modules
 build
 dist
 **.icloud
+**.bak
 ops/infrastructure/minikube.yaml

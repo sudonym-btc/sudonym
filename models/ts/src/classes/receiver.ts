@@ -9,7 +9,7 @@ export class Receiver {
         public createdAt: Date
     ) { }
 
-    static fromJson(json: Object) {
+    static fromJson(json: Object): Receiver {
         return new Receiver(
             json["id"],
             json["potId"],

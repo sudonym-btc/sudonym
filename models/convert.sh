@@ -7,6 +7,11 @@ for file in **/*.ts *.ts
 do
     ts2dart "$file" --destination=../../../dart/lib
 
+    # Replace list.push with list.add
+    REPLACE=".add"
+    ESCAPED_REPLACE=$(printf '%s\n' "$REPLACE" | sed -e 's/[\/&]/\\&/g')
+    sed -i .bak "s/.push/$ESCAPED_REPLACE/g" ../../../dart/lib/${file//.ts/.dart}
+
     # Replace Object with Map type
     REPLACE="Map<String, dynamic>"
     ESCAPED_REPLACE=$(printf '%s\n' "$REPLACE" | sed -e 's/[\/&]/\\&/g')
