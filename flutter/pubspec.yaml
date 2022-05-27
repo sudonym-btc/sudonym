@@ -41,6 +41,8 @@ dev_dependencies:
   test: ^1.19.5
   flutter_test:
     sdk: flutter
+  firebase_auth_mocks: ^0.8.4
+  google_sign_in_mocks: ^0.2.1
   injectable_generator:
   # add build runner if not already added
   build_runner:
