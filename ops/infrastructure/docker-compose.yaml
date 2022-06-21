@@ -1,0 +1,92 @@
+version: "3"
+
+x-cert-volume:
+  &cert-volume
+  type: bind
+  source: ./local-volumes/certs
+  target: /certs
+
+x-rpc-volume:
+  &rpc-volume
+  type: bind
+  source: ./local-volumes/rpc
+  target: /rpc
+
+x-lightning-volume:
+  &lightning-volume
+  type: bind
+  source: ./local-volumes/lightning
+  target: /lightning
+
+services:
+  bitcoin:
+    container_name: development-bitcoin
+    image: ruimarinho/bitcoin-core:22.0
+    ports:
+      - '8332:8332'
+      - '8333:8333'
+      - '18332:18332'
+      - '18333:18333'
+      - '18443:18443'
+      - '18444:18444'
+      - '5555:5555'
+    command: "-server -rest -txindex -datadir=/home/bitcoin/.bitcoin -rpcuser=null -rpcpassword=null -rpcallowip=0.0.0.0/0 -rpcallowip=::/0 -rpcbind=0.0.0.0 -rpcbind=bitcoin, -zmqpubrawtx=tcp://*:5555 -zmqpubhashblock=tcp://*:5555 -zmqpubhashtx=tcp://*:5555 -zmqpubrawblock=tcp://*:5555 -debug=1 -regtest=1"
+  
+  lightning:
+    container_name: development-lightning
+    command: "--network=regtest --rpc-file=/rpc/lightning-rpc --bitcoin-rpcuser=null --bitcoin-rpcpassword=null --bitcoin-rpcconnect=bitcoin --bitcoin-rpcport=18443 --log-level=debug --experimental-offers"
+    image: elementsproject/lightningd:latest
+    ports:
+      - '9735:9735'
+    volumes:
+      - <<: *rpc-volume
+      - <<: *lightning-volume
+        target: /root/.lightning
+    depends_on:
+      - bitcoin
+  
+  lightning-rest:
+    container_name: development-c-lightning-rest
+    image: saubyk/c-lightning-rest:0.6.1
+    environment:
+      - LN_PATH=/rpc/lightning-rpc
+    ports:
+      - '3001:3001'
+      - '4001:4001'
+    volumes:
+      - <<: *rpc-volume
+      - <<: *cert-volume
+        target: /usr/src/app/certs
+    depends_on:
+      - lightning
+  
+  api:
+    container_name: development-api
+    build:
+      context: ../../
+      dockerfile: api/Dockerfile
+    volumes:
+      - <<: *cert-volume
+        target: /usr/src/app/certs
+  
+  rtl:
+    container_name: development-ride-the-lightning
+    image: shahanafarooqui/rtl:0.12.1
+    ports:
+      - '3000:3000'
+    volumes:
+      - <<: *cert-volume
+        target: /RTL/certs
+      - ./rtl/RTL-Config.json:/RTL/RTL-Config.json
+
+  # Testing
+  lightning-test:
+    container_name: development-lightning-test
+    command: "--network=regtest --bitcoin-rpcuser=null --bitcoin-rpcpassword=null --bitcoin-rpcconnect=bitcoin --log-level=debug --experimental-offers --bitcoin-rpcport=18443"
+    image: elementsproject/lightningd:latest
+    ports:
+      - '9735'
+    depends_on:
+      - bitcoin
+    links:
+      - lightning

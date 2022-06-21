@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:sudonym/constants.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
+import 'package:sudonym/presentation/components/button/button.dart';
+import 'package:sudonym/presentation/components/typography/info.dart';
+import 'package:sudonym/presentation/components/typography/subtitle.dart';
+
+import '../components/typography/header.dart';
 
 class SigninPage extends StatelessWidget {
   const SigninPage({Key? key}) : super(key: key);
@@ -9,20 +15,39 @@ class SigninPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SignInButton(
-          Buttons.Google,
-          onPressed: context.read<AuthCubit>().loginWithGoogle,
-        ),
-        SignInButton(
-          Buttons.Facebook,
-          onPressed: context.read<AuthCubit>().loginWithFacebook,
-        )
-      ],
-    )));
+        appBar: AppBar(),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+              padding: EdgeInsets.all(padding * 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Subtitle("Welcome to"), Header("Sudonym")],
+              )),
+          Expanded(
+              child: Center(
+                  child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Info("Sign in with"),
+              Container(height: padding * 2),
+              Button(
+                text: "Google",
+                onPressed: context.read<AuthCubit>().loginWithGoogle,
+              ),
+              Container(height: padding),
+              Button(
+                text: "Facebook",
+                onPressed: context.read<AuthCubit>().loginWithFacebook,
+              )
+              // SignInButton(
+              //   Buttons.Google,
+              // ),
+              // SignInButton(
+              //   Buttons.Facebook,
+              // )
+            ],
+          )))
+        ]));
   }
 }

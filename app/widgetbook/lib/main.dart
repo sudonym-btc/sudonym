@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sudonym/presentation/theme.dart';
 import 'package:widgetbook/widgetbook.dart';
+
+import '../buttons.dart';
+import '../inputs.dart';
+import '../typography.dart';
+import '../widgets/widgets.dart';
 
 void main() {
   runApp(const HotreloadWidgetbook());
@@ -12,32 +18,19 @@ class HotreloadWidgetbook extends StatelessWidget {
   Widget build(BuildContext context) {
     return Widgetbook.material(
       categories: [
-        WidgetbookCategory(
-          name: 'widgets',
-          widgets: [
-            WidgetbookComponent(
-              name: 'Button',
-              useCases: [
-                WidgetbookUseCase(
-                  name: 'elevated',
-                  builder: (context) => ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Widgetbook'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        )
+        buttons,
+        inputs,
+        typography,
+        widgets,
       ],
       themes: [
         WidgetbookTheme(
           name: 'Light',
-          data: ThemeData.light(),
+          data: themeData,
         ),
         WidgetbookTheme(
           name: 'Dark',
-          data: ThemeData.dark(),
+          data: themeData,
         ),
       ],
       appInfo: AppInfo(name: 'Example'),

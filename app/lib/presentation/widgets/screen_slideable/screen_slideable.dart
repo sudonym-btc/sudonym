@@ -38,7 +38,7 @@ class _ScreenSlideableState extends State<ScreenSlideable> {
       BottomSlideable(
           minHeight: MediaQuery.of(context).size.height -
               topSize.height -
-              Scaffold.of(context).appBarMaxHeight! -
+              (Scaffold.of(context).appBarMaxHeight ?? 0) -
               MediaQuery.of(context).padding.top -
               50,
           child: widget.bottom),
@@ -66,7 +66,7 @@ class _BottomSlideableState extends State<BottomSlideable>
 
   double get maxHeight =>
       MediaQuery.of(context).size.height -
-      Scaffold.of(context).appBarMaxHeight! -
+      (Scaffold.of(context).appBarMaxHeight ?? 0) -
       MediaQuery.of(context).padding.top -
       20;
 
@@ -85,14 +85,16 @@ class _BottomSlideableState extends State<BottomSlideable>
     super.dispose();
   }
 
-  double lerp(double min, double max) => lerpDouble(min, max,
-      _controller.value)!;
+  double lerp(double min, double max) =>
+      lerpDouble(min, max, _controller.value)!;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        print(minHeightGetter());
+        print(maxHeight);
         return Positioned(
           height: lerp(minHeightGetter(), maxHeight),
           left: 0,

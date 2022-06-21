@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym/data/repository/User.repository.dart';
+import 'package:sudonym/data/repository/user.repository.dart';
 import 'package:sudonym/injection.dart';
 
 import '../../repository/websocket.dart';

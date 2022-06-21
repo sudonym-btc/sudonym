@@ -12,7 +12,7 @@ const configs = {
 
 }
 export const config = {
-    lightningREST: cmdargs.lightning || `${process.env.NODE_ENV}-c-lightning-rest-service`,
+    lightningREST: cmdargs.lightning ? cmdargs.lightning : process.env.DOCKER ? `${process.env.NODE_ENV}-c-lightning-rest-service` : 'wss://localhost:3001',
     database: {
         name: 'app',
         user: 'user',

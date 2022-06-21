@@ -1,5 +1,5 @@
 import * as Factory from "factory.ts";
-import { ContactAddress } from "classes/contact-address";
+import { ContactAddress } from "../classes/contact-address";
 
 (Array.prototype as any).random = function () {
     return this[Math.floor((Math.random() * this.length))];

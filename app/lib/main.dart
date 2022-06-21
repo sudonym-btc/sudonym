@@ -52,20 +52,3 @@ class _AppState extends State<App> {
     );
   }
 }
-
-// StatusPage(
-//               pageTitle: '',
-//               title: 'Payment failed',
-//               subtitle: 'You don\'t have enough balance in your account',
-//               icon: FontAwesomeIcons.exclamationCircle,
-//               actions: ButtonBar(
-//                 children: [
-//                   ElevatedButton(
-//                     child: Text('Retry'),
-//                     style: raisedButtonStyle,
-//                     onPressed: () {},
-//                   )
-//                 ],
-//               ),
-//               color: Colors.red,
-//             ),

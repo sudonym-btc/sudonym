@@ -3,6 +3,7 @@ import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/repository/transaction.repository.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/logic/bloc/transactions.cubit.dart';
+import 'package:sudonym/presentation/components/typography/header.dart';
 import 'package:sudonym/presentation/widgets/list/list.dart';
 import 'package:sudonym/presentation/widgets/transactions/transaction_list_item.dart';
 
@@ -17,10 +18,7 @@ class TransactionList extends StatelessWidget {
         constraints: BoxConstraints.expand(),
         padding: EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            "Transactions",
-            style: Theme.of(context).textTheme.headline4,
-          ),
+          const Header("Transactions"),
           const SizedBox(
             height: padding,
           ),

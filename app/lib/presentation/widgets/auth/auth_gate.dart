@@ -45,6 +45,6 @@ class _LoggedInWidget extends StatelessWidget {
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         },
-        child: const HomePage());
+        child: HomePage());
   }
 }

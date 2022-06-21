@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/transaction.dart' as Model;
 import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/components/typography/info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Transaction extends StatelessWidget {
@@ -24,14 +25,8 @@ class Transaction extends StatelessWidget {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Lightning Transaction",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      '"Random Descriptions"',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    const Info("Lightning Transaction"),
+                    const Info('"Random Descriptions"'),
                   ],
                 )),
                 SizedBox(

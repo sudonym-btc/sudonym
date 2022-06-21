@@ -21,7 +21,7 @@ export const BaseService = <TModel extends Model>(repository: ModelType<TModel>)
         async findOne(id: string | number) {
             return (await this.repo.findOne({
                 where: {
-                    id
+                    id: id as any
                 }
             }));
         }

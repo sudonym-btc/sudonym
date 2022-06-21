@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-
 typedef void OnWidgetSizeChange(Size size);
 
 class MeasureSizeRenderObject extends RenderProxyBox {
@@ -18,9 +17,9 @@ class MeasureSizeRenderObject extends RenderProxyBox {
     if (oldSize == newSize) return;
 
     oldSize = newSize;
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      onChange(newSize);
-    });
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   onChange(newSize);
+    // });
   }
 }
 

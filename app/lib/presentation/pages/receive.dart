@@ -7,7 +7,7 @@ import '../widgets/receive/bolt11.dart';
 import '../widgets/receive/bolt12.dart';
 
 class ReceivePageArgs {
-  num potId;
+  String potId;
 
   ReceivePageArgs(@required this.potId);
 }
@@ -30,14 +30,21 @@ class ReceivePage extends StatelessWidget {
                     title: const Text('Receive'),
                     bottom: const TabBar(
                       tabs: [
-                        Tab(text: 'Bolt 11', icon: FaIcon(FontAwesomeIcons.bolt, size: 12,)),
-                        Tab(text: 'Bolt 12', icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
                         Tab(
-                          text: 'LnUrl', icon: FaIcon(FontAwesomeIcons.wifi, size: 12)
-                        ),
+                            text: 'Bolt 11',
+                            icon: FaIcon(
+                              FontAwesomeIcons.bolt,
+                              size: 12,
+                            )),
                         Tab(
-                          text: 'Onchain', icon: FaIcon(FontAwesomeIcons.link, size: 12)
-                        ),
+                            text: 'Bolt 12',
+                            icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
+                        Tab(
+                            text: 'LnUrl',
+                            icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
+                        Tab(
+                            text: 'Onchain',
+                            icon: FaIcon(FontAwesomeIcons.link, size: 12)),
                       ],
                     ),
                   ),

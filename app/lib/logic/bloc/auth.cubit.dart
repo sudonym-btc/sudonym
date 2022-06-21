@@ -24,15 +24,16 @@ class AuthCubit extends Cubit<AuthState> {
     emit(LoadedState(null));
   }
 }
-abstract class AuthState {
 
-}
+abstract class AuthState {}
 
 class LoadingState extends AuthState {}
+
 class LoadedState extends AuthState {
   LoadedState(this.user);
   final User? user;
   @override
   List<User?> get props => [user];
 }
+
 class ErrorState extends AuthState {}

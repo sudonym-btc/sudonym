@@ -4,12 +4,13 @@
   "description": "sudonym monorepo",
   "main": "index.js",
   "scripts": {
+    "postinstall": "(cd models/ts && npm run build) && (cd models && npm run convert)",
     "test": "echo \"Error: no test specified\" && exit 1",
     "init:gcloud": "bash ops/infrastructure/setup.sh",
     "deploy:production": "bash ops/infrastructure/deploy.sh production",
     "deploy:staging": "bash ops/infrastructure/deploy.sh staging",
     "deploy:test": "bash ops/infrastructure/deploy.sh test",
-    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start && minikube kubectl -- apply -f ops/infrastructure/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
+    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start --driver=docker && minikube kubectl -- apply -f ops/infrastructure/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
     "minikube:tunnel": "minikube addons enable ingress && minikube addons enable ingress-dns && minikube tunnel",
     "app:mock": "cd flutter && flutter run",
     "app:development": "flutter run --backend=development",
@@ -27,12 +28,9 @@
     "url": "https://github.com/sudonym-btc/sudonym/issues"
   },
   "homepage": "https://github.com/sudonym-btc/sudonym#readme",
-  "dependencies": {
-    "@therms/rpc-client": "^2.2.3",
-    "clightningjs": "^0.2.2"
-  },
   "workspaces": [
     "api",
+    "models",
     "models/ts"
   ]
 }

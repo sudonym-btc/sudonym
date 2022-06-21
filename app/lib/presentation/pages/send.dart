@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/bloc/contact.cubit.dart';
+import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/contacts/contact_list.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/send/qr.dart';
@@ -29,6 +30,10 @@ class _SendPageState extends State<SendPage> {
   Widget build(BuildContext context) {
     _InvoiceInput invoiceInput = _InvoiceInput(
       controller: controller,
+      onPressed: () {
+        Navigator.pushNamed(context, '/confirmSend',
+            arguments: {"address": controller.value.text});
+      },
     );
 
     return Container(
@@ -37,17 +42,6 @@ class _SendPageState extends State<SendPage> {
           child: Scaffold(
               appBar: AppBar(
                 title: const Text('Send'),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.camera_alt),
-                    tooltip: 'Scan QR code',
-                    onPressed: () {
-                      setState(() {
-                        toggleCam();
-                      });
-                    },
-                  ),
-                ],
               ),
               body: Padding(
                   padding: EdgeInsets.all(padding),
@@ -58,7 +52,7 @@ class _SendPageState extends State<SendPage> {
                         curve: Curves.easeInOut,
                         duration: animationDuration,
                         child: LimitedBox(
-                            maxHeight: camOpen ? 200 : 0, child: QRView()),
+                            maxHeight: camOpen ? 1000 : 200, child: QRView()),
                       ),
                       const SizedBox(height: padding),
                       invoiceInput,
@@ -66,18 +60,17 @@ class _SendPageState extends State<SendPage> {
                       Expanded(
                         child: ContactList(),
                       ),
-                      const SizedBox(height: padding),
-                      ButtonBar(children: [
-                        ElevatedButton.icon(
-                          label: Text('Send'),
-                          style: raisedButtonStyle,
-                          icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/confirmSend',
-                                arguments: {"address": controller.value.text});
-                          },
-                        )
-                      ])
+                      // const SizedBox(height: padding),
+                      // ButtonBar(children: [
+                      //   Button(
+                      //     text: 'Send',
+                      //     icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
+                      //     onPressed: () {
+                      //       Navigator.pushNamed(context, '/confirmSend',
+                      //           arguments: {"address": controller.value.text});
+                      //     },
+                      //   )
+                      // ])
                     ],
                   ))),
         ));
@@ -86,7 +79,8 @@ class _SendPageState extends State<SendPage> {
 
 class _InvoiceInput extends StatefulWidget {
   TextEditingController? controller;
-  _InvoiceInput({this.controller}) : super() {
+  Function()? onPressed;
+  _InvoiceInput({this.controller, this.onPressed}) : super() {
     controller ??= TextEditingController();
   }
   @override
@@ -121,13 +115,22 @@ class _InvoiceInputState extends State<_InvoiceInput> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: InputDecoration(
-        // border: OutlineInputBorder(),
-        hintText: 'Lightning address',
-      ),
-      focusNode: _focus,
+    return Row(
+      children: [
+        Expanded(
+            child: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            // border: OutlineInputBorder(),
+            hintText: 'Lightning address',
+          ),
+          focusNode: _focus,
+        )),
+        Button(
+          onPressed: widget.onPressed,
+          text: "OK",
+        )
+      ],
     );
   }
 }

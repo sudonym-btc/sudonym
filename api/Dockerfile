@@ -2,12 +2,15 @@ FROM node:14-alpine As development
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY ./api ./api
+COPY ./models ./models
+COPY ./package*.json ./
 
-RUN npm install --only=development
+RUN npm install --no-rollback
 
-COPY . .
+WORKDIR /usr/src/app/api
 
+RUN npm install
 RUN npm run build
 
 FROM node:14-alpine As production
@@ -23,6 +26,6 @@ RUN npm install --only=production
 
 COPY . .
 
-COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/api/dist ./dist
 
 CMD ["node", "dist/main"]

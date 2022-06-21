@@ -4,4 +4,7 @@ build
 dist
 **.icloud
 **.bak
-ops/infrastructure/minikube.yaml
+minikube.yaml
+
+ops/infrastructure/local-volumes/*/*
+!*.gitkeep

@@ -3,6 +3,12 @@ import * as Models from '@sudonym/models';
 
 @Table
 export class Transaction extends Model implements Models.Transaction {
+  @Column
+  addressType: string;
+  @Column
+  address: string;
+  @Column
+  confirmed: boolean;
   @PrimaryKey
   @Column
   id: string;
@@ -24,6 +30,9 @@ export class Transaction extends Model implements Models.Transaction {
 
   @Column
   OnchainTransactionId: string;
+
+  @Column
+  outgoing: boolean;
 
   @CreatedAt
   @Column

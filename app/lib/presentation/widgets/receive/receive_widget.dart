@@ -3,18 +3,20 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
-import 'package:share_plus/share_plus.dart';
+// import 'package:share_plus/share_plus.dart';
 
 import '../../../constants.dart';
 import '../../../injection.dart';
 import '../../../logic/bloc/receive.cubit.dart';
 
 class ReceiveWidget extends StatelessWidget {
-  final num potId;
+  final String potId;
   final String type;
-  const ReceiveWidget({required this.potId, required this.type, Key? key}) : super(key: key);
+  const ReceiveWidget({required this.potId, required this.type, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class ReceiveWidget extends StatelessWidget {
               Padding(
                   padding: EdgeInsets.all(padding),
                   child: ButtonBar(children: [
-                    ElevatedButton.icon(
+                    Button(
                         icon: FaIcon(FontAwesomeIcons.copy, size: iconSize),
                         onPressed: state.loading
                             ? null
@@ -64,19 +66,16 @@ class ReceiveWidget extends StatelessWidget {
                                       .showSnackBar(snackBar);
                                 });
                               },
-                        style:
-                            raisedButtonStyle, // fromHeight use double.infinity as width and 40 is the height,
-                        label: Text("Copy")),
-                    ElevatedButton.icon(
+                        text: "Copy"),
+                    Button(
                         icon: FaIcon(FontAwesomeIcons.share, size: iconSize),
                         onPressed: state.loading
                             ? null
                             : () {
-                                Share.share('ln234wkfdoinfrwiofjirew',
-                                    subject: 'Bitcoin invoice for \$5');
+                                // Share.share('ln234wkfdoinfrwiofjirew',
+                                //     subject: 'Bitcoin invoice for \$5');
                               },
-                        style: raisedButtonStyle,
-                        label: Text("Share"))
+                        text: "Share"),
                   ]))
             ],
           );

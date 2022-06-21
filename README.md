@@ -1,16 +1,58 @@
 # sudonym monorepo
 
-setup:
+## Installation:
 
- mac: isntall homebrew
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    install nvm
-    brew install nvm --> follow instructions
-    nvm install 16
-    brew install minikube
-    <!-- Instead of using docker as default engine, hyperkit will allow ports to be forwarded more easily -->
+### Tooling
+
+#### Mac
+
+<code>
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)
+
+  brew install nvm
+  brew install minikube
+  brew install --cask google-cloud-sdk
+
+  nvm install 16
+
+  gcloud components install kubectl
+
+  gcloud init
+
+  git clone git@github.com:sudonym-btc/sudonym.git && cd sudonym && npm install
+
+
+
+</code>
+
+[optional] for live firebase integration download/ask admin for service_account.json and store in /api
+
+[optional] <code>npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)</code>
+
+[frontend] Install Flutter: https://docs.flutter.dev/get-started/install/macos
+
+
+### Launching components
+
+## Run project
+
+<code>
+npm run deploy:development
+</code>
+
+To run Flutter without a backend, run in the flutter - mock profile, can be found in the Run & Debug panel.
+Else, change to flutter - development
+
+<code>
+npm run deploy:development # Launches minikube containers for backend
+npm run api:development # Launches API with minikube parameter
+</code>
+
+
+<!-- 
     brew install hyperkit
-    <!-- Setup local domain -->
+
+    <!-- install gcloud On Linux download archv and unzip to be able to install components
 
     cp ./ops/dnsmasq.conf /usr/local/etc/dnsmasq.conf
     brew install dnsmasq
@@ -24,13 +66,13 @@ setup:
 nameserver 127.0.0.1
 domain local.app
 search_order 1
-EOF
+EOF 
 
-frontend:
-    flutter:
-    https://docs.flutter.dev/get-started/install/macos
+Download service account json for firebase and store in API root folder -->
 
-launch fresh:
-  install gcloud
-  enable deloyment manager, enable kubernetes api
-  gcloud deployment-manager deployments create a-single-vm --template vm_template.jinja
+<!-- npm run build for all folders including TS models -->
+
+
+
+
+LINUX: yum install -y make gcc*

@@ -1,4 +1,4 @@
-import { Contact } from "classes/contact";
+import { Contact } from "../classes/contact";
 import {factory as contactAddressFactory} from "./contact-address.mock";
 
 import * as Factory from "factory.ts";
