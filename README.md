@@ -6,7 +6,7 @@
 
 #### Mac
 
-<code>
+```
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)
 
   brew install nvm
@@ -20,14 +20,14 @@
   gcloud init
 
   git clone git@github.com:sudonym-btc/sudonym.git && cd sudonym && npm install
-
-
-
-</code>
+```
 
 [optional] for live firebase integration download/ask admin for service_account.json and store in /api
 
-[optional] <code>npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)</code>
+[optional] Setup lightning nodes locally in regtest mode
+```
+npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)
+```
 
 [frontend] Install Flutter: https://docs.flutter.dev/get-started/install/macos
 
@@ -36,17 +36,17 @@
 
 ## Run project
 
-<code>
+```
 npm run deploy:development
-</code>
+```
 
 To run Flutter without a backend, run in the flutter - mock profile, can be found in the Run & Debug panel.
 Else, change to flutter - development
 
-<code>
+```
 npm run deploy:development # Launches minikube containers for backend
 npm run api:development # Launches API with minikube parameter
-</code>
+```
 
 
 <!-- 
