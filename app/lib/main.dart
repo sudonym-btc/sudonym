@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/pages/contact.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
@@ -10,19 +8,21 @@ import 'package:sudonym/presentation/pages/send_confirm.dart';
 import 'package:sudonym/presentation/pages/settings.dart';
 import 'package:sudonym/presentation/pages/transaction.dart';
 import 'package:sudonym/presentation/theme.dart';
-import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
 import 'firebase_options.dart';
 import 'presentation/widgets/auth/auth_gate.dart';
 
-void main() async {
+void main(List<String> args) {
+  mainCommon(null);
+}
+
+void mainCommon(String? env) async {
+  env = env ?? const String.fromEnvironment('ENV');
+  env = env == "" ? Env.mock : env;
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  String? env = const String.fromEnvironment('ENV');
-  if (env == "") {
-    env = Env.mock;
-  }
   configureInjection(env);
   runApp(const App());
 }

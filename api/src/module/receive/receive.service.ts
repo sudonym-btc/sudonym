@@ -32,9 +32,9 @@ export class ReceiveService {
             case 'lnurl':
                 data = (await this.lnUrlService.getPayRequest(potId));
             case 'onchain':
-                data = (await this.lightningService.generateOnChainAddress());
+                data = (await this.lightningService.generateOnChainAddress()).address;
         }
-
+        console.log(data);
         return Receiver.create({
             potId, 
             amount: Number(amount),

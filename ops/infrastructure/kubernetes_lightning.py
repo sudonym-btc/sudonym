@@ -97,6 +97,7 @@ def lightning(config, cluster_types):
                                             "--log-level=debug",
                                             "--lightning-dir=/lightning",
                                             "--rpc-file=/rpc/lightning-rpc",
+                                            "--addr=0.0.0.0:9735",
                                             "--experimental-offers",
                                         ]
                                         + (
@@ -108,6 +109,10 @@ def lightning(config, cluster_types):
                                             else []
                                         ),
                                         "env": [
+                                            {
+                                                "name": "EXPOSE_TCP",
+                                                "value": "true"
+                                            },
                                             {
                                                 "name": "BITCOIN_RPC_USER",
                                                 "valueFrom": {
@@ -163,6 +168,100 @@ def lightning(config, cluster_types):
                     },
                 },
             },
-        ],
+        ] + [
+            {
+                "name": base_name + "-1-service",
+                "type": cluster_types["Service"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Service",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": base_name + "-1-service",
+                        "labels": {"app": base_name + "-1"},
+                    },
+                    "spec": {
+                        "type": "NodePort",
+                        "ports": [
+                            {"port": 9735, "name": base_name + "-1"},
+                        ],
+                        "selector": {"app": base_name + "-1"},
+                    },
+                },
+            },
+            {
+                "name": base_name + "-1",
+                "type": cluster_types["Deployment"],
+                "properties": {
+                    "apiVersion": "apps/v1",
+                    "kind": "Deployment",
+                    "namespace": "default",
+                    "metadata": {"name": base_name + "-1", "labels": {"app": base_name + "-1"}},
+                    "spec": {
+                        "strategy": {"type": "Recreate"},
+                        "replicas": 1,
+                        "selector": {"matchLabels": {"app": base_name + "-1"}},
+                        "template": {
+                            "metadata": {"labels": {"app": base_name + "-1"}},
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": base_name + "-1",
+                                        "image": "elementsproject/lightningd:latest",
+                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "args": [
+                                            "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
+                                            "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
+                                            "--bitcoin-rpcconnect=" + bitcoin_base_name,
+                                            "--log-level=debug",
+                                            "--addr=0.0.0.0:9735",
+                                            "--experimental-offers",
+                                        ]
+                                        + (
+                                            [
+                                                "--network=regtest",
+                                                "--bitcoin-rpcport=18443",
+                                            ]
+                                            if config["env"] == "development"
+                                            else []
+                                        ),
+                                        "env": [
+                                            {
+                                                "name": "EXPOSE_TCP",
+                                                "value": "true"
+                                            },
+                                            {
+                                                "name": "BITCOIN_RPC_USER",
+                                                "valueFrom": {
+                                                    "secretKeyRef": {
+                                                        "name": bitcoin_base_name
+                                                        + "-secret",
+                                                        "key": "rpcuser",
+                                                    }
+                                                },
+                                            },
+                                            {
+                                                "name": "BITCOIN_RPC_PASSWORD",
+                                                "valueFrom": {
+                                                    "secretKeyRef": {
+                                                        "name": bitcoin_base_name
+                                                        + "-secret",
+                                                        "key": "rpcpass",
+                                                    }
+                                                },
+                                            },
+                                        ],
+                                        "ports": [
+                                            {"containerPort": 9735, "name": "ln1"},
+                                        ],
+                                    }
+                                ]
+                            },
+                        },
+                    },
+                },
+            },
+        ] if config["env"] == "development" else [],
         "base_name": base_name,
     }

@@ -11,7 +11,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   loginWithGoogle() async {
     emit(LoadingState());
-    var user = _authRepository.loginWithGoogle();
+    var user = await _authRepository.loginWithGoogle();
     emit(LoadedState(User(123, "", '', "")));
   }
 

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
-const apiEndpoint = "http://localhost";
+const apiEndpoint = "http://localhost:3000";
 
 abstract class crud_repository<T> {
   String endpoint = "";

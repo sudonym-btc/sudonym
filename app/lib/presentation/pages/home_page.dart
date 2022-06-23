@@ -78,7 +78,9 @@ class _HomePageState extends State<HomePage> {
                                       child: SmoothPageIndicator(
                                         controller:
                                             controller, // PageController
-                                        count: children.length,
+                                        count: children.length > 0
+                                            ? children.length
+                                            : 1,
 
                                         // forcing the indicator to use a specific direction
                                         effect: ExpandingDotsEffect(

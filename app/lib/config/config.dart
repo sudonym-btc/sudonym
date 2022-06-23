@@ -12,14 +12,14 @@ class MockConfig implements Config {
 @Injectable(as: Config, env: [Env.dev])
 class DevConfig implements Config {
   @override
-  String apiUrl = 'http://127.0.0.1:3000';
+  String apiUrl = 'http://10.0.2.2:3000';
 }
 
 @prod
 @Injectable(as: Config, env: [Env.prod])
 class ProdConfig implements Config {
   @override
-  String apiUrl = 'http://localhost:3000';
+  String apiUrl = 'http://10.0.2.2:3000';
 }
 
 abstract class Config {

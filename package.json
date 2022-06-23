@@ -10,10 +10,10 @@
     "deploy:production": "bash ops/infrastructure/deploy.sh production",
     "deploy:staging": "bash ops/infrastructure/deploy.sh staging",
     "deploy:test": "bash ops/infrastructure/deploy.sh test",
-    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start --driver=docker && minikube kubectl -- apply -f ops/infrastructure/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
+    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start && minikube kubectl -- apply -f ops/infrastructure/minikube/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
     "minikube:tunnel": "minikube addons enable ingress && minikube addons enable ingress-dns && minikube tunnel",
-    "app:mock": "cd flutter && flutter run",
-    "app:development": "flutter run --backend=development",
+    "app:mock": "(cd app && flutter run)",
+    "app:development": "(cd app && flutter run --backend=development)",
     "app:staging": "flutter run --backend=staging",
     "app:production": "flutter run --backend=production",
     "api:development": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs && npm run start:dev -- -- --lightning '$(minikube service development-c-lightning-rest-service --https --url)'"

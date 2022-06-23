@@ -19,10 +19,11 @@ export class LightningService {
     onModuleInit() {
 
         this.macaroon = Buffer.from(fs.readFileSync(this.macaroonFile)).toString("base64");
-        const ws = new WebSocket(this.url.replace('https', 'wss') + "/v1/ws", [this.macaroon, 'json'], {
+        console.log(this.url.replace('https', 'wss') + "/v1/ws");
+        // const ws = new WebSocket(this.url.replace('https', 'wss') + "/v1/ws", [this.macaroon, 'json'], {
+        const ws = new WebSocket(this.url.replace('https', 'wss') + "/v1/ws", ['json'], {
             rejectUnauthorized: false,
             headers: {
-                'macaroon': this.macaroon,
                 'sec-websocket-protocol': this.macaroon
             }
         });
