@@ -19,8 +19,6 @@
   brew install minikube
   brew install --cask google-cloud-sdk
   brew install gh
-
-  
   
   source $(brew --prefix nvm)/nvm.sh
 
@@ -42,8 +40,15 @@
 npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)
 ```
 
-[frontend] Install Flutter: https://docs.flutter.dev/get-started/install/macos
+[frontend] Install Flutter: 
+```
+brew install --cask flutter
 
+<!-- M1 CHIPS ONLY-->
+
+sudo gem uninstall cocoapods
+brew install cocoapods
+```
 
 ## Run project
 
