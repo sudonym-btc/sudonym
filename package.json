@@ -10,7 +10,7 @@
     "deploy:production": "bash ops/infrastructure/deploy.sh production",
     "deploy:staging": "bash ops/infrastructure/deploy.sh staging",
     "deploy:test": "bash ops/infrastructure/deploy.sh test",
-    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start && minikube kubectl -- apply -f ops/infrastructure/minikube/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
+    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start --driver=qemu && minikube kubectl -- apply -f ops/infrastructure/minikube/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
     "minikube:tunnel": "minikube addons enable ingress && minikube addons enable ingress-dns && minikube tunnel",
     "app:mock": "(cd app && flutter run)",
     "app:development": "(cd app && flutter run --backend=development)",
