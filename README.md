@@ -14,9 +14,12 @@
   brew tap homebrew/core
 
   brew install nvm
+  brew install --cask docker
+  open Applications/Docker   <!-- Launches docker  -->
   brew install minikube
   brew install --cask google-cloud-sdk
   brew install gh
+
   
   
   source $(brew --prefix nvm)/nvm.sh

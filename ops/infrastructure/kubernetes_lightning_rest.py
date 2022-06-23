@@ -62,7 +62,7 @@ def lightning_rest(config, cluster_types):
                         "type": "NodePort",
                         "ports": [
                             {"port": 3001, "name": "ln-rest"},
-                            {"port": 4001, "name": "ln-rest-doc"},
+                            # {"port": 4001, "name": "ln-rest-doc"},
                         ],
                         "selector": {"app": base_name},
                     },
