@@ -9,13 +9,13 @@
 ```
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-  <!-- Add brew to path -->
+  <!-- Follow "Next steps" install instructions to add brew to path -->
 
   brew tap homebrew/core
 
   brew install nvm
   brew install --cask docker
-  open Applications/Docker   <!-- Launches docker  -->
+  open -a Docker   <!-- Launches docker  -->
   brew install minikube
   brew install --cask google-cloud-sdk
   brew install gh
@@ -28,7 +28,9 @@
 
   gcloud init
 
-  git clone git@github.com:sudonym-btc/sudonym.git && cd sudonym && npm install
+  gh auth login
+
+  git clone https://github.com/sudonym-btc/sudonym.git && cd sudonym && npm install
 
   (cd api && npm run seed)
 ```
