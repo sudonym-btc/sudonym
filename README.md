@@ -17,6 +17,9 @@
   brew install minikube
   brew install --cask google-cloud-sdk
   brew install gh
+  
+  
+  source $(brew --prefix nvm)/nvm.sh
 
   nvm install 16
 
