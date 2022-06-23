@@ -7,11 +7,16 @@
 #### Mac
 
 ```
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+  <!-- Add brew to path -->
+
+  brew tap homebrew/core
 
   brew install nvm
   brew install minikube
   brew install --cask google-cloud-sdk
+  brew install gh
 
   nvm install 16
 
