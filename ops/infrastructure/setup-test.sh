@@ -17,3 +17,6 @@ ln2toln1=$($ln2cli connect $ln1id development-lightning-service $ln1port | jq -r
 echo $($ln2cli fundchannel $ln2toln1 50000)
 echo $($ln1cli fundchannel $ln1toln2 50000)
 
+# Confirm the fundchannel transactions
+$bitcoincli generatetoaddress 105 $ln1addr
+

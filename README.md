@@ -37,7 +37,7 @@
 
 [optional] for live firebase integration download/ask admin for service_account.json and store in /api
 
-[optional] Setup lightning nodes locally in regtest mode
+[optional] Setup lightning node connections locally in regtest mode
 ```
 npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)
 ```

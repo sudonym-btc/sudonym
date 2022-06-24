@@ -18,9 +18,8 @@ class PayRepositoryImpl extends PayRepository {
 
   @override
   Future<Transaction> pay(address) {
-    return dio
-        .get('/pay/info')
-        .then((value) => Transaction.fromJson(value.data));
+    return dio.post('/pay', data: {'address': address}).then(
+        (value) => Transaction.fromJson(value.data));
   }
 }
 

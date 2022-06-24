@@ -22,11 +22,10 @@ class SendConfirmPage extends StatelessWidget {
 
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
-              create: (_) {
-                // print(data);
-                return getIt<SendCubit>()..getInfo(data['address'].toString());
-              })
+          BlocProvider(create: (_) {
+            // print(data);
+            return getIt<SendCubit>()..getInfo(data['address'].toString());
+          })
         ],
         child: BlocListener<SendCubit, SendCubitState>(
             listener: (context, state) {
@@ -35,7 +34,6 @@ class SendConfirmPage extends StatelessWidget {
           }
         }, child: BlocBuilder<SendCubit, SendCubitState>(
                 builder: (BuildContext context, state) {
-        
           String pageTitle = '';
           String title = 'Payment Info';
           String subtitle = 'Gathering payment information';
@@ -88,8 +86,15 @@ class SendConfirmPage extends StatelessWidget {
               content = Column(children: [
                 Table(
                   children: [
-                    TableRow(
-                        children: [new Text('address'), new Text(r.address, style: TextStyle(overflow: TextOverflow.ellipsis,),)]),
+                    TableRow(children: [
+                      new Text('address'),
+                      new Text(
+                        r.address,
+                        style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ]),
                     TableRow(children: [
                       new Text('fee'),
                       new Text(r.feeMSat.toString() + ' sats / \$0.01')
@@ -105,7 +110,7 @@ class SendConfirmPage extends StatelessWidget {
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null
                       : () {
-                          BlocProvider.of<SendCubit>(context).pay("");
+                          BlocProvider.of<SendCubit>(context).pay(r.address);
                         },
                   style: raisedButtonStyle,
                 )

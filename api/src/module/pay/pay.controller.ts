@@ -1,18 +1,19 @@
-import { Controller, Get, Inject, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { PayService } from './pay.service';
 
-@Controller('user/pay')
+@Controller('pay')
 export class PayController {
 
   @Inject(PayService) payService: PayService;
 
   @Get('info')
-  getInfo(@Query('address') address, @Query('amount') amount) {
+  async getInfo(@Query('address') address, @Query('amount') amount) {
     return this.payService.getInfo(address, amount);
   }
 
   @Post('')
-  pay(@Query('address') address, @Query('amount') amount) {
+  pay(@Body('address') address, @Body('amount') amount, @Body() data) {
+    console.log(data);
     return this.payService.pay(address, amount);
   } 
 }

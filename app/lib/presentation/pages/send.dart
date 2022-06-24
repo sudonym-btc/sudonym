@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/bloc/contact.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
+import 'package:sudonym/presentation/pages/send/amount.dart';
 import 'package:sudonym/presentation/widgets/contacts/contact_list.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/send/qr.dart';
@@ -31,8 +32,16 @@ class _SendPageState extends State<SendPage> {
     _InvoiceInput invoiceInput = _InvoiceInput(
       controller: controller,
       onPressed: () {
-        Navigator.pushNamed(context, '/confirmSend',
-            arguments: {"address": controller.value.text});
+        if (false) {
+          Navigator.pushNamed(context, '/confirmSend',
+              arguments: {"address": controller.value.text});
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      AmountPage(AmountPageArgs(controller.value.text))));
+        }
       },
     );
 
@@ -57,9 +66,9 @@ class _SendPageState extends State<SendPage> {
                       const SizedBox(height: padding),
                       invoiceInput,
                       const SizedBox(height: padding),
-                      Expanded(
-                        child: ContactList(),
-                      ),
+                      // Expanded(
+                      //   child: ContactList(),
+                      // ),
                       // const SizedBox(height: padding),
                       // ButtonBar(children: [
                       //   Button(

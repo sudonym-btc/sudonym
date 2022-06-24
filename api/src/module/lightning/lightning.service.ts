@@ -19,7 +19,6 @@ export class LightningService {
     onModuleInit() {
 
         this.macaroon = Buffer.from(fs.readFileSync(this.macaroonFile)).toString("base64");
-        console.log(this.url.replace('https', 'wss') + "/v1/ws");
         // const ws = new WebSocket(this.url.replace('https', 'wss') + "/v1/ws", [this.macaroon, 'json'], {
         const ws = new WebSocket(this.url.replace('https', 'wss') + "/v1/ws", ['json'], {
             rejectUnauthorized: false,
@@ -69,16 +68,12 @@ export class LightningService {
 
     async getRoute(pubkey) {
         return this.makeRequest({
-            path: '/v1/network/getRoute',
-            method: 'GET',
-            data: {
-                msats: 1000,
-                pubkey: pubkey
-            }
+            path: '/v1/network/getRoute/' + pubkey + '/' + 1000
         });
     }
 
     async pay(invoice) {
+        console.log(invoice);
         return this.makeRequest({
             path: '/v1/pay',
             method: 'POST',
@@ -128,6 +123,7 @@ export class LightningService {
     }
 
     async makeRequest(options) {
+
         const response = await axios({
             url: this.url + options.path,
             method: 'GET',

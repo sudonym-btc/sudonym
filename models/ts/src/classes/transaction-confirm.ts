@@ -4,6 +4,7 @@ export class TransactionConfirm {
         public name: string,
         public address: string,
         public feeMSat: number,
+        public amount: number,
         public ContactId: number | null,
     ) { }
 
@@ -12,6 +13,7 @@ export class TransactionConfirm {
             json["name"],
             json["address"],
             json["feeMSat"],
+            json["amount"],
             json["ContactId"]
         );
     }

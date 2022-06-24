@@ -62,7 +62,27 @@ def lightning_rest(config, cluster_types):
                         "type": "NodePort",
                         "ports": [
                             {"port": 3001, "name": "ln-rest"},
-                            # {"port": 4001, "name": "ln-rest-doc"},
+                        ],
+                        "selector": {"app": base_name},
+                    },
+                },
+            },
+            {
+                "name": base_name + "-doc-service",
+                "type": cluster_types["Service"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Service",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": base_name + "-doc-service",
+                        "labels": {"app": base_name},
+                    },
+                    "spec": {
+                        "type": "NodePort",
+                        "ports": [
+                            {"port": 4001, "name": "ln-rest-doc"},
                         ],
                         "selector": {"app": base_name},
                     },
@@ -97,7 +117,7 @@ def lightning_rest(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "saubyk/c-lightning-rest:0.6.1",
+                                        "image": "saubyk/c-lightning-rest:0.7.2",
                                         "command": [
                                             "/sbin/tini",
                                             "--",
@@ -105,7 +125,7 @@ def lightning_rest(config, cluster_types):
                                             "./cl-rest.js",
                                         ],
                                         "resources": {"requests": {"cpu": "40m"}},
-                                        "ports": [{"containerPort": 3001}],
+                                        "ports": [{"containerPort": 3001}, {"containerPort": 4001}],
                                         "volumeMounts": [
                                             {
                                                 "mountPath": "/usr/src/app/cl-rest-config.json",
