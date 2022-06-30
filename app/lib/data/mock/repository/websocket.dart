@@ -1,14 +1,16 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../../injection.dart';
 import '../../repository/websocket.dart';
 
-@Injectable(as: Websocket, env: [Env.mock])
+@Singleton(as: Websocket, env: [Env.mock])
 class MockWebsocket extends Websocket {
-  Stream<dynamic> stream = const Stream<dynamic>.empty();
+  StreamController<dynamic> stream = StreamController.broadcast();
 
   @override
-  Stream getStream() => stream;
+  Stream getStream() => stream.stream;
 
   @override
   connect() {}

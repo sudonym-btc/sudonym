@@ -1,15 +1,15 @@
 class Transaction {
-  String id;
+  num id;
   bool outgoing;
   String addressType;
   String address;
-  String transactionId;
+  dynamic /* String | null */ transactionId;
   String potId;
   num amount;
   bool confirmed;
   bool spendable;
-  String OnchainTransactionId;
-  String LightningInvoiceId;
+  dynamic /* String | null */ OnchainTransactionId;
+  dynamic /* String | null */ LightningInvoiceId;
   DateTime createdAt;
   Transaction(
       this.id,

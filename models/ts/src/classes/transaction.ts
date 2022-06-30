@@ -1,17 +1,17 @@
 export class Transaction {
 
     constructor(
-        public id: string,
+        public id: number,
         public outgoing: boolean,
-        public addressType: string,
-        public address: string,
-        public transactionId: string,
+        public addressType: string | null,
+        public address: string | null,
+        public transactionId: string | null,
         public potId: string,
         public amount: number,
         public confirmed: boolean,
         public spendable: boolean,
-        public OnchainTransactionId: string,
-        public LightningInvoiceId: string,
+        public OnchainTransactionId: string | null,
+        public LightningInvoiceId: string | null,
         public createdAt: Date
     ) { }
 

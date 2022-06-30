@@ -3,11 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/user.dart';
 import 'package:sudonym/data/repository/auth.repository.dart';
+import 'package:sudonym/data/repository/websocket.dart';
 
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
-  AuthCubit(this._authRepository) : super(LoadedState(null));
+  final Websocket websocket;
+
+  AuthCubit(this._authRepository, this.websocket) : super(LoadedState(null)) {
+    _authRepository.onStateChanged().listen((event) {
+      if (event == null) {
+        websocket.connect();
+      } else {
+        websocket.connect();
+      }
+    });
+  }
 
   loginWithGoogle() async {
     emit(LoadingState());

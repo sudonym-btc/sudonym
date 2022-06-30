@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/pot.dart';
+import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/repository/crud_repository.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
@@ -14,9 +15,11 @@ class PotRepositoryImpl extends PotRepository {
   @override
   Function converter = Pot.fromJson;
 
-  PotRepositoryImpl(Dio dio, Websocket websocket) : super(dio, websocket);
+  PotRepositoryImpl(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 }
 
 abstract class PotRepository extends crud_repository<Pot> {
-  PotRepository(Dio dio, Websocket websocket) : super(dio, websocket);
+  PotRepository(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 }

@@ -11,9 +11,11 @@ import { UserModule } from './module/user/user.module';
 import { EventsModule } from './module/events/events.module';
 import { TransactionModule } from './module/transaction/transaction.module';
 import { LnUrlModule } from './module/lightning/lnurl/lnurl.module';
+import { TransactionListenerModule } from './service/transaction-listener/transaction-listener.module';
 
 @Module({
   imports: [
+    TransactionListenerModule,
     DatabaseModule,
     LightningModule,
     LnUrlModule,

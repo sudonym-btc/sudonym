@@ -16,7 +16,9 @@
     "app:development": "(cd app && flutter run --backend=development)",
     "app:staging": "flutter run --backend=staging",
     "app:production": "flutter run --backend=production",
-    "api:development": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs && npm run start:dev -- -- --lightning '$(minikube service development-c-lightning-rest-service --https --url)'"
+    "api:development": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs && npm run start:dev -- -- --lightning '$(minikube service development-c-lightning-rest-service --https --url)' --bitcoinMQ '$(minikube service development-bitcoin-zeromq-service --https --url)'",
+    "setup:development": "(cd ops/infrastructure && ./setup-test.sh)",
+    "genInvoice": "(cd ops/infrastructure && ./generate-invoice.sh)"
   },
   "repository": {
     "type": "git",

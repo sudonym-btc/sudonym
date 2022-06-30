@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/bloc/contact.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
+import 'package:sudonym/presentation/pages/qr/qr.dart';
 import 'package:sudonym/presentation/pages/send/amount.dart';
 import 'package:sudonym/presentation/widgets/contacts/contact_list.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/send/qr.dart';
 
 import '../../constants.dart';
+import '../../logic/bloc/link.service.dart';
 
 class SendPage extends StatefulWidget {
   const SendPage({Key? key}) : super(key: key);
@@ -32,16 +35,7 @@ class _SendPageState extends State<SendPage> {
     _InvoiceInput invoiceInput = _InvoiceInput(
       controller: controller,
       onPressed: () {
-        if (false) {
-          Navigator.pushNamed(context, '/confirmSend',
-              arguments: {"address": controller.value.text});
-        } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      AmountPage(AmountPageArgs(controller.value.text))));
-        }
+        getIt<LinkService>().trigger(controller.value.text, context);
       },
     );
 
@@ -51,18 +45,22 @@ class _SendPageState extends State<SendPage> {
           child: Scaffold(
               appBar: AppBar(
                 title: const Text('Send'),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const QRPage()));
+                      },
+                      icon: FaIcon(FontAwesomeIcons.camera))
+                ],
               ),
               body: Padding(
                   padding: EdgeInsets.all(padding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AnimatedSize(
-                        curve: Curves.easeInOut,
-                        duration: animationDuration,
-                        child: LimitedBox(
-                            maxHeight: camOpen ? 1000 : 200, child: QRView()),
-                      ),
                       const SizedBox(height: padding),
                       invoiceInput,
                       const SizedBox(height: padding),

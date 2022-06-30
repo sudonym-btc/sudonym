@@ -1,25 +1,43 @@
-import 'package:dio/dio.dart';
-import 'package:sudonym.models/types/list.dart';
-import 'package:sudonym/data/repository/websocket.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
-const apiEndpoint = "http://localhost:3000";
+import 'package:dio/dio.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/types/list.dart';
+import 'package:sudonym/config/config.dart';
+import 'package:sudonym/data/repository/websocket.dart';
 
 abstract class crud_repository<T> {
   String endpoint = "";
   Function converter = <T>(obj) {};
   Dio dio;
+  Config config;
   Websocket websocket;
-  Stream<T> updated = Stream<T>.empty();
-  Stream<T> created = Stream<T>.empty();
+  StreamController<T> updated = StreamController.broadcast();
+  StreamController<T> created = StreamController.broadcast();
 
-  crud_repository(this.dio, this.websocket) {
+  crud_repository(this.config, this.dio, this.websocket) {
     onInit();
   }
 
-  onInit() {}
+  onInit() {
+    print("Listening to this stream " + endpoint);
+    websocket.getStream().listen((event) {
+      print("Websocket: " + event);
+      Event e = Event.fromJson(jsonDecode(event));
+      if (e.name.split('.')[0] == endpoint) {
+        if (e.name.split('.')[1] == 'created') {
+          created.add(converter(e.data));
+        } else if (e.name.split('.')[1] == 'updated') {
+          updated.add(converter(e.data));
+        }
+      }
+    });
+  }
 
-  Future<T> fetch(String id) async {
-    return dio.get("/" + endpoint + "/" + id).then((value) {
+  Future<T> fetch(dynamic id) async {
+    return dio.get("/" + endpoint + "/" + id.toString()).then((value) {
       return converter(value.data);
     });
   }

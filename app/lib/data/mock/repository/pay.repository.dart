@@ -10,15 +10,15 @@ class MockPayRepository implements PayRepository {
   MockPayRepository(this.dio);
 
   @override
-  getInfo(address) async {
+  getInfo(Payment p) async {
     await Future.delayed(requestDelay);
-    return TransactionConfirm("MockReceiver", address, 10, 1000, 100);
+    return Payment("MockReceiver", p.address, p.amount, 1000);
   }
 
   @override
-  pay(address) async {
+  pay(Payment p) async {
     await Future.delayed(requestDelay);
-    return Transaction("1", true, "lnurl", "lnurl4r4", "1", "1", 10000, true,
+    return Transaction(1, true, "lnurl", "lnurl4r4", "1", "1", 10000, true,
         true, "1", "1", DateTime(2020));
   }
 

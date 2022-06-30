@@ -16,7 +16,10 @@ class TransactionPage extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) => TransactionCubit(getIt<TransactionRepository>())..fetch("1"))
+              create: (_) => TransactionCubit(getIt<TransactionRepository>())
+                ..fetch(
+                    (ModalRoute.of(context)?.settings.arguments as Transaction)
+                        .id))
         ],
         child: BlocBuilder<TransactionCubit, TransactionCubitState>(
             builder: ((context, state) {

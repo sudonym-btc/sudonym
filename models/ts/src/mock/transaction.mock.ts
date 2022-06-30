@@ -2,7 +2,7 @@ import * as Factory from "factory.ts";
 import { Transaction } from "../classes/transaction";
 
 export const factory = Factory.Sync.makeFactory<Transaction>({
-  id: Factory.each(i => i.toString()),
+  id: Factory.each(i => i),
   outgoing: Factory.each(i => Boolean(Math.random() > 0.5)),
   address: 'lnurl23423432',
   addressType: 'lnurl',

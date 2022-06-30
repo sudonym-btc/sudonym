@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
 
 import '../../../constants.dart';
 
-class AmountPageArgs {
-  String address;
-  AmountPageArgs(this.address) {}
-}
-
 class AmountPage extends StatefulWidget {
-  AmountPageArgs args;
+  Payment payment;
 
-  AmountPage(this.args, {Key? key}) : super(key: key);
+  AmountPage(this.payment, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -51,7 +47,7 @@ class _AmountPageState extends State<AmountPage> {
                           icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
                           onPressed: () {
                             Navigator.pushNamed(context, '/confirmSend',
-                                arguments: {"address": widget.args.address});
+                                arguments: widget.payment);
                           },
                         )
                       ])

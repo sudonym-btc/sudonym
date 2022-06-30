@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym.models/mock/parsed_data.dart';
+import 'package:sudonym/config/config.dart';
 
 import '../../repository/crud_repository.dart' as real;
 import '../../repository/websocket.dart';
@@ -12,7 +13,8 @@ abstract class crud_repository<T> extends real.crud_repository<T> {
   List<T> data = [];
   dynamic availableData = [];
 
-  crud_repository(Dio dio, Websocket websocket) : super(dio, websocket) {
+  crud_repository(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket) {
     availableData = Mockdata.getData<T>(endpoint);
   }
 
@@ -23,7 +25,7 @@ abstract class crud_repository<T> extends real.crud_repository<T> {
   // }
 
   @override
-  Future<T> fetch(String id) async {
+  Future<T> fetch(dynamic id) async {
     await Future.delayed(requestDelay);
     return availableData[0];
   }

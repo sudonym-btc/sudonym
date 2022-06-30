@@ -10,18 +10,19 @@ class SendCubit extends Cubit<SendCubitState> {
 
   SendCubit(this._payRepository) : super(SendCubitState());
 
-  getInfo(address) async {
+  getInfo(Payment p) async {
     emit(SendCubitState(loadingInfo: true));
     emit(SendCubitState(
         loadingInfo: false,
-        infoData: await Task(() => _payRepository.getInfo(address)).attempt().run()));
+        infoData: await Task(() => _payRepository.getInfo(p)).attempt().run()));
   }
 
-  pay(address) async {
+  pay(Payment p) async {
     emit(SendCubitState(loadingSend: true));
     emit(SendCubitState(
         loadingSend: false,
-        transactionData: await Task(() => _payRepository.pay(address)).attempt().run()));
+        transactionData:
+            await Task(() => _payRepository.pay(p)).attempt().run()));
   }
 }
 
@@ -29,7 +30,7 @@ class SendCubitState {
   bool loadingInfo = false;
   bool loadingSend = false;
   Either<Object, Transaction>? transactionData;
-  Either<Object, TransactionConfirm>? infoData;
+  Either<Object, Payment>? infoData;
   bool completed = false;
 
   SendCubitState(

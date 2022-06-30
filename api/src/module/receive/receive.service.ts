@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LightningService } from 'src/module/lightning/lightning.service';
 import { TAddressType } from '../pay/pay.service';
 import { Receiver } from './receiver.model';
 import { LnUrlService } from '../lightning/lnurl/lnurl.service';
+import { LightningNodeService } from 'src/service/lightning-node/lightning-node.service';
+import { BaseService } from '../base.service';
 
 @Injectable()
-export class ReceiveService {
-    @Inject(LightningService) lightningService: LightningService;
+export class ReceiveService extends BaseService(Receiver) {
+    @Inject(LightningNodeService) LightningNodeService: LightningNodeService;
     @Inject(LnUrlService) lnUrlService: LnUrlService;
 
     async getInvoice(potId, type: TAddressType, amount) {
@@ -26,15 +27,19 @@ export class ReceiveService {
 
         switch (type) {
             case 'bolt11':
-                data = (await this.lightningService.createInvoice(amount)).bolt11;
+                data = (await this.LightningNodeService.createInvoice(amount)).bolt11;
+                break;
             case 'bolt12':
-                data = (await this.lightningService.createOffer(1000)).bolt12;
+                data = (await this.LightningNodeService.createOffer(amount)).bolt12;
+                break;
             case 'lnurl':
                 data = (await this.lnUrlService.getPayRequest(potId));
+                break;
             case 'onchain':
-                data = (await this.lightningService.generateOnChainAddress()).address;
+                data = (await this.LightningNodeService.generateOnChainAddress()).address;
+                break;
         }
-        console.log(data);
+        console.log(type, data);
         return Receiver.create({
             potId, 
             amount: Number(amount),

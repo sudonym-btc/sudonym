@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { BitcoinListener } from './bitcoin-listener';
-import { LightningService } from './lightning.service';
+import { LightningNodeModule } from 'src/service/lightning-node/lightning-node.module';
 
 @Module({
-  imports: [],
+  imports: [LightningNodeModule],
   controllers: [],
-  exports: [LightningService],
-  providers: [BitcoinListener, LightningService],
+  exports: [],
+  providers: [],
 })
 export class LightningModule { }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/repository/user.repository.dart';
 import 'package:sudonym/injection.dart';
 
@@ -13,5 +14,6 @@ class MockUserRepository extends crud_repository<User>
   @override
   String get endpoint => "user";
 
-  MockUserRepository(Dio dio, Websocket websocket) : super(dio, websocket);
+  MockUserRepository(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 }

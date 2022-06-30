@@ -12,7 +12,6 @@ class ReceiveCubit extends Cubit<ReceiveCubitState> {
 
   getInvoice(potId, type, amount) async {
     emit(ReceiveCubitState(loading: true));
-    await Future.delayed(requestDelay);
     var data = await _receiveRepository.getInvoice(potId, type, amount);
     emit(ReceiveCubitState(loading: false, data: data));
   }

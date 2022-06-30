@@ -4,5 +4,14 @@
         "api",
         "models"
     ],
-    "dart.shareDevToolsWithFlutter": false
+    "dart.shareDevToolsWithFlutter": false,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "local",
+            "database": "${workspaceFolder:sudonym}/api/database.sqlite"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
 }

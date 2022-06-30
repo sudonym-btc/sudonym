@@ -43,7 +43,7 @@ def bitcoin(config, cluster_types):
                     "apiVersion": "v1",
                     "kind": "Service",
                     "namespace": "default",
-                    "metadata": {"name": base_name, "labels": {"app": base_name}},
+                    "metadata": {"name": base_name + "-service", "labels": {"app": base_name}},
                     "spec": {
                         "type": "NodePort",
                         "ports": [
@@ -51,6 +51,23 @@ def bitcoin(config, cluster_types):
                             {"port": 8332, "name": "rpc"},
                             {"port": 18443, "name": "regtest"},
                             {"port": 18444, "name": "rpc-regtest"},
+                        ],
+                        "selector": {"app": base_name},
+                    },
+                },
+            },
+            {
+                "name": base_name + "-zeromq-service",
+                "type": cluster_types["Service"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Service",
+                    "namespace": "default",
+                    "metadata": {"name": base_name + "-zeromq-service", "labels": {"app": base_name}},
+                    "spec": {
+                        "type": "NodePort",
+                        "ports": [
                             {"port": 5555, "name": "zeromq", "protocol": "TCP"},
                         ],
                         "selector": {"app": base_name},

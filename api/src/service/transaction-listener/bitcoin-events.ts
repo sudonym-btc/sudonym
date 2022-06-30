@@ -2,21 +2,26 @@ import { options } from "../../command-line-args";
 import * as bitcoin from 'bitcoinjs-lib';
 import * as zmq from 'zeromq';
 import { Injectable } from "@nestjs/common";
+import { Subject } from "rxjs";
+import { getConfig } from "src/config/config";
 var sock = zmq.socket('sub');
-var addr = options.zeromq || 'tcp://192.168.64.6:30315'; //|| 'tcp://localhost:32207' 
 
 @Injectable()
-export class BitcoinListener {
+export class BitcoinEvents {
 
-    start() {
+    onTransaction = new Subject();
+
+    onModuleInit() {
+
+        console.log("Connecting to bitcoin message queue at " + getConfig().bitcoinMQ)
 
         sock.connect_timeout = 1;
 
-        sock.connect(addr);
+        sock.connect(getConfig().bitcoinMQ);
         sock.subscribe('rawtx');
         sock.subscribe('rawblock');
 
-        sock.on('message', function (topic, message) {
+        sock.on('message', (topic, message) => {
 
             if (topic.toString() === 'rawtx') {
                 var rawTx = message.toString('hex');
@@ -35,7 +40,8 @@ export class BitcoinListener {
                     return out;
                 });
 
-                console.log('received transaction', txid, tx);
+                // console.log('received transaction', txid, tx);
+                this.onTransaction.next(tx);
             }
         });
 

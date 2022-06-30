@@ -38,10 +38,16 @@ class AuthRepositoryImpl implements AuthRepository {
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
+
+  @override
+  Stream<User?> onStateChanged() {
+    return FirebaseAuth.instance.authStateChanges();
+  }
 }
 
 abstract class AuthRepository {
   Future<UserCredential> loginWithGoogle();
   Future<UserCredential> loginWithFacebook();
+  Stream<User?> onStateChanged();
   // Future<UserCredential> loginWithTwitter();
 }

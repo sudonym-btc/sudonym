@@ -1,30 +1,43 @@
+import { Inject } from '@nestjs/common';
 import {
-    MessageBody,
-    SubscribeMessage,
-    WebSocketGateway,
-    WebSocketServer,
-    WsResponse,
-  } from '@nestjs/websockets';
-  import { from, Observable } from 'rxjs';
-  import { map } from 'rxjs/operators';
-  import { Server } from 'socket.io';
-  
-  @WebSocketGateway({
-    cors: {
-      origin: '*',
-    },
-  })
-  export class EventsGateway {
-    @WebSocketServer()
-    server: Server;
-  
-    @SubscribeMessage('events')
-    findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
-      return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
-    }
-  
-    @SubscribeMessage('identity')
-    async identity(@MessageBody() data: number): Promise<number> {
-      return data;
-    }
+  OnGatewayConnection,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import { Event } from '@sudonym/models';
+import * as mocks from "@sudonym/models/dist/mock";
+import { Socket } from 'dgram';
+import { Server } from 'http';
+import { EventsService } from './events.service';
+
+@WebSocketGateway(3001, {
+  cors: {
+    origin: '*',
+  },
+})
+export class EventsGateway implements OnGatewayConnection {
+
+  @WebSocketServer()
+  server: Server;
+
+  @Inject() eventsService: EventsService;
+
+  onModuleInit() {
+    this.eventsService.onEvent.listen((e: Event) => {
+      this.broadcastToClients([], e);
+    })
   }
+
+  broadcastToClients(uids, e: Event) {
+    this.server.emit(JSON.stringify(e));
+  }
+
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log('connected');
+    setInterval(() => {
+      console.log('test');
+      client.send(JSON.stringify(new Event('transaction.created', mocks.transaction.mocks[0])));
+    }, 5000);
+  }
+
+}

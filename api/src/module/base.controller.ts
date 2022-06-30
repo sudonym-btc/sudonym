@@ -1,4 +1,4 @@
-import { Get, Inject, Param, Post } from "@nestjs/common";
+import { Body, Get, Inject, Param, Post, Put } from "@nestjs/common";
 import { Constructor } from "sequelize-typescript/dist/shared/types";
 import { TBaseService, TControllerAndService } from "./base.service";
 
@@ -30,8 +30,13 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
         }
 
         @Post('')
-        create() {
-            return this.service.create({});
+        create(@Body() data) {
+            return this.service.create(data);
+        }
+
+        @Put(':id')
+        update(@Param('id') id, @Body() data) {
+            return this.service.update(id, data);
         }
     };
     return X;

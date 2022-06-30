@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
-import { LightningModule } from 'src/module/lightning/lightning.module';
+import { LightningNodeModule } from 'src/service/lightning-node/lightning-node.module';
 import { LnUrlModule } from '../lightning/lnurl/lnurl.module';
+import { SharedModule } from '../shared.module';
 import { ReceiveController } from './receive.controller';
 import { ReceiveService } from './receive.service';
+import { Receiver } from './receiver.model';
 
 @Module({
-  imports: [LightningModule, LnUrlModule],
+  imports: [SharedModule, LightningNodeModule, LnUrlModule],
   controllers: [ReceiveController],
-  providers: [ReceiveService],
+  providers: [ReceiveService, {
+    provide: Receiver,
+    useValue: Receiver,
+  }],
   exports: [ReceiveService],
 })
 export class ReceiveModule { }

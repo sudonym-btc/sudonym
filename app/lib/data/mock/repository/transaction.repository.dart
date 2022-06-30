@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/repository/transaction.repository.dart';
 import 'package:sudonym/injection.dart';
 
@@ -12,7 +13,7 @@ class MockTransactionRepository extends crud_repository<Transaction>
     implements TransactionRepository {
   @override
   String get endpoint => "transaction";
-  
-  MockTransactionRepository(Dio dio, Websocket websocket)
-      : super(dio, websocket);
+
+  MockTransactionRepository(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 }

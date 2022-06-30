@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/repository/pay.repository.dart';
 import 'package:sudonym/logic/bloc/send.cubit.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
@@ -18,19 +19,27 @@ class SendConfirmPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dynamic data = ModalRoute.of(context)?.settings.arguments;
+    final Payment payment =
+        ModalRoute.of(context)?.settings.arguments as Payment;
 
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) {
-            // print(data);
-            return getIt<SendCubit>()..getInfo(data['address'].toString());
+            print(payment);
+            return getIt<SendCubit>()..getInfo(payment);
           })
         ],
         child: BlocListener<SendCubit, SendCubitState>(
             listener: (context, state) {
-          if (state.transactionData != null) {
-            Navigator.pushReplacementNamed(context, '/transaction');
+          if (state.transactionData != null &&
+              !state.loadingSend &&
+              state.transactionData!.isRight()) {
+            state.transactionData!.fold(
+                (l) => null,
+                (r) => {
+                      Navigator.pushReplacementNamed(context, '/transaction',
+                          arguments: r)
+                    });
           }
         }, child: BlocBuilder<SendCubit, SendCubitState>(
                 builder: (BuildContext context, state) {
@@ -43,6 +52,15 @@ class SendConfirmPage extends StatelessWidget {
           Color color = Colors.indigo.shade800;
           Widget? actions = null;
 
+          if (state.loadingSend) {
+            title = 'Sending';
+            subtitle = 'Payment is in progress';
+            icon;
+            content =
+                Center(child: CircularProgressIndicator(color: Colors.white));
+            color = Colors.indigo.shade800;
+            actions = null;
+          }
           if (state.transactionData != null) {
             state.transactionData!.fold((l) {
               color = Colors.red;
@@ -60,18 +78,11 @@ class SendConfirmPage extends StatelessWidget {
                 ],
               );
             }, (r) {});
-          } else if (state.loadingSend) {
-            title = 'Sending';
-            subtitle = 'Payment is in progress';
-            icon;
-            content =
-                Center(child: CircularProgressIndicator(color: Colors.white));
-            color = Colors.indigo.shade800;
-            actions = null;
           } else if (state.infoData != null) {
             state.infoData?.fold((l) {
               color = Colors.red;
-              subtitle = '';
+              title = 'Error';
+              subtitle = l.toString();
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
@@ -99,7 +110,15 @@ class SendConfirmPage extends StatelessWidget {
                       new Text('fee'),
                       new Text(r.feeMSat.toString() + ' sats / \$0.01')
                     ]),
-                    TableRow(children: [new Text('name'), new Text(r.name)])
+                    TableRow(children: [
+                      new Text('name'),
+                      new Text(
+                        r.originalAddress,
+                        style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ])
                   ],
                 )
               ]);
@@ -110,7 +129,7 @@ class SendConfirmPage extends StatelessWidget {
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null
                       : () {
-                          BlocProvider.of<SendCubit>(context).pay(r.address);
+                          BlocProvider.of<SendCubit>(context).pay(payment);
                         },
                   style: raisedButtonStyle,
                 )

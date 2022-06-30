@@ -28,6 +28,7 @@ class MockAuthRepository implements AuthRepository {
     final result = await auth.signInWithCredential(credential);
     return result;
   }
+
   @override
   Future<UserCredential> loginWithFacebook() async {
     final googleSignIn = MockGoogleSignIn();
@@ -47,5 +48,11 @@ class MockAuthRepository implements AuthRepository {
     final auth = MockFirebaseAuth(mockUser: user);
     final result = await auth.signInWithCredential(credential);
     return result;
+  }
+
+  @override
+  Stream<User?> onStateChanged() {
+    // TODO: implement onStateChanged
+    throw UnimplementedError();
   }
 }

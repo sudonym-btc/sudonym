@@ -1,28 +1,41 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:injectable/injectable.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:sudonym/config/config.dart';
 
 import '../../injection.dart';
 
-@Injectable(as: Websocket, env: Env.allButMock)
+@Singleton(as: Websocket, env: Env.allButMock)
 class WebsocketImpl extends Websocket {
-  WebsocketImpl() : super();
+  Config config;
+  StreamController stream = StreamController.broadcast();
 
-  // IOWebSocketChannel channel =
-  //     IOWebSocketChannel.connect(Uri.parse('ws://localhost:3000'));
+  WebsocketImpl(this.config) : super();
 
   @override
   connect() {
-    /// Listen for all incoming data
-    // channel.stream.listen(
-    //   (data) {
-    //     print(data);
-    //   },
-    //   onError: (error) => print(error),
-    // );
+    Uri url = Uri.parse(
+        config.apiUrl.replaceAll('https', 'wss').replaceAll('http', 'ws') +
+            ':' +
+            config.websocketPort.toString());
+
+    print("Connecting websocket to " + url.toString());
+
+    IOWebSocketChannel channel = IOWebSocketChannel.connect(url);
+
+    // Listen for all incoming data
+
+    stream.addStream(channel.stream);
+
+    getStream().handleError((event) {
+      print(event);
+    });
   }
 
   @override
-  Stream getStream() => Stream.empty();
+  Stream getStream() => stream.stream;
 }
 
 abstract class Websocket {

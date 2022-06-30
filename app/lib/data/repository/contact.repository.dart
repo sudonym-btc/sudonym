@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/contact.dart';
+import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/repository/crud_repository.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
@@ -14,10 +15,11 @@ class ContactRepositoryImpl extends ContactRepository {
   @override
   Function converter = Contact.fromJson;
 
-  ContactRepositoryImpl(Dio dio, Websocket websocket) : super(dio, websocket);
-
+  ContactRepositoryImpl(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 }
 
 abstract class ContactRepository extends crud_repository<Contact> {
-  ContactRepository(Dio dio, Websocket websocket) : super(dio, websocket);
+  ContactRepository(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 }

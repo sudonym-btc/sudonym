@@ -7,9 +7,8 @@ import 'dio.interceptor.dart';
 abstract class RegisterModule {
   @lazySingleton
   Dio dio(Config config) {
-    print(config);
-    print("DIO" + config.apiUrl);
-    return Dio(BaseOptions(baseUrl: config.apiUrl))
+    return Dio(
+        BaseOptions(baseUrl: config.apiUrl + ':' + config.apiPort.toString()))
       ..interceptors.add(AuthInterceptor());
   }
 }
