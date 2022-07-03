@@ -10,6 +10,7 @@
         "felixangelov.bloc",
         "redhat.vscode-xml",
         "mtxr.sqltools",
-        "mtxr.sqltools-driver-sqlite"
+        "mtxr.sqltools-driver-sqlite",
+        "ms-kubernetes-tools.vscode-kubernetes-tools"
     ]
 }

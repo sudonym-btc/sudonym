@@ -2,10 +2,11 @@
 export class Pot {
 
     constructor(
-        public id: string,
+        public id: number,
         public name: string,
         public currency: string,
-        public balance: number
+        public balance: number,
+        public spendableBalance: number
     ) { }
 
     static fromJson(json: Object): Pot {
@@ -13,7 +14,8 @@ export class Pot {
             json["id"],
             json["name"],
             json["currency"],
-            json["balance"]
+            json["balance"],
+            json["spendableBalance"]
         );
     }
 }

@@ -1,7 +1,7 @@
 import "contact-address.dart" show ContactAddress;
 
 class Contact {
-  String id;
+  num id;
   String userId;
   String name;
   List<ContactAddress> ContactAddresses;

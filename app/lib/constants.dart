@@ -9,13 +9,14 @@ const iconSize = 12.0;
 const animationDuration = Duration(milliseconds: 600);
 
 final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-  minimumSize: const Size(120, 44),
-  padding:
-      const EdgeInsets.symmetric(horizontal: padding * 2, vertical: padding),
-  shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(buttonRadius)),
-  ),
-);
+    minimumSize: const Size(120, 44),
+    elevation: 0,
+    padding:
+        const EdgeInsets.symmetric(horizontal: padding * 2, vertical: padding),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(buttonRadius)),
+    ),
+    shadowColor: Colors.transparent);
 
 BoxDecoration buttonDecoration(BuildContext context, bool enabled) {
   List<MaterialState> states = [];

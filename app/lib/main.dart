@@ -25,9 +25,13 @@ void mainCommon(String? env) async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final fcmToken = await FirebaseMessaging.instance.getToken();
+  print(fcmToken);
 
   configureInjection(env);
   runApp(const App());
+
+  String messageTitle = "Empty";
+  String notificationAlert = "alert";
 }
 
 class App extends StatefulWidget {

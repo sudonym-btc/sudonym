@@ -1,26 +1,29 @@
-import { Table, Column, Model, HasMany, CreatedAt, PrimaryKey, Default, DataType } from 'sequelize-typescript'
+import { Table, Column, Model, CreatedAt, PrimaryKey, DataType, AutoIncrement } from 'sequelize-typescript'
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, TAddressType } from '../pay/pay.service';
-import {v4 as uuid} from 'uuid';
+import { CurrencyCode } from '@sudonym/models';
 
 @Table
 export class Receiver extends Model implements Models.Receiver {
-  @Default(uuid)
   @PrimaryKey
+  @AutoIncrement
   @Column
-  id: string;
+  id: number;
 
   @Column(DataType.ENUM(...ADDRESS_TYPES))
   type: TAddressType;
 
   @Column
-  potId: string;
+  potId: number;
 
   @Column
   data: string;
 
   @Column
   amount: number;
+
+  @Column
+  amountCurrency: CurrencyCode;
 
   @CreatedAt
   @Column

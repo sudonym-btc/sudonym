@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {Event} from '@sudonym/models';
-import { Callback } from 'src/helper/callback';
+import { Callback } from '../../helper/callback';
 
 @Injectable()
 export class EventsService {

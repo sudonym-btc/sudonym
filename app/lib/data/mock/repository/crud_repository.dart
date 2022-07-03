@@ -11,27 +11,28 @@ const requestDelay = Duration(seconds: 1);
 // ignore: camel_case_types
 abstract class crud_repository<T> extends real.crud_repository<T> {
   List<T> data = [];
-  dynamic availableData = [];
+  List<T> availableData = [];
 
   crud_repository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket) {
     availableData = Mockdata.getData<T>(endpoint);
   }
 
-  // @override
-  // Future<T> create() async {
-  //   // TODO: implement create
-  //   throw UnimplementedError();
-  // }
+  @override
+  Future<T> create(params) async {
+    availableData.add(params);
+    created.add(params);
+    return params;
+  }
 
   @override
   Future<T> fetch(dynamic id) async {
     await Future.delayed(requestDelay);
-    return availableData[0];
+    return availableData.firstWhere((e) => (e as dynamic).id == id);
   }
 
   @override
-  Future<ListState<T>> list() async {
+  Future<ListState<T>> list({where}) async {
     await Future.delayed(requestDelay);
     return ListState(availableData, {});
   }

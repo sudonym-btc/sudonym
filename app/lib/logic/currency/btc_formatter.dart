@@ -8,9 +8,9 @@ final display = createDisplay(
 );
 
 String formatBTC(num amount) {
-  if(amount > 0.1) {
-    return amount.toStringAsPrecision(4).toString() + " BTC";
+  if (amount > 10000000) {
+    return (amount / 100000000).toStringAsPrecision(4).toString() + " BTC";
   } else {
-    return display(amount * 100000000) + " sats";
+    return display(amount) + " sats";
   }
 }

@@ -3,7 +3,7 @@ import { Model } from 'sequelize-typescript';
 import { Constructor, RecursivePartial } from "sequelize-typescript/dist/shared/types";
 import { EventsService } from "./events/events.service";
 import { Event } from "@sudonym/models";
-import { Callback } from "src/helper/callback";
+import { Callback } from "../helper/callback";
 import { FindOptions, WhereOptions } from "sequelize/types";
 
 type ModelType<T> = Constructor<T> & typeof Model;

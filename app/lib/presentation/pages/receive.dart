@@ -7,7 +7,7 @@ import '../widgets/receive/bolt11.dart';
 import '../widgets/receive/bolt12.dart';
 
 class ReceivePageArgs {
-  String potId;
+  num potId;
 
   ReceivePageArgs(@required this.potId);
 }

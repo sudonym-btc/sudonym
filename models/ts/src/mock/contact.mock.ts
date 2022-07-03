@@ -5,7 +5,7 @@ import * as Factory from "factory.ts";
 import faker from "@faker-js/faker";
 
 export const factory = Factory.Sync.makeFactory<Contact>({
-    id: Factory.each(i => i.toString()),
+    id: Factory.each(i => i),
     userId: Factory.each(i => i.toString()),
     name:  Factory.each(i => faker.name.firstName()),
     ContactAddresses: contactAddressFactory.buildList(2)

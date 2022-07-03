@@ -227,6 +227,13 @@ export class LightningNodeService {
         });
     }
 
+    async decodeInvoice(invoice) {
+        return this.makeRequest({
+            path: '/v1/pay/decodePay/' + invoice,
+            method: 'GET'
+        });
+    }
+
     async makeRequest(options) {
 
         const response = await axios({

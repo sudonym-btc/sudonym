@@ -3,7 +3,7 @@ import { ContactAddress } from "./contact-address";
 export class Contact {
 
     constructor(
-        public id: string,
+        public id: number,
         public userId: string,
         public name: string,
         public ContactAddresses: ContactAddress[]

@@ -7,10 +7,12 @@ ThemeData themeData = ThemeData(
     appBarTheme: const AppBarTheme(
         foregroundColor: textColor,
         toolbarTextStyle: TextStyle(color: textColor),
-        titleTextStyle: TextStyle(color: textColor),
+        titleTextStyle: TextStyle(
+            color: textColor, fontSize: 30, fontWeight: FontWeight.w900),
         iconTheme: IconThemeData(color: textColor),
         actionsIconTheme: IconThemeData(color: textColor),
         backgroundColor: Colors.white,
+        toolbarHeight: 60,
         elevation: 0),
     scaffoldBackgroundColor: Colors.white,
     elevatedButtonTheme: ElevatedButtonThemeData(

@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym.models/transaction.dart' as Model;
+import 'package:sudonym.models/transaction.dart';
 import 'package:sudonym/constants.dart';
+import 'package:sudonym/logic/currency/format-currency.dart';
 import 'package:sudonym/presentation/components/typography/info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class Transaction extends StatelessWidget {
-  Model.Transaction transaction;
+class TransactionListItem extends StatelessWidget {
+  final Transaction transaction;
 
-  Transaction({required Model.Transaction this.transaction, Key? key})
+  const TransactionListItem({required this.transaction, Key? key})
       : super(key: key);
+
+  getTitle() {
+    String networkName = ["lnurl", "bolt11", "bolt12", "lightningaddress"]
+            .contains(transaction.type)
+        ? "lightning network"
+        : "onchain";
+    return transaction.outgoing
+        ? transaction.address ?? "Spend via " + networkName
+        : "Received " + networkName;
+  }
+
+  getDescription() {
+    return transaction.description ?? "No description";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +35,30 @@ class Transaction extends StatelessWidget {
             padding: EdgeInsets.all(padding),
             child: Row(
               children: [
-                SizedBox(width: 50, child: Text(transaction.amount.toString())),
+                SizedBox(
+                    width: 75,
+                    child: Text(
+                      (transaction.outgoing ? "-" : "") +
+                          FormatCurrency().format(transaction.currencyCode,
+                              transaction.amount.toDouble()),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: transaction.outgoing
+                              ? Theme.of(context).errorColor
+                              : Theme.of(context).primaryColorDark),
+                    )),
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Info("Lightning Transaction"),
-                    const Info('"Random Descriptions"'),
+                    Text(getTitle()),
+                    Info(getDescription()),
                   ],
                 )),
                 SizedBox(
                     width: 50,
                     child: Center(
-                        child: Text(timeago.format(transaction.createdAt,
+                        child: Info(timeago.format(transaction.createdAt,
                             locale: 'en_short')))),
               ],
             )));

@@ -31,7 +31,6 @@ class _CurrencyInputState extends State<CurrencyInput> {
 
   @override
   Widget build(BuildContext context) {
-
     updateValue(num v) {
       if (_controller.numberValue <= 0 && v <= 0) return;
       _controller.updateValue(_controller.numberValue + v);
@@ -40,8 +39,10 @@ class _CurrencyInputState extends State<CurrencyInput> {
     bool negativeEnabled = _controller.numberValue > 0;
     bool positiveEnabled = true;
 
-    List<MaterialState> negativeButtonState = negativeEnabled ? [] : [MaterialState.disabled];
-    List<MaterialState> positiveButtonState = positiveEnabled ? [] : [MaterialState.disabled];
+    List<MaterialState> negativeButtonState =
+        negativeEnabled ? [] : [MaterialState.disabled];
+    List<MaterialState> positiveButtonState =
+        positiveEnabled ? [] : [MaterialState.disabled];
 
     return Row(children: <Widget>[
       Expanded(
@@ -60,7 +61,11 @@ class _CurrencyInputState extends State<CurrencyInput> {
           decoration: buttonDecoration(context, negativeEnabled),
           child: IconButton(
             onPressed: negativeEnabled ? () => updateValue(-1) : null,
-            color: Theme.of(context).elevatedButtonTheme.style!.foregroundColor!.resolve(Set.of(negativeButtonState)),
+            color: Theme.of(context)
+                .elevatedButtonTheme
+                .style!
+                .foregroundColor!
+                .resolve(Set.of(negativeButtonState)),
             icon: const Icon(Icons.remove),
           )),
       const SizedBox(
@@ -70,7 +75,11 @@ class _CurrencyInputState extends State<CurrencyInput> {
           decoration: buttonDecoration(context, positiveEnabled),
           child: IconButton(
             onPressed: () => updateValue(1),
-            color: Theme.of(context).elevatedButtonTheme.style!.foregroundColor!.resolve(Set.of(positiveButtonState)),
+            color: Theme.of(context)
+                .elevatedButtonTheme
+                .style!
+                .foregroundColor!
+                .resolve(Set.of(positiveButtonState)),
             icon: const Icon(Icons.add),
           ))
     ]);

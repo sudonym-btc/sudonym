@@ -8,7 +8,7 @@ import '../../../injection.dart';
 import '../../repository/websocket.dart';
 import 'crud_repository.dart';
 
-@Injectable(as: PotRepository, env: [Env.mock])
+@LazySingleton(as: PotRepository, env: [Env.mock])
 class MockPotRepository extends crud_repository<Pot> implements PotRepository {
   @override
   String get endpoint => "pot";

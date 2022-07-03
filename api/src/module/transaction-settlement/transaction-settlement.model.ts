@@ -12,7 +12,7 @@ export class TransactionSettlement extends Model implements Models.TransactionSe
   id: number;
 
   @Column
-  transactionId: string;
+  transactionId: number;
 
   @AllowNull(true)
   @Column

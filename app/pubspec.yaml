@@ -40,6 +40,8 @@ dependencies:
   web_socket_channel: ^2.2.0
   firebase_messaging: ^11.4.2
   dart_lnurl: ^0.1.0
+  bech32: any
+  money_formatter: ^0.0.3
   
 dev_dependencies:
   test: ^1.19.5

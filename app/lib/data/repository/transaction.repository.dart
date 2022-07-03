@@ -7,7 +7,7 @@ import 'package:sudonym/data/repository/websocket.dart';
 
 import '../../injection.dart';
 
-@Injectable(as: TransactionRepository, env: Env.allButMock)
+@LazySingleton(as: TransactionRepository, env: Env.allButMock)
 class TransactionRepositoryImpl extends TransactionRepository {
   @override
   Function converter = Transaction.fromJson;

@@ -1,4 +1,5 @@
 export * from './event';
+export * from './address-parse-response';
 
 export * from './contact';
 export * from './contact-address';

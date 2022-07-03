@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
@@ -8,6 +10,8 @@ import '../../../injection.dart';
 
 @Injectable(as: AuthRepository, env: [Env.mock])
 class MockAuthRepository implements AuthRepository {
+  StreamController<User?> authStateChanges = StreamController.broadcast();
+
   @override
   Future<UserCredential> loginWithGoogle() async {
     final googleSignIn = MockGoogleSignIn();
@@ -26,6 +30,7 @@ class MockAuthRepository implements AuthRepository {
     );
     final auth = MockFirebaseAuth(mockUser: user);
     final result = await auth.signInWithCredential(credential);
+    authStateChanges.add(user);
     return result;
   }
 
@@ -47,12 +52,17 @@ class MockAuthRepository implements AuthRepository {
     );
     final auth = MockFirebaseAuth(mockUser: user);
     final result = await auth.signInWithCredential(credential);
+    authStateChanges.add(user);
     return result;
   }
 
   @override
   Stream<User?> onStateChanged() {
-    // TODO: implement onStateChanged
-    throw UnimplementedError();
+    return authStateChanges.stream;
+  }
+
+  @override
+  logout() async {
+    authStateChanges.add(null);
   }
 }

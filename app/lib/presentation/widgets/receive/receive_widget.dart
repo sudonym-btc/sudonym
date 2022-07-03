@@ -13,7 +13,7 @@ import '../../../injection.dart';
 import '../../../logic/bloc/receive.cubit.dart';
 
 class ReceiveWidget extends StatelessWidget {
-  final String potId;
+  final num potId;
   final String type;
   const ReceiveWidget({required this.potId, required this.type, Key? key})
       : super(key: key);
@@ -58,7 +58,8 @@ class ReceiveWidget extends StatelessWidget {
                         onPressed: state.loading
                             ? null
                             : () {
-                                FlutterClipboard.copy("example").then((value) {
+                                FlutterClipboard.copy(state.data!.data)
+                                    .then((value) {
                                   final snackBar = SnackBar(
                                     content: Text('Copied to Clipboard'),
                                   );

@@ -5,11 +5,11 @@ import 'package:sudonym/data/mock/repository/crud_repository.dart';
 import 'package:sudonym/data/repository/receive.repository.dart';
 import 'package:sudonym/injection.dart';
 
-@Injectable(as: ReceiveRepository, env: [Env.mock])
+@LazySingleton(as: ReceiveRepository, env: [Env.mock])
 class MockReceiveRepository implements ReceiveRepository {
-  
+  List<Receiver> receivers = [];
   MockReceiveRepository(this.dio);
-  
+
   @override
   getInvoice(potId, type, amount) async {
     await Future.delayed(requestDelay);
@@ -26,7 +26,10 @@ class MockReceiveRepository implements ReceiveRepository {
     } else if (type == "onchain") {
       data = "bc1qw69mpwfcmcg4segjdm9qmrwfn0n230tcve8wg6h7fa8r996zm7pqfuk0me";
     }
-    return Receiver("1", "1", type, 1000, data, new DateTime(2020));
+    Receiver r = Receiver(1, 1, type, amount, "BTC", data, new DateTime(2020));
+    receivers.add(r);
+    print(receivers);
+    return r;
   }
 
   @override

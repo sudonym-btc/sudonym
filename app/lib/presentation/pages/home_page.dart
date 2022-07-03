@@ -59,11 +59,7 @@ class _HomePageState extends State<HomePage> {
                           )
                         ]),
                         body: state.loading
-                            ? Center(
-                                child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator()))
+                            ? Center(child: CircularProgressIndicator())
                             : Column(
                                 children: [
                                   Expanded(

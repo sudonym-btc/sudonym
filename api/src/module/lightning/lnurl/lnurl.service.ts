@@ -3,7 +3,7 @@ import { getConfig } from 'src/config/config';
 
 @Injectable()
 export class LnUrlService {
-    getPayRequest(potId: string) {
+    getPayRequest(potId: number) {
 
         return {
             callback: getConfig().apiUrl + '/receive/lnurlp/' + potId, // The URL from LN SERVICE which will accept the pay request parameters

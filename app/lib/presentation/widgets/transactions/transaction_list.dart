@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/repository/transaction.repository.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
-import 'package:sudonym/logic/bloc/transactions.cubit.dart';
 import 'package:sudonym/presentation/components/typography/header.dart';
 import 'package:sudonym/presentation/widgets/list/list.dart';
 import 'package:sudonym/presentation/widgets/transactions/transaction_list_item.dart';
@@ -25,7 +24,7 @@ class TransactionList extends StatelessWidget {
           Expanded(
               child: List(
             builder: (el) {
-              return Transaction(transaction: el);
+              return TransactionListItem(transaction: el);
             },
             list: ListCubit(getIt<TransactionRepository>()),
             emptyText: 'No transactions found',

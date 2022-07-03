@@ -31,12 +31,12 @@ class TransactionPage extends StatelessWidget {
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
           } else if (state.entity!.outgoing) {
-            if (state.entity!.confirmed) {
+            if (state.entity!.status) {
               return _OutgoingComplete(transaction: state.entity!);
             }
             return _OutgoingPending(transaction: state.entity!);
           } else {
-            if (state.entity!.confirmed) {
+            if (state.entity!.status) {
               return _IncomingComplete(transaction: state.entity!);
             }
             return _IncomingPending(transaction: state.entity!);

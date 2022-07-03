@@ -8,7 +8,7 @@ import '../../repository/websocket.dart';
 import 'crud_repository.dart';
 import 'package:sudonym.models/transaction.dart';
 
-@Injectable(as: TransactionRepository, env: [Env.mock])
+@LazySingleton(as: TransactionRepository, env: [Env.mock])
 class MockTransactionRepository extends crud_repository<Transaction>
     implements TransactionRepository {
   @override

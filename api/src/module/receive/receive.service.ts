@@ -10,7 +10,7 @@ export class ReceiveService extends BaseService(Receiver) {
     @Inject(LightningNodeService) LightningNodeService: LightningNodeService;
     @Inject(LnUrlService) lnUrlService: LnUrlService;
 
-    async getInvoice(potId, type: TAddressType, amount) {
+    async getInvoice(potId, type: TAddressType, amount = 0) {
 
         if (type != 'bolt11' && type != 'lnurl') {
             const exists = await Receiver.findOne({
@@ -24,6 +24,8 @@ export class ReceiveService extends BaseService(Receiver) {
                 return exists;
         }
         let data;
+
+        console.log(potId, type, amount);
 
         switch (type) {
             case 'bolt11':

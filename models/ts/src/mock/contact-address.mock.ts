@@ -7,7 +7,7 @@ import { ContactAddress } from "../classes/contact-address";
 
 export const factory = Factory.Sync.makeFactory<ContactAddress>({
     // id: Factory.each(i => i.toString()),
-    contactId: Factory.each(i => i.toString()),
+    contactId: Factory.each(i => i),
     addressType: (['lnurl'] as any).random(),
     address: (['lnurl23234342423'] as any).random(),
     name: 'Muun'

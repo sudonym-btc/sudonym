@@ -1,6 +1,6 @@
 class TransactionSettlement {
   num id;
-  dynamic /* String | null */ transactionId;
+  dynamic /* num | null */ transactionId;
   dynamic /* bool | null */ status;
   DateTime createdAt;
   TransactionSettlement(

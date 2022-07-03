@@ -4,7 +4,7 @@ import 'package:sudonym.models/index.dart';
 
 import '../../injection.dart';
 
-@Injectable(as: ReceiveRepository, env: Env.allButMock)
+@LazySingleton(as: ReceiveRepository, env: Env.allButMock)
 class ReceiveRepositoryImpl extends ReceiveRepository {
   ReceiveRepositoryImpl(Dio dio) : super(dio);
 
@@ -21,6 +21,7 @@ class ReceiveRepositoryImpl extends ReceiveRepository {
 }
 
 abstract class ReceiveRepository {
+  List<Receiver> receivers = [];
   Dio dio;
   Future<Receiver> getInvoice(potId, type, amount);
 

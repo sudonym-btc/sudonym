@@ -16,63 +16,59 @@ class SendReceive extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ReceiveCubit cubit = getIt<ReceiveCubit>();
-    cubit.getInvoice(potId, "bolt12", 0);
-
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => cubit)],
+        providers: [BlocProvider(create: (_) => getIt<ReceiveCubit>())],
         child: BlocBuilder<ReceiveCubit, ReceiveCubitState>(
             builder: (BuildContext context, state) {
-          Widget image = QrImage(
-            data:
-                "lnbc507410n1p3z5cxkpp57374p4cd60uumn5jasj6sjtyw70p9g9gsz0skgxjftg8se688r0qdqqcqzpuxqyz5vqsp522wz0q6xsvk6wgm9vtgx90ud494gnlszq06at0dztznv0227p2lq9qyyssqrzulnuyy7ylc690yzehdmfk92qfspvy9w8qyxaq3rhypwmry87k4p8umxsvh0nzvund9erwdzzfz3zh5498e8vjn6u2auhn3q8ydpqgqcacjm4",
-            version: QrVersions.auto,
-            // embeddedImage: NetworkImage(
-            //     'https://www.kindpng.com/picc/m/73-733879_lightning-bolt-emoji-png-electricity-emoji-transparent-png.png'),
-            embeddedImageStyle: QrEmbeddedImageStyle(
-              size: Size(40, 40),
-            ),
-          );
-          // Image(
-          if (state.loading) {
-            image = CircularProgressIndicator();
-          }
-          return Center(
-              child: FractionallySizedBox(
-                  widthFactor: 0.7,
-                  // padding: const EdgeInsets.all(padding),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment
-                        .center, //Center Column contents vertically,
-                    crossAxisAlignment: CrossAxisAlignment
-                        .center, //Center Column contents horizontally,
-                    children: [
-                      SizedBox(
-                          height: MediaQuery.of(context).size.width * 0.8,
-                          child: Center(child: image)),
-                      SizedBox(height: padding * 2),
-                      ButtonBar(
-                        children: [
-                          Button(
-                            text: "Receive",
-                            icon: FaIcon(FontAwesomeIcons.inbox, size: 14),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/receive',
-                                  arguments: ReceivePageArgs(potId));
-                            },
-                          ),
-                          Button(
-                            text: "Send",
-                            icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/send',
-                                  arguments: ReceivePageArgs(potId));
-                            },
-                          )
-                        ],
-                      ),
-                    ],
-                  )));
+          return LayoutBuilder(builder: (context, constraints) {
+            // Widget image = state.loading
+            //     ? CircularProgressIndicator()
+            //     : QrImage(
+            //         data: state.data!.data,
+            //         version: QrVersions.auto,
+            //         // embeddedImage: NetworkImage(
+            //         //     'https://www.kindpng.com/picc/m/73-733879_lightning-bolt-emoji-png-electricity-emoji-transparent-png.png'),
+            //         embeddedImageStyle: QrEmbeddedImageStyle(
+            //           size: Size(40, 40),
+            //         ),
+            //       );
+
+            // print(constraints);
+
+            return Center(
+                child: FractionallySizedBox(
+                    widthFactor: 0.7,
+                    // padding: const EdgeInsets.all(padding),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, //Center Column contents vertically,
+                      crossAxisAlignment: CrossAxisAlignment
+                          .center, //Center Column contents horizontally,
+                      children: [
+                        ButtonBar(
+                          children: [
+                            Button(
+                              text: "Receive",
+                              icon: FaIcon(FontAwesomeIcons.inbox, size: 14),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/receive',
+                                    arguments: ReceivePageArgs(potId));
+                              },
+                            ),
+                            Button(
+                              text: "Send",
+                              icon:
+                                  FaIcon(FontAwesomeIcons.paperPlane, size: 14),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/send',
+                                    arguments: ReceivePageArgs(potId));
+                              },
+                            )
+                          ],
+                        ),
+                      ],
+                    )));
+          });
         }));
   }
 }

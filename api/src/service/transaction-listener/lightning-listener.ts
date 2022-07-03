@@ -24,9 +24,8 @@ export class LightningListener extends TransactionListener {
                         potId: receivers[0].potId,
                         outgoing: false,
                         amount: e.event.msatoshi/1000,
-                        confirmed: true,
-                        spendable: true,
-                        LightningInvoiceId: e.event.bolt11
+                        status: true,
+                        txid: e.event.bolt11
                     })
                 }
             }
@@ -36,9 +35,9 @@ export class LightningListener extends TransactionListener {
     listenOutgoing() {
         this.transactionService.onAfterCreated.listen(async (transaction) => {
             console.log(transaction);
-            if (transaction.outgoing && ['lnurl', 'bolt11', 'bolt12'].includes(transaction.addressType)) {
+            if (transaction.outgoing && ['lnurl', 'bolt11', 'bolt12'].includes(transaction.type)) {
                 let bolt11;
-                switch(transaction.addressType) {
+                switch(transaction.type) {
                     case 'bolt11':
                         bolt11 = transaction.address;
                         break;
@@ -50,7 +49,7 @@ export class LightningListener extends TransactionListener {
                         break;
                 }
                 await this.transactionService.update(transaction.id, {
-                    LightningInvoiceId: bolt11
+                    txid: bolt11
                 })
                 this.lightningNodeService.pay(bolt11);
             }

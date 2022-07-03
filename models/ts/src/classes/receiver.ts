@@ -1,10 +1,11 @@
 export class Receiver {
 
     constructor(
-        public id: string,
-        public potId: string,
+        public id: number,
+        public potId: number,
         public type: string,
         public amount: number,
+        public amountCurrency: string,
         public data: string,
         public createdAt: Date
     ) { }
@@ -15,6 +16,7 @@ export class Receiver {
             json["potId"],
             json["type"],
             json["amount"],
+            json["amountCurrency"],
             json["data"],
             json["createdAt"]
         );

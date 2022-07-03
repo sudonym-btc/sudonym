@@ -12,38 +12,39 @@ export class Transaction extends Model implements Models.Transaction {
   id: number;
 
   @Column
-  addressType: string;
+  txid: string;
+
+  @Column
+  type: string;
+
+  @Column
+  description: string;
 
   @Column
   address: string;
 
-  @Default(false)
+  @Default(null)
   @Column
-  confirmed: boolean;
+  status: boolean;
 
   @Column
-  transactionId: string;
+  transactionId: number;
 
   @Column
-  potId: string;
-
-  @Default(false)
-  @Column
-  spendable: boolean;
+  potId: number;
 
   @AllowNull(false)
   @Column
   amount: number;
 
-  @Column
-  LightningInvoiceId: string;
-
-  @Column
-  OnchainTransactionId: string;
-
   @AllowNull(false)
   @Column
   outgoing: boolean;
+
+  @AllowNull(false)
+  @Default('BTC')
+  @Column
+  currencyCode: string;
 
   @CreatedAt
   @Column

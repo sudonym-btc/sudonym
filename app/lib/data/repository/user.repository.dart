@@ -7,7 +7,7 @@ import 'package:sudonym/data/repository/websocket.dart';
 
 import '../../injection.dart';
 
-@Injectable(as: UserRepository, env: Env.allButMock)
+@LazySingleton(as: UserRepository, env: Env.allButMock)
 class UserRepositoryImpl extends UserRepository {
   @override
   String get endpoint => "user";

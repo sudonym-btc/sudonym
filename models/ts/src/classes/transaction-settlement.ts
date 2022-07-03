@@ -2,7 +2,7 @@ export class TransactionSettlement {
 
     constructor(
         public id: number,
-        public transactionId: string | null,
+        public transactionId: number | null,
         public status: boolean | null,
         public createdAt: Date
     ) { }

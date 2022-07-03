@@ -1,4 +1,5 @@
 export "event.dart";
+export "address-parse-response.dart";
 export "contact.dart";
 export "contact-address.dart";
 export "transaction.dart";

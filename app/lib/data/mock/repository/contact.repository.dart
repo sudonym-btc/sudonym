@@ -8,7 +8,7 @@ import '../../../injection.dart';
 import '../../repository/websocket.dart';
 import 'crud_repository.dart';
 
-@Injectable(as: ContactRepository, env: [Env.mock])
+@LazySingleton(as: ContactRepository, env: [Env.mock])
 class MockContactRepository extends crud_repository<Contact>
     implements ContactRepository {
   @override

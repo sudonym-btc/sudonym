@@ -30,7 +30,7 @@ class Pot extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [const PotHeader(), SendReceive(potId: potId)],
             ),
-            minHeight: 0,
+            minHeight: 150,
             boxShadow: null,
             panel: const TransactionList(),
           );

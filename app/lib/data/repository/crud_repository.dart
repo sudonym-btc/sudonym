@@ -42,8 +42,9 @@ abstract class crud_repository<T> {
     });
   }
 
-  Future<ListState<T>> list() async {
-    return dio.get("/" + endpoint).then((value) {
+  Future<ListState<T>> list({where}) async {
+    return dio
+        .get("/" + endpoint, queryParameters: {"where": where}).then((value) {
       var list = (value.data as List).map((e) {
         return converter(e) as T;
       }).toList();

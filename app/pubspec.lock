@@ -37,7 +37,7 @@ packages:
     source: hosted
     version: "2.8.2"
   bech32:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: bech32
       url: "https://pub.dartlang.org"
@@ -604,6 +604,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.0"
+  money_formatter:
+    dependency: "direct main"
+    description:
+      name: money_formatter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   nested:
     dependency: transitive
     description:

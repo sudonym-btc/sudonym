@@ -1,5 +1,5 @@
 class ContactAddress {
-  String contactId;
+  num contactId;
   String addressType;
   String address;
   String name;

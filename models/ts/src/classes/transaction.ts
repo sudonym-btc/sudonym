@@ -1,33 +1,34 @@
+
 export class Transaction {
 
     constructor(
         public id: number,
+        public txid: string | null,
+        public potId: number,
         public outgoing: boolean,
-        public addressType: string | null,
+        public type: string | null,
         public address: string | null,
-        public transactionId: string | null,
-        public potId: string,
+        public description: string | null,
+        public transactionId: number | null,
         public amount: number,
-        public confirmed: boolean,
-        public spendable: boolean,
-        public OnchainTransactionId: string | null,
-        public LightningInvoiceId: string | null,
+        public status: boolean | null,
+        public currencyCode: string,
         public createdAt: Date
     ) { }
 
     static fromJson(json: Object): Transaction {
         return new Transaction(
             json["id"],
-            json["outgoing"],
-            json["addressType"],
-            json["address"],
-            json["transactionId"],
+            json["txid"],
             json["potId"],
+            json["outgoing"],
+            json["type"],
+            json["address"],
+            json["description"],
+            json["transactionId"],
             json["amount"],
-            json["confirmed"],
-            json["spendable"],
-            json["OnchainTransactionId"],
-            json["LightningInvoiceId"],
+            json["status"],
+            json["currencyCode"],
             json["createdAt"]
         );
     }

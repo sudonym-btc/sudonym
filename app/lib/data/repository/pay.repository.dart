@@ -4,9 +4,16 @@ import 'package:sudonym.models/index.dart';
 
 import '../../injection.dart';
 
-@Injectable(as: PayRepository, env: Env.allButMock)
+@LazySingleton(as: PayRepository, env: Env.allButMock)
 class PayRepositoryImpl extends PayRepository {
   PayRepositoryImpl(Dio dio) : super(dio);
+
+  @override
+  Future<AddressParseResponse> parse(String p) {
+    return dio
+        .get('/pay/parse?address=' + p)
+        .then((value) => AddressParseResponse.fromJson(value.data));
+  }
 
   @override
   Future<Payment> getInfo(Payment p) {
@@ -26,5 +33,6 @@ abstract class PayRepository {
   Dio dio;
   Future<Payment> getInfo(Payment p);
   Future<Transaction> pay(Payment p);
+  Future<dynamic> parse(String addr);
   PayRepository(this.dio);
 }

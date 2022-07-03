@@ -6,6 +6,11 @@ export class PayController {
 
   @Inject(PayService) payService: PayService;
 
+  @Get('parse')
+  async parse(@Query('address') address) {
+    return this.payService.parseInvoice(address);
+  }
+
   @Get('info')
   async getInfo(@Query('address') address, @Query('amount') amount) {
     return this.payService.getInfo(address, amount);

@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/data/mock/repository/crud_repository.dart';
 import 'package:sudonym/data/repository/receive.repository.dart';
 
 @injectable
@@ -10,10 +9,10 @@ class ReceiveCubit extends Cubit<ReceiveCubitState> {
 
   ReceiveCubit(this._receiveRepository) : super(ReceiveCubitState());
 
-  getInvoice(potId, type, amount) async {
+  getInvoice(potId, type, [num? amount]) async {
     emit(ReceiveCubitState(loading: true));
     var data = await _receiveRepository.getInvoice(potId, type, amount);
-    emit(ReceiveCubitState(loading: false, data: data));
+    if (!isClosed) emit(ReceiveCubitState(loading: false, data: data));
   }
 }
 

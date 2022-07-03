@@ -1,42 +1,42 @@
 class Transaction {
   num id;
+  dynamic /* String | null */ txid;
+  num potId;
   bool outgoing;
-  String addressType;
-  String address;
-  dynamic /* String | null */ transactionId;
-  String potId;
+  dynamic /* String | null */ type;
+  dynamic /* String | null */ address;
+  dynamic /* String | null */ description;
+  dynamic /* num | null */ transactionId;
   num amount;
-  bool confirmed;
-  bool spendable;
-  dynamic /* String | null */ OnchainTransactionId;
-  dynamic /* String | null */ LightningInvoiceId;
+  dynamic /* bool | null */ status;
+  String currencyCode;
   DateTime createdAt;
   Transaction(
       this.id,
-      this.outgoing,
-      this.addressType,
-      this.address,
-      this.transactionId,
+      this.txid,
       this.potId,
+      this.outgoing,
+      this.type,
+      this.address,
+      this.description,
+      this.transactionId,
       this.amount,
-      this.confirmed,
-      this.spendable,
-      this.OnchainTransactionId,
-      this.LightningInvoiceId,
+      this.status,
+      this.currencyCode,
       this.createdAt) {}
   static Transaction fromJson(Map<String, dynamic> json) {
     return new Transaction(
         json["id"],
-        json["outgoing"],
-        json["addressType"],
-        json["address"],
-        json["transactionId"],
+        json["txid"],
         json["potId"],
+        json["outgoing"],
+        json["type"],
+        json["address"],
+        json["description"],
+        json["transactionId"],
         json["amount"],
-        json["confirmed"],
-        json["spendable"],
-        json["OnchainTransactionId"],
-        json["LightningInvoiceId"],
+        json["status"],
+        json["currencyCode"],
         DateTime.parse(json["createdAt"]));
   }
 }
