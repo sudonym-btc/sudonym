@@ -12,20 +12,20 @@ class PayRepositoryImpl extends PayRepository {
   Future<AddressParseResponse> parse(String p) {
     return dio
         .get('/pay/parse?address=' + p)
-        .then((value) => AddressParseResponse.fromJson(value.data));
+        .then((value) => AddressParseResponse(value.data));
   }
 
   @override
   Future<Payment> getInfo(Payment p) {
     return dio
-        .get('/pay/info?address=' + p.originalAddress)
-        .then((value) => Payment.fromJson(value.data));
+        .get('/pay/info?address=' + p.get("originalAddress"))
+        .then((value) => Payment(value.data));
   }
 
   @override
   Future<Transaction> pay(Payment p) {
-    return dio.post('/pay', data: {'address': p.originalAddress}).then(
-        (value) => Transaction.fromJson(value.data));
+    return dio.post('/pay', data: {'address': p.get("originalAddress")}).then(
+        (value) => Transaction(value.data));
   }
 }
 

@@ -4,16 +4,16 @@ import 'package:sudonym/data/repository/crud_repository.dart';
 import 'package:sudonym.models/types/list.dart';
 
 class ListCubit<T> extends Cubit<ListCubitState> {
-  final crud_repository _repository;
-  int firstId = 0;
-  int lastId = 123456789987654321;
+  final CrudRepository _repository;
+  final Map<String, dynamic> where;
   String order = 'DESC';
 
-  ListCubit(this._repository)
-      : super(ListCubitState(data: [], metadata: {}, loading: false)) {
+  ListCubit(this._repository, {this.where = const {}})
+      : super(ListCubitState(
+            data: const [], metadata: const {}, loading: false)) {
     _repository.created.stream.listen((event) {
-      print("CREATETETTEE");
-      this.loadNext();
+      print("Loading Prev");
+      loadPrevious();
     });
   }
 
@@ -23,16 +23,11 @@ class ListCubit<T> extends Cubit<ListCubitState> {
           data: state.data, metadata: state.metadata, loading: true));
 
       var response = await _repository.list(where: {
-        'id': order == 'ASC' ? {'gt': lastId} : {'lt': lastId}
+        ...where,
+        'id': order == 'DESC' ? {'lt': getSmallestId()} : {'lt': getLargestId()}
       });
 
       List elements = [...state.data, ...response.data];
-      List sorted = [...elements];
-      sorted.sort(((a, b) => a.id - b.id));
-      if (order == 'ASC') {
-        sorted = sorted.reversed.toList();
-      }
-      lastId = sorted[0].id;
 
       if (!isClosed) {
         emit(ListCubitState(
@@ -47,19 +42,33 @@ class ListCubit<T> extends Cubit<ListCubitState> {
           data: state.data, metadata: state.metadata, loading: true));
 
       var response = await _repository.list(where: {
-        'id': order == 'ASC' ? {'lt': firstId} : {'gt': firstId}
+        ...where,
+        'id': order == 'DESC' ? {'gt': getLargestId()} : {'gt': getSmallestId()}
       });
 
       List elements = [...response.data, ...state.data];
-      List sorted = [...elements];
-      sorted.sort(((a, b) => a.id - b.id));
-      lastId = sorted[0].id;
 
       if (!isClosed) {
         emit(ListCubitState(
             data: elements, metadata: response.metadata, loading: false));
       }
     }
+  }
+
+  getLargestId() {
+    return state.data.fold(
+        0,
+        (previousValue, element) => element.get("id") > previousValue
+            ? element.get("id")
+            : previousValue);
+  }
+
+  getSmallestId() {
+    return state.data.fold(
+        99999999999999,
+        (previousValue, element) => element.get("id") < previousValue
+            ? element.get("id")
+            : previousValue);
   }
 }
 

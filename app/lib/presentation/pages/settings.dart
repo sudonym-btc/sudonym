@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/components/button/button.dart';
+
+import '../widgets/pot/edit-pot.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -19,6 +23,19 @@ class SettingsPage extends StatelessWidget {
                   child: Form(
                     key: _formKey,
                     child: Column(children: [
+                      Button(
+                          text: "Add Pot",
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditPot(
+                                            entity: Pot({
+                                          "currency": "BTC",
+                                          "spendableBalance": 0,
+                                          "balance": 0
+                                        }))));
+                          }),
                       // Text(
                       //   "Lightning Address",
                       //   style: Theme.of(context).textTheme.headline4,

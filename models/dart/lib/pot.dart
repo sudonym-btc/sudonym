@@ -1,12 +1,22 @@
-class Pot {
-  num id;
-  String name;
-  String currency;
-  num balance;
-  num spendableBalance;
-  Pot(this.id, this.name, this.currency, this.balance, this.spendableBalance) {}
-  static Pot fromJson(Map<String, dynamic> json) {
-    return new Pot(json["id"], json["name"], json["currency"], json["balance"],
-        json["spendableBalance"]);
-  }
-}
+
+        import 'base-types/pot.dart' as Model;
+        import 'base-class.dart';
+
+        class Pot extends BaseClass {
+            Map<String, dynamic> data = {};
+
+            Pot(this.data): super(data);
+
+            operator [](String i) => data[i];
+            operator []=(String i, dynamic value) => data[i] = value;
+
+            get(String i) {
+              return this[i];
+            }
+
+            set(String i, dynamic val) {
+                this[i] = val;
+            }
+        }
+
+        

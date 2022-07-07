@@ -19,10 +19,12 @@ class ContactListItem extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.blue.shade100,
-                  child: Text(contact.name.substring(0, 1).toString()),
+                  child: Text(contact.get("name").substring(0, 1).toString()),
                 ),
-                SizedBox(width: padding,),
-                SizedBox(child: Text(contact.name.toString())),
+                SizedBox(
+                  width: padding,
+                ),
+                SizedBox(child: Text(contact.get("name").toString())),
               ],
             )));
   }

@@ -9,7 +9,7 @@ export class Pot {
         public spendableBalance: number
     ) { }
 
-    static fromJson(json: Object): Pot {
+    static fromJson(json: any): Pot {
         return new Pot(
             json["id"],
             json["name"],

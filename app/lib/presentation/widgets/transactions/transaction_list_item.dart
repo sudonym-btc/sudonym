@@ -13,23 +13,24 @@ class TransactionListItem extends StatelessWidget {
 
   getTitle() {
     String networkName = ["lnurl", "bolt11", "bolt12", "lightningaddress"]
-            .contains(transaction.type)
+            .contains(transaction.get("type"))
         ? "lightning network"
         : "onchain";
-    return transaction.outgoing
-        ? transaction.address ?? "Spend via " + networkName
+    return transaction.get("outgoing")
+        ? transaction.get("address") ?? "Spend via " + networkName
         : "Received " + networkName;
   }
 
   getDescription() {
-    return transaction.description ?? "No description";
+    return transaction.get("description") ?? "No description";
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          Navigator.of(context).pushNamed('/transaction');
+          Navigator.of(context)
+              .pushNamed('/transaction', arguments: transaction);
         },
         child: Container(
             padding: EdgeInsets.all(padding),
@@ -38,12 +39,13 @@ class TransactionListItem extends StatelessWidget {
                 SizedBox(
                     width: 75,
                     child: Text(
-                      (transaction.outgoing ? "-" : "") +
-                          FormatCurrency().format(transaction.currencyCode,
-                              transaction.amount.toDouble()),
+                      (transaction.get("outgoing") ? "-" : "") +
+                          FormatCurrency().format(
+                              transaction.get("currencyCode"),
+                              transaction.get("amount").toDouble()),
                       style: TextStyle(
                           fontSize: 12,
-                          color: transaction.outgoing
+                          color: transaction.get("outgoing")
                               ? Theme.of(context).errorColor
                               : Theme.of(context).primaryColorDark),
                     )),
@@ -58,7 +60,10 @@ class TransactionListItem extends StatelessWidget {
                 SizedBox(
                     width: 50,
                     child: Center(
-                        child: Info(timeago.format(transaction.createdAt,
+                        child: Info(timeago.format(
+                            transaction.get("createdAt").runtimeType == DateTime
+                                ? transaction.get("createdAt")
+                                : DateTime.parse(transaction.get("createdAt")),
                             locale: 'en_short')))),
               ],
             )));

@@ -1,9 +1,22 @@
-class PotUser {
-  num id;
-  num potId;
-  num userId;
-  PotUser(this.id, this.potId, this.userId) {}
-  static PotUser fromJson(Map<String, dynamic> json) {
-    return new PotUser(json["id"], json["potId"], json["userId"]);
-  }
-}
+
+        import 'base-types/pot-user.dart' as Model;
+        import 'base-class.dart';
+
+        class PotUser extends BaseClass {
+            Map<String, dynamic> data = {};
+
+            PotUser(this.data): super(data);
+
+            operator [](String i) => data[i];
+            operator []=(String i, dynamic value) => data[i] = value;
+
+            get(String i) {
+              return this[i];
+            }
+
+            set(String i, dynamic val) {
+                this[i] = val;
+            }
+        }
+
+        

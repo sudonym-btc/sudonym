@@ -4,6 +4,5 @@ import 'package:sudonym.models/user.dart';
 
 @injectable
 class UserCubit extends Cubit<User> {
-  UserCubit() : super(User.fromJson({}));
-
+  UserCubit() : super(User({}));
 }

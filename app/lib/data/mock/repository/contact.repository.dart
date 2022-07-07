@@ -9,11 +9,9 @@ import '../../repository/websocket.dart';
 import 'crud_repository.dart';
 
 @LazySingleton(as: ContactRepository, env: [Env.mock])
-class MockContactRepository extends crud_repository<Contact>
+class MockContactRepository extends MockCrudRepository<Contact>
+    with ContactRepositoryProps
     implements ContactRepository {
-  @override
-  String get endpoint => "contact";
-
   MockContactRepository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
 }

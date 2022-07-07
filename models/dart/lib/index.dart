@@ -8,6 +8,7 @@ export "receiver.dart";
 export "transaction/lightning-transaction.dart";
 export "offer.dart";
 export "user.dart";
+export "user-device.dart";
 export "payment.dart";
 export "pot.dart";
 export "pot-user.dart";

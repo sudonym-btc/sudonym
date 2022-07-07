@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/logic/bloc/contact.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/qr/qr.dart';
-import 'package:sudonym/presentation/pages/send/amount.dart';
-import 'package:sudonym/presentation/widgets/contacts/contact_list.dart';
-import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
-import 'package:sudonym/presentation/widgets/send/qr.dart';
 
 import '../../constants.dart';
 import '../../logic/bloc/link.service.dart';
 
 class SendPage extends StatefulWidget {
-  const SendPage({Key? key}) : super(key: key);
+  final int? potId;
+
+  const SendPage({this.potId, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,7 +32,8 @@ class _SendPageState extends State<SendPage> {
     _InvoiceInput invoiceInput = _InvoiceInput(
       controller: controller,
       onPressed: () {
-        getIt<LinkService>().trigger(controller.value.text, context);
+        getIt<LinkService>()
+            .trigger(controller.value.text, context, widget.potId);
       },
     );
 
@@ -63,21 +61,7 @@ class _SendPageState extends State<SendPage> {
                     children: [
                       const SizedBox(height: padding),
                       invoiceInput,
-                      const SizedBox(height: padding),
-                      // Expanded(
-                      //   child: ContactList(),
-                      // ),
-                      // const SizedBox(height: padding),
-                      // ButtonBar(children: [
-                      //   Button(
-                      //     text: 'Send',
-                      //     icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
-                      //     onPressed: () {
-                      //       Navigator.pushNamed(context, '/confirmSend',
-                      //           arguments: {"address": controller.value.text});
-                      //     },
-                      //   )
-                      // ])
+                      const SizedBox(height: padding)
                     ],
                   ))),
         ));

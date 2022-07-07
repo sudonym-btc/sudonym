@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym/presentation/components/typography/header.dart';
+import 'package:sudonym/presentation/components/typography/subtitle.dart';
 import 'package:sudonym/presentation/theme.dart';
 
 import '../../../constants.dart';
@@ -47,6 +49,38 @@ class StatusPage extends StatelessWidget {
               backgroundColor: MaterialStateProperty.all(Colors.white),
               foregroundColor: MaterialStateProperty.all(textColor))),
     );
+
+    var children = [
+      Header(title),
+      Subtitle(subtitle),
+      SizedBox(height: padding * 2),
+      if (content == null && icon == null) Expanded(child: new Container())
+    ];
+
+    if (icon != null) {
+      children = [
+        ...children,
+        Expanded(
+            child: Center(
+          child: FaIcon(
+            icon,
+            color: Colors.white.withAlpha(100),
+            size: 60,
+          ),
+        ))
+      ];
+    }
+
+    if (content != null) {
+      children = [...children, Expanded(child: content!)];
+    }
+
+    children = [
+      ...children,
+      if (actions != null) Expanded(child: new Container()),
+      if (actions != null) actions!
+    ];
+
     return Theme(
       data: newTheme,
       child: Container(
@@ -61,22 +95,7 @@ class StatusPage extends StatelessWidget {
                     padding: EdgeInsets.all(padding),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(title, style: newTheme.textTheme.headline3),
-                        Text(subtitle, style: newTheme.textTheme.headline6),
-                        if(content == null) Expanded(child: new Container()),
-                        if (icon != null)
-                          Center(
-                            child: FaIcon(
-                              icon,
-                              color: Colors.white.withAlpha(100),
-                              size: 60,
-                            ),
-                          ),
-                        if (content != null) Column(children: [SizedBox(height: padding*2), content!]),
-                        Expanded(child: new Container()),
-                        if (actions != null) actions!
-                      ],
+                      children: children,
                     ))),
           )),
     );

@@ -10,13 +10,11 @@ class ReceiveRepositoryImpl extends ReceiveRepository {
 
   @override
   Future<Receiver> getInvoice(potId, type, amount) {
-    print(type);
-    print(potId);
     return dio.get('/receive/invoice', queryParameters: {
       "potId": potId.toString(),
       "type": type.toString(),
       "amount": amount.toString()
-    }).then((value) => Receiver.fromJson(value.data));
+    }).then((value) => Receiver(value.data));
   }
 }
 

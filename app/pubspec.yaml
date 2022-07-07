@@ -21,8 +21,9 @@ dependencies:
   dio: ^4.0.4
   sudonym.models:
     path: ../models/dart
-  firebase_auth: ^3.3.9
-  firebase_core: ^1.13.1
+  firebase_auth: ^3.4.1
+  firebase_core: ^1.19.1
+  firebase_messaging: ^11.4.4
   google_sign_in: ^5.2.4
   flutter_facebook_auth: ^4.1.2
   http: ^0.13.4
@@ -38,10 +39,14 @@ dependencies:
   # share_plus: ^3.1.0 
   number_display: ^3.0.0
   web_socket_channel: ^2.2.0
-  firebase_messaging: ^11.4.2
   dart_lnurl: ^0.1.0
   bech32: any
   money_formatter: ^0.0.3
+  app_links: ^3.2.0
+  flutter_local_notifications: ^9.6.1
+  firebase_app_installations: ^0.1.1+1
+  sentry_flutter: ^6.6.3
+  flutter_form_builder: ^7.3.1
   
 dev_dependencies:
   test: ^1.19.5

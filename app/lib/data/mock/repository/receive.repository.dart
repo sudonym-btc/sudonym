@@ -26,7 +26,15 @@ class MockReceiveRepository implements ReceiveRepository {
     } else if (type == "onchain") {
       data = "bc1qw69mpwfcmcg4segjdm9qmrwfn0n230tcve8wg6h7fa8r996zm7pqfuk0me";
     }
-    Receiver r = Receiver(1, 1, type, amount, "BTC", data, new DateTime(2020));
+    Receiver r = Receiver({
+      "id": 1,
+      "potId": 1,
+      "type": type,
+      "amount": amount,
+      "currency": "BTC",
+      "data": data,
+      "createdAt": DateTime.now()
+    });
     receivers.add(r);
     print(receivers);
     return r;

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/logic/bloc/receive.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
+import 'package:sudonym/presentation/pages/send.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 
 import '../../../injection.dart';
 
 class SendReceive extends StatelessWidget {
-  final dynamic potId;
-  const SendReceive({required this.potId, Key? key}) : super(key: key);
+  final Pot entity;
+  const SendReceive({required this.entity, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,8 @@ class SendReceive extends StatelessWidget {
                               icon: FaIcon(FontAwesomeIcons.inbox, size: 14),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/receive',
-                                    arguments: ReceivePageArgs(potId));
+                                    arguments:
+                                        ReceivePageArgs(entity.get("id")));
                               },
                             ),
                             Button(
@@ -60,8 +61,12 @@ class SendReceive extends StatelessWidget {
                               icon:
                                   FaIcon(FontAwesomeIcons.paperPlane, size: 14),
                               onPressed: () {
-                                Navigator.pushNamed(context, '/send',
-                                    arguments: ReceivePageArgs(potId));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SendPage(
+                                              potId: entity.get("id"),
+                                            )));
                               },
                             )
                           ],

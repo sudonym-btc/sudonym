@@ -6,7 +6,7 @@ import '../../data/repository/pot.repository.dart';
 import 'entity_cubit_state.dart';
 
 @injectable
-class PotCubit extends EntityCubit<PotCubitState> {
+class PotCubit extends EntityCubit<PotCubitState, Pot> {
   @override
   final PotRepository repository;
 

@@ -1,5 +1,3 @@
-import { Payment } from './payment';
-
 export class AddressParseResponse {
 
     constructor(
@@ -28,20 +26,5 @@ export class AddressParseResponse {
             json["isBolt12"],
             json["isOnChain"],
         );
-    }
-    toPayment(): Payment {
-        if (this.success) {
-            if (this.isLnUrl || this.isLnAddress) {
-                return new Payment(this.originalInput, '', this.data['amount'], this.data['minSendable'],
-                    this.data['maxSendable'], null);
-            } else if(this.isBolt11) {
-                return new Payment(this.originalInput, '', this.data['msatoshi'] / 1000, this.data['msatoshi'] / 1000,
-                    this.data['msatoshi'] / 1000, null);
-            } else if(this.isOnChain) {
-                
-            }
-
-        }
-        throw Error();
     }
 }

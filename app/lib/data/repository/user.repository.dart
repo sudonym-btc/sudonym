@@ -9,16 +9,19 @@ import '../../injection.dart';
 
 @LazySingleton(as: UserRepository, env: Env.allButMock)
 class UserRepositoryImpl extends UserRepository {
-  @override
-  String get endpoint => "user";
-  @override
-  Function converter = User.fromJson;
-
   UserRepositoryImpl(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
 }
 
-abstract class UserRepository extends crud_repository<User> {
+abstract class UserRepository extends CrudRepository<User>
+    with UserRepositoryProps {
   UserRepository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
+}
+
+class UserRepositoryProps {
+  @override
+  String get endpoint => "user";
+  @override
+  Function converter = (e) => User(e);
 }

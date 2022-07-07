@@ -23,12 +23,14 @@ class AuthCubit extends Cubit<AuthState> {
   loginWithGoogle() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithGoogle();
-    emit(LoadedState(User(123, "", '', "")));
+    emit(LoadedState(User({"id": 123})));
   }
 
   loginWithFacebook() async {
     emit(LoadingState());
-    emit(LoadedState(User(123, "", '', "")));
+    emit(LoadedState(User({
+      "id": 123,
+    })));
   }
 
   logout() async {

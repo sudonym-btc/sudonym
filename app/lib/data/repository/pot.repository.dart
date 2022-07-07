@@ -9,17 +9,19 @@ import '../../injection.dart';
 
 @LazySingleton(as: PotRepository, env: Env.allButMock)
 class PotRepositoryImpl extends PotRepository {
-  @override
-  String get endpoint => "pot";
-
-  @override
-  Function converter = Pot.fromJson;
-
   PotRepositoryImpl(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
 }
 
-abstract class PotRepository extends crud_repository<Pot> {
+abstract class PotRepository extends CrudRepository<Pot>
+    with PotRepositoryProps {
   PotRepository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
+}
+
+class PotRepositoryProps {
+  @override
+  String get endpoint => "pot";
+  @override
+  Function converter = (e) => Pot(e);
 }

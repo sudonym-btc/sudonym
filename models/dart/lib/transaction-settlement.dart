@@ -1,12 +1,22 @@
-class TransactionSettlement {
-  num id;
-  dynamic /* num | null */ transactionId;
-  dynamic /* bool | null */ status;
-  DateTime createdAt;
-  TransactionSettlement(
-      this.id, this.transactionId, this.status, this.createdAt) {}
-  static TransactionSettlement fromJson(Map<String, dynamic> json) {
-    return new TransactionSettlement(
-        json["id"], json["transactionId"], json["status"], DateTime.parse(json["createdAt"]));
-  }
-}
+
+        import 'base-types/transaction-settlement.dart' as Model;
+        import 'base-class.dart';
+
+        class TransactionSettlement extends BaseClass {
+            Map<String, dynamic> data = {};
+
+            TransactionSettlement(this.data): super(data);
+
+            operator [](String i) => data[i];
+            operator []=(String i, dynamic value) => data[i] = value;
+
+            get(String i) {
+              return this[i];
+            }
+
+            set(String i, dynamic val) {
+                this[i] = val;
+            }
+        }
+
+        

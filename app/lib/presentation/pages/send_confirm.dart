@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/data/repository/pay.repository.dart';
 import 'package:sudonym/logic/bloc/send.cubit.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 
@@ -22,10 +21,11 @@ class SendConfirmPage extends StatelessWidget {
     final Payment payment =
         ModalRoute.of(context)?.settings.arguments as Payment;
 
+    print(payment.get("potId"));
+
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) {
-            print(payment);
             return getIt<SendCubit>()..getInfo(payment);
           })
         ],
@@ -34,12 +34,10 @@ class SendConfirmPage extends StatelessWidget {
           if (state.transactionData != null &&
               !state.loadingSend &&
               state.transactionData!.isRight()) {
-            state.transactionData!.fold(
-                (l) => null,
-                (r) => {
-                      Navigator.pushReplacementNamed(context, '/transaction',
-                          arguments: r)
-                    });
+            state.transactionData!.fold((l) => null, (r) {
+              Navigator.pushReplacementNamed(context, '/transaction',
+                  arguments: r);
+            });
           }
         }, child: BlocBuilder<SendCubit, SendCubitState>(
                 builder: (BuildContext context, state) {
@@ -67,7 +65,7 @@ class SendConfirmPage extends StatelessWidget {
               title = 'Failed';
               subtitle = 'Failed to create transaction';
               icon = FontAwesomeIcons.exclamationCircle;
-              content = null;
+              content = Text(l.toString());
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
@@ -100,7 +98,7 @@ class SendConfirmPage extends StatelessWidget {
                     TableRow(children: [
                       new Text('address'),
                       new Text(
-                        r.address,
+                        r.get("address"),
                         style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -108,12 +106,12 @@ class SendConfirmPage extends StatelessWidget {
                     ]),
                     TableRow(children: [
                       new Text('fee'),
-                      new Text(r.feeMSat.toString() + ' sats / \$0.01')
+                      new Text(r.get("feeMSat").toString() + ' sats / \$0.01')
                     ]),
                     TableRow(children: [
                       new Text('name'),
                       new Text(
-                        r.originalAddress,
+                        r.get("originalAddress"),
                         style: TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),

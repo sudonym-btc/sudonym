@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
+import 'package:sudonym/logic/bloc/link.service.dart';
+import 'package:sudonym/main.dart';
 
 import '../../../injection.dart';
 import '../../../logic/bloc/transaction-listener/transaction-listener.cubit.dart';
@@ -35,16 +38,10 @@ class _LoggedInWidget extends StatelessWidget {
             TransactionListenerCubitState>(
         bloc: BlocProvider.of<TransactionListenerCubit>(context),
         listener: (BuildContext context, state) {
-          final snackBar = SnackBar(
-            content: Text('Detected address in clipboard'),
-            action: SnackBarAction(
-                label: 'Send',
-                onPressed: () {
-                  Navigator.pushNamed(context, '/confirmSend');
-                }),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (state.address != null) {
+            getIt<LinkService>().trigger(state.address.toString(), context);
+          }
         },
-        child: HomePage());
+        child: MessageHandler(child: HomePage()));
   }
 }

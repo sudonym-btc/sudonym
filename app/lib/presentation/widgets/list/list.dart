@@ -25,6 +25,7 @@ class _ListState extends State<List> {
   void initState() {
     controller.addListener(() {
       if (controller.position.pixels >= controller.position.maxScrollExtent) {
+        print("Scroller triggering next");
         widget.list.loadNext();
       }
     });
@@ -55,11 +56,11 @@ class _ListState extends State<List> {
                       height: 20,
                       child: CircularProgressIndicator())));
             } else {
-              if(state.data.isEmpty) {
+              if (state.data.isEmpty) {
                 children.add(Text(widget.emptyText));
               }
             }
-            
+
             return ListView(
               children: children,
               controller: controller,

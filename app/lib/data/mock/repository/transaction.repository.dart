@@ -9,11 +9,9 @@ import 'crud_repository.dart';
 import 'package:sudonym.models/transaction.dart';
 
 @LazySingleton(as: TransactionRepository, env: [Env.mock])
-class MockTransactionRepository extends crud_repository<Transaction>
+class MockTransactionRepository extends MockCrudRepository<Transaction>
+    with TransactionRepositoryProps
     implements TransactionRepository {
-  @override
-  String get endpoint => "transaction";
-
   MockTransactionRepository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
 }

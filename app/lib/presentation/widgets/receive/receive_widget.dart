@@ -31,7 +31,7 @@ class ReceiveWidget extends StatelessWidget {
           Widget image = Center(child: const CircularProgressIndicator());
           if (!state.loading) {
             image = QrImage(
-              data: state.data!.data,
+              data: state.data!.get("data"),
               version: QrVersions.auto,
               // embeddedImage: AssetImage('assets/images/my_embedded_image.png'),
               // embeddedImageStyle: QrEmbeddedImageStyle(
@@ -58,7 +58,7 @@ class ReceiveWidget extends StatelessWidget {
                         onPressed: state.loading
                             ? null
                             : () {
-                                FlutterClipboard.copy(state.data!.data)
+                                FlutterClipboard.copy(state.data!.get("data"))
                                     .then((value) {
                                   final snackBar = SnackBar(
                                     content: Text('Copied to Clipboard'),

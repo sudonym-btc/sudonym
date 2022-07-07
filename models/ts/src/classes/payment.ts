@@ -1,6 +1,7 @@
 export class Payment {
 
     constructor(
+        public potId: number | null,
         public originalAddress: string,
         public address: string | null,
         public amount: number | null,
@@ -11,6 +12,7 @@ export class Payment {
 
     static fromJson(json: Object): Payment {
         return new Payment(
+            json["potId"],
             json["originalAddress"],
             json["address"],
             json["amount"],

@@ -6,11 +6,12 @@ import '../../data/repository/transaction.repository.dart';
 import 'entity_cubit_state.dart';
 
 @injectable
-class TransactionCubit extends EntityCubit<TransactionCubitState> {
+class TransactionCubit extends EntityCubit<TransactionCubitState, Transaction> {
   @override
   final TransactionRepository repository;
 
-  TransactionCubit(this.repository) : super(TransactionCubitState(), TransactionCubitState.init);
+  TransactionCubit(this.repository)
+      : super(TransactionCubitState(), TransactionCubitState.init);
 }
 
 class TransactionCubitState extends EntityCubitState<Transaction> {

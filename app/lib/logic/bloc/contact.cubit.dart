@@ -6,11 +6,12 @@ import '../../data/repository/contact.repository.dart';
 import 'entity_cubit_state.dart';
 
 @injectable
-class ContactCubit extends EntityCubit<ContactCubitState> {
+class ContactCubit extends EntityCubit<ContactCubitState, Contact> {
   @override
   final ContactRepository repository;
 
-  ContactCubit(this.repository) : super(ContactCubitState(), ContactCubitState.init);
+  ContactCubit(this.repository)
+      : super(ContactCubitState(), ContactCubitState.init);
 }
 
 class ContactCubitState extends EntityCubitState<Contact> {

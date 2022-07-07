@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:sudonym.models/index.dart';
@@ -8,16 +7,18 @@ import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
-abstract class crud_repository<T> {
+abstract class CrudRepository<T> {
   String endpoint = "";
-  Function converter = <T>(obj) {};
+  Function converter = <T>(obj) {
+    throw Error();
+  };
   Dio dio;
   Config config;
   Websocket websocket;
   StreamController<T> updated = StreamController.broadcast();
   StreamController<T> created = StreamController.broadcast();
 
-  crud_repository(this.config, this.dio, this.websocket) {
+  CrudRepository(this.config, this.dio, this.websocket) {
     onInit();
   }
 
@@ -25,12 +26,12 @@ abstract class crud_repository<T> {
     print("Listening to this stream " + endpoint);
     websocket.getStream().listen((event) {
       print("Websocket: " + event);
-      Event e = Event.fromJson(jsonDecode(event));
-      if (e.name.split('.')[0] == endpoint) {
-        if (e.name.split('.')[1] == 'created') {
-          created.add(converter(e.data));
-        } else if (e.name.split('.')[1] == 'updated') {
-          updated.add(converter(e.data));
+      Event e = Event(jsonDecode(event));
+      if (e.get("name").split('.')[0] == endpoint) {
+        if (e.get("name").split('.')[1] == 'created') {
+          created.add(converter(e.get("data")));
+        } else if (e.get("name").split('.')[1] == 'updated') {
+          updated.add(converter(e.get("data")));
         }
       }
     });
@@ -42,7 +43,7 @@ abstract class crud_repository<T> {
     });
   }
 
-  Future<ListState<T>> list({where}) async {
+  Future<ListState<T>> list({Map<String, dynamic>? where}) async {
     return dio
         .get("/" + endpoint, queryParameters: {"where": where}).then((value) {
       var list = (value.data as List).map((e) {

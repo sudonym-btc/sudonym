@@ -10,22 +10,22 @@ class Mockdata {
     switch (endpoint) {
       case "transaction":
         data["transaction"]["mocks"].forEach((obj) {
-          list.add(Model.Transaction.fromJson(obj) as T);
+          list.add(Model.Transaction(obj) as T);
         });
         break;
       case "pot":
         data["pot"]["mocks"].forEach((obj) {
-          list.add(Model.Pot.fromJson(obj) as T);
+          list.add(Model.Pot(obj) as T);
         });
         break;
       case "user":
         data["user"]["mocks"].forEach((obj) {
-          list.add(Model.User.fromJson(obj) as T);
+          list.add(Model.User(obj) as T);
         });
         break;
       case "contact":
         data["contact"]["mocks"].forEach((obj) {
-          list.add(Model.Contact.fromJson(obj) as T);
+          list.add(Model.Contact(obj) as T);
         });
         break;
     }

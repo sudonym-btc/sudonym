@@ -1,42 +1,22 @@
-class Transaction {
-  num id;
-  dynamic /* String | null */ txid;
-  num potId;
-  bool outgoing;
-  dynamic /* String | null */ type;
-  dynamic /* String | null */ address;
-  dynamic /* String | null */ description;
-  dynamic /* num | null */ transactionId;
-  num amount;
-  dynamic /* bool | null */ status;
-  String currencyCode;
-  DateTime createdAt;
-  Transaction(
-      this.id,
-      this.txid,
-      this.potId,
-      this.outgoing,
-      this.type,
-      this.address,
-      this.description,
-      this.transactionId,
-      this.amount,
-      this.status,
-      this.currencyCode,
-      this.createdAt) {}
-  static Transaction fromJson(Map<String, dynamic> json) {
-    return new Transaction(
-        json["id"],
-        json["txid"],
-        json["potId"],
-        json["outgoing"],
-        json["type"],
-        json["address"],
-        json["description"],
-        json["transactionId"],
-        json["amount"],
-        json["status"],
-        json["currencyCode"],
-        DateTime.parse(json["createdAt"]));
-  }
-}
+
+        import 'base-types/transaction.dart' as Model;
+        import 'base-class.dart';
+
+        class Transaction extends BaseClass {
+            Map<String, dynamic> data = {};
+
+            Transaction(this.data): super(data);
+
+            operator [](String i) => data[i];
+            operator []=(String i, dynamic value) => data[i] = value;
+
+            get(String i) {
+              return this[i];
+            }
+
+            set(String i, dynamic val) {
+                this[i] = val;
+            }
+        }
+
+        
