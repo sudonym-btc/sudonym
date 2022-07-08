@@ -5,15 +5,17 @@ import { Injectable } from "@nestjs/common";
 import { Subject } from "rxjs";
 import { getConfig } from "src/config/config";
 var sock = zmq.socket('sub');
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class BitcoinEvents {
 
     onTransaction = new Subject();
+    private readonly logger = new Logger(BitcoinEvents.name);
 
     onModuleInit() {
 
-        console.log("Connecting to bitcoin message queue at " + getConfig().bitcoinMQ)
+        this.logger.verbose("Connecting to bitcoin message queue at " + getConfig().bitcoinMQ)
 
         sock.connect_timeout = 1;
 
@@ -40,12 +42,12 @@ export class BitcoinEvents {
                     return out;
                 });
 
-                // console.log('received transaction', txid, tx);
+                this.logger.debug('Received onchain transaction', txid, tx);
                 this.onTransaction.next(tx);
             }
         });
 
-        sock.on('error', console.error);
+        sock.on('error', this.logger.error);
     }
 
 }

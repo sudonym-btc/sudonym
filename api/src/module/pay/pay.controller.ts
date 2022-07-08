@@ -18,7 +18,6 @@ export class PayController {
 
   @Post('')
   pay(@Body('address') address, @Body('amount') amount, @Body() data) {
-    console.log(data);
     return this.payService.pay(address, amount);
   } 
 }

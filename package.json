@@ -11,14 +11,16 @@
     "deploy:production": "bash ops/infrastructure/deploy.sh production",
     "deploy:staging": "bash ops/infrastructure/deploy.sh staging",
     "deploy:test": "bash ops/infrastructure/deploy.sh test",
-    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start && minikube kubectl -- apply -f ops/infrastructure/minikube/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
+    "deploy:development": "python3 ops/infrastructure/minikube.py && minikube start && npm run minikube:dns && minikube kubectl -- apply -f ops/infrastructure/minikube/minikube.yaml --validate=false && minikube dashboard &>/dev/null",
     "minikube:tunnel": "minikube addons enable ingress && minikube addons enable ingress-dns && minikube tunnel",
+    "minikube:dns": "minikube addons enable ingress && minikube addons enable ingress-dns && npx ts-node ops/infrastructure/minikube/minikube-dns.ts",
     "app:mock": "(cd app && flutter run)",
     "app:development": "(cd app && flutter run --backend=development)",
     "app:staging": "flutter run --backend=staging",
     "app:production": "flutter run --backend=production",
-    "api:development": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs && npm run start:dev -- -- --lightning '$(minikube service development-c-lightning-rest-service --https --url)' --bitcoinMQ '$(minikube service development-bitcoin-zeromq-service --https --url)'",
-    "setup:development": "(cd ops/infrastructure && ./setup-test.sh)",
+    "api:certs": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs",
+    "api:development": "npm run api:certs && cd api && npm run start:dev",
+    "setup:development": "(cd ops/infrastructure && ./setup-test.sh) && (cd api && npm run seed)",
     "genInvoice": "(cd ops/infrastructure && ./generate-invoice.sh)"
   },
   "repository": {
@@ -35,5 +37,8 @@
     "api",
     "models",
     "models/ts"
-  ]
+  ],
+  "dependencies": {
+    "ts-node": "^10.8.2"
+  }
 }

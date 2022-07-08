@@ -9,7 +9,4 @@ export class UserController extends BaseController(
   User
 ) {
 
-  async onModuleInit() {
-    // console.log((await this.service.findOne(1)).firebaseId);
-  }
 }

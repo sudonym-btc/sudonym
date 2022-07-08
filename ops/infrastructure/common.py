@@ -19,7 +19,7 @@ config = {
     },
     "development": {
         "env": "development",
-        "domain": "local.app",
+        "domain": "local.development",
     }
 }
 

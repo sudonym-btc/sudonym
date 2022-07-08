@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { LightningEvents } from "./lightning-events";
 import { TransactionService } from "src/module/transaction/transaction.service";
 import { TransactionListener } from "./transaction-listener.interface";
@@ -7,19 +7,21 @@ import { LightningNodeService } from "../lightning-node/lightning-node.service";
 @Injectable()
 export class LightningListener extends TransactionListener {
 
+    private readonly logger = new Logger(LightningListener.name);
+
     @Inject() lightningNodeService: LightningNodeService;
     @Inject() lightningEvents: LightningEvents;
 
     listenIncoming() {
         this.lightningEvents.onEvent.subscribe(async (e: any) => {
             if(e.event == 'invoice') {
-                const receivers = await this.receiveService.find({
+                const receivers = await this.receiveService.list({
                     where: {
                         data: e.data.bolt11
                     }
                 });
 
-                if(receivers.length) {
+                if(receivers.metadata.count) {
                     await this.transactionService.create({
                         potId: receivers[0].potId,
                         outgoing: false,
@@ -34,7 +36,7 @@ export class LightningListener extends TransactionListener {
 
     listenOutgoing() {
         this.transactionService.onAfterCreated.listen(async (transaction) => {
-            console.log(transaction);
+            this.logger.log(transaction);
             if (transaction.outgoing && ['lnurl', 'bolt11', 'bolt12'].includes(transaction.type)) {
                 let bolt11;
                 switch(transaction.type) {

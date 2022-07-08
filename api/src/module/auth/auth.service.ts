@@ -12,19 +12,22 @@ admin.initializeApp({
 @Injectable()
 export class AuthService {
 
-    @Inject(UserService) private readonly userService: UserService;
+    // @Inject(UserService) private readonly userService: UserService;
 
-    async auth(pass: string) {
-        try {
-            const user = await this.userService.findOne({
-                where: {
-                    passHash: hash(pass)
-                }
-            });
-            return await admin.auth().createCustomToken(user.id.toString());
-        } catch (e) {
-            throw new AuthError(e.toString());
-        }
+    async auth(request: Request) {
+
+        if(!request.headers['x-access-token']) return null;
+        return await admin.auth().verifyIdToken(request.headers['x-access-token']);
+        // try {
+        //     const user = await this.userService.findOne({
+        //         where: {
+        //             passHash: hash(pass)
+        //         }
+        //     });
+        //     return await admin.auth().createCustomToken(user.id.toString());
+        // } catch (e) {
+        //     throw new AuthError(e.toString());
+        // }
     }
 }
 

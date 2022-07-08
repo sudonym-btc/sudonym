@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/constants.dart';
+import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/bloc/auth.cubit.dart';
+import 'package:sudonym/logic/bloc/user.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
+import 'package:sudonym/presentation/components/form/form.dart';
 
 import '../widgets/pot/edit-pot.dart';
-
-final _formKey = GlobalKey<FormState>();
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -20,9 +23,25 @@ class SettingsPage extends StatelessWidget {
                 appBar: AppBar(title: new Text("Settings")),
                 body: Container(
                   padding: EdgeInsets.all(padding),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(children: [
+                  child: CustomForm(
+                    cubit: getIt<UserCubit>(),
+                    entity: getIt<AuthCubit>().user!,
+                    children: [
+                      FormBuilderTextField(
+                        name: 'lightningAddress',
+                        initialValue:
+                            getIt<AuthCubit>().user!.get("lightningAddress"),
+                        decoration: const InputDecoration(
+                            hintText: 'e.g. satoshi',
+                            labelText: 'Lightning address',
+                            suffixText: '@sudonym.app'),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
                       Button(
                           text: "Add Pot",
                           onPressed: () {
@@ -36,26 +55,7 @@ class SettingsPage extends StatelessWidget {
                                           "balance": 0
                                         }))));
                           }),
-                      // Text(
-                      //   "Lightning Address",
-                      //   style: Theme.of(context).textTheme.headline4,
-                      // ),
-                      SizedBox(
-                        height: padding,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                            hintText: 'e.g. satoshi',
-                            labelText: 'Lightning address',
-                            suffixText: '@sudonym.app'),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                    ]),
+                    ],
                   ),
                 ))));
   }

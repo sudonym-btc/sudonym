@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/config/config.dart';
+import 'package:sudonym/config/repository-logger.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
-abstract class CrudRepository<T> {
+abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   String endpoint = "";
   Function converter = <T>(obj) {
     throw Error();
@@ -23,9 +25,9 @@ abstract class CrudRepository<T> {
   }
 
   onInit() {
-    print("Listening to this stream " + endpoint);
+    loggy.debug("Listening to this stream " + endpoint);
     websocket.getStream().listen((event) {
-      print("Websocket: " + event);
+      loggy.debug("Websocket: " + event);
       Event e = Event(jsonDecode(event));
       if (e.get("name").split('.')[0] == endpoint) {
         if (e.get("name").split('.')[1] == 'created') {
@@ -46,7 +48,7 @@ abstract class CrudRepository<T> {
   Future<ListState<T>> list({Map<String, dynamic>? where}) async {
     return dio
         .get("/" + endpoint, queryParameters: {"where": where}).then((value) {
-      var list = (value.data as List).map((e) {
+      var list = (value.data["data"] as List).map((e) {
         return converter(e) as T;
       }).toList();
 
@@ -61,7 +63,9 @@ abstract class CrudRepository<T> {
   }
 
   Future<T> update(T entity) async {
-    return dio.put("/" + endpoint, data: entity).then((value) {
+    return dio
+        .put("/" + endpoint + "/" + entity.get("id"), data: entity)
+        .then((value) {
       return converter(value.data);
     });
   }

@@ -12,7 +12,7 @@ const configs = {
 
 }
 export const config = {
-    lightningREST: cmdargs.lightning ? cmdargs.lightning : process.env.DOCKER ? `${process.env.NODE_ENV}-c-lightning-rest-service` : 'wss://localhost:3001',
+    lightningREST: cmdargs.lightning ? cmdargs.lightning : `${process.env.NODE_ENV}-c-lightning-rest-service`,
     bitcoinMQ: cmdargs.bitcoinMQ ? cmdargs.bitcoinMQ.replace('https', 'tcp') : `${process.env.NODE_ENV}-bitcoin-zeromq-service`,
     macaroonFile: './certs/access.macaroon',
     database: {

@@ -1,7 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:loggy/loggy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/pages/contact.dart';
@@ -22,6 +24,10 @@ void main(List<String> args) {
 void mainCommon(String? env) async {
   env = env ?? const String.fromEnvironment('ENV');
   env = env == "" ? Env.mock : env;
+
+  Loggy.initLoggy(
+    logPrinter: (kReleaseMode) ? PrettyPrinter() : PrettyPrinter(),
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

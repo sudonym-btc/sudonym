@@ -1,8 +1,11 @@
 import { Table, Column, Model, HasMany, CreatedAt, PrimaryKey, Default, AutoIncrement, AllowNull, NotNull } from 'sequelize-typescript'
 import * as Models from '@sudonym/models';
+import { BaseModel } from '../base.model';
 
-@Table
-export class TransactionSettlement extends Model implements Models.TransactionSettlement {
+@Table({
+  scopes: TransactionSettlement.scopes
+})
+export class TransactionSettlement extends BaseModel implements Models.TransactionSettlement {
 
   @AutoIncrement
   @PrimaryKey

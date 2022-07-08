@@ -1,5 +1,5 @@
 class User {
-  num id;
+  String id;
   String passHash;
   String firebaseId;
   String lightningAddress;

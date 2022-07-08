@@ -10,8 +10,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<UserCredential> loginWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    print(googleUser);
-    print("0========================");
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;

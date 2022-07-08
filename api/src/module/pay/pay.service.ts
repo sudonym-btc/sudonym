@@ -14,9 +14,7 @@ export class PayService {
     @Inject(AddressParser) addressParser: AddressParser;
 
     async parseInvoice(invoice): Promise<AddressParseResponse> {
-        const response = await this.addressParser.parse(invoice);
-        console.log(response);
-        return response;
+        return  await this.addressParser.parse(invoice);
     }
 
     async getInfo(address, amount): Promise<Payment> {
@@ -73,6 +71,5 @@ export const getAddressType = (address: string): TAddressType => {
 
 
 const convertBolt11ToPaymentInfo = (address, amount = 0, route): Payment => {
-    console.log(route);
-    return new Payment(address, address, amount, amount, amount, 1000);
+    return new Payment(null, address, address, amount, amount, amount, 1000);
 }

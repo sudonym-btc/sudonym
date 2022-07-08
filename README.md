@@ -65,8 +65,14 @@ Else, change to flutter - development
 npm run deploy:development # Launches minikube containers for backend
 npm run api:development # Launches API with minikube parameter
 ```
+### Linux
 
+sudo yum install dnsmasq
+systemctl start dnsmasq
+systemctl enable dnsmasq
+systemctl status dnsmasq
 
+cp ops/dnsmasq.conf /etc/dnsmasq.conf
 <!-- 
     brew install hyperkit
 

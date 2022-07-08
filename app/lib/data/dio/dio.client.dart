@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/config/config.dart';
 import 'dio.interceptor.dart';
@@ -9,6 +10,7 @@ abstract class RegisterModule {
   Dio dio(Config config) {
     return Dio(
         BaseOptions(baseUrl: config.apiUrl + ':' + config.apiPort.toString()))
+      ..interceptors.add(LoggyDioInterceptor())
       ..interceptors.add(AuthInterceptor());
   }
 }

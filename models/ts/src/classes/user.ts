@@ -1,7 +1,7 @@
 export class User {
 
     constructor(
-        public id: number,
+        public id: String,
         public passHash: String,
         public firebaseId: String,
         public lightningAddress: String

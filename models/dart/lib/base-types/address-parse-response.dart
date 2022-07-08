@@ -1,5 +1,3 @@
-import "payment.dart" show Payment;
-
 class AddressParseResponse {
   dynamic /* String | null */ originalInput;
   bool success;
@@ -29,22 +27,4 @@ class AddressParseResponse {
         json["isBolt12"],
         json["isOnChain"]);
   }
-}
-
-AddressParseResponseToPayment(AddressParseResponse address) {
-  if (address.success) {
-    if (address.isLnUrl || address.isLnAddress) {
-      return new Payment(address.originalInput, "", address.data["amount"],
-          address.data["minSendable"], address.data["maxSendable"], null);
-    } else if (address.isBolt11) {
-      return new Payment(
-          address.originalInput,
-          "",
-          address.data["msatoshi"] / 1000,
-          address.data["msatoshi"] / 1000,
-          address.data["msatoshi"] / 1000,
-          null);
-    } else if (address.isOnChain) {}
-  }
-  throw Error();
 }

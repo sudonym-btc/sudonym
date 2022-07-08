@@ -1,4 +1,3 @@
-import 'package:dartz/dartz_unsafe.dart';
 import 'package:dio/dio.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym.models/mock/parsed_data.dart';
@@ -45,12 +44,7 @@ abstract class MockCrudRepository<T extends BaseClass>
           if (where == null) {
             return true;
           } else {
-            print(endpoint);
-            print(where);
             return where.keys.every((key) {
-              print(key);
-              print(element.get(key));
-              print(where[key]);
               if (where[key].runtimeType == int) {
                 return element.get(key) == where[key];
               }

@@ -25,8 +25,6 @@ export class ReceiveService extends BaseService(Receiver) {
         }
         let data;
 
-        console.log(potId, type, amount);
-
         switch (type) {
             case 'bolt11':
                 data = (await this.LightningNodeService.createInvoice(amount)).bolt11;
@@ -41,7 +39,6 @@ export class ReceiveService extends BaseService(Receiver) {
                 data = (await this.LightningNodeService.generateOnChainAddress()).address;
                 break;
         }
-        console.log(type, data);
         return Receiver.create({
             potId, 
             amount: Number(amount),

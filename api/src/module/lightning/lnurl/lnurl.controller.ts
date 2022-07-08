@@ -24,7 +24,7 @@ export class LnUrlController {
                 id: {
                     [Op.in]: (await PotUser.findAll({
                         where: {
-                            UserId: user.id
+                            userId: user.id
                         }
                     })).map(i => i.potId)
                 }

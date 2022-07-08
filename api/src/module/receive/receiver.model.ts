@@ -2,9 +2,12 @@ import { Table, Column, Model, CreatedAt, PrimaryKey, DataType, AutoIncrement } 
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, TAddressType } from '../pay/pay.service';
 import { CurrencyCode } from '@sudonym/models';
+import { BaseModel } from '../base.model';
 
-@Table
-export class Receiver extends Model implements Models.Receiver {
+@Table({
+  scopes: Receiver.scopes
+})
+export class Receiver extends BaseModel implements Models.Receiver {
   @PrimaryKey
   @AutoIncrement
   @Column

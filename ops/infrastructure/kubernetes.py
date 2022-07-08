@@ -65,6 +65,7 @@ def GenerateConfig(context):
     ]
     lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
     api_base_name = api(config, cluster_types)["base_name"]
+    bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
 
     resources = (
         [
@@ -73,7 +74,7 @@ def GenerateConfig(context):
                 "type": cluster_types["Ingress"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
-                    "apiVersion": "networking.k8s.io/v1beta1",
+                    "apiVersion": "networking.k8s.io/v1",
                     "kind": "Ingress",
                     "namespace": "default",
                     "metadata": {
@@ -96,6 +97,7 @@ def GenerateConfig(context):
                                     "api." + config["domain"],
                                     "rtl." + config["domain"],
                                     "lightning-rest." + config["domain"],
+                                    "bitcoin-mq." + config["domain"],
                                 ],
                                 "secretName": "self-signed-tls",
                             }
@@ -113,6 +115,23 @@ def GenerateConfig(context):
                                                     "name": ride_the_lightning_base_name
                                                     + "-service",
                                                     "port": {"number": 3000},
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },
+                            {
+                                "host": "bitcoin-mq." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": bitcoin_base_name + "-zeromq-service",
+                                                    "port": {"number": 5555},
                                                 }
                                             },
                                         }

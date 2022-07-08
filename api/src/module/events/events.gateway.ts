@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
   WebSocketGateway,
@@ -17,6 +17,9 @@ import { EventsService } from './events.service';
 })
 export class EventsGateway implements OnGatewayConnection {
 
+  private readonly logger = new Logger(EventsGateway.name);
+
+  
   @WebSocketServer()
   server: Server;
 
@@ -33,10 +36,9 @@ export class EventsGateway implements OnGatewayConnection {
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log('connected');
+    this.logger.verbose('Websocket client connected');
     setInterval(() => {
-      console.log('test');
-      client.send(JSON.stringify(new Event('transaction.created', mocks.transaction.mocks[0])));
+      // client.send(JSON.stringify(new Event('transaction.created', mocks.transaction.mocks[0])));
     }, 5000);
   }
 

@@ -17,6 +17,8 @@
             set(String i, dynamic val) {
                 this[i] = val;
             }
+
+            Map<String, dynamic> toJson() => data;
         }
 
         

@@ -5,15 +5,21 @@ import { Receiver } from '../module/receive/receiver.model';
 import { getConfig } from '../config/config';
 import { User } from '../module/user/user.model';
 import { Transaction } from '../module/transaction/transaction.model';
+import { Logger } from '@nestjs/common';
+import { TransactionSettlement } from 'src/module/transaction-settlement/transaction-settlement.model';
 
-console.debug('initializing db:', getConfig().database)
+const logger = new Logger('DB');
+logger.log('Initializing db:', getConfig().database)
+
 export const sequelize = new Sequelize({
   ...getConfig().database,
+  logging: (e) => logger.verbose(e),
   models: [
       Pot,
       PotUser,
       Receiver,
       User,
-      Transaction
+      Transaction,
+      TransactionSettlement
   ]
 });

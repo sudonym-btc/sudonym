@@ -1,12 +1,12 @@
 import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement } from 'sequelize-typescript'
 import * as Models from '@sudonym/models';
+import { BaseModel } from '../base.model';
 
 @Table
-export class User extends Model implements Models.User  {
+export class User extends BaseModel implements Models.User  {
     @PrimaryKey
-    @AutoIncrement
     @Column
-    id: number
+    id: string
 
     @Column
     passHash: string
