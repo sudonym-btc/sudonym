@@ -1,3 +1,5 @@
+import { AddressParseResponse } from "./address-parse-response";
+
 export class Payment {
 
     constructor(
@@ -8,6 +10,7 @@ export class Payment {
         public minAmount: number | null,
         public maxAmount: number | null,
         public feeMSat: number | null,
+        public addressParseResponse: AddressParseResponse,
     ) { }
 
     static fromJson(json: Object): Payment {
@@ -19,6 +22,7 @@ export class Payment {
             json["minAmount"],
             json["maxAmount"],
             json["feeMSat"],
+            AddressParseResponse.fromJson(json["AddressParseResponse"])
         );
     }
 }

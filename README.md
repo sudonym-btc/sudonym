@@ -42,6 +42,15 @@
 npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)
 ```
 
+curl https://ksync.github.io/gimme-that/gimme.sh | sudo bash
+ksync init
+ksync watch &
+OR
+curl https://get.okteto.com -sSfL | sh
+
+docker build --target development -t api:latest -f api/Dockerfile . &&
+minikube image load api:latest
+
 [frontend] Install Flutter: 
 ```
 brew install --cask flutter

@@ -53,7 +53,10 @@ class TransactionListItem extends StatelessWidget {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(getTitle()),
+                    Text(
+                      getTitle(),
+                      style: const TextStyle(overflow: TextOverflow.ellipsis),
+                    ),
                     Info(getDescription()),
                   ],
                 )),

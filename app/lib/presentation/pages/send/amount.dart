@@ -8,9 +8,9 @@ import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart'
 import '../../../constants.dart';
 
 class AmountPage extends StatefulWidget {
-  Payment payment;
+  final Payment payment;
 
-  AmountPage(this.payment, {Key? key}) : super(key: key);
+  const AmountPage(this.payment, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -39,8 +39,7 @@ class _AmountPageState extends State<AmountPage> {
                     children: [
                       const SizedBox(height: padding),
                       currencyInput,
-                      const SizedBox(height: padding),
-                      const SizedBox(height: padding),
+                      Expanded(child: Container()),
                       ButtonBar(children: [
                         Button(
                           text: 'Confirm',

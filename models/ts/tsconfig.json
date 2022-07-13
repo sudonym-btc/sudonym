@@ -12,6 +12,12 @@
     "outDir": "./dist",
     "baseUrl": "./src",
     "rootDir": "./src",
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
     "incremental": true,
     "skipLibCheck": true
   }

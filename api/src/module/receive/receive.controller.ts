@@ -11,11 +11,4 @@ export class ReceiveController {
     return this.receiveService.getInvoice(potId, type, amount);
   }
 
-  @Get('lnurlp/:potId')
-  async getPayInvoice(@Param('potId') potId: number, @Query('amount') amount: number) {
-      return {
-          pr: await this.receiveService.getInvoice(potId, 'bolt11', amount), // bech32-serialized lightning invoice
-          routes: [], // an empty array
-      }
-  }
 }

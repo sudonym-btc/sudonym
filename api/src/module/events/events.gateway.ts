@@ -5,9 +5,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Event } from '@sudonym/models';
-import * as mocks from "@sudonym/models/dist/mock";
-import { Socket } from 'dgram';
-import { Server } from 'http';
 import { EventsService } from './events.service';
 
 @WebSocketGateway(3001, {
@@ -21,7 +18,7 @@ export class EventsGateway implements OnGatewayConnection {
 
   
   @WebSocketServer()
-  server: Server;
+  server: any;
 
   @Inject() eventsService: EventsService;
 
@@ -32,10 +29,13 @@ export class EventsGateway implements OnGatewayConnection {
   }
 
   broadcastToClients(uids, e: Event) {
-    this.server.emit(JSON.stringify(e));
+    this.logger.log("Emitting " + e.name + " to " + ((this.server as any).clients as Set<any>).size + " clients");
+    this.server.clients.forEach(client => {
+      client.send(JSON.stringify(e));
+    });
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client, ...args: any[]) {
     this.logger.verbose('Websocket client connected');
     setInterval(() => {
       // client.send(JSON.stringify(new Event('transaction.created', mocks.transaction.mocks[0])));

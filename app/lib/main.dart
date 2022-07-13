@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ import 'package:sudonym/presentation/pages/settings.dart';
 import 'package:sudonym/presentation/pages/transaction.dart';
 import 'package:sudonym/presentation/theme.dart';
 import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
+import 'data/repository/websocket.dart';
 import 'firebase_options.dart';
 import 'presentation/widgets/auth/auth_gate.dart';
 
@@ -24,6 +27,11 @@ void main(List<String> args) {
 void mainCommon(String? env) async {
   env = env ?? const String.fromEnvironment('ENV');
   env = env == "" ? Env.mock : env;
+
+  // Allow self signed certificates for development
+  if ([Env.mock, Env.dev].contains(env)) {
+    HttpOverrides.global = MyHttpOverrides();
+  }
 
   Loggy.initLoggy(
     logPrinter: (kReleaseMode) ? PrettyPrinter() : PrettyPrinter(),

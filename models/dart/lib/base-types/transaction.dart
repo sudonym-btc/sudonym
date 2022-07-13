@@ -4,6 +4,7 @@ class Transaction {
   num potId;
   bool outgoing;
   dynamic /* String | null */ type;
+  dynamic /* String | null */ originalAddress;
   dynamic /* String | null */ address;
   dynamic /* String | null */ description;
   dynamic /* num | null */ transactionId;
@@ -17,6 +18,7 @@ class Transaction {
       this.potId,
       this.outgoing,
       this.type,
+      this.originalAddress,
       this.address,
       this.description,
       this.transactionId,
@@ -31,6 +33,7 @@ class Transaction {
         json["potId"],
         json["outgoing"],
         json["type"],
+        json["originalAddress"],
         json["address"],
         json["description"],
         json["transactionId"],

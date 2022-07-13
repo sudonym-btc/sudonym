@@ -80,6 +80,15 @@ def GenerateConfig(context):
                     "metadata": {
                         "name": config["env"] + "-ingress",
                         "annotations": {
+                            "kubernetes.io/ingress.class": "nginx",
+#                             "nginx.org/websocket-services": api_base_name + "-service",
+#                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
+#                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
+#                             "nginx.ingress.kubernetes.io/configuration-snippet": """
+#    proxy_http_version 1.1;
+#    proxy_set_header Upgrade "websocket";
+#    proxy_set_header Connection "Upgrade";""",
+   
                             "kubernetes.io/ingress.global-static-ip-name": config["env"]
                             + "-ip"
                         },
@@ -185,6 +194,16 @@ def GenerateConfig(context):
                                                 "service": {
                                                     "name": api_base_name + "-service",
                                                     "port": {"number": 3000},
+                                                }
+                                            },
+                                        },
+                                        {
+                                            "path": "/socket.io",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": api_base_name + "-service",
+                                                    "port": {"number": 3001},
                                                 }
                                             },
                                         }

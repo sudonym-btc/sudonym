@@ -9,6 +9,10 @@ import 'package:sudonym/config/config.dart';
 import 'package:sudonym/config/repository-logger.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
+const List<List<String>> order = [
+  ["id", "DESC"]
+];
+
 abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   String endpoint = "";
   Function converter = <T>(obj) {
@@ -29,7 +33,7 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
     websocket.getStream().listen((event) {
       loggy.debug("Websocket: " + event);
       Event e = Event(jsonDecode(event));
-      if (e.get("name").split('.')[0] == endpoint) {
+      if (e.get("name").split('.')[0] == endpoint.toLowerCase()) {
         if (e.get("name").split('.')[1] == 'created') {
           created.add(converter(e.get("data")));
         } else if (e.get("name").split('.')[1] == 'updated') {
@@ -45,9 +49,10 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
     });
   }
 
-  Future<ListState<T>> list({Map<String, dynamic>? where}) async {
-    return dio
-        .get("/" + endpoint, queryParameters: {"where": where}).then((value) {
+  Future<ListState<T>> list(
+      {Map<String, dynamic>? where, List<List<String>>? order = order}) async {
+    return dio.get("/" + endpoint,
+        queryParameters: {"where": where, "order": order}).then((value) {
       var list = (value.data["data"] as List).map((e) {
         return converter(e) as T;
       }).toList();

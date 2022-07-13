@@ -21,8 +21,6 @@ class SendConfirmPage extends StatelessWidget {
     final Payment payment =
         ModalRoute.of(context)?.settings.arguments as Payment;
 
-    print(payment.get("potId"));
-
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) {
@@ -127,7 +125,7 @@ class SendConfirmPage extends StatelessWidget {
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null
                       : () {
-                          BlocProvider.of<SendCubit>(context).pay(payment);
+                          BlocProvider.of<SendCubit>(context).pay(r);
                         },
                   style: raisedButtonStyle,
                 )

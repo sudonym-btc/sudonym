@@ -1,7 +1,6 @@
 import { Table, Column, Model, CreatedAt, PrimaryKey, DataType, AutoIncrement } from 'sequelize-typescript'
 import * as Models from '@sudonym/models';
-import { ADDRESS_TYPES, TAddressType } from '../pay/pay.service';
-import { CurrencyCode } from '@sudonym/models';
+import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
 import { BaseModel } from '../base.model';
 
 @Table({

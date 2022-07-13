@@ -14,10 +14,10 @@ class FormatCurrency {
         amount: amount.toDouble(),
         settings: MoneyFormatterSettings(
           symbol: format.currencySymbol,
-          thousandSeparator: '.',
-          decimalSeparator: ',',
+          thousandSeparator: ',',
+          decimalSeparator: '.',
           symbolAndNumberSeparator: '',
-          fractionDigits: 3,
+          fractionDigits: 2,
         ));
     return fmf.output.symbolOnLeft;
   }

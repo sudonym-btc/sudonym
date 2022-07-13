@@ -84,7 +84,7 @@ class _OutgoingFailed extends _TransactionStatusPage {
             FormatCurrency().format(
                 transaction.get("currencyCode"), transaction.get("amount")) +
             " failed to " +
-            transaction.get("address"),
+            transaction.get("originalAddress"),
         color: Theme.of(context).errorColor);
   }
 }

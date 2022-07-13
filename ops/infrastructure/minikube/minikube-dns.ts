@@ -9,16 +9,23 @@ const confDnsDarwin = () => {
 }
 const confDnsLinux = () => {
     const confPath = '/etc/dnsmasq.conf';
+    const resolvPath = '/etc/resolv.conf';
     var file = fs.readFileSync('ops/dnsmasq.conf').toString();
     file = file.replace("###MINIKUBEIP###", minikubeIp);
-    child_process.execSync(`sudo tee /etc/resolv.conf > /dev/null <<EOF
-nameserver 127.0.0.1
+    var resolver = "nameserver 127.0.0.1";
+    if (resolver != fs.readFileSync(resolvPath).toString().trim()) {
+        child_process.execSync(`sudo chattr -f -i ${resolvPath}`);
+        child_process.execSync(`sudo tee ${resolvPath} > /dev/null <<EOF
+${resolver}
 EOF`);
-child_process.execSync("sudo chattr -f +i /etc/resolv.conf");
-    child_process.execSync(`sudo tee ${confPath} > /dev/null <<EOF
+        child_process.execSync(`sudo chattr -f +i ${resolvPath}`);
+    }
+    if (file.trim() != fs.readFileSync(confPath).toString().trim()) {
+        child_process.execSync(`sudo tee ${confPath} > /dev/null <<EOF
 ${file}
 EOF`);
-child_process.execSync(`systemctl restart dnsmasq`);
+        child_process.execSync(`systemctl restart dnsmasq`);
+    }
 }
 
 const confDnsWin32 = () => {

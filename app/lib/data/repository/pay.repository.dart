@@ -17,15 +17,14 @@ class PayRepositoryImpl extends PayRepository {
 
   @override
   Future<Payment> getInfo(Payment p) {
-    return dio
-        .get('/pay/info?address=' + p.get("originalAddress"))
-        .then((value) => Payment(value.data));
+    return dio.post('/pay/info',
+        data: {"payment": p}).then((value) => Payment(value.data));
   }
 
   @override
   Future<Transaction> pay(Payment p) {
-    return dio.post('/pay', data: {'address': p.get("originalAddress")}).then(
-        (value) => Transaction(value.data));
+    return dio.post('/pay',
+        data: {'payment': p}).then((value) => Transaction(value.data));
   }
 }
 

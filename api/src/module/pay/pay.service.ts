@@ -1,61 +1,65 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { AddressParseResponse, Payment } from '@sudonym/models';
-import { Transaction } from 'bitcoinjs-lib';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { AddressParseResponse, Payment, TAddressType } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
-import lnurl from 'lnurl';
+import * as lnurl from 'lnurl';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
+import { LnUrlHandlerService } from '../lightning/lnurl/lnurl-handler/lnurl-handler.service';
+import { Transaction } from '../transaction/transaction.model';
 import { TransactionService } from '../transaction/transaction.service';
 import { AddressParser } from './address-parser';
+import fetch from 'node-fetch';
 
 @Injectable()
 export class PayService {
     @Inject(LightningNodeService) lightningNodeService: LightningNodeService;
+    @Inject(LnUrlHandlerService) lnUrlHandlerService: LnUrlHandlerService;
     @Inject(TransactionService) transactionService: TransactionService;
     @Inject(AddressParser) addressParser: AddressParser;
+    private readonly logger = new Logger(PayService.name);
 
     async parseInvoice(invoice): Promise<AddressParseResponse> {
-        return  await this.addressParser.parse(invoice);
+        return await this.addressParser.parse(invoice);
     }
 
-    async getInfo(address, amount): Promise<Payment> {
-        const t = getAddressType(address);
-
+    async getInfo(p: Payment): Promise<Payment> {
+        const t = getAddressType(p.originalAddress);
+        this.logger.debug("Getting invoice for");
+        this.logger.debug(p);
         switch (t) {
             case 'bolt11':
-                return convertBolt11ToPaymentInfo(
-                    address,
-                    amount,
-                    await this.lightningNodeService.getRoute(bolt11.decode(address).payeeNodeKey, amount));
+                p.address = p.originalAddress;
+                p.feeMSat = await this.lightningNodeService.getFees(bolt11.decode(p.address).payeeNodeKey, p.amount);
+                return p;
             case 'bolt12':
-                const offerInvoice = await this.lightningNodeService.fetchOfferInvoice(address);
-                return convertBolt11ToPaymentInfo(
-                    address,
-                    amount,
-                    await this.lightningNodeService.getRoute(bolt11.decode(address).payeeNodeKey, amount));
-            // case 'lnurl': 
+                const offerInvoice = await this.lightningNodeService.fetchOfferInvoice(p.address);
+                // return convertBolt11ToPaymentInfo(
+                //     p.address,
+                //     p.amount,
+                //     await this.lightningNodeService.getRoute(bolt11.decode(p.address).payeeNodeKey, p.amount));
+            case 'lnurl':
+                const callbackInfo = await this.lnUrlHandlerService.getCallback(p.addressParseResponse.data.params.callback, { amount: p.amount });
+                console.log(callbackInfo);
+                p.address = callbackInfo.pr;
+                return p;
 
             case 'onchain':
-                return convertBolt11ToPaymentInfo(
-                    address,
-                    amount,
-                    1000);
+                return p;
         }
     }
 
-    async pay(address, amount = 0, potId = 1): Promise<Transaction> {
+    async pay(p: Payment): Promise<Transaction> {
 
         return this.transactionService.create({
-            address,
-            type: getAddressType(address),
-            amount,
+            originalAddress: p.originalAddress,
+            address: p.address,
+            type: getAddressType(p.originalAddress),
+            amount: p.amount,
             outgoing: true,
-            potId
+            potId: p.potId
         });
 
     }
 }
-export const ADDRESS_TYPES = ['lnurl', 'bolt11', 'bolt12', 'onchain'];
-export type TAddressType = 'lnurl' | 'bolt12' | 'onchain' | 'bolt11';
 
 export const getAddressType = (address: string): TAddressType => {
     if (address.startsWith('lnurl1')) {
@@ -67,9 +71,4 @@ export const getAddressType = (address: string): TAddressType => {
     } else {
         return 'onchain';
     }
-}
-
-
-const convertBolt11ToPaymentInfo = (address, amount = 0, route): Payment => {
-    return new Payment(null, address, address, amount, amount, amount, 1000);
 }

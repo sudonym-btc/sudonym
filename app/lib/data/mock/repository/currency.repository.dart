@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sudonym.models/base-types/types/currency.dart';
 import 'package:sudonym/data/repository/currency.repository.dart';
 import 'package:sudonym/injection.dart';
 
@@ -13,10 +14,9 @@ class MockCurrencyRepository implements CurrencyRepository {
   Dio dio;
 
   @override
-  Future<CurrencyResponse> getRate(
-      String fromCurrency, String toCurrency, num amount, DateTime time) async {
-    CurrencyResponse c = CurrencyResponse();
-    c.amount = Random().nextDouble() * amount;
+  Future<CurrencyResponse> getRate(String fromCurrency, String toCurrency,
+      num amount, DateTime? time) async {
+    CurrencyResponse c = CurrencyResponse(Random().nextDouble() * amount);
     return c;
   }
 }

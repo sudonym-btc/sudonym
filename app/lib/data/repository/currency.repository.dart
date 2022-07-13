@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sudonym.models/base-types/types/currency.dart';
 
 import '../../injection.dart';
 
@@ -9,15 +10,14 @@ class CurrencyRepositoryImpl extends CurrencyRepository {
 
   @override
   Future<CurrencyResponse> getRate(
-      String fromCurrency, String toCurrency, num amount, DateTime time) {
+      String fromCurrency, String toCurrency, num amount, DateTime? time) {
     return dio.get('/currency', queryParameters: {
       "fromCurrency": fromCurrency,
-      "toCurrrency": toCurrency,
+      "toCurrency": toCurrency,
       "amount": amount,
       "time": time
     }).then((value) {
-      print(value);
-      return value as CurrencyResponse;
+      return CurrencyResponse(value.data["amount"]);
     });
   }
 }
@@ -25,10 +25,6 @@ class CurrencyRepositoryImpl extends CurrencyRepository {
 abstract class CurrencyRepository {
   Dio dio;
   Future<CurrencyResponse> getRate(
-      String fromCurrency, String toCurrency, num amount, DateTime time);
+      String fromCurrency, String toCurrency, num amount, DateTime? time);
   CurrencyRepository(this.dio);
-}
-
-class CurrencyResponse {
-  late num amount;
 }

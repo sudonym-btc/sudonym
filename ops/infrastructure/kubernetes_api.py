@@ -23,6 +23,7 @@ def api(config, cluster_types):
                         "type": "NodePort",
                         "ports": [
                             {"port": 3000, "name": "api"},
+                            {"port": 3001, "name": "api-ws"},
                         ],
                         "selector": {"app": base_name},
                     },
@@ -62,7 +63,7 @@ def api(config, cluster_types):
                                         "volumeMounts": [
                                             {
                                                 "name": "macaroon-data",
-                                                "mountPath": "/certs",
+                                                "mountPath": "usr/src/app/api/certs",
                                             },
                                         ],
                                     }

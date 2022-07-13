@@ -8,7 +8,7 @@ import * as bolt11 from 'bolt11';
 
 @Injectable()
 export class LightningNodeService {
-    
+
     private readonly logger = new Logger(LightningNodeService.name);
 
     private macaroon = Buffer.from(fs.readFileSync(getConfig().macaroonFile)).toString("base64");
@@ -55,12 +55,15 @@ export class LightningNodeService {
 
     async onModuleInit() {
 
-        this.info = await this.getInfo();
-        this.connectedChannels = await this.listChannels();
-        this.peers = await this.listPeers();
+        try {
+            this.info = await this.getInfo();
+            this.connectedChannels = await this.listChannels();
+            this.peers = await this.listPeers();
 
-        this.logger.verbose(`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`)
-
+            this.logger.verbose(`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`)
+        } catch (e) {
+            this.logger.error(e);
+        }
     }
 
     async getInfo() {
@@ -98,6 +101,12 @@ export class LightningNodeService {
         });
     }
 
+
+    async getFees(pubkey, amount = 0) {
+        const route = await this.getRoute(pubkey, amount);
+        return 1000;
+    }
+
     async getRoute(pubkey, amount = 0) {
         return this.makeRequest({
             path: '/v1/network/getRoute/' + pubkey + '/' + amount
@@ -115,7 +124,7 @@ export class LightningNodeService {
             this.logger.debug('Circular payment along route', circle);
             let lastNodeId = "";
             const circleRoute = circle.map((channel, index) => ({
-                id: index+1 == circle.length ? this.info.id : lastNodeId = (channel.id || (channel.destination != lastNodeId ? channel.destination : channel.source)),
+                id: index + 1 == circle.length ? this.info.id : lastNodeId = (channel.id || (channel.destination != lastNodeId ? channel.destination : channel.source)),
                 channel: channel.short_channel_id,
                 direction: (index < 2) ? 1 : 0,
                 amount_msat: (parseInt(inv.millisatoshis) + circle.length - index - 1).toString(),
@@ -205,7 +214,6 @@ export class LightningNodeService {
     }
 
     async makeRequest(options) {
-
         const response = await axios({
             url: this.url + options.path,
             method: 'GET',
@@ -217,7 +225,7 @@ export class LightningNodeService {
             },
             ...options,
         }).catch(e => {
-            console.error('LIGHTNING ERROR');
+            this.logger.error('LIGHTNING ERROR', this.macaroon);
             throw e;
         });
         return response.data;

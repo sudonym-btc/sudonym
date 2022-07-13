@@ -2,16 +2,17 @@ import { LightningNodeService } from "../../service/lightning-node/lightning-nod
 import { bech32 } from 'bech32';
 import { Buffer } from 'buffer';
 import fetch from 'node-fetch';
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { AddressParseResponse } from "@sudonym/models";
 
 @Injectable()
 export class AddressParser {
 
     @Inject(LightningNodeService) lightningNodeService: LightningNodeService;
+    private readonly logger = new Logger(AddressParser.name);
 
     async parse(invoice) {
-        const r: AddressParseResponse = await this.parseInvoiceHelper(invoice);
+        const r: AddressParseResponse = await this.parseInvoiceHelper(invoice) as AddressParseResponse;
         r.originalInput = invoice;
         r.success = typeof r.success === "undefined" ? true : r.success;
         r.isLnUrl = typeof r.isLnUrl === "undefined" ? false : r.isLnUrl;
@@ -22,7 +23,7 @@ export class AddressParser {
         return r;
     }
     
-    parseInvoiceHelper = async (invoice: string): Promise<any> => {
+    parseInvoiceHelper = async (invoice: string): Promise<Partial<AddressParseResponse>> => {
         if (!invoice || invoice === '') {
             return null;
         }
@@ -37,16 +38,16 @@ export class AddressParser {
             if (!success) {
                 return {
                     data: null,
-                    error: message,
+                    message,
                     isLnUrl: false,
-                    isLNAddress: true,
+                    isLnAddress: true,
                 };
             }
 
             return {
                 data,
                 isLnUrl: true,
-                isLNAddress: true,
+                isLnAddress: true,
             }
         }
 
@@ -86,7 +87,8 @@ export class AddressParser {
         const decodedLNURL = bech32.decode(invoice, 1500);
         const url = Buffer.from(bech32.fromWords(decodedLNURL.words)).toString();
 
-        return fetch('https://satcors.fiatjaf.com/?url=' + encodeURIComponent(url))
+        this.logger.debug("Fetching LnUrl from " + url);
+        return fetch(url)
             .then(r => r.json())
     };
 

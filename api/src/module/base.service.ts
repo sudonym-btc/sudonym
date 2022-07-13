@@ -11,8 +11,8 @@ type ModelType<T> = Constructor<T> & typeof BaseModel;
 
 export interface TControllerAndService<TModel> {
     findOne(id, req?: RequestType): Promise<TModel>;
-    create(params: RecursivePartial<TModel>, req?: RequestType);
-    update(id, params: RecursivePartial<TModel>, req?: RequestType);
+    create(params: RecursivePartial<TModel>, req?: RequestType): Promise<TModel>;
+    update(id, params: RecursivePartial<TModel>, req?: RequestType): Promise<TModel>;
     list(param: FindOptions, req?: RequestType): Promise<{
         data: TModel[],
         metadata: {
@@ -66,7 +66,7 @@ export const BaseService = <TModel extends BaseModel>(repository: ModelType<TMod
 
                 const obj = await record.set(params).save();
 
-                await this.eventsService.trigger(new Event(this.repo.name + ".updated", obj));
+                await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".updated", obj));
 
                 return obj;
             });
@@ -78,7 +78,7 @@ export const BaseService = <TModel extends BaseModel>(repository: ModelType<TMod
             const obj = await this.repo.sequelize.transaction(async t => {
 
                 const obj = await this.repo.create(params);
-                await this.eventsService.trigger(new Event(this.repo.name + ".created", obj));
+                await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".created", obj));
 
                 return obj;
             });

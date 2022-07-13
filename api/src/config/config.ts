@@ -11,9 +11,19 @@ const configs = {
     production: configProduction
 
 }
+
+export const getConfig = () => {
+    return {
+        ...config,
+        ...configs[process.env.NODE_ENV || 'development']
+    }
+}
+
 export const config = {
-    lightningREST: cmdargs.lightning ? cmdargs.lightning : `${process.env.NODE_ENV}-c-lightning-rest-service`,
-    bitcoinMQ: cmdargs.bitcoinMQ ? cmdargs.bitcoinMQ.replace('https', 'tcp') : `${process.env.NODE_ENV}-bitcoin-zeromq-service`,
+    env: 'development',
+    selfUrl: cmdargs.selfUrl ? cmdargs.selfUrl : 'https://api.' + getConfig().domain,
+    lightningREST: cmdargs.lightning ? cmdargs.lightning : getConfig().env + `-c-lightning-rest-service`,
+    bitcoinMQ: cmdargs.bitcoinMQ ? cmdargs.bitcoinMQ.replace('https', 'tcp') : getConfig().env + `-bitcoin-zeromq-service`,
     macaroonFile: './certs/access.macaroon',
     database: {
         name: 'app',
@@ -21,12 +31,5 @@ export const config = {
         password: 'password',
         host: cmdargs.dbHost || 'localhost',
         dialect: 'mysql',
-    }
-}
-
-export const getConfig = () => {
-    return {
-        ...config,
-        ...configs[process.env.NODE_ENV || 'development']
     }
 }

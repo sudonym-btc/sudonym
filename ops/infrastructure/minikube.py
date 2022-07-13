@@ -25,9 +25,10 @@ print(minikube_resources)
 # Make image pull for API local.
 for idx, item in enumerate(minikube_resources):
     if item["metadata"]["name"] == "development-api-deployment":
-        item["spec"]["template"]["spec"]["containers"][0]["imagePullPolicy"] = "Never"
+        item["spec"]["template"]["spec"]["containers"][0]["imagePullPolicy"] = "IfNotPresent"
+        item["spec"]["template"]["spec"]["containers"][0]["image"] = "api"
+        item["spec"]["template"]["spec"]["containers"][0]["command"] = ["npm", "run", "start:dev"]
 
-# print(minikube_resources)
 
 # Output resources to a yaml file
 dir_path = os.path.dirname(os.path.realpath(__file__))

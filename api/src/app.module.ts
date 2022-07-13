@@ -12,11 +12,13 @@ import { EventsModule } from './module/events/events.module';
 import { TransactionModule } from './module/transaction/transaction.module';
 import { LnUrlModule } from './module/lightning/lnurl/lnurl.module';
 import { TransactionListenerModule } from './service/transaction-listener/transaction-listener.module';
+import { CurrencyModule } from './module/currency/currency.module';
 
 @Module({
   imports: [
     TransactionListenerModule,
     DatabaseModule,
+    CurrencyModule,
     LightningModule,
     LnUrlModule,
     EventsModule,

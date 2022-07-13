@@ -1,4 +1,4 @@
-FROM node:14-alpine As development
+FROM node:18-alpine As development
 
 WORKDIR /usr/src/app
 
@@ -6,26 +6,13 @@ COPY ./api ./api
 COPY ./models ./models
 COPY ./package*.json ./
 
-RUN npm install --no-rollback
+RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip 
+RUN npm config set fetch-retry-mintimeout 100000
+RUN npm config set fetch-retry-maxtimeout 600000
+RUN npm install --unsafe-perm
+RUN apk del build-dependencies
 
 WORKDIR /usr/src/app/api
-
-RUN npm install
 RUN npm run build
-
-FROM node:14-alpine As production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install --only=production
-
-COPY . .
-
-COPY --from=development /usr/src/app/api/dist ./dist
 
 CMD ["node", "dist/main"]

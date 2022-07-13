@@ -37,7 +37,8 @@ abstract class MockCrudRepository<T extends BaseClass>
   }
 
   @override
-  Future<ListState<T>> list({Map<String, dynamic>? where}) async {
+  Future<ListState<T>> list(
+      {Map<String, dynamic>? where, List<List<String>>? order}) async {
     await Future.delayed(requestDelay);
     return ListState(
         availableData.where((element) {

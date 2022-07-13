@@ -8,9 +8,10 @@ final display = createDisplay(
 );
 
 String formatBTC(num amount) {
-  if (amount > 10000000) {
-    return (amount / 100000000).toStringAsPrecision(4).toString() + " BTC";
+  const mSats = 100000000000;
+  if (amount > mSats) {
+    return (amount / mSats).toStringAsPrecision(4).toString() + " BTC";
   } else {
-    return display(amount) + " sats";
+    return display(amount / 1000) + " sats";
   }
 }

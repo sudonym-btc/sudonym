@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
 import 'package:injectable/injectable.dart';
@@ -8,9 +11,18 @@ import 'dio.interceptor.dart';
 abstract class RegisterModule {
   @lazySingleton
   Dio dio(Config config) {
-    return Dio(
+    Dio _dio = Dio(
         BaseOptions(baseUrl: config.apiUrl + ':' + config.apiPort.toString()))
       ..interceptors.add(LoggyDioInterceptor())
       ..interceptors.add(AuthInterceptor());
+
+    // // //@todo: check bad certificate
+    // // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    // //     (HttpClient client) {
+    // //   client.badCertificateCallback =
+    // //       (X509Certificate cert, String host, int port) => true;
+    //   return client;
+    // };
+    return _dio;
   }
 }

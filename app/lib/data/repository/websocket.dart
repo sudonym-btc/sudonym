@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:io';
 
 import 'package:injectable/injectable.dart';
+import 'package:sudonym/config/repository-logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:sudonym/config/config.dart';
 
 import '../../injection.dart';
 
 @Singleton(as: Websocket, env: Env.allButMock)
-class WebsocketImpl extends Websocket {
+class WebsocketImpl extends Websocket with WebsocketLogger {
   Config config;
   StreamController stream = StreamController.broadcast();
 
@@ -19,9 +20,10 @@ class WebsocketImpl extends Websocket {
     Uri url = Uri.parse(
         config.apiUrl.replaceAll('https', 'wss').replaceAll('http', 'ws') +
             ':' +
-            config.websocketPort.toString());
+            config.websocketPort.toString() +
+            "/socket.io");
 
-    print("Connecting websocket to " + url.toString());
+    loggy.info("Connecting websocket to " + url.toString());
 
     IOWebSocketChannel channel = IOWebSocketChannel.connect(url);
 
@@ -29,8 +31,12 @@ class WebsocketImpl extends Websocket {
 
     stream.addStream(channel.stream);
 
+    stream.stream.listen((e) {
+      loggy.error(e);
+    });
+
     getStream().handleError((event) {
-      print(event);
+      loggy.error(event);
     });
   }
 
@@ -41,4 +47,14 @@ class WebsocketImpl extends Websocket {
 abstract class Websocket {
   connect();
   Stream getStream();
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) =>
+              true; // add your localhost detection logic here if you want
+  }
 }

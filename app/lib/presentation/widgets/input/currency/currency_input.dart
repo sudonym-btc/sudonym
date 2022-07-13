@@ -4,11 +4,19 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudonym/constants.dart';
+import 'package:sudonym/data/repository/currency.repository.dart';
+import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/currency/format-currency.dart';
+
+const List<String> defaultCurrencies = ["USD", "BTC"];
 
 class CurrencyInput extends StatefulWidget {
   final Function? onChanged;
+  final List<String> currencies;
 
-  CurrencyInput({Key? key, this.onChanged}) : super(key: key);
+  const CurrencyInput(
+      {Key? key, this.onChanged, this.currencies = defaultCurrencies})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -16,16 +24,26 @@ class CurrencyInput extends StatefulWidget {
   }
 }
 
+class CurrencyInputOutput {
+  List<List<dynamic>> outputs = [];
+}
+
 class _CurrencyInputState extends State<CurrencyInput> {
   StreamController<String> streamController = StreamController();
   final MoneyMaskedTextController _controller = MoneyMaskedTextController(
       initialValue: 0.0, decimalSeparator: '.', thousandSeparator: ',');
+  num altValue = 0;
+  String currCurrency = "USD";
+  String altCurrency = "BTC";
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
+    _controller.addListener(() async {
       widget.onChanged!(_controller.numberValue);
+      altValue = (await getIt<CurrencyRepository>().getRate(
+              currCurrency, altCurrency, _controller.numberValue, null))
+          .amount;
     });
   }
 
@@ -47,8 +65,10 @@ class _CurrencyInputState extends State<CurrencyInput> {
     return Row(children: <Widget>[
       Expanded(
         child: TextField(
-          decoration: const InputDecoration(
-              prefixText: "\$", labelText: "Amount", helperText: "X satoshis"),
+          decoration: InputDecoration(
+              prefixText: "\$",
+              labelText: "Amount",
+              helperText: FormatCurrency().format(altCurrency, altValue)),
           controller: _controller,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           keyboardType: TextInputType.number,

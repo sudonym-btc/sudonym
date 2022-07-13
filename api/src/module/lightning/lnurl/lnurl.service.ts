@@ -1,34 +1,54 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { getConfig } from 'src/config/config';
+import { BaseService } from 'src/module/base.service';
+import { LnUrl } from './lnurl.model';
+import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
+import { RequestType } from 'src/helper/parse-request.decorator';
+import * as crypto from 'crypto';
 
 @Injectable()
-export class LnUrlService {
-    getPayRequest(potId: number) {
+export class LnUrlService extends BaseService(LnUrl) {
 
-        return {
-            callback: getConfig().apiUrl + '/receive/lnurlp/' + potId, // The URL from LN SERVICE which will accept the pay request parameters
-            maxSendable: 100000000, // Max amount LN SERVICE is willing to receive
-            minSendable: 1, // Min amount LN SERVICE is willing to receive, can not be less than 1 or more than `maxSendable`
-            metadata: [
-                [
-                    "text/plain", // mandatory, short description displayed when paying and in transaction log
-                    "paying user " // actual metadata content
-                ],
-                [
-                    "text/long-desc", // optional longer description of the payment, MAY contain newlines
-                    "" // actual metadata content
-                ],
-                // [
-                //     "image/png;base64", // optional 512x512px PNG thumbnail which will represent this lnurl in a list or grid
-                //     content // base64 string, up to 136536 characters (100Kb of image data in base-64 encoding)
-                // ],
-                // [
-                //     "image/jpeg;base64", // optional 512x512px JPG thumbnail which will represent this lnurl in a list or grid
-                //     content // base64 string, up to 136536 characters (100Kb of image data in base-64 encoding)
-                // ],
-                // ... // more objects for future types
-            ], // Metadata json which must be presented as raw string here, this is required to pass signature verification at a later step
-            tag: "payRequest" // Type of LNURL
+    handle(payload: LnUrl) {
+        switch (payload.tag) {
+            case 'withdrawRequest':
+                return this.handleWithdrawRequest(payload);
+            case 'payRequest':
+                return this.handlePayRequest(payload);
         }
+    }
+
+    handlePayRequest(payload: LnUrl) {
+
+    }
+
+    handleWithdrawRequest(payload: LnUrl) {
+
+    }
+
+    async create(params: RecursivePartial<LnUrl>, req?: RequestType) {
+        params.id = crypto.randomUUID();
+        const record = await super.create(params, req);
+        record.set('params', {
+            ...record.params, callback: getConfig().selfUrl + '/lnurl/handle/' + record.id,
+        }); 
+        await record.save();
+        return record;
+    }
+
+    async createPayRequest(potId: number, amount?: number) {
+        const tag = await this.create({
+            tag: 'payRequest',
+            params: {
+                tag: 'payRequest',
+                domain: getConfig().selfUrl,
+                minSendable: amount,
+                maxSendable: 10000000,
+                metadata: '',
+                commentAllowed: 500,
+            }
+        });
+
+        return tag;
     }
 }

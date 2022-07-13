@@ -1,3 +1,5 @@
+import "address-parse-response.dart" show AddressParseResponse;
+
 class Payment {
   dynamic /* num | null */ potId;
   String originalAddress;
@@ -6,10 +8,25 @@ class Payment {
   dynamic /* num | null */ minAmount;
   dynamic /* num | null */ maxAmount;
   dynamic /* num | null */ feeMSat;
-  Payment(this.potId, this.originalAddress, this.address, this.amount,
-      this.minAmount, this.maxAmount, this.feeMSat) {}
+  AddressParseResponse addressParseResponse;
+  Payment(
+      this.potId,
+      this.originalAddress,
+      this.address,
+      this.amount,
+      this.minAmount,
+      this.maxAmount,
+      this.feeMSat,
+      this.addressParseResponse) {}
   static Payment fromJson(Map<String, dynamic> json) {
-    return new Payment(json["potId"], json["originalAddress"], json["address"],
-        json["amount"], json["minAmount"], json["maxAmount"], json["feeMSat"]);
+    return new Payment(
+        json["potId"],
+        json["originalAddress"],
+        json["address"],
+        json["amount"],
+        json["minAmount"],
+        json["maxAmount"],
+        json["feeMSat"],
+        AddressParseResponse.fromJson(json["AddressParseResponse"]));
   }
 }

@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sudonym/config/repository-logger.dart';
 import 'package:sudonym/data/repository/crud_repository.dart';
 import 'package:sudonym.models/types/list.dart';
 
-class ListCubit<T> extends Cubit<ListCubitState> {
+class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   final CrudRepository _repository;
   final Map<String, dynamic> where;
   String order = 'DESC';
@@ -11,13 +12,15 @@ class ListCubit<T> extends Cubit<ListCubitState> {
   ListCubit(this._repository, {this.where = const {}})
       : super(ListCubitState(
             data: const [], metadata: const {}, loading: false)) {
-    _repository.created.stream.listen((event) {
-      print("Loading Prev");
-      loadPrevious();
+    _repository.created.stream.listen((event) async {
+      loggy.debug("Loading Prev");
+      await loadPrevious();
+      await loadNext();
     });
   }
 
   loadNext() async {
+    if (isClosed) return;
     if (!state.loading) {
       emit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
@@ -37,6 +40,8 @@ class ListCubit<T> extends Cubit<ListCubitState> {
   }
 
   loadPrevious() async {
+    if (isClosed) return;
+
     if (!state.loading) {
       emit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));

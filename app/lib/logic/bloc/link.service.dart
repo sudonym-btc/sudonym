@@ -17,8 +17,9 @@ class LinkService {
 
     Payment pay = AddressParseResponseToPayment(response);
     pay.set("potId", potId);
+
     if (response.get("success")) {
-      if (pay.get("amount") == null) {
+      if (canChangeAmount(pay)) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => AmountPage(pay)));
       } else {
@@ -26,5 +27,15 @@ class LinkService {
       }
     }
     return;
+  }
+
+  canChangeAmount(Payment p) {
+    print("=====");
+    print(p.toJson());
+    print(p.get("addressParseResponse").toJson());
+    if (p.get("minAmount") != p.get("maxAmount") ||
+        p.get("amount") == 0 ||
+        p.get("amount") == null) return true;
+    return false;
   }
 }

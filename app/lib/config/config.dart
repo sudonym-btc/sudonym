@@ -5,22 +5,22 @@ import '../injection.dart';
 @Injectable(as: Config, env: [Env.mock])
 class MockConfig implements Config {
   @override
-  String apiUrl = 'http://nevercalled.com';
+  String apiUrl = 'http://10.0.2.2'; // This is the host IP for Flutter
   @override
   num apiPort = 3000;
   @override
-  num websocketPort = 3001;
+  num websocketPort = 3000;
 }
 
 @dev
 @Injectable(as: Config, env: [Env.dev])
 class DevConfig implements Config {
   @override
-  String apiUrl = 'http://10.0.2.2';
+  String apiUrl = 'https://api.local.development';
   @override
-  num apiPort = 3000;
+  num apiPort = 443;
   @override
-  num websocketPort = 3001;
+  num websocketPort = 443;
 }
 
 @prod

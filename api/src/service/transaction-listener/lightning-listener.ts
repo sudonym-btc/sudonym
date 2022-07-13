@@ -14,21 +14,25 @@ export class LightningListener extends TransactionListener {
 
     listenIncoming() {
         this.lightningEvents.onEvent.subscribe(async (e: any) => {
-            if(e.event == 'invoice') {
+            if (e.event == 'invoice') {
                 const receivers = await this.receiveService.list({
                     where: {
                         data: e.data.bolt11
                     }
                 });
 
-                if(receivers.metadata.count) {
+                if (receivers.metadata.count) {
                     await this.transactionService.create({
-                        potId: receivers[0].potId,
+                        type: "bolt11",
+                        originalAddress: receivers.data[0].data,
+                        address: receivers.data[0].data,
+                        potId: receivers.data[0].potId,
                         outgoing: false,
-                        amount: e.event.msatoshi/1000,
+                        amount: e.data.msatoshi,
                         status: true,
-                        txid: e.event.bolt11
-                    })
+                        currencyCode: 'BTC',
+                        txid: e.data.bolt11
+                    });
                 }
             }
         });
@@ -36,10 +40,10 @@ export class LightningListener extends TransactionListener {
 
     listenOutgoing() {
         this.transactionService.onAfterCreated.listen(async (transaction) => {
-            this.logger.log(transaction);
+            this.logger.log('Lightning outgoing: ', transaction.get({ plain: true }));
             if (transaction.outgoing && ['lnurl', 'bolt11', 'bolt12'].includes(transaction.type)) {
                 let bolt11;
-                switch(transaction.type) {
+                switch (transaction.type) {
                     case 'bolt11':
                         bolt11 = transaction.address;
                         break;
@@ -47,7 +51,7 @@ export class LightningListener extends TransactionListener {
                         bolt11 = await this.lightningNodeService.fetchOfferInvoice(transaction.address);
                         break;
                     case 'lnurl':
-                        // bolt11 = await this.lightningNodeService.fetchOfferInvoice(transaction.address);
+                        bolt11 = transaction.address;
                         break;
                 }
                 await this.transactionService.update(transaction.id, {
@@ -57,8 +61,20 @@ export class LightningListener extends TransactionListener {
             }
         });
 
-        this.lightningEvents.onEvent.subscribe(e => {
-            
+        this.lightningEvents.onEvent.subscribe(async (e: any) => {
+            if (e.event == 'invoice') {
+                const transactions = await this.transactionService.list({
+                    where: {
+                        txid: e.data.bolt11
+                    }
+                });
+
+                if (transactions.metadata.count) {
+                    await this.transactionService.update(transactions.data[0].id, {
+                        status: true
+                    });
+                }
+            }
         })
     }
 

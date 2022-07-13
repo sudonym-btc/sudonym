@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
+import { Payment } from '@sudonym/models';
 import { PayService } from './pay.service';
 
 @Controller('pay')
@@ -11,13 +12,13 @@ export class PayController {
     return this.payService.parseInvoice(address);
   }
 
-  @Get('info')
-  async getInfo(@Query('address') address, @Query('amount') amount) {
-    return this.payService.getInfo(address, amount);
+  @Post('info')
+  async getInfo(@Body('payment') payment: Payment) {
+    return this.payService.getInfo(payment);
   }
 
   @Post('')
-  pay(@Body('address') address, @Body('amount') amount, @Body() data) {
-    return this.payService.pay(address, amount);
+  pay(@Body('payment') payment: Payment) {
+    return this.payService.pay(payment);
   } 
 }

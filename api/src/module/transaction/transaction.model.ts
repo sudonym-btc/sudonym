@@ -10,7 +10,6 @@ export class Transaction extends BaseModel implements Models.Transaction {
   @AutoIncrement
   @PrimaryKey
   @AllowNull(false)
-  @Default(() => Math.floor(Math.random() * 100000000))
   @Column
   id: number;
 
@@ -25,6 +24,9 @@ export class Transaction extends BaseModel implements Models.Transaction {
 
   @Column
   address: string;
+
+  @Column
+  originalAddress: string;
 
   @Default(null)
   @Column
