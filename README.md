@@ -11,45 +11,40 @@
 
   <!-- Follow "Next steps" install instructions to add brew to path -->
 
-  brew tap homebrew/core
-
-  brew install nvm
-  brew install --cask docker
-  open -a Docker   <!-- Launches docker  -->
-  brew install minikube
-  brew install --cask google-cloud-sdk
-  brew install gh
+  brew tap homebrew/core && \
+  brew install nvm && \
+  brew install --cask docker && \
+  open -a Docker && \ 
+  brew install minikube && \
+  brew install --cask google-cloud-sdk && \
+  brew install gh && \
   
-  source $(brew --prefix nvm)/nvm.sh
+  source $(brew --prefix nvm)/nvm.sh && \
 
-  nvm install 16
+  nvm install 18 && \
 
-  gcloud components install kubectl
+  gcloud components install kubectl && \
 
-  gcloud init
+  gcloud init && \
 
-  gh auth login
+  gh auth login && \
 
-  git clone https://github.com/sudonym-btc/sudonym.git && cd sudonym && npm install
-
-  (cd api && npm run seed)
+  git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
+  npm install && \
+  npm run setup:development
+  
 ```
 
 [optional] for live firebase integration download/ask admin for service_account.json and store in /api
 
-[optional] Setup lightning node connections locally in regtest mode
+[optional] Setup the backend in minikube with hotreload and seed the DB
 ```
-npm run deploy:development && (cd ./ops/infrastructure && ./setup-test.sh)
+curl https://ksync.github.io/gimme-that/gimme.sh | sudo bash && \
+docker build --target development -t api:latest -f api/Dockerfile . && \
+minikube image load api:latest && \
+npm run deploy:development && \
+npm run setup:development
 ```
-
-curl https://ksync.github.io/gimme-that/gimme.sh | sudo bash
-ksync init
-ksync watch &
-OR
-curl https://get.okteto.com -sSfL | sh
-
-docker build --target development -t api:latest -f api/Dockerfile . &&
-minikube image load api:latest
 
 [frontend] Install Flutter: 
 ```
@@ -64,16 +59,15 @@ brew install cocoapods
 ## Run project
 
 ```
-npm run deploy:development
+<!-- Setup the backend -->
+npm run deploy:development 
+<!-- Watch the API logs and hot reload -->
+npm run api:logs
 ```
 
 To run Flutter without a backend, run in the flutter - mock profile, can be found in the Run & Debug panel.
 Else, change to flutter - development
 
-```
-npm run deploy:development # Launches minikube containers for backend
-npm run api:development # Launches API with minikube parameter
-```
 ### Linux
 
 sudo yum install dnsmasq
@@ -81,31 +75,16 @@ systemctl start dnsmasq
 systemctl enable dnsmasq
 systemctl status dnsmasq
 
-cp ops/dnsmasq.conf /etc/dnsmasq.conf
 <!-- 
-    brew install hyperkit
-
-    <!-- install gcloud On Linux download archv and unzip to be able to install components
-
-    cp ./ops/dnsmasq.conf /usr/local/etc/dnsmasq.conf
     brew install dnsmasq
     sudo cp $(brew list dnsmasq | grep /homebrew.mxcl.dnsmasq.plist$) /Library/LaunchDaemons/
     sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
     sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
     dscacheutil -flushcache
 
-    sudo mkdir -p /etc/resolver
-    sudo tee /etc/resolver/local.app > /dev/null <<EOF
-nameserver 127.0.0.1
-domain local.app
-search_order 1
-EOF 
-
 Download service account json for firebase and store in API root folder -->
 
 <!-- npm run build for all folders including TS models -->
-
-
 
 
 LINUX: yum install -y make gcc*

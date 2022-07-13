@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';

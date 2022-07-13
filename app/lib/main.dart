@@ -34,7 +34,9 @@ void mainCommon(String? env) async {
   }
 
   Loggy.initLoggy(
-    logPrinter: (kReleaseMode) ? PrettyPrinter() : PrettyPrinter(),
+    logPrinter: (kReleaseMode)
+        ? PrettyPrinter(showColors: true)
+        : PrettyPrinter(showColors: true),
   );
 
   WidgetsFlutterBinding.ensureInitialized();
