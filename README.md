@@ -18,6 +18,9 @@
   brew install minikube && \
   brew install --cask google-cloud-sdk && \
   brew install gh && \
+  brew install ksync && \
+  minikube start && \
+  ksync init && \
   
   source $(brew --prefix nvm)/nvm.sh && \
 
@@ -39,7 +42,6 @@
 
 [optional] Setup the backend in minikube with hotreload and seed the DB
 ```
-sudo curl https://ksync.github.io/gimme-that/gimme.sh | sudo bash && \
 docker build --target development -t api:latest -f api/Dockerfile . && \
 minikube image load api:latest && \
 npm run deploy:development && \
