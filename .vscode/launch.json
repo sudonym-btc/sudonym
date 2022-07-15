@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flutter - widgetbook",
+            "cwd": "app",
+            "request": "launch",
+            "program": "widgetbook/lib/main.dart",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=mock",
+            ]
+        },
+        {
             "name": "flutter - mock",
             "cwd": "app",
             "request": "launch",

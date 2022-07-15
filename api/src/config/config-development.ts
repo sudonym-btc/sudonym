@@ -1,8 +1,7 @@
-
 export const configDevelopment = {
     domain: 'local.development',
-    lightningREST: 'https://lightning-rest.local.development',
-    bitcoinMQ: 'tcp://bitcoin-mq.local.development:5555',
+    lightningREST: `http://development-c-lightning-rest-service.default.svc.cluster.local:3001`,
+    bitcoinMQ: 'tcp://bitcoin-mq.default.svc.cluster.local:5555',
     database: {
         name: 'app',
         dialect: 'sqlite',

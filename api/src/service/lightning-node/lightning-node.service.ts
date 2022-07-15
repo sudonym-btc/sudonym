@@ -56,6 +56,8 @@ export class LightningNodeService {
     async onModuleInit() {
 
         try {
+            this.logger.verbose(`Loading lightning node information.`);
+
             this.info = await this.getInfo();
             this.connectedChannels = await this.listChannels();
             this.peers = await this.listPeers();

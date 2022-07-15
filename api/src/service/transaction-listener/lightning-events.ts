@@ -12,7 +12,7 @@ export class LightningEvents {
 
     @Inject() LightningNodeService: LightningNodeService;
     private macaroon = Buffer.from(fs.readFileSync(getConfig().macaroonFile)).toString("base64");
-    private url = getConfig().lightningREST.replace('https', 'wss');
+    private url = getConfig().lightningREST.replace('http', 'ws');
     public onEvent = new Subject();
 
     reconnect() {

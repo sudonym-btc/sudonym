@@ -79,6 +79,7 @@ systemctl status dnsmasq
 
 <!-- 
     brew install dnsmasq
+    sudo brew services start dnsmasq
     sudo cp $(brew list dnsmasq | grep /homebrew.mxcl.dnsmasq.plist$) /Library/LaunchDaemons/
     sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
     sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist

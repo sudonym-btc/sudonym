@@ -31,10 +31,6 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
 
     stream.addStream(channel.stream);
 
-    stream.stream.listen((e) {
-      loggy.error(e);
-    });
-
     getStream().handleError((event) {
       loggy.error(event);
     });
