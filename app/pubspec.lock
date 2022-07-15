@@ -453,8 +453,18 @@ packages:
       name: flutter_lints
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "2.0.1"
   flutter_local_notifications:
+=======
+    version: "1.0.4"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+  flutter_signin_button:
+>>>>>>> 05cde3b (feature: notifications and language)
     dependency: "direct main"
     description:
       name: flutter_local_notifications
@@ -619,7 +629,7 @@ packages:
     source: hosted
     version: "1.5.3"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"

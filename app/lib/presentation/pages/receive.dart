@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/presentation/widgets/receive/lnurl.dart';
 import 'package:sudonym/presentation/widgets/receive/onchain.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/receive/bolt11.dart';
 import '../widgets/receive/bolt12.dart';
@@ -27,7 +28,7 @@ class ReceivePage extends StatelessWidget {
                 length: 4,
                 child: Scaffold(
                   appBar: AppBar(
-                    title: const Text('Receive'),
+                    title: Text(AppLocalizations.of(context)!.receive),
                     bottom: const TabBar(
                       tabs: [
                         Tab(

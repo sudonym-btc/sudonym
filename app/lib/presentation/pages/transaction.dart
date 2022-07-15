@@ -6,6 +6,7 @@ import 'package:sudonym/data/repository/transaction.repository.dart';
 import 'package:sudonym/logic/bloc/transaction.cubit.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
 import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../injection.dart';
 
@@ -65,8 +66,8 @@ class _OutgoingPending extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: "Payment pending",
-        subtitle: "Payment is currently in transit",
+        title: (AppLocalizations.of(context)!.paymentPending),
+        subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit),
         content: Center(child: CircularProgressIndicator(color: Colors.white)),
         color: Colors.indigo.shade800);
   }
@@ -95,9 +96,9 @@ class _OutgoingComplete extends _TransactionStatusPage {
 
   @override
   Widget build(BuildContext context) {
-    return const StatusPage(
-        title: "Payment sent",
-        subtitle: "Payment has successfully been sent",
+    return StatusPage(
+        title: AppLocalizations.of(context)!.paymentSent,
+        subtitle: AppLocalizations.of(context)!.paymentHasSuccessfullyBeenSent,
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -110,7 +111,7 @@ class _IncomingPending extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: "Payment incoming",
+        title: AppLocalizations.of(context)!.paymentIncoming,
         subtitle: "Payment of " +
             FormatCurrency().format(
                 transaction.get("currencyCode"), transaction.get("amount")) +
@@ -127,7 +128,7 @@ class _IncomingComplete extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: "Payment received",
+        title: AppLocalizations.of(context)!.paymentReceived,
         subtitle: "Payment of " +
             FormatCurrency().format(
                 transaction.get("currencyCode"), transaction.get("amount")) +

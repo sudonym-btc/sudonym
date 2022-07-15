@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/bloc/send.cubit.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../injection.dart';
@@ -40,8 +41,9 @@ class SendConfirmPage extends StatelessWidget {
         }, child: BlocBuilder<SendCubit, SendCubitState>(
                 builder: (BuildContext context, state) {
           String pageTitle = '';
-          String title = 'Payment Info';
-          String subtitle = 'Gathering payment information';
+          String title = (AppLocalizations.of(context)!.paymentInfo);
+          String subtitle =
+              (AppLocalizations.of(context)!.gatheringPaymentInfomation);
           IconData? icon;
           Widget? content =
               Center(child: CircularProgressIndicator(color: Colors.white));
@@ -60,14 +62,15 @@ class SendConfirmPage extends StatelessWidget {
           if (state.transactionData != null) {
             state.transactionData!.fold((l) {
               color = Colors.red;
-              title = 'Failed';
-              subtitle = 'Failed to create transaction';
+              title = (AppLocalizations.of(context)!.failed);
+              subtitle =
+                  (AppLocalizations.of(context)!.failedToCreateTransactions);
               icon = FontAwesomeIcons.exclamationCircle;
               content = Text(l.toString());
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
-                    child: Text('Retry'),
+                    child: Text(AppLocalizations.of(context)!.retry),
                     style: raisedButtonStyle,
                     onPressed: () {},
                   )
@@ -82,14 +85,15 @@ class SendConfirmPage extends StatelessWidget {
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
-                    child: Text('Retry'),
+                    child: Text(AppLocalizations.of(context)!.retry),
                     style: raisedButtonStyle,
                     onPressed: () {},
                   )
                 ],
               );
             }, (r) {
-              subtitle = 'Gathered payment information';
+              subtitle =
+                  (AppLocalizations.of(context)!.gatheredPaymentInformation);
               content = Column(children: [
                 Table(
                   children: [
@@ -103,11 +107,11 @@ class SendConfirmPage extends StatelessWidget {
                       )
                     ]),
                     TableRow(children: [
-                      new Text('fee'),
+                      new Text(AppLocalizations.of(context)!.fee),
                       new Text(r.get("feeMSat").toString() + ' sats / \$0.01')
                     ]),
                     TableRow(children: [
-                      new Text('name'),
+                      new Text(AppLocalizations.of(context)!.name),
                       new Text(
                         r.get("originalAddress"),
                         style: TextStyle(
@@ -120,7 +124,7 @@ class SendConfirmPage extends StatelessWidget {
               ]);
               actions = ButtonBar(children: [
                 ElevatedButton.icon(
-                  label: Text('Send'),
+                  label: Text(AppLocalizations.of(context)!.send),
                   icon: FaIcon(FontAwesomeIcons.paperPlane, size: iconSize),
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null

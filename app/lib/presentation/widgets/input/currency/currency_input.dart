@@ -7,6 +7,7 @@ import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/repository/currency.repository.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const List<String> defaultCurrencies = ["USD", "BTC"];
 
@@ -67,7 +68,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
         child: TextField(
           decoration: InputDecoration(
               prefixText: "\$",
-              labelText: "Amount",
+              labelText: AppLocalizations.of(context)!.amount,
               helperText: FormatCurrency().format(altCurrency, altValue)),
           controller: _controller,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],

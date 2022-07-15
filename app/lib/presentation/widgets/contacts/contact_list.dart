@@ -4,6 +4,7 @@ import 'package:sudonym/data/repository/contact.repository.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/presentation/components/typography/header.dart';
 import 'package:sudonym/presentation/widgets/list/list.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../injection.dart';
 import 'contact_list_item.dart';
@@ -17,7 +18,7 @@ class ContactList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Header("Contacts"),
+          Header(AppLocalizations.of(context)!.contacts),
           const SizedBox(
             height: padding,
           ),
@@ -27,7 +28,7 @@ class ContactList extends StatelessWidget {
               return ContactListItem(contact: el);
             },
             list: ListCubit(getIt<ContactRepository>()),
-            emptyText: 'No contacts found',
+            emptyText: (AppLocalizations.of(context)!.noContactsFound),
           ))
         ]);
   }

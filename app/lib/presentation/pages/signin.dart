@@ -5,6 +5,7 @@ import 'package:sudonym/logic/bloc/auth.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/components/typography/info.dart';
 import 'package:sudonym/presentation/components/typography/subtitle.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../components/typography/header.dart';
 
@@ -20,7 +21,10 @@ class SigninPage extends StatelessWidget {
               padding: EdgeInsets.all(padding * 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Subtitle("Welcome to"), Header("Sudonym")],
+                children: [
+                  Subtitle(AppLocalizations.of(context)!.welcomeTo),
+                  Header("Sudonym")
+                ],
               )),
           Expanded(
               child: Center(
@@ -28,7 +32,7 @@ class SigninPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Info("Sign in with"),
+              Text(AppLocalizations.of(context)!.signInWith),
               Container(height: padding * 2),
               Button(
                 text: "Google",
