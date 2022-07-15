@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:loggy/loggy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym/l10n/l10n.dart';
 import 'package:sudonym/presentation/pages/contact.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
 import 'package:sudonym/presentation/pages/send.dart';
@@ -19,6 +20,8 @@ import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
 import 'data/repository/websocket.dart';
 import 'firebase_options.dart';
 import 'presentation/widgets/auth/auth_gate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main(List<String> args) {
   mainCommon(null);
@@ -77,6 +80,8 @@ class _AppState extends State<App> {
 
         return widget!;
       },
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       routes: {
         '/receive': (context) => const ReceivePage(),
         '/confirmSend': (context) => const SendConfirmPage(),

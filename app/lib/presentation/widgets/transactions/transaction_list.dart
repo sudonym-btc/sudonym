@@ -6,6 +6,7 @@ import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/presentation/components/typography/header.dart';
 import 'package:sudonym/presentation/widgets/list/list.dart';
 import 'package:sudonym/presentation/widgets/transactions/transaction_list_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../injection.dart';
 
@@ -19,7 +20,7 @@ class TransactionList extends StatelessWidget {
         constraints: BoxConstraints.expand(),
         padding: EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Header("Transactions"),
+          Header(AppLocalizations.of(context)!.transactions),
           const SizedBox(
             height: padding,
           ),
@@ -30,7 +31,7 @@ class TransactionList extends StatelessWidget {
             },
             list: ListCubit(getIt<TransactionRepository>(),
                 where: {"potId": pot.get("id")}),
-            emptyText: 'No transactions found',
+            emptyText: (AppLocalizations.of(context)!.noTransactionsFound),
           ))
         ]));
   }

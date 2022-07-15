@@ -4,6 +4,7 @@ import 'package:widgetbook/widgetbook.dart';
 
 import '../buttons.dart';
 import '../inputs.dart';
+import '../notifications.dart';
 import '../typography.dart';
 import '../widgets/widgets.dart';
 
@@ -17,12 +18,7 @@ class HotreloadWidgetbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Widgetbook.material(
-      categories: [
-        buttons,
-        inputs,
-        typography,
-        widgets,
-      ],
+      categories: [buttons, inputs, typography, widgets, notifications],
       themes: [
         WidgetbookTheme(
           name: 'Light',

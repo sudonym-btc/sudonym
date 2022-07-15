@@ -7,6 +7,7 @@ import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
 import 'package:sudonym/presentation/pages/send.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../injection.dart';
 
@@ -48,7 +49,7 @@ class SendReceive extends StatelessWidget {
                         ButtonBar(
                           children: [
                             Button(
-                              text: "Receive",
+                              text: AppLocalizations.of(context)!.receive,
                               icon: FaIcon(FontAwesomeIcons.inbox, size: 14),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/receive',
@@ -57,7 +58,7 @@ class SendReceive extends StatelessWidget {
                               },
                             ),
                             Button(
-                              text: "Send",
+                              text: AppLocalizations.of(context)!.send,
                               icon:
                                   FaIcon(FontAwesomeIcons.paperPlane, size: 14),
                               onPressed: () {

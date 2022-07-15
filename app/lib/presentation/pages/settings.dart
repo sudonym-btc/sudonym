@@ -8,6 +8,7 @@ import 'package:sudonym/logic/bloc/auth.cubit.dart';
 import 'package:sudonym/logic/bloc/user.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/components/form/form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/pot/edit-pot.dart';
 
@@ -20,7 +21,8 @@ class SettingsPage extends StatelessWidget {
         color: Theme.of(context).colorScheme.background,
         child: SafeArea(
             child: Scaffold(
-                appBar: AppBar(title: new Text("Settings")),
+                appBar: AppBar(
+                    title: new Text(AppLocalizations.of(context)!.settings)),
                 body: Container(
                   padding: EdgeInsets.all(padding),
                   child: CustomForm(
@@ -33,7 +35,8 @@ class SettingsPage extends StatelessWidget {
                             getIt<AuthCubit>().user!.get("lightningAddress"),
                         decoration: const InputDecoration(
                             hintText: 'e.g. satoshi',
-                            labelText: 'Lightning address',
+                            labelText: (AppLocalizations.of(context)!
+                                .lightningAddress),
                             suffixText: '@sudonym.app'),
                         validator: (value) {
                           if (value!.isEmpty) {

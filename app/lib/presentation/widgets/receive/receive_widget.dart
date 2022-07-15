@@ -7,6 +7,7 @@ import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
 // import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../constants.dart';
 import '../../../injection.dart';
@@ -54,29 +55,31 @@ class ReceiveWidget extends StatelessWidget {
                   padding: EdgeInsets.all(padding),
                   child: ButtonBar(children: [
                     Button(
-                        icon: FaIcon(FontAwesomeIcons.copy, size: iconSize),
-                        onPressed: state.loading
-                            ? null
-                            : () {
-                                FlutterClipboard.copy(state.data!.get("data"))
-                                    .then((value) {
-                                  final snackBar = SnackBar(
-                                    content: Text('Copied to Clipboard'),
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                });
-                              },
-                        text: "Copy"),
+                      icon: FaIcon(FontAwesomeIcons.copy, size: iconSize),
+                      onPressed: state.loading
+                          ? null
+                          : () {
+                              FlutterClipboard.copy(state.data!.get("data"))
+                                  .then((value) {
+                                final snackBar = SnackBar(
+                                  content: Text('Copied to Clipboard'),
+                                );
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              });
+                            },
+                      text: (AppLocalizations.of(context)!.copy),
+                    ),
                     Button(
-                        icon: FaIcon(FontAwesomeIcons.share, size: iconSize),
-                        onPressed: state.loading
-                            ? null
-                            : () {
-                                // Share.share('ln234wkfdoinfrwiofjirew',
-                                //     subject: 'Bitcoin invoice for \$5');
-                              },
-                        text: "Share"),
+                      icon: FaIcon(FontAwesomeIcons.share, size: iconSize),
+                      onPressed: state.loading
+                          ? null
+                          : () {
+                              // Share.share('ln234wkfdoinfrwiofjirew',
+                              //     subject: 'Bitcoin invoice for \$5');
+                            },
+                      text: (AppLocalizations.of(context)!.share),
+                    ),
                   ]))
             ],
           );
