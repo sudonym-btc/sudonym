@@ -34,7 +34,8 @@ class SendConfirmPage extends StatelessWidget {
               !state.loadingSend &&
               state.transactionData!.isRight()) {
             state.transactionData!.fold((l) => null, (r) {
-              Navigator.pushReplacementNamed(context, '/transaction',
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/transaction', ModalRoute.withName('/'),
                   arguments: r);
             });
           }

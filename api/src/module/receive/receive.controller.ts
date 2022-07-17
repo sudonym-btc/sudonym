@@ -7,8 +7,8 @@ export class ReceiveController {
   @Inject(ReceiveService) receiveService: ReceiveService;
 
   @Get('invoice')
-  getInvoice(@Query('potId') potId, @Query('type') type, @Query('amount') amount) {
-    return this.receiveService.getInvoice(potId, type, amount);
+  getInvoice(@Query('potId') potId, @Query('type') type, @Query('amount') amount, @Query('currency') currency) {
+    return this.receiveService.getInvoice(potId, type, amount, currency);
   }
 
 }

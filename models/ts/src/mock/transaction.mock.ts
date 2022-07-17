@@ -31,7 +31,7 @@ export const factory = Factory.Sync.makeFactory<Transaction>({
   type: Factory.each((i) => addressTypes[addresses.length % i]),
   status: Factory.each(() => Boolean(Math.round(Math.random()))),
   transactionId: Factory.each(i => i),
-  amount: Factory.each(() => parseFloat(((Math.random()) * 10000000).toFixed(0))),
+  amount: Factory.each(() => parseFloat(((Math.random()) * 2).toFixed(0))),
   currencyCode: Factory.each(i => 'BTC'),
   createdAt: Factory.Sync.each(() => new Date()),
 });

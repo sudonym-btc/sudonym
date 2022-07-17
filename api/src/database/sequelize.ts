@@ -8,6 +8,7 @@ import { Transaction } from '../module/transaction/transaction.model';
 import { Logger } from '@nestjs/common';
 import { TransactionSettlement } from '../module/transaction-settlement/transaction-settlement.model';
 import { LnUrl } from '../module/lightning/lnurl/lnurl.model';
+import { UserDevice } from 'src/module/user-device/user-device.model';
 
 const logger = new Logger('DB');
 logger.log('Initializing db:', getConfig().database)
@@ -20,6 +21,7 @@ export const sequelize = new Sequelize({
       PotUser,
       Receiver,
       User,
+      UserDevice,
       LnUrl,
       Transaction,
       TransactionSettlement

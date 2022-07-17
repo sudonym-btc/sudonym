@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { LightningEvents } from "./lightning-events";
+import { MSATOSHIS } from "@sudonym/models";
 import { TransactionService } from "src/module/transaction/transaction.service";
 import { TransactionListener } from "./transaction-listener.interface";
 import { LightningNodeService } from "../lightning-node/lightning-node.service";
@@ -28,7 +29,7 @@ export class LightningListener extends TransactionListener {
                         address: receivers.data[0].data,
                         potId: receivers.data[0].potId,
                         outgoing: false,
-                        amount: e.data.msatoshi,
+                        amount: e.data.msatoshi / MSATOSHIS,
                         status: true,
                         currencyCode: 'BTC',
                         txid: e.data.bolt11
@@ -58,6 +59,13 @@ export class LightningListener extends TransactionListener {
                     txid: bolt11
                 })
                 this.lightningNodeService.pay(bolt11);
+
+                // console.log("SENDPAY");
+                // try {
+                // this.lightningNodeService.rpc("waitsendpay", [bolt11]).then(console.log);
+                // } catch(e) {
+                //     console.error(e);
+                // }
             }
         });
 

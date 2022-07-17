@@ -23,7 +23,11 @@ class _AmountPageState extends State<AmountPage> {
 
   @override
   Widget build(BuildContext context) {
-    CurrencyInput currencyInput = CurrencyInput();
+    CurrencyInput currencyInput = CurrencyInput(onChanged: (val) {
+      print(val);
+      widget.payment.set("amount", val.amount);
+      widget.payment.set("currency", val.currency);
+    });
 
     return Container(
         color: Theme.of(context).colorScheme.background,

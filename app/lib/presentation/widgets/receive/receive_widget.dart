@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sudonym.models/base-types/types/currency.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
@@ -24,8 +25,8 @@ class ReceiveWidget extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) =>
-                  getIt<ReceiveCubit>()..getInvoice(potId, type, 1000))
+              create: (_) => getIt<ReceiveCubit>()
+                ..getInvoice(potId, type, 1 / SATOSHIS, "BTC"))
         ],
         child: BlocBuilder<ReceiveCubit, ReceiveCubitState>(
             builder: (BuildContext context, state) {
@@ -47,8 +48,9 @@ class ReceiveWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.all(padding),
                 child: CurrencyInput(onChanged: (amount) {
+                  print(amount);
                   BlocProvider.of<ReceiveCubit>(context)
-                    ..getInvoice(potId, type, amount);
+                    ..getInvoice(potId, type, amount.amount, amount.currency);
                 }),
               ),
               Padding(

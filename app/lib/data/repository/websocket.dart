@@ -12,28 +12,39 @@ import '../../injection.dart';
 class WebsocketImpl extends Websocket with WebsocketLogger {
   Config config;
   StreamController stream = StreamController.broadcast();
+  StreamSubscription? socketSubscription;
+  IOWebSocketChannel? channel;
 
-  WebsocketImpl(this.config) : super();
-
-  @override
-  connect() {
-    Uri url = Uri.parse(
-        config.apiUrl.replaceAll('https', 'wss').replaceAll('http', 'ws') +
-            ':' +
-            config.websocketPort.toString() +
-            "/socket.io");
-
-    loggy.info("Connecting websocket to " + url.toString());
-
-    IOWebSocketChannel channel = IOWebSocketChannel.connect(url);
-
-    // Listen for all incoming data
-
-    stream.addStream(channel.stream);
-
+  WebsocketImpl(this.config) : super() {
     getStream().handleError((event) {
       loggy.error(event);
     });
+  }
+
+  @override
+  connect() {
+    if (socketSubscription != null) {
+      socketSubscription!.cancel();
+    }
+    Uri url = Uri.parse(config.apiUrl.replaceAll('http', 'ws') +
+        ':' +
+        config.websocketPort.toString() +
+        "/socket.io");
+
+    loggy.info("Connecting websocket to $url");
+
+    channel = IOWebSocketChannel.connect(url);
+
+    socketSubscription = channel!.stream.listen((event) {
+      stream.sink.add(event);
+    }, onError: (e) async {
+      stream.sink.addError(e);
+      await Future.delayed(Duration(seconds: 1));
+      connect();
+    }, onDone: () async {
+      await Future.delayed(Duration(seconds: 1));
+      connect();
+    }, cancelOnError: true);
   }
 
   @override

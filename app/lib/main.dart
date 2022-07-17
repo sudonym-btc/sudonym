@@ -4,14 +4,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:loggy/loggy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym/data/repository/user-device.repository.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/l10n/l10n.dart';
 import 'package:sudonym/presentation/pages/contact.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
-import 'package:sudonym/presentation/pages/send.dart';
 import 'package:sudonym/presentation/pages/send_confirm.dart';
 import 'package:sudonym/presentation/pages/settings.dart';
 import 'package:sudonym/presentation/pages/transaction.dart';
@@ -19,8 +20,8 @@ import 'package:sudonym/presentation/theme.dart';
 import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
 import 'data/repository/websocket.dart';
 import 'firebase_options.dart';
+import 'logic/bloc/auth.cubit.dart';
 import 'presentation/widgets/auth/auth_gate.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main(List<String> args) {
@@ -103,6 +104,18 @@ class MessageHandler extends StatefulWidget {
 
 class _MessageHandlerState extends State<MessageHandler> {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final UserDeviceRepository _userDeviceRepo = getIt<UserDeviceRepository>();
+  final AuthCubit _authCubit = getIt<AuthCubit>();
+
+  handleToken(String token) {
+    // _authCubit.stream.listen(((event) {
+    //   print(event);
+    //   event.user;
+    // }));
+    _userDeviceRepo.create(
+        UserDevice({"uid": _authCubit.state.user!.get("id"), "token": token}));
+    print("Got new notification token" + token);
+  }
 
   @override
   initState() {
@@ -111,15 +124,17 @@ class _MessageHandlerState extends State<MessageHandler> {
 
     _fcm.requestPermission();
 
+    FirebaseMessaging.instance.getToken().then((t) {
+      handleToken(t!);
+    });
+
     _fcm.onTokenRefresh.listen((event) {
-      print(event);
+      handleToken(event);
     });
 
     // FirebaseMessaging.onBackgroundMessage((e) async {
     //   print(e.toString());
     // });
-
-    FirebaseMessaging.instance.getToken().then(print);
 
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel', // id

@@ -33,10 +33,10 @@ class SettingsPage extends StatelessWidget {
                         name: 'lightningAddress',
                         initialValue:
                             getIt<AuthCubit>().user!.get("lightningAddress"),
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                             hintText: 'e.g. satoshi',
-                            labelText: (AppLocalizations.of(context)!
-                                .lightningAddress),
+                            labelText:
+                                AppLocalizations.of(context)!.lightningAddress,
                             suffixText: '@sudonym.app'),
                         validator: (value) {
                           if (value!.isEmpty) {

@@ -11,7 +11,7 @@ class MockReceiveRepository implements ReceiveRepository {
   MockReceiveRepository(this.dio);
 
   @override
-  getInvoice(potId, type, amount) async {
+  getInvoice(potId, type, amount, currency) async {
     await Future.delayed(requestDelay);
     var data;
     if (type == "bolt12") {
@@ -31,7 +31,7 @@ class MockReceiveRepository implements ReceiveRepository {
       "potId": 1,
       "type": type,
       "amount": amount,
-      "currency": "BTC",
+      "currency": currency,
       "data": data,
       "createdAt": DateTime.now()
     });

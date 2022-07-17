@@ -1,16 +1,17 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { AddressParseResponse, Payment, TAddressType } from '@sudonym/models';
+import { AddressParseResponse, MSATOSHIS, Payment, TAddressType } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import * as lnurl from 'lnurl';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
+import { CurrencyService } from '../currency/currency.service';
 import { LnUrlHandlerService } from '../lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { Transaction } from '../transaction/transaction.model';
 import { TransactionService } from '../transaction/transaction.service';
 import { AddressParser } from './address-parser';
-import fetch from 'node-fetch';
 
 @Injectable()
 export class PayService {
+    @Inject(CurrencyService) currencyService: CurrencyService;
     @Inject(LightningNodeService) lightningNodeService: LightningNodeService;
     @Inject(LnUrlHandlerService) lnUrlHandlerService: LnUrlHandlerService;
     @Inject(TransactionService) transactionService: TransactionService;
@@ -23,12 +24,17 @@ export class PayService {
 
     async getInfo(p: Payment): Promise<Payment> {
         const t = getAddressType(p.originalAddress);
+
+        p.currency = p.currency || "BTC";
+        var amountInBTC = p.currency == "BTC" ? p.amount : (await this.currencyService.convert(p.currency, "BTC", p.amount)).amount;
+        var mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
+        
         this.logger.debug("Getting invoice for");
         this.logger.debug(p);
         switch (t) {
             case 'bolt11':
                 p.address = p.originalAddress;
-                p.feeMSat = await this.lightningNodeService.getFees(bolt11.decode(p.address).payeeNodeKey, p.amount);
+                p.feeMSat = await this.lightningNodeService.getFees(bolt11.decode(p.address).payeeNodeKey, mSatoshiAmount);
                 return p;
             case 'bolt12':
                 const offerInvoice = await this.lightningNodeService.fetchOfferInvoice(p.address);
@@ -37,7 +43,7 @@ export class PayService {
                 //     p.amount,
                 //     await this.lightningNodeService.getRoute(bolt11.decode(p.address).payeeNodeKey, p.amount));
             case 'lnurl':
-                const callbackInfo = await this.lnUrlHandlerService.getCallback(p.addressParseResponse.data.params.callback, { amount: p.amount });
+                const callbackInfo = await this.lnUrlHandlerService.getCallback(p.addressParseResponse.data.params.callback, { amount: mSatoshiAmount });
                 console.log(callbackInfo);
                 p.address = callbackInfo.pr;
                 return p;
@@ -47,13 +53,14 @@ export class PayService {
         }
     }
 
-    async pay(p: Payment): Promise<Transaction> {
-
+    async pay(p: Payment): Promise<Transaction> {   
+        console.log(p);
         return this.transactionService.create({
             originalAddress: p.originalAddress,
             address: p.address,
             type: getAddressType(p.originalAddress),
             amount: p.amount,
+            currencyCode: p.currency,
             outgoing: true,
             potId: p.potId
         });

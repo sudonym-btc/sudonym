@@ -9,9 +9,10 @@ class ReceiveCubit extends Cubit<ReceiveCubitState> {
 
   ReceiveCubit(this._receiveRepository) : super(ReceiveCubitState());
 
-  getInvoice(potId, type, [num? amount]) async {
+  getInvoice(potId, type, [num? amount, String? currency = "BTC"]) async {
     emit(ReceiveCubitState(loading: true));
-    var data = await _receiveRepository.getInvoice(potId, type, amount);
+    var data =
+        await _receiveRepository.getInvoice(potId, type, amount, currency);
     if (!isClosed) emit(ReceiveCubitState(loading: false, data: data));
   }
 }

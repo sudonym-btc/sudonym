@@ -127,6 +127,9 @@ class _IncomingComplete extends _TransactionStatusPage {
 
   @override
   Widget build(BuildContext context) {
+    print("xxxxx");
+    print(transaction.get("amount"));
+    print(transaction.data);
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
         subtitle: "Payment of " +

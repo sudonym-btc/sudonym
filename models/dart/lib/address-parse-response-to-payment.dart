@@ -1,5 +1,6 @@
 import './address-parse-response.dart';
 import './payment.dart';
+import './base-types/types/currency.dart';
 
 Payment AddressParseResponseToPayment(AddressParseResponse address) {
   if (address.get("success")) {
@@ -7,9 +8,9 @@ Payment AddressParseResponseToPayment(AddressParseResponse address) {
       return Payment({
         "originalAddress": address.get("originalInput"),
         "address": '',
-        "amount": address.get("data")['params']['minSendable'],
-        "minAmount": address.get("data")['params']['minSendable'],
-        "maxAmount": address.get("data")['params']['maxSendable'],
+        "amount": address.get("data")['params']['minSendable'] / MSATOSHIS,
+        "minAmount": address.get("data")['params']['minSendable'] / MSATOSHIS,
+        "maxAmount": address.get("data")['params']['maxSendable'] / MSATOSHIS,
         "feeMSat": null,
         "addressParseResponse": address
       });
@@ -17,9 +18,9 @@ Payment AddressParseResponseToPayment(AddressParseResponse address) {
       return Payment({
         "originalAddress": address.get("originalInput"),
         "address": '',
-        "amount": address.get("data")['msatoshi'],
-        "minAmount": address.get("data")['msatoshi'],
-        "maxAmount": address.get("data")['msatoshi'],
+        "amount": address.get("data")['msatoshi'] / MSATOSHIS,
+        "minAmount": address.get("data")['msatoshi'] / MSATOSHIS,
+        "maxAmount": address.get("data")['msatoshi'] / MSATOSHIS,
         "feeMSat": null,
         "addressParseResponse": address
       });

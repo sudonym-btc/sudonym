@@ -5,23 +5,27 @@ import { LightningNodeService } from 'src/service/lightning-node/lightning-node.
 import { BaseService } from '../base.service';
 import * as lnurl from 'lnurl';
 import { getConfig } from 'src/config/config';
-import { TAddressType } from '@sudonym/models';
+import { CurrencyCode, MSATOSHIS, TAddressType } from '@sudonym/models';
+import { CurrencyService } from '../currency/currency.service';
 
 @Injectable()
 export class ReceiveService extends BaseService(Receiver) {
+    @Inject(CurrencyService) currencyService: CurrencyService;
     @Inject(LightningNodeService) lightningNodeService: LightningNodeService;
     @Inject(LnUrlService) lnUrlService: LnUrlService;
 
-    async getInvoice(potId, type: TAddressType, amount = 0) {
+    async getInvoice(potId, type: TAddressType, amount = 0, currency: CurrencyCode = "BTC") {
 
-        amount = (Math.round(amount));
-
+        var amountInBTC = currency == "BTC" ? amount : (await this.currencyService.convert(currency, "BTC", amount)).amount;
+        var mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
+        
         if (type != 'bolt11' && type != 'lnurl') {
             const exists = await Receiver.findOne({
                 where: {
                     potId,
                     type,
-                    amount
+                    amount,
+                    currency
                 }
             });
             if (exists)
@@ -31,13 +35,13 @@ export class ReceiveService extends BaseService(Receiver) {
 
         switch (type) {
             case 'bolt11':
-                data = (await this.lightningNodeService.createInvoice(amount)).bolt11;
+                data = (await this.lightningNodeService.createInvoice(mSatoshiAmount)).bolt11;
                 break;
             case 'bolt12':
-                data = (await this.lightningNodeService.createOffer(amount)).bolt12;
+                data = (await this.lightningNodeService.createOffer(mSatoshiAmount)).bolt12;
                 break;
             case 'lnurl':
-                const tag = await this.lnUrlService.createPayRequest(potId, amount);
+                const tag = await this.lnUrlService.createPayRequest(potId, mSatoshiAmount);
                 data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);;
                 break;
             case 'onchain':
@@ -46,7 +50,8 @@ export class ReceiveService extends BaseService(Receiver) {
         }
         return Receiver.create({
             potId, 
-            amount: Number(amount),
+            amount: Number(amountInBTC),
+            currency: "BTC",
             type,
             data
         });

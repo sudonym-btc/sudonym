@@ -12,7 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 const List<String> defaultCurrencies = ["USD", "BTC"];
 
 class CurrencyInput extends StatefulWidget {
-  final Function? onChanged;
+  final Function(CurrencyInputOutput)? onChanged;
   final List<String> currencies;
 
   const CurrencyInput(
@@ -26,7 +26,12 @@ class CurrencyInput extends StatefulWidget {
 }
 
 class CurrencyInputOutput {
+  num amount;
+  String currency;
+
   List<List<dynamic>> outputs = [];
+
+  CurrencyInputOutput(this.amount, this.currency) {}
 }
 
 class _CurrencyInputState extends State<CurrencyInput> {
@@ -41,7 +46,8 @@ class _CurrencyInputState extends State<CurrencyInput> {
   void initState() {
     super.initState();
     _controller.addListener(() async {
-      widget.onChanged!(_controller.numberValue);
+      widget.onChanged!(
+          CurrencyInputOutput(_controller.numberValue, currCurrency));
       altValue = (await getIt<CurrencyRepository>().getRate(
               currCurrency, altCurrency, _controller.numberValue, null))
           .amount;

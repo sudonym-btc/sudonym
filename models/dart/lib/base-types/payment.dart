@@ -4,6 +4,7 @@ class Payment {
   dynamic /* num | null */ potId;
   String originalAddress;
   dynamic /* String | null */ address;
+  dynamic /* String | null */ currency;
   dynamic /* num | null */ amount;
   dynamic /* num | null */ minAmount;
   dynamic /* num | null */ maxAmount;
@@ -13,6 +14,7 @@ class Payment {
       this.potId,
       this.originalAddress,
       this.address,
+      this.currency,
       this.amount,
       this.minAmount,
       this.maxAmount,
@@ -23,6 +25,7 @@ class Payment {
         json["potId"],
         json["originalAddress"],
         json["address"],
+        json["currency"],
         json["amount"],
         json["minAmount"],
         json["maxAmount"],

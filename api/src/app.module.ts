@@ -13,6 +13,8 @@ import { TransactionModule } from './module/transaction/transaction.module';
 import { LnUrlModule } from './module/lightning/lnurl/lnurl.module';
 import { TransactionListenerModule } from './service/transaction-listener/transaction-listener.module';
 import { CurrencyModule } from './module/currency/currency.module';
+import { UserDeviceModule } from './module/user-device/user-device.module';
+import { BalanceUpdaterModule } from './service/balance-updater/balance-updater.module';
 
 @Module({
   imports: [
@@ -24,8 +26,10 @@ import { CurrencyModule } from './module/currency/currency.module';
     EventsModule,
     AuthModule, 
     UserModule,
+    UserDeviceModule,
     PotModule,
     PayModule,
+    BalanceUpdaterModule,
     ReceiveModule,
     TransactionModule
   ],
