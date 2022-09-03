@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { WsAdapter } from './module/events/websocket-adapter';
 import { requestLogger } from './helper/logger';
+import { contextRequest } from './helper/context-request';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useWebSocketAdapter(new WsAdapter(app));
   app.use(requestLogger);
+  app.use(contextRequest);
+
   
   const config = new DocumentBuilder()
     .setTitle('Sudonym')

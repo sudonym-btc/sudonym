@@ -117,7 +117,7 @@ def lightning_rest(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "saubyk/c-lightning-rest:0.7.2",
+                                        "image": "saubyk/c-lightning-rest:0.9.0",
                                         "command": [
                                             "/sbin/tini",
                                             "--",

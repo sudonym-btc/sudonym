@@ -1,9 +1,10 @@
-import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement, Sequelize } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement, Sequelize, BeforeCreate, AfterCreate } from 'sequelize-typescript'
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
 import { PotUser } from '../pot-user/pot-user.model';
 import { RequestType } from 'src/helper/parse-request.decorator';
 import { BaseModel } from '../base.model';
+import { requestContextCls } from 'src/helper/context-request';
 
 @Table({
     scopes: Pot.scopes
@@ -26,10 +27,24 @@ export class Pot extends BaseModel implements Models.Pot {
     @Column
     currency: CurrencyCode;
 
+    @HasMany(() => PotUser)
+    PotUsers: PotUser[];
+
+    @AfterCreate
+    static addPotUser = async (rec) => {
+        console.log(rec);
+        console.log(requestContextCls.get('request')?.auth);
+        await PotUser.create({
+            potId: rec.id,
+            userId: requestContextCls.get('request')?.auth.uid
+        })
+    }
+
     static scopes = {
-        access: (request: RequestType) => ({
+        find: (request: RequestType) => ({
             include: [{
                 model: PotUser,
+                as: "PotUsers",
                 required: true,
                 where: {
                     UserId: request.auth.uid

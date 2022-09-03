@@ -30,8 +30,8 @@ def bitcoin(config, cluster_types):
                     "namespace": "default",
                     "metadata": {"name": base_name + "-volume-claim"},
                     "spec": {
-                        "accessModes": ["ReadWriteOnce"],
-                        "resources": {"requests": {"storage": "300Gi"}},
+                        "accessModes": ["ReadWriteMany"],
+                        "resources": {"requests": {"storage": "500Gi"}},
                     },
                 },
             },
@@ -47,10 +47,8 @@ def bitcoin(config, cluster_types):
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 8333, "name": base_name},
                             {"port": 8332, "name": "rpc"},
-                            {"port": 18443, "name": "regtest"},
-                            {"port": 18444, "name": "rpc-regtest"},
+                            {"port": 8333, "name": base_name},
                         ],
                         "selector": {"app": base_name},
                     },
@@ -98,17 +96,20 @@ def bitcoin(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "ruimarinho/bitcoin-core:22.0",
+                                        "image": "ruimarinho/bitcoin-core:23.0",
                                         "resources": {"requests": {"cpu": "40m"}},
+                                        "command": ["bitcoind"],
                                         "args": [
                                             "-server",
                                             "-rest",
                                             "-txindex",
-                                            "-datadir=/home/bitcoin/.bitcoin",
+                                            "-datadir=/bitcoin/.bitcoin",
+                                            "-port=8333",
                                             "-rpcuser=$(BITCOIN_RPC_USER)",
                                             "-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
                                             "-rpcallowip=0.0.0.0/0",
                                             "-rpcallowip=::/0",
+                                            "-rpcport=8332",
                                             "-rpcbind=0.0.0.0",
                                             "-rpcbind=" + base_name,
                                             "-zmqpubrawtx=tcp://*:5555",
@@ -149,17 +150,7 @@ def bitcoin(config, cluster_types):
                                         ],
                                         "ports": [
                                             {"containerPort": 8332, "name": "rpc"},
-                                            {"containerPort": 8333, "name": "mainnet"},
-                                            {
-                                                "containerPort": 18332,
-                                                "name": "test-rpc",
-                                            },
-                                            {"containerPort": 18333, "name": "testnet"},
-                                            {"containerPort": 18443, "name": "regtest"},
-                                            {
-                                                "containerPort": 18444,
-                                                "name": "regtest-rpc",
-                                            },
+                                            {"containerPort": 8333, "name": "bitcoin"},
                                             {
                                                 "containerPort": 5555,
                                                 "name": "zeromq",
@@ -168,7 +159,7 @@ def bitcoin(config, cluster_types):
                                         "volumeMounts": [
                                             {
                                                 "name": base_name + "-data",
-                                                "mountPath": "/home/bitcoin/.bitcoin",
+                                                "mountPath": "/bitcoin/.bitcoin",
                                             }
                                         ],
                                     }

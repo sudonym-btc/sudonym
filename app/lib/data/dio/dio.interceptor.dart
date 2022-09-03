@@ -8,7 +8,7 @@ class AuthInterceptor extends Interceptor {
   onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     if (FirebaseAuth.instance.currentUser != null) {
       String bearer = await FirebaseAuth.instance.currentUser!.getIdToken();
-      options.headers["token"] = bearer;
+      options.headers["x-access-token"] = bearer;
     }
     return handler.next(options);
   }

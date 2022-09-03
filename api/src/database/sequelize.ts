@@ -9,9 +9,13 @@ import { Logger } from '@nestjs/common';
 import { TransactionSettlement } from '../module/transaction-settlement/transaction-settlement.model';
 import { LnUrl } from '../module/lightning/lnurl/lnurl.model';
 import { UserDevice } from 'src/module/user-device/user-device.model';
+import * as cls from 'cls-hooked';
 
 const logger = new Logger('DB');
 logger.log('Initializing db:', getConfig().database)
+
+export const sequelizeCls = cls.createNamespace('sequelize');
+Sequelize.useCLS(sequelizeCls);
 
 export const sequelize = new Sequelize({
   ...getConfig().database,

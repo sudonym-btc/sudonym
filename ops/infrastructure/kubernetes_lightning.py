@@ -103,7 +103,7 @@ def lightning(config, cluster_types):
                                         + (
                                             [
                                                 "--network=regtest",
-                                                "--bitcoin-rpcport=18443",
+                                                "--bitcoin-rpcport=8332",
                                             ]
                                             if config["env"] == "development"
                                             else []
@@ -168,7 +168,9 @@ def lightning(config, cluster_types):
                     },
                 },
             },
-        ] + [
+        ] 
+        
+        + [
             {
                 "name": base_name + "-1-service",
                 "type": cluster_types["Service"],
@@ -221,7 +223,7 @@ def lightning(config, cluster_types):
                                         + (
                                             [
                                                 "--network=regtest",
-                                                "--bitcoin-rpcport=18443",
+                                                "--bitcoin-rpcport=8332",
                                             ]
                                             if config["env"] == "development"
                                             else []
@@ -317,7 +319,7 @@ def lightning(config, cluster_types):
                                         + (
                                             [
                                                 "--network=regtest",
-                                                "--bitcoin-rpcport=18443",
+                                                "--bitcoin-rpcport=8332",
                                             ]
                                             if config["env"] == "development"
                                             else []

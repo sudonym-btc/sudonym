@@ -77,7 +77,7 @@ export const BaseService = <TModel extends BaseModel>(repository: ModelType<TMod
         async create(params, req: RequestType) {
             const obj = await this.repo.sequelize.transaction(async t => {
 
-                const obj = await this.repo.create(params);
+                const obj = await this.repo.create({...params, _req: req});
                 await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".created", obj));
 
                 return obj;

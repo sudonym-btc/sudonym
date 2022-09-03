@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/presentation/widgets/pot/pot_settings/credit_card/creditcard.dart';
 import 'package:sudonym/presentation/widgets/pot/pot_settings/add_money/add_money_page.dart';
 import 'package:sudonym/presentation/widgets/pot/pot_settings/edit_pot/edit_pot_page.dart';

@@ -1,7 +1,12 @@
+kubectl wait --for=condition=ready pod -l app=development-bitcoin
+kubectl wait --for=condition=ready pod -l app=development-lightning
+kubectl wait --for=condition=ready pod -l app=development-lightning-1
+kubectl wait --for=condition=ready pod -l app=development-lightning-2
+
 ln1cli="kubectl exec $(kubectl get pod -l app=development-lightning -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
 ln2cli="kubectl exec $(kubectl get pod -l app=development-lightning-1 -o name) -- lightning-cli --network=regtest"
 ln3cli="kubectl exec $(kubectl get pod -l app=development-lightning-2 -o name) -- lightning-cli --network=regtest"
-bitcoincli="kubectl exec $(kubectl get pod -l app=development-bitcoin -o name) -- bitcoin-cli -regtest=1 -rpcuser=test -rpcpassword=test "
+bitcoincli="kubectl exec $(kubectl get pod -l app=development-bitcoin -o name) -- bitcoin-cli -datadir=/bitcoin/.bitcoin -regtest=1 -rpcport=8332 -rpcuser=test -rpcpassword=test "
 
 initial_block_height=$($ln1cli getinfo | jq -r '.blockheight')
 

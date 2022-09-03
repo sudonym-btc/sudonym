@@ -37,6 +37,7 @@ export class AddressParser {
 
             if (!success) {
                 return {
+                    success,
                     data: null,
                     message,
                     isLnUrl: false,

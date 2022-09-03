@@ -1,12 +1,14 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { AuthService } from 'src/module/auth/auth.service';
+import { requestContextCls } from './context-request';
 
 export const ParseRequest = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
+  async (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return {
-      auth: new AuthService().auth(request)
+    const req = {
+      auth: requestContextCls.get('request')?.auth || await new AuthService().auth(request.headers['x-access-token'])
     };
+    return req;
   },
 );
 
