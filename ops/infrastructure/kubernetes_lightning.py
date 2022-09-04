@@ -303,6 +303,45 @@ def lightning(config, cluster_types):
                         "template": {
                             "metadata": {"labels": {"app": base_name + "-2"}},
                             "spec": {
+                                # "initContainers": [
+                                #     {
+                                #         "image": "projects.registry.vmware.com/tcx/snapshot/stackanetes/kubernetes-entrypoint:latest",
+                                #         "command": ["kubernetes-entrypoint"],
+                                #         "name": "init-dependency-check",
+                                #         "env": [
+                                #             {
+                                #                 "name": "POD_NAME",
+                                #                 "valueFrom": {
+                                #                     "fieldRef": {
+                                #                         "apiVersion": "v1",
+                                #                         "fieldPath": "metadata.name"
+                                #                     }
+                                #                 }
+                                #             },
+                                #             {
+                                #                 "name": "NAMESPACE", 
+                                #                 "valueFrom": {
+                                #                     "fieldRef": {
+                                #                         "apiVersion": "v1",
+                                #                         "fieldPath": "metadata.namespace"
+                                #                     }
+                                #                 }
+                                #             },
+                                #             {
+                                #                 "name": "DEPENDENCY_CONTAINER",
+                                #                 "value": bitcoin_base_name
+                                #             }, 
+                                #             {
+                                #                 "name": "COMMAND", 
+                                #                 "value": "echo done"
+                                #             }
+                                #     ],
+                                #         "securityContext": {
+                                #             "privileged": True,
+                                #             "runAsUser": 0
+                                #         }
+                                #     }
+                                # ],
                                 "containers": [
                                     {
                                         "name": base_name + "-2",

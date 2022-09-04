@@ -55,33 +55,27 @@ export const BaseService = <TModel extends BaseModel>(repository: ModelType<TMod
         }
 
         async update(id, params, req: RequestType) {
-            const obj = await this.repo.sequelize.transaction(async t => {
 
-                const scopes = [
-                    repository.scopes.edit ? repository.scopes.edit(req) : null,
-                    repository.scopes.find ? repository.scopes.find(req) : null,
-                ].filter(i => !!i);
+            const scopes = [
+                repository.scopes.edit ? repository.scopes.edit(req) : null,
+                repository.scopes.find ? repository.scopes.find(req) : null,
+            ].filter(i => !!i);
 
-                const record = await this.repo.scope(scopes as any).findByPk(id);
+            const record = await this.repo.scope(scopes as any).findByPk(id);
 
-                const obj = await record.set(params).save();
+            const obj = await record.set(params).save();
 
-                await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".updated", obj));
+            await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".updated", obj));
 
-                return obj;
-            });
             await this.onAfterUpdated.execute(obj);
             return obj;
         }
 
         async create(params, req: RequestType) {
-            const obj = await this.repo.sequelize.transaction(async t => {
 
-                const obj = await this.repo.create({...params, _req: req});
-                await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".created", obj));
+            const obj = await this.repo.create(params);
+            await this.eventsService.trigger(new Event(this.repo.name.toLowerCase() + ".created", obj));
 
-                return obj;
-            });
             await this.onAfterCreated.execute(obj);
             return obj;
         }

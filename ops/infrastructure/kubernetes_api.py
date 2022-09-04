@@ -1,9 +1,10 @@
 from kubernetes_cluster import cluster
-
+from kubernetes_lightning_rest import lightning_rest
 
 def api(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-api"
+    lightning_rest_basename = lightning_rest(config, cluster_types)["base_name"]
 
     return {
         "resources": [

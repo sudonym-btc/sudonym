@@ -11,6 +11,7 @@
     "deploy:staging": "bash ops/infrastructure/deploy.sh staging",
     "deploy:test": "bash ops/infrastructure/deploy.sh test",
     "deploy:development": "npm run minikube:start && echo $(ksync init) && npm run minikube:dns && npm run minikube:deploy && sudo echo && (minikube tunnel >/dev/null &)",
+    "launch:development": "npm run deploy:development && npm run setup:lightning",
     "api:certs": "cd api && kubectl cp default/$(kubectl get pods -l app=development-c-lightning-rest -o jsonpath='{.items[0].metadata.name}' --all-namespaces):/usr/src/app/certs ./certs",
     "api:development": "npm run api:certs && cd api && npm run start:dev -- -- --selfUrl=http://localhost:3000",
     "preapi:logs": "echo $(killall ksync) && echo $(killall syncthing)",

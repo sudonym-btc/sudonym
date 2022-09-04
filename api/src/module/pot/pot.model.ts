@@ -41,7 +41,7 @@ export class Pot extends BaseModel implements Models.Pot {
     }
 
     static scopes = {
-        find: (request: RequestType) => ({
+        find: (request: RequestType) => request ? ({
             include: [{
                 model: PotUser,
                 as: "PotUsers",
@@ -50,6 +50,6 @@ export class Pot extends BaseModel implements Models.Pot {
                     UserId: request.auth.uid
                 }
             }]
-        })
+        }) : {}
     }
 }

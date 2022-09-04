@@ -39,6 +39,7 @@ export class LnUrlService extends BaseService(LnUrl) {
     async createPayRequest(potId: number, amount?: number) {
         const tag = await this.create({
             tag: 'payRequest',
+            potId,
             params: {
                 tag: 'payRequest',
                 domain: getConfig().selfUrl,

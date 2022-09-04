@@ -1,5 +1,5 @@
 import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { PotUser } from "src/module/pot-user/pot-user.model";
 import { Pot } from "src/module/pot/pot.model";
 import { User } from "src/module/user/user.model";
@@ -14,7 +14,8 @@ export class LightningAddressController {
     async lightningAddress(@Param('user') lightningAddress) {
         const user = await User.findOne({
             where: {
-                lightningAddress
+                lightningAddress: lightningAddress.substring(0, lightningAddress.lastIndexOf(".") + 0)
+
             }
         });
 
@@ -27,10 +28,13 @@ export class LightningAddressController {
                         }
                     })).map(i => i.potId)
                 }
-            }
+            },
+            order: [Sequelize.literal(`
+                name="${lightningAddress.substring(lightningAddress.lastIndexOf("."), lightningAddress.length)}`
+            )]
         });
 
-        return this.lnUrlService.createPayRequest(pot.id);
+        return (await this.lnUrlService.createPayRequest(pot.id)).params;
     }
 
 }
