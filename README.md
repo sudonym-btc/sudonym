@@ -50,7 +50,7 @@ gh auth login && \
 
 git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
 npm install && \
-npm run setup:development
+npm run deploy:development:hard
   
 ```
 
