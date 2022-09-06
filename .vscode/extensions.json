@@ -11,6 +11,7 @@
         "redhat.vscode-xml",
         "mtxr.sqltools",
         "mtxr.sqltools-driver-sqlite",
-        "ms-kubernetes-tools.vscode-kubernetes-tools"
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "DavidAnson.vscode-markdownlint"
     ]
 }

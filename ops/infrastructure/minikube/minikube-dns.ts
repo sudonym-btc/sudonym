@@ -1,10 +1,12 @@
 import * as fs from 'fs';
 import * as child_process from 'child_process';
+
 const minikubeIp = child_process.execSync('minikube ip').toString();
-console.log("minikube ip ", minikubeIp);
+console.log("Binding local addresses to minikube IP ", minikubeIp);
+
 if (!minikubeIp) throw Error("Could not get minikube IP");
 
-const localConfPath = "ops/dnsmasq.conf"
+const localConfPath = "ops/infrastructure/minikube/dnsmasq.conf"
 var dnsmasqConfFile = fs.readFileSync(localConfPath).toString();
 var file = dnsmasqConfFile.replace("###MINIKUBE###", `server=/local.development/${minikubeIp}`);
 

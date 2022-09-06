@@ -2,6 +2,14 @@
 # This is modified version of code provided by Google at:
 # https://github.com/GoogleCloudPlatform/deploymentmanager-samples
 #
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, currentdir) 
+
 from common import getConfig
 from dns import dns
 from kubernetes_ride_the_lightning import ride_the_lightning
