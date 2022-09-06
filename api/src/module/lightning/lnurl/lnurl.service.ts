@@ -9,23 +9,6 @@ import * as crypto from 'crypto';
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
 
-    handle(payload: LnUrl) {
-        switch (payload.tag) {
-            case 'withdrawRequest':
-                return this.handleWithdrawRequest(payload);
-            case 'payRequest':
-                return this.handlePayRequest(payload);
-        }
-    }
-
-    handlePayRequest(payload: LnUrl) {
-
-    }
-
-    handleWithdrawRequest(payload: LnUrl) {
-
-    }
-
     async create(params: RecursivePartial<LnUrl>, req?: RequestType) {
         params.id = crypto.randomUUID();
         const record = await super.create(params, req);
@@ -36,14 +19,14 @@ export class LnUrlService extends BaseService(LnUrl) {
         return record;
     }
 
-    async createPayRequest(potId: number, amount?: number) {
+    async createPayRequest(potId: number, mSatoshiAmount?: number) {
         const tag = await this.create({
             tag: 'payRequest',
             potId,
             params: {
                 tag: 'payRequest',
                 domain: getConfig().selfUrl,
-                minSendable: amount,
+                minSendable: mSatoshiAmount || 0,
                 maxSendable: 10000000,
                 metadata: '',
                 commentAllowed: 500,

@@ -9,7 +9,6 @@ export class WsAdapter implements WebSocketAdapter {
 
   create(port: number, options: any = {}): any {
     const s = new WebSocket.Server({ port, ...options });
-    console.log(s, port);
     return s;
   }
 

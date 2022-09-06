@@ -12,13 +12,18 @@ export class LightningAddressController {
 
     @Get('.well-known/lnurlp/:user')
     async lightningAddress(@Param('user') lightningAddress) {
+        let indexOfLastStop = lightningAddress.lastIndexOf(".");
+        indexOfLastStop = indexOfLastStop >= 0 ? indexOfLastStop : lightningAddress.length
         const user = await User.findOne({
             where: {
-                lightningAddress: lightningAddress.substring(0, lightningAddress.lastIndexOf(".") + 0)
-
+                lightningAddress: lightningAddress.substring(0, indexOfLastStop)
             }
         });
 
+        let potName = null;
+        if (indexOfLastStop != lightningAddress.length) {
+            potName = lightningAddress.substring(indexOfLastStop + 1, lightningAddress.length);
+        }
         const pot = await Pot.findOne({
             where: {
                 id: {
@@ -29,9 +34,9 @@ export class LightningAddressController {
                     })).map(i => i.potId)
                 }
             },
-            order: [Sequelize.literal(`
-                name="${lightningAddress.substring(lightningAddress.lastIndexOf("."), lightningAddress.length)}`
-            )]
+            order: potName ? [[Sequelize.literal(`
+                name="${potName}"`
+            ), "DESC"]] : []
         });
 
         return (await this.lnUrlService.createPayRequest(pot.id)).params;

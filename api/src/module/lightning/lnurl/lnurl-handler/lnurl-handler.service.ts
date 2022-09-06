@@ -4,6 +4,7 @@ import { LnUrlService } from "../lnurl.service";
 import fetch from 'node-fetch';
 import { selfSignedHttpsAgent } from "src/module/pay/address-parser";
 import { getConfig } from "src/config/config";
+import { MSATOSHIS } from "@sudonym/models";
 
 
 export class LnUrlHandlerService {
@@ -12,7 +13,7 @@ export class LnUrlHandlerService {
 
     async handle(id, amount) {
         const tag = await this.lnUrlService.findOne(id);
-        const receiver = await this.receiveService.getInvoice(tag.potId, 'bolt11', amount);
+        const receiver = await this.receiveService.getInvoice(tag.potId, 'bolt11', amount / MSATOSHIS);
         return {
             pr: receiver.data,
             routes: []

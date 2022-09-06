@@ -7,7 +7,7 @@ import { CurrencyService } from '../currency/currency.service';
 import { LnUrlHandlerService } from '../lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { Transaction } from '../transaction/transaction.model';
 import { TransactionService } from '../transaction/transaction.service';
-import { AddressParser } from './address-parser';
+import { AddressParser, validateInternetIdentifier } from './address-parser';
 
 @Injectable()
 export class PayService {
@@ -42,6 +42,7 @@ export class PayService {
                 //     p.address,
                 //     p.amount,
                 //     await this.lightningNodeService.getRoute(bolt11.decode(p.address).payeeNodeKey, p.amount));
+            case 'lightningaddress':
             case 'lnurl':
                 const callbackInfo = await this.lnUrlHandlerService.getCallback(p.addressParseResponse.data.params.callback, { amount: mSatoshiAmount });
                 console.log(callbackInfo);
@@ -54,7 +55,6 @@ export class PayService {
     }
 
     async pay(p: Payment): Promise<Transaction> {   
-        console.log(p);
         return this.transactionService.create({
             originalAddress: p.originalAddress,
             address: p.address,
@@ -69,7 +69,9 @@ export class PayService {
 }
 
 export const getAddressType = (address: string): TAddressType => {
-    if (address.startsWith('lnurl1')) {
+    if (validateInternetIdentifier(address)) {
+        return 'lightningaddress';
+    } else if (address.startsWith('lnurl1')) {
         return 'lnurl';
     } else if (address.startsWith('lno1')) {
         return 'bolt12';

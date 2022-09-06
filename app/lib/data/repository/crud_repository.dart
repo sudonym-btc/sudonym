@@ -31,9 +31,9 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   onInit() {
     loggy.debug("Listening to this stream $endpoint");
     websocket.getStream().listen((event) {
-      loggy.debug("Websocket: " + event);
       Event e = Event(jsonDecode(event));
       if (e.get("name").split('.')[0] == endpoint.toLowerCase()) {
+        loggy.debug("Websocket: " + event);
         if (e.get("name").split('.')[1] == 'created') {
           created.add(converter(e.get("data")));
         } else if (e.get("name").split('.')[1] == 'updated') {

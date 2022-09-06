@@ -2,6 +2,9 @@ kubectl wait --for=condition=ready pod -l app=development-bitcoin
 kubectl wait --for=condition=ready pod -l app=development-lightning
 kubectl wait --for=condition=ready pod -l app=development-lightning-1
 kubectl wait --for=condition=ready pod -l app=development-lightning-2
+kubectl wait --for=condition=ready pod -l app=development-c-lightning-rest
+kubectl wait --for=condition=ready pod -l app=development-ride-the-lightning
+kubectl wait --for=condition=ready pod -l app=development-api
 
 ln1cli="kubectl exec $(kubectl get pod -l app=development-lightning -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
 ln2cli="kubectl exec $(kubectl get pod -l app=development-lightning-1 -o name) -- lightning-cli --network=regtest"

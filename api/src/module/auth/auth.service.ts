@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 import admin, { ServiceAccount } from 'firebase-admin';
 import { UserService } from '../user/user.service';
-import * as serviceAccount from '../../../service-account.json';
+import * as serviceAccount from '../../service-account.json';
 import { AuthError } from './types/error';
 // Firebase Setup
 admin.initializeApp({

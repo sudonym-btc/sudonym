@@ -4,6 +4,13 @@ import { Buffer } from 'buffer';
 import fetch from 'node-fetch';
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { AddressParseResponse } from "@sudonym/models";
+import { getConfig } from "src/config/config";
+
+const https = require('https');
+
+export const selfSignedHttpsAgent = new https.Agent({
+    rejectUnauthorized: false,
+});
 
 @Injectable()
 export class AddressParser {
@@ -22,7 +29,7 @@ export class AddressParser {
         r.isOnChain = typeof r.isOnChain === "undefined" ? false : r.isOnChain;
         return r;
     }
-    
+
     parseInvoiceHelper = async (invoice: string): Promise<Partial<AddressParseResponse>> => {
         if (!invoice || invoice === '') {
             return null;
@@ -89,8 +96,10 @@ export class AddressParser {
         const url = Buffer.from(bech32.fromWords(decodedLNURL.words)).toString();
 
         this.logger.debug("Fetching LnUrl from " + url);
-        return fetch(url)
-            .then(r => r.json())
+        return fetch(url, getConfig().env == "development" ? {
+            agent: selfSignedHttpsAgent
+        } : {})
+            .then(r => r.json()).then(r => { console.log(r); return r; })
     };
 
     handleLightningAddress = (internetIdentifier: string) => {
@@ -116,7 +125,9 @@ export class AddressParser {
 
         const url = `https://${domain}/.well-known/lnurlp/${username}`;
 
-        return fetch('https://satcors.fiatjaf.com/?url=' + encodeURIComponent(url))
+        return fetch(url, getConfig().env == "development" ? {
+            agent: selfSignedHttpsAgent
+        } : {})
             .then(r => r.json())
             .then((data: any) => {
                 data.domain = domain;
@@ -125,11 +136,13 @@ export class AddressParser {
                     success: true,
                     data: {
                         ...data,
+                        params: data,
                         domain,
                         username,
                     },
                 }
-            }).catch(_ => {
+            }).catch(e => {
+                console.error(e);
                 return {
                     success: false,
                     message: 'This identifier does not support Lightning Address yet.',
