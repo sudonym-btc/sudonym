@@ -108,7 +108,8 @@ class _BottomSlideableState extends State<BottomSlideable>
               padding: const EdgeInsets.symmetric(horizontal: 32),
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(32)),
               ),
               child: widget.child,
             ),

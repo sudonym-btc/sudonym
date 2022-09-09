@@ -8,6 +8,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "getConfig": "ts-node src/helper/config-loader.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -24,6 +25,7 @@
   "license": "ISC",
   "dependencies": {
     "@fitbit/jsonrpc-ts": "^3.2.1",
+    "@google-cloud/storage": "^6.4.2",
     "@nestjs/common": "^8.4.0",
     "@nestjs/core": "^8.4.0",
     "@nestjs/platform-express": "^8.4.0",

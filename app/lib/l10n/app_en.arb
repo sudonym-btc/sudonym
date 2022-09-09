@@ -1,7 +1,7 @@
 {
 
 "welcomeTo" :                       "Welcome to",
-"signInWith" :                      "Sing in with",
+"signInWith" :                      "Sign in with",
 "helloWorld" :                      "Hello World!",
 "send" :                            "Send", 
 "receive" :                         "Receive",

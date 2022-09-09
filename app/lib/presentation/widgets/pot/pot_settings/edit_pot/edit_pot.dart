@@ -24,7 +24,7 @@ class _EditPotNameState extends State<EditPotName> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.black, width: 1)),
-            child: Padding(
+            child: const Padding(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 2),
               child: Center(
                 child: TextField(

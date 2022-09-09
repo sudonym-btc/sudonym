@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
               ));
             });
 
-            children.add(AddPotSlide());
+            children.add(const AddPotSlide());
 
             return Container(
                 color: Theme.of(context).colorScheme.background,
@@ -51,11 +51,11 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () {
                               Navigator.pushNamed(context, '/settings');
                             },
-                            icon: FaIcon(FontAwesomeIcons.cog, size: 14),
+                            icon: const FaIcon(FontAwesomeIcons.cog, size: 14),
                           )
                         ]),
                         body: state.loading
-                            ? Center(child: CircularProgressIndicator())
+                            ? const Center(child: CircularProgressIndicator())
                             : Column(
                                 children: [
                                   Expanded(
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Padding(
-                                      padding: EdgeInsets.all(padding),
+                                      padding: const EdgeInsets.all(padding),
                                       child: SmoothPageIndicator(
                                         controller:
                                             controller, // PageController

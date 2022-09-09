@@ -30,7 +30,7 @@ class ReceiveWidget extends StatelessWidget {
         ],
         child: BlocBuilder<ReceiveCubit, ReceiveCubitState>(
             builder: (BuildContext context, state) {
-          Widget image = Center(child: const CircularProgressIndicator());
+          Widget image = const Center(child: CircularProgressIndicator());
           if (!state.loading) {
             image = QrImage(
               data: state.data!.get("data"),
@@ -44,26 +44,26 @@ class ReceiveWidget extends StatelessWidget {
           return Column(
             children: [
               Expanded(child: image),
-              SizedBox(height: padding),
+              const SizedBox(height: padding),
               Padding(
-                padding: EdgeInsets.all(padding),
+                padding: const EdgeInsets.all(padding),
                 child: CurrencyInput(onChanged: (amount) {
                   print(amount);
                   BlocProvider.of<ReceiveCubit>(context)
-                    ..getInvoice(potId, type, amount.amount, amount.currency);
+                      .getInvoice(potId, type, amount.amount, amount.currency);
                 }),
               ),
               Padding(
-                  padding: EdgeInsets.all(padding),
+                  padding: const EdgeInsets.all(padding),
                   child: ButtonBar(children: [
                     Button(
-                      icon: FaIcon(FontAwesomeIcons.copy, size: iconSize),
+                      icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
                       onPressed: state.loading
                           ? null
                           : () {
                               FlutterClipboard.copy(state.data!.get("data"))
                                   .then((value) {
-                                final snackBar = SnackBar(
+                                const snackBar = SnackBar(
                                   content: Text('Copied to Clipboard'),
                                 );
                                 ScaffoldMessenger.of(context)
@@ -73,7 +73,8 @@ class ReceiveWidget extends StatelessWidget {
                       text: (AppLocalizations.of(context)!.copy),
                     ),
                     Button(
-                      icon: FaIcon(FontAwesomeIcons.share, size: iconSize),
+                      icon:
+                          const FaIcon(FontAwesomeIcons.share, size: iconSize),
                       onPressed: state.loading
                           ? null
                           : () {

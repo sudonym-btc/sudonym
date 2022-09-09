@@ -21,10 +21,10 @@ class SettingsPage extends StatelessWidget {
         color: Theme.of(context).colorScheme.background,
         child: SafeArea(
             child: Scaffold(
-                appBar: AppBar(
-                    title: new Text(AppLocalizations.of(context)!.settings)),
+                appBar:
+                    AppBar(title: Text(AppLocalizations.of(context)!.settings)),
                 body: Container(
-                  padding: EdgeInsets.all(padding),
+                  padding: const EdgeInsets.all(padding),
                   child: CustomForm(
                     cubit: getIt<UserCubit>(),
                     entity: getIt<AuthCubit>().user!,

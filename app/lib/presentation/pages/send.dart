@@ -55,11 +55,11 @@ class _SendPageState extends State<SendPage> {
                             MaterialPageRoute(
                                 builder: (context) => const QRPage()));
                       },
-                      icon: FaIcon(FontAwesomeIcons.camera))
+                      icon: const FaIcon(FontAwesomeIcons.camera))
                 ],
               ),
               body: Padding(
-                  padding: EdgeInsets.all(padding),
+                  padding: const EdgeInsets.all(padding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

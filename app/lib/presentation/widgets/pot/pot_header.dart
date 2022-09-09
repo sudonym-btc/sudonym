@@ -14,7 +14,7 @@ class PotHeader extends StatelessWidget {
     return BlocBuilder<PotCubit, PotCubitState>(
         builder: (BuildContext context, state) {
       return Padding(
-          padding: EdgeInsets.all(padding * 2),
+          padding: const EdgeInsets.all(padding * 2),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Subtitle(state.entity?.get("name") ?? ""),

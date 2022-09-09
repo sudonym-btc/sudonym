@@ -24,7 +24,7 @@ class Pot extends StatelessWidget {
         child: BlocBuilder<PotCubit, PotCubitState>(
             builder: (BuildContext context, state) {
           if (state.loading) {
-            return Center(child: const CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           return SlidingUpPanel(
             body: Column(

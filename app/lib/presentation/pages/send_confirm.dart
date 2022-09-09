@@ -46,8 +46,8 @@ class SendConfirmPage extends StatelessWidget {
           String subtitle =
               (AppLocalizations.of(context)!.gatheringPaymentInfomation);
           IconData? icon;
-          Widget? content =
-              Center(child: CircularProgressIndicator(color: Colors.white));
+          Widget? content = const Center(
+              child: CircularProgressIndicator(color: Colors.white));
           Color color = Colors.indigo.shade800;
           Widget? actions = null;
 
@@ -55,8 +55,8 @@ class SendConfirmPage extends StatelessWidget {
             title = 'Sending';
             subtitle = 'Payment is in progress';
             icon;
-            content =
-                Center(child: CircularProgressIndicator(color: Colors.white));
+            content = const Center(
+                child: CircularProgressIndicator(color: Colors.white));
             color = Colors.indigo.shade800;
             actions = null;
           }
@@ -99,23 +99,23 @@ class SendConfirmPage extends StatelessWidget {
                 Table(
                   children: [
                     TableRow(children: [
-                      new Text('address'),
-                      new Text(
+                      const Text('address'),
+                      Text(
                         r.get("address"),
-                        style: TextStyle(
+                        style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),
                       )
                     ]),
                     TableRow(children: [
-                      new Text(AppLocalizations.of(context)!.fee),
-                      new Text(r.get("feeMSat").toString() + ' sats / \$0.01')
+                      Text(AppLocalizations.of(context)!.fee),
+                      Text('${r.get("feeMSat") / 1000} sats / \$0.01')
                     ]),
                     TableRow(children: [
-                      new Text(AppLocalizations.of(context)!.name),
-                      new Text(
+                      Text(AppLocalizations.of(context)!.name),
+                      Text(
                         r.get("originalAddress"),
-                        style: TextStyle(
+                        style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),
                       )
@@ -126,7 +126,8 @@ class SendConfirmPage extends StatelessWidget {
               actions = ButtonBar(children: [
                 ElevatedButton.icon(
                   label: Text(AppLocalizations.of(context)!.send),
-                  icon: FaIcon(FontAwesomeIcons.paperPlane, size: iconSize),
+                  icon:
+                      const FaIcon(FontAwesomeIcons.paperPlane, size: iconSize),
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null
                       : () {

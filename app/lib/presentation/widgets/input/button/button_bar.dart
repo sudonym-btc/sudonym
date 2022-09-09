@@ -10,7 +10,7 @@ class ButtonBar extends StatelessWidget {
   Widget build(BuildContext context) {
     var list = <Widget>[];
     children.forEach((i) => {
-          list.addAll([Expanded(child: i), SizedBox(width: padding)])
+          list.addAll([Expanded(child: i), const SizedBox(width: padding)])
         });
     list.removeLast(); // Pop off last padding
 

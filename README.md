@@ -14,80 +14,10 @@ and lightning wallet. The folder structure is outlined below:
 <details>
   <summary>Installation</summary>
 
-## Tooling
-
-  <details>
-    <summary>Mac</summary>
-
-Make sure that brew is installed
-
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-```
-
-Follow "Next steps" install instructions to add brew to path
-
-```bash
-brew tap homebrew/core && \
-brew tap homebrew/cask && \
-brew install nvm && \
-brew install --cask docker && \
-open -a Docker && \ 
-brew install minikube && \
-brew install --cask google-cloud-sdk && \
-brew install gh && \
-brew install ksync && \
-minikube start && \
-ksync init && \
-
-source $(brew --prefix nvm)/nvm.sh && \
-
-nvm install 18 && \
-
-gcloud components install kubectl && \
-
-gcloud init && \
-
-gh auth login && \
-
 git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
-npm install && \
-npm run deploy:development:hard
-  
-```
-
-  </details>
-
-  <details>
-    <summary>Linux</summary>
-
-```bash
-sudo dnf install google-cloud-cli
-sudo yum install kubectl
-
-sudo yum install dnsmasq
-systemctl start dnsmasq
-systemctl enable dnsmasq
-systemctl status dnsmasq
-LINUX: yum install -y make gcc*
-```
-
-  </details>
-
-<br>
-
-[optional] for live firebase integration download/ask admin
-for service_account.json and store in /api
-
-[frontend] Install Flutter:
-
-```bash
-brew install --cask flutter
-
-# M1 CHIPS ONLY
-
-sudo gem uninstall cocoapods
-brew install cocoapods
+./install.sh && \
+npm run deploy:development:hard  
 ```
 
 </details>

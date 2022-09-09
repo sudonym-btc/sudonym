@@ -20,7 +20,7 @@ class ContactPage extends StatelessWidget {
             ],
             child: BlocBuilder<ContactCubit, ContactCubitState>(
                 builder: ((context, state) {
-              return Text('contact');
+              return const Text('contact');
             })),
           ),
         ));

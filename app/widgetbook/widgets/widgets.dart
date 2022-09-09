@@ -16,13 +16,13 @@ WidgetbookCategory widgets = WidgetbookCategory(
             body: ScreenSlideable(
                 top: Container(
                   color: Colors.green,
-                  child: Header(
+                  child: const Header(
                     "Yodel",
                   ),
                 ),
                 bottom: Container(
                   color: Colors.red,
-                  child: Text("LeyHiHooo"),
+                  child: const Text("LeyHiHooo"),
                 )),
           ),
         ),

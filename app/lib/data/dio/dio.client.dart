@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
 import 'package:injectable/injectable.dart';
@@ -11,8 +8,7 @@ import 'dio.interceptor.dart';
 abstract class RegisterModule {
   @lazySingleton
   Dio dio(Config config) {
-    Dio _dio = Dio(
-        BaseOptions(baseUrl: config.apiUrl + ':' + config.apiPort.toString()))
+    Dio dio = Dio(BaseOptions(baseUrl: '${config.apiUrl}:${config.apiPort}'))
       ..interceptors.add(LoggyDioInterceptor())
       ..interceptors.add(AuthInterceptor());
 
@@ -23,6 +19,6 @@ abstract class RegisterModule {
     // //       (X509Certificate cert, String host, int port) => true;
     //   return client;
     // };
-    return _dio;
+    return dio;
   }
 }

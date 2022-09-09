@@ -22,7 +22,7 @@ class EditPot extends StatelessWidget {
                       (entity?.get("id") == null ? "Create" : "Edit") + " Pot"),
                 ),
                 body: Padding(
-                    padding: EdgeInsets.all(padding),
+                    padding: const EdgeInsets.all(padding),
                     child: EditPotForm(
                         onSave: () => Navigator.pop(context),
                         entity: entity)))));

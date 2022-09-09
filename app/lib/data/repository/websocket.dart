@@ -39,10 +39,10 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
       stream.sink.add(event);
     }, onError: (e) async {
       stream.sink.addError(e);
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       connect();
     }, onDone: () async {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       connect();
     }, cancelOnError: true);
   }

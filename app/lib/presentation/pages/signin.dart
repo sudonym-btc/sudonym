@@ -18,12 +18,12 @@ class SigninPage extends StatelessWidget {
         appBar: AppBar(),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
-              padding: EdgeInsets.all(padding * 2),
+              padding: const EdgeInsets.all(padding * 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Subtitle(AppLocalizations.of(context)!.welcomeTo),
-                  Header("Sudonym")
+                  const Header("Sudonym")
                 ],
               )),
           Expanded(

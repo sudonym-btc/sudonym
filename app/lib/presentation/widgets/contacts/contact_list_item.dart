@@ -14,14 +14,14 @@ class ContactListItem extends StatelessWidget {
           Navigator.of(context).pushNamed('/contact');
         },
         child: Container(
-            padding: EdgeInsets.all(padding),
+            padding: const EdgeInsets.all(padding),
             child: Row(
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.blue.shade100,
                   child: Text(contact.get("name").substring(0, 1).toString()),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: padding,
                 ),
                 SizedBox(child: Text(contact.get("name").toString())),

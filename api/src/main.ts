@@ -4,8 +4,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { WsAdapter } from './module/events/websocket-adapter';
 import { requestLogger } from './helper/logger';
 import { contextRequest } from './helper/context-request';
+import { downloadFiles } from './helper/config-loader';
 
 async function bootstrap() {
+  await downloadFiles();
   const app = await NestFactory.create(AppModule);
   app.useWebSocketAdapter(new WsAdapter(app));
   app.use(requestLogger);

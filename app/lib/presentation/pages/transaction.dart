@@ -29,7 +29,7 @@ class TransactionPage extends StatelessWidget {
             return StatusPage(
                 title: "",
                 subtitle: "",
-                content: Center(
+                content: const Center(
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
           } else if (state.entity!.get("outgoing")) {
@@ -68,7 +68,8 @@ class _OutgoingPending extends _TransactionStatusPage {
     return StatusPage(
         title: (AppLocalizations.of(context)!.paymentPending),
         subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit),
-        content: Center(child: CircularProgressIndicator(color: Colors.white)),
+        content:
+            const Center(child: CircularProgressIndicator(color: Colors.white)),
         color: Colors.indigo.shade800);
   }
 }
@@ -81,11 +82,8 @@ class _OutgoingFailed extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: "Payment failed",
-        subtitle: "Outgoing payment of " +
-            FormatCurrency().format(
-                transaction.get("currencyCode"), transaction.get("amount")) +
-            " failed to " +
-            transaction.get("originalAddress"),
+        subtitle:
+            "Outgoing payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} failed to ${transaction.get("originalAddress")}",
         color: Theme.of(context).errorColor);
   }
 }
@@ -112,11 +110,10 @@ class _IncomingPending extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentIncoming,
-        subtitle: "Payment of " +
-            FormatCurrency().format(
-                transaction.get("currencyCode"), transaction.get("amount")) +
-            " is currently in transit",
-        content: Center(child: CircularProgressIndicator(color: Colors.white)),
+        subtitle:
+            "Payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} is currently in transit",
+        content:
+            const Center(child: CircularProgressIndicator(color: Colors.white)),
         color: Colors.indigo.shade800);
   }
 }
@@ -127,15 +124,10 @@ class _IncomingComplete extends _TransactionStatusPage {
 
   @override
   Widget build(BuildContext context) {
-    print("xxxxx");
-    print(transaction.get("amount"));
-    print(transaction.data);
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
-        subtitle: "Payment of " +
-            FormatCurrency().format(
-                transaction.get("currencyCode"), transaction.get("amount")) +
-            " received",
+        subtitle:
+            "Payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} received",
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -149,11 +141,8 @@ class _IncomingFailed extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: "Payment failed",
-        subtitle: "Outgoing payment of " +
-            FormatCurrency().format(
-                transaction.get("currencyCode"), transaction.get("amount")) +
-            " failed to " +
-            transaction.get("address"),
+        subtitle:
+            "Outgoing payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} failed to ${transaction.get("address")}",
         color: Theme.of(context).errorColor);
   }
 }

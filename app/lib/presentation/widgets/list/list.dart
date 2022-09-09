@@ -54,7 +54,7 @@ class _ListState extends State<List> {
                   child: Container(
                       width: 20,
                       height: 20,
-                      child: CircularProgressIndicator())));
+                      child: const CircularProgressIndicator())));
             } else {
               if (state.data.isEmpty) {
                 children.add(Text(widget.emptyText));

@@ -35,7 +35,7 @@ class TransactionListItem extends StatelessWidget {
         child: Opacity(
             opacity: transaction.get("status") == true ? 1 : 0.6,
             child: Container(
-                padding: EdgeInsets.all(padding),
+                padding: const EdgeInsets.all(padding),
                 child: Row(
                   children: [
                     SizedBox(

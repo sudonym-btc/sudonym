@@ -17,8 +17,8 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints.expand(),
-        padding: EdgeInsets.all(padding * 2),
+        constraints: const BoxConstraints.expand(),
+        padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Header(AppLocalizations.of(context)!.transactions),
           const SizedBox(

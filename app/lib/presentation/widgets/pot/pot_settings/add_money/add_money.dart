@@ -15,7 +15,8 @@ class AddMoney extends StatelessWidget {
   Widget build(BuildContext context) {
     Text text = Text(
       str1,
-      style: TextStyle(color: Color.fromARGB(255, 82, 81, 81), fontSize: 17),
+      style:
+          const TextStyle(color: Color.fromARGB(255, 82, 81, 81), fontSize: 17),
     );
     Text text2 = Text(
       str2,

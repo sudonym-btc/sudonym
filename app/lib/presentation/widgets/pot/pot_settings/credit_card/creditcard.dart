@@ -82,7 +82,7 @@ class _CreditCardState extends State<CreditCard> {
           const SizedBox(
             height: 20,
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
               '4729  8363  9583  8348',

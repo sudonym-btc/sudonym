@@ -7,6 +7,7 @@ import 'package:sudonym/injection.dart';
 
 @LazySingleton(as: ReceiveRepository, env: [Env.mock])
 class MockReceiveRepository implements ReceiveRepository {
+  @override
   List<Receiver> receivers = [];
   MockReceiveRepository(this.dio);
 

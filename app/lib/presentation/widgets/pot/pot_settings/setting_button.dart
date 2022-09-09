@@ -17,7 +17,7 @@ class SettingButtons extends StatelessWidget {
       fillColor: primary,
       child: icon1,
       padding: const EdgeInsets.all(15.0),
-      shape: CircleBorder(),
+      shape: const CircleBorder(),
       onPressed: onPressed,
     );
   }

@@ -50,7 +50,8 @@ class SendReceive extends StatelessWidget {
                           children: [
                             Button(
                               text: AppLocalizations.of(context)!.receive,
-                              icon: FaIcon(FontAwesomeIcons.inbox, size: 14),
+                              icon: const FaIcon(FontAwesomeIcons.inbox,
+                                  size: 14),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/receive',
                                     arguments:
@@ -59,8 +60,8 @@ class SendReceive extends StatelessWidget {
                             ),
                             Button(
                               text: AppLocalizations.of(context)!.send,
-                              icon:
-                                  FaIcon(FontAwesomeIcons.paperPlane, size: 14),
+                              icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                                  size: 14),
                               onPressed: () {
                                 Navigator.push(
                                     context,

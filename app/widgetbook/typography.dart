@@ -12,10 +12,10 @@ WidgetbookCategory typography = WidgetbookCategory(
       useCases: [
         WidgetbookUseCase(
           name: 'Header',
-          builder: (context) => Column(children: [
-            const Header("Test Header"),
-            const Subtitle("Subtitle"),
-            const Emphasized("Emphasized")
+          builder: (context) => Column(children: const [
+            Header("Test Header"),
+            Subtitle("Subtitle"),
+            Emphasized("Emphasized")
           ]),
         ),
       ],

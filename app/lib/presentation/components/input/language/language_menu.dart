@@ -32,7 +32,7 @@ class _LanguageMenuState extends State<LanguageMenu> {
             icon: const Icon(Icons.language_rounded),
             iconSize: 36,
             isExpanded: true,
-            underline: SizedBox(),
+            underline: const SizedBox(),
             style: const TextStyle(color: textColor, fontSize: 17),
             value: valueChoose,
             onChanged: (newValue) {

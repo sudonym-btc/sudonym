@@ -9,9 +9,6 @@ export class User extends BaseModel implements Models.User  {
     id: string
 
     @Column
-    passHash: string
-
-    @Column
     firebaseId: string
 
     @Column

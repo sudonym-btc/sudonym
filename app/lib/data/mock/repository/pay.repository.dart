@@ -14,8 +14,8 @@ import 'package:collection/collection.dart'; // You have to add this manually, f
 
 @LazySingleton(as: PayRepository, env: [Env.mock])
 class MockPayRepository implements PayRepository {
-  ReceiveRepository _receiveRepository;
-  TransactionRepository _transactionRepository;
+  final ReceiveRepository _receiveRepository;
+  final TransactionRepository _transactionRepository;
 
   MockPayRepository(
       this._receiveRepository, this._transactionRepository, this.dio);
@@ -32,14 +32,14 @@ class MockPayRepository implements PayRepository {
 
     // Check if Invoice has `lightning` or `lnurl` prefixes
     // (9 chars + the `:` or `=` chars) --> 10 characters total
-    bool hasLightningPrefix = addr.contains(LIGHTNING_SCHEME + ':');
+    bool hasLightningPrefix = addr.contains('$LIGHTNING_SCHEME:');
     if (hasLightningPrefix) {
       // Remove the `lightning` prefix
       addr = addr.substring(10, addr.length);
     }
 
     // (5 chars + the `:` or `=` chars) --> 6 characters total
-    bool hasLNURLPrefix = addr.contains(LNURL_SCHEME + ':');
+    bool hasLNURLPrefix = addr.contains('$LNURL_SCHEME:');
     if (hasLNURLPrefix) {
       // Remove the `lightning` prefix
       addr = addr.substring(6, addr.length);
@@ -129,9 +129,9 @@ class MockPayRepository implements PayRepository {
   }
 
   validateInternetIdentifier(internetIdentifier) {
-    var re = new RegExp(
+    var re = RegExp(
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-    print(re.hasMatch(internetIdentifier));
+    // print(re.hasMatch(internetIdentifier));
     return re.hasMatch(internetIdentifier);
   }
 

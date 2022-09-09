@@ -37,7 +37,7 @@ class _AmountPageState extends State<AmountPage> {
                 title: const Text('Amount'),
               ),
               body: Padding(
-                  padding: EdgeInsets.all(padding),
+                  padding: const EdgeInsets.all(padding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -47,7 +47,8 @@ class _AmountPageState extends State<AmountPage> {
                       ButtonBar(children: [
                         Button(
                           text: 'Confirm',
-                          icon: FaIcon(FontAwesomeIcons.paperPlane, size: 14),
+                          icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                              size: 14),
                           onPressed: () {
                             Navigator.pushNamed(context, '/confirmSend',
                                 arguments: widget.payment);

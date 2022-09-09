@@ -42,9 +42,9 @@ class _CustomFormState extends State<CustomForm> {
             children: <Widget>[
               ...widget.children.map((e) => Column(
                     children: [
-                      new SizedBox(height: padding),
+                      const SizedBox(height: padding),
                       e,
-                      new SizedBox(height: padding)
+                      const SizedBox(height: padding)
                     ],
                   )),
               Expanded(child: Container()),

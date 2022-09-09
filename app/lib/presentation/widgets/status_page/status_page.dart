@@ -33,10 +33,10 @@ class StatusPage extends StatelessWidget {
       backgroundColor: color,
       appBarTheme: themeData.appBarTheme.copyWith(
           foregroundColor: Colors.white,
-          toolbarTextStyle: TextStyle(color: Colors.white),
-          titleTextStyle: TextStyle(color: Colors.white),
-          iconTheme: IconThemeData(color: Colors.white),
-          actionsIconTheme: IconThemeData(color: textColor),
+          toolbarTextStyle: const TextStyle(color: Colors.white),
+          titleTextStyle: const TextStyle(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
+          actionsIconTheme: const IconThemeData(color: textColor),
           backgroundColor: color,
           elevation: 0),
       scaffoldBackgroundColor: color,
@@ -53,7 +53,7 @@ class StatusPage extends StatelessWidget {
     var children = [
       Header(title),
       Subtitle(subtitle),
-      SizedBox(height: padding * 2),
+      const SizedBox(height: padding * 2),
       if (content == null && icon == null) Expanded(child: new Container())
     ];
 
@@ -92,7 +92,7 @@ class StatusPage extends StatelessWidget {
                   title: Text(pageTitle),
                 ),
                 body: Padding(
-                    padding: EdgeInsets.all(padding),
+                    padding: const EdgeInsets.all(padding),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: children,
