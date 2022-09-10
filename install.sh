@@ -1,9 +1,9 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 brew tap homebrew/core
-brew install nvm minikube gh ksync dnsmasq
+brew install nvm minikube gh ksync dnsmasq python
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$(uname)" = "Darwin" ]; then
     brew tap homebrew/cask
     brew install --cask flutter
     brew install --cask docker
@@ -13,7 +13,7 @@ if [ "$(uname)" == "Darwin" ]; then
     # M1 chips only
     sudo gem uninstall cocoapods
     brew install cocoapods
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
     sudo snap install google-cloud-cli --classic
     sudo snap install kubectl --classic
     brew install gcc
@@ -27,12 +27,12 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     # Do something under 64 bits Windows NT platform
 fi
 
-source $(brew --prefix nvm)/nvm.sh
+. $(brew --prefix nvm)/nvm.sh
 nvm install 18
 npm install
 
-gcloud init
 gcloud auth application-default login
-
+project=$(gcloud config get project)
+export GCLOUD_PROJECT=$project
 (cd api && npm run getConfig)
 (cd ops/infrastructure/minikube && pip3 install -r requirements.txt)

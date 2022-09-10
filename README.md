@@ -13,6 +13,8 @@ and lightning wallet. The folder structure is outlined below:
 
 <details>
   <summary>Installation</summary>
+Basics: Check that the `curl` command is available.
+Debian: sudo apt install build-essentials
 
 ```bash
 git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
@@ -22,6 +24,8 @@ npm run deploy:development:hard
 
 You will need to add the installed packages to your PATH variable in order to
 access them via the terminal.
+Run the brew installation command again in order to find the code to
+add brew to PATH if it isn't already.
 Call the `brew info nvm` command to see what
 you need to add to your .zshrc file for example.
 
