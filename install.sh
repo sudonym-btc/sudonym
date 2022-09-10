@@ -37,6 +37,7 @@ fi
 nvm install 18
 npm install
 
+gcloud init
 gcloud auth application-default login
 project=$(gcloud config get project)
 export GCLOUD_PROJECT=$project
