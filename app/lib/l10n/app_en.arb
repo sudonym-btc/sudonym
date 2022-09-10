@@ -18,7 +18,7 @@
 "youHaveBeenBeenSentSats" :         "You've been sent {} sats!",
 "paymentError" :                    "Payment Error",
 "paymentLoading" :                  "Payment Loading",
-"nfc" :                             "Tao to sender device (NFC)",
+"nfc" :                             "Tap to sender device (NFC)",
 "confirmSend" :                     "Confirm Send",
 "buy" :                             "Buy",
 "sell" :                            "Sell",

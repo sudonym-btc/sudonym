@@ -56,7 +56,12 @@ def api(config, cluster_types):
                                 "labels": {"app": base_name},
                             },
                             "spec": {
-                                "containers": [
+                                "initContainers":[{
+                                    "name": "wait",
+                                    "image": "busybox",
+                                    "command":  ["sh", "-c", "until nc -z " + lightning_rest_basename + "-service 3001 > /dev/null; do echo Waiting for master.; sleep 2; done;"]
+                                }],
+                               "containers": [
                                     {
                                         "name": base_name,
                                         "image": "gcr.io/" + config["project"] + "/api:latest",

@@ -12,3 +12,5 @@ export "user-device.dart";
 export "payment.dart";
 export "pot.dart";
 export "pot-user.dart";
+export "settlement.dart";
+export "settlement-transaction.dart";

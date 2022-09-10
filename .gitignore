@@ -7,4 +7,5 @@ dist
 minikube.yaml
 
 ops/infrastructure/local-volumes/*/*
+api/src/exchanges/*
 !*.gitkeep

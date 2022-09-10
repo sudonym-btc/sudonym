@@ -7,6 +7,7 @@ if [ "$(uname)" == "Darwin" ]; then
     brew tap homebrew/cask
     brew install --cask flutter
     brew install --cask docker
+    open -a Docker
     brew install --cask google-cloud-sdk
     gcloud components install kubectl 
     # M1 chips only
@@ -18,7 +19,6 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     brew install gcc
     sudo snap install flutter --classic
     sudo snap install docker
-    sudo snap install androidsdk
     sudo snap install android-studio --classic
     # Do something under GNU/Linux platform
 # elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
@@ -35,3 +35,4 @@ gcloud init
 gcloud auth application-default login
 
 (cd api && npm run getConfig)
+(cd ops/infrastructure/minikube && pip3 install -r requirements.txt)

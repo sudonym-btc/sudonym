@@ -15,21 +15,15 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
   StreamSubscription? socketSubscription;
   IOWebSocketChannel? channel;
 
-  WebsocketImpl(this.config) : super() {
-    getStream().handleError((event) {
-      loggy.error(event);
-    });
-  }
+  WebsocketImpl(this.config) : super();
 
   @override
   connect() {
     if (socketSubscription != null) {
       socketSubscription!.cancel();
     }
-    Uri url = Uri.parse(config.apiUrl.replaceAll('http', 'ws') +
-        ':' +
-        config.websocketPort.toString() +
-        "/socket.io");
+    Uri url = Uri.parse(
+        '${config.apiUrl.replaceAll('http', 'ws')}:${config.websocketPort}/socket.io');
 
     loggy.info("Connecting websocket to $url");
 
@@ -38,7 +32,7 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
     socketSubscription = channel!.stream.listen((event) {
       stream.sink.add(event);
     }, onError: (e) async {
-      stream.sink.addError(e);
+      loggy.error(e);
       await Future.delayed(const Duration(seconds: 1));
       connect();
     }, onDone: () async {

@@ -20,6 +20,14 @@ git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
 npm run deploy:development:hard  
 ```
 
+You will need to add the installed packages to your PATH variable in order to
+access them via the terminal.
+Call the `brew info nvm` command to see what
+you need to add to your .zshrc file for example.
+
+To be able to use Google APIs on Flutter,
+you will need to add your developer key to the firebase project.
+
 </details>
 
 <details>

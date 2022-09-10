@@ -109,7 +109,7 @@ class SendConfirmPage extends StatelessWidget {
                     ]),
                     TableRow(children: [
                       Text(AppLocalizations.of(context)!.fee),
-                      Text('${r.get("feeMSat") / 1000} sats / \$0.01')
+                      Text('${(r.get("feeMSat") ?? 0) / 1000} sats / \$0.01')
                     ]),
                     TableRow(children: [
                       Text(AppLocalizations.of(context)!.name),

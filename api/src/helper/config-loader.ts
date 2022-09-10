@@ -28,3 +28,6 @@ export async function downloadFiles(force = false, alreadyDone = () => fs.exists
         }
     }
 }
+if (require.main === module) {
+    downloadFiles();
+}

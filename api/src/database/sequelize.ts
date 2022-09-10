@@ -6,9 +6,11 @@ import { getConfig } from '../config/config';
 import { User } from '../module/user/user.model';
 import { Transaction } from '../module/transaction/transaction.model';
 import { Logger } from '@nestjs/common';
-import { TransactionSettlement } from '../module/transaction-settlement/transaction-settlement.model';
 import { LnUrl } from '../module/lightning/lnurl/lnurl.model';
-import { UserDevice } from 'src/module/user-device/user-device.model';
+import { UserDevice } from '../module/user-device/user-device.model';
+import { Settlement } from '../module/settlement/settlement.model';
+import { SettlementTransaction } from '../module/settlement-transaction/settlement-transaction.model';
+
 import * as cls from 'cls-hooked';
 
 const logger = new Logger('DB');
@@ -28,6 +30,7 @@ export const sequelize = new Sequelize({
       UserDevice,
       LnUrl,
       Transaction,
-      TransactionSettlement
+      Settlement,
+      SettlementTransaction
   ]
 });
