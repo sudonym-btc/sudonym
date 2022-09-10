@@ -14,15 +14,30 @@ and lightning wallet. The folder structure is outlined below:
 <details>
   <summary>Installation</summary>
 
-Basics: Check that the `curl` command is available.
+## Prerequisites
 
-Debian: sudo apt install build-essentials.
+Check that the `curl` command is available.
+On Debian, make sure the following is installed: `sudo apt install build-essential`.
+
+## Install
 
 ```bash
-git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
+git clone https://github.com/sudonym-btc/sudonym.git && cd sudonym && \
 ./install.sh && \
-npm run deploy:development:hard  
+npm run deploy:development:hard
 ```
+
+You are welcome to try the install.sh script.
+However you can also manually install the following tools:
+
+- Docker
+- Minikube
+- Google Cloud SDK
+- kubectl
+- Flutter
+- Github Cli
+- NVM
+- Python
 
 You will need to add the installed packages to your PATH variable in order to
 access them via the terminal.
@@ -59,14 +74,6 @@ can be found in the Run & Debug panel.
 Else, change to flutter - development
 
 </details>
-
-<!-- 
-    brew install dnsmasq
-    sudo brew services start dnsmasq
-    sudo cp $(brew list dnsmasq | grep /homebrew.mxcl.dnsmasq.plist$) /Library/LaunchDaemons/
-    sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
-    sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
-    dscacheutil -flushcache -->
 
 <details>
 <summary>Infrastructure/Cloud</summary>

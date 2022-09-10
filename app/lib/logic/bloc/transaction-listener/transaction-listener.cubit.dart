@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/logic/bloc/transaction-listener/clipboard-listener.dart';
 import 'package:sudonym/logic/bloc/transaction-listener/link-listener.dart';
+import 'package:sudonym/logic/bloc/transaction-listener/nfc-listener.dart';
 
 @injectable
 class TransactionListenerCubit extends Cubit<TransactionListenerCubitState> {
   ClipboardListener clipboard = ClipboardListener();
   LinkListener link = LinkListener();
+  NFCListener nfc = NFCListener();
 
   TransactionListenerCubit() : super(TransactionListenerCubitState()) {
     listen();
@@ -20,6 +22,10 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState> {
     });
 
     clipboard.streamController.stream.listen((event) {
+      parseAddress(event);
+    });
+
+    nfc.streamController.stream.listen((event) {
       parseAddress(event);
     });
   }

@@ -16,15 +16,27 @@ if [ "$(uname)" = "Darwin" ] || [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; 
         brew install cocoapods
 
     elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
-        sudo snap install kubectl google-cloud-cli flutter android-studio --classic
-        sudo snap install docker --devmode
+        sudo snap install kubectl --classic
+        sudo snap install google-cloud-cli --classic
+        sudo snap install flutter --classic
+        sudo snap install android-studio --classic
         brew install gcc
-        # sudo snap connect docker:home
-        # sudo addgroup --system docker
-        # sudo adduser $USER docker
-        # newgrp docker
-        # sudo snap disable docker
-        # sudo snap enable docker
+        
+        sudo apt update
+        sudo apt-get install \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg-agent \
+            software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo apt-key fingerprint 0EBFCD88
+        sudo add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) \
+        stable"
+        sudo apt-get update
+        sudo apt-get install docker-ce docker-ce-cli containerd.io
     fi
     # Do something under GNU/Linux platform
     # elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then

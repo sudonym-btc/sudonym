@@ -24,7 +24,7 @@ abstract class MockCrudRepository<T extends BaseClass>
   Future<T> create(T entity) async {
     var sorted = availableData.map((dynamic e) => e.get("id")).toList();
     sorted.sort();
-    entity["id"] = sorted.last + 1;
+    entity["id"] = sorted.last.runtimeType == num ? sorted.last + 1 : "random";
     availableData.add(entity);
     created.add(entity);
     return entity;
