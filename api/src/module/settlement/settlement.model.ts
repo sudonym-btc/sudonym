@@ -21,5 +21,8 @@ export class Settlement extends BaseModel implements Models.Settlement  {
     exchangeId: string
 
     @Column
+    status: boolean
+
+    @Column
     orderId: string
 }

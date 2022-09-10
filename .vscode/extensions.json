@@ -12,6 +12,7 @@
         "mtxr.sqltools",
         "mtxr.sqltools-driver-sqlite",
         "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "DavidAnson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "foxundermoon.shell-format"
     ]
 }

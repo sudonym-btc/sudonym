@@ -13,8 +13,10 @@ and lightning wallet. The folder structure is outlined below:
 
 <details>
   <summary>Installation</summary>
+
 Basics: Check that the `curl` command is available.
-Debian: sudo apt install build-essentials
+
+Debian: sudo apt install build-essentials.
 
 ```bash
 git clone https://github.com/sudonym-btc/sudonym.git && \ cd sudonym && \
@@ -31,6 +33,9 @@ you need to add to your .zshrc file for example.
 
 To be able to use Google APIs on Flutter,
 you will need to add your developer key to the firebase project.
+
+For android development, add command-line tools in android studio to be able to
+create virtual devices from VS Code.
 
 </details>
 

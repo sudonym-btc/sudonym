@@ -3,7 +3,6 @@ export "address-parse-response.dart";
 export "contact.dart";
 export "contact-address.dart";
 export "transaction.dart";
-export "transaction-settlement.dart";
 export "receiver.dart";
 export "transaction/lightning-transaction.dart";
 export "offer.dart";
