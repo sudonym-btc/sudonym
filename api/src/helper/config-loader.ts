@@ -17,7 +17,11 @@ export async function downloadFiles(force = false, alreadyDone = () => fs.exists
 
         const files = (await bucket.getFiles())[0];
 
+        // console.log(files);
+
         for (let file of files) {
+            // Ignore folders
+            if(file.name.split(".").length == 1) continue;
             const destination = process.cwd() + "/src/" + file.name;
             await storage.bucket(bucket.name).file(file.name).download({
                 destination
