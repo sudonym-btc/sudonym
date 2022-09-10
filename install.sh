@@ -14,8 +14,8 @@ if [ "$(uname)" == "Darwin" ]; then
     sudo gem uninstall cocoapods
     brew install cocoapods
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    sudo dnf install google-cloud-cli
-    sudo dnf install kubectl
+    sudo snap install google-cloud-cli --classic
+    sudo snap install kubectl --classic
     brew install gcc
     sudo snap install flutter --classic
     sudo snap install docker
