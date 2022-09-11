@@ -11,7 +11,7 @@ Payment AddressParseResponseToPayment(AddressParseResponse address) {
         "amount": address.get("data")['params']['minSendable'] / MSATOSHIS,
         "minAmount": address.get("data")['params']['minSendable'] / MSATOSHIS,
         "maxAmount": address.get("data")['params']['maxSendable'] / MSATOSHIS,
-        "feeMSat": null,
+        "fee": null,
         "addressParseResponse": address
       });
     } else if (address.get("isBolt11")) {
@@ -21,7 +21,7 @@ Payment AddressParseResponseToPayment(AddressParseResponse address) {
         "amount": address.get("data")['msatoshi'] / MSATOSHIS,
         "minAmount": address.get("data")['msatoshi'] / MSATOSHIS,
         "maxAmount": address.get("data")['msatoshi'] / MSATOSHIS,
-        "feeMSat": null,
+        "fee": null,
         "addressParseResponse": address
       });
     } else if (address.get("isOnChain")) {}

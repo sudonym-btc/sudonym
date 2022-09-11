@@ -13,7 +13,7 @@ import 'data/dio/dio.client.dart' as _i38;
 import 'data/mock/repository/auth.repository.dart' as _i4;
 import 'data/mock/repository/contact.repository.dart' as _i18;
 import 'data/mock/repository/currency.repository.dart' as _i20;
-import 'data/mock/repository/pay.repository.dart' as _i34;
+import 'data/mock/repository/action.repository.dart' as _i34;
 import 'data/mock/repository/pot.repository.dart' as _i23;
 import 'data/mock/repository/receive.repository.dart' as _i12;
 import 'data/mock/repository/transaction.repository.dart' as _i26;
@@ -23,7 +23,7 @@ import 'data/mock/repository/websocket.dart' as _i16;
 import 'data/repository/auth.repository.dart' as _i3;
 import 'data/repository/contact.repository.dart' as _i17;
 import 'data/repository/currency.repository.dart' as _i19;
-import 'data/repository/pay.repository.dart' as _i9;
+import 'data/repository/action.repository.dart' as _i9;
 import 'data/repository/pot.repository.dart' as _i22;
 import 'data/repository/receive.repository.dart' as _i11;
 import 'data/repository/transaction.repository.dart' as _i25;
@@ -66,8 +66,8 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   gh.factory<_i6.Config>(() => _i6.MockConfig(), registerFor: {_mock});
   gh.lazySingleton<_i7.Dio>(() => registerModule.dio(get<_i6.Config>()));
   gh.factory<_i8.LinkListener>(() => _i8.LinkListener());
-  gh.lazySingleton<_i9.PayRepository>(
-      () => _i9.PayRepositoryImpl(get<_i7.Dio>()),
+  gh.lazySingleton<_i9.ActionRepository>(
+      () => _i9.ActionRepositoryImpl(get<_i7.Dio>()),
       registerFor: {_dev, _staging, _prod});
   gh.factory<_i10.PotSliderCubit>(() => _i10.PotSliderCubit(get<int>()));
   gh.lazySingleton<_i11.ReceiveRepository>(
@@ -76,7 +76,7 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   gh.lazySingleton<_i11.ReceiveRepository>(
       () => _i11.ReceiveRepositoryImpl(get<_i7.Dio>()),
       registerFor: {_dev, _staging, _prod});
-  gh.factory<_i13.SendCubit>(() => _i13.SendCubit(get<_i9.PayRepository>()));
+  gh.factory<_i13.SendCubit>(() => _i13.SendCubit(get<_i9.ActionRepository>()));
   gh.factory<_i14.TransactionListenerCubit>(
       () => _i14.TransactionListenerCubit());
   gh.singleton<_i15.Websocket>(_i15.WebsocketImpl(get<_i6.Config>()),
@@ -97,7 +97,7 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
       () => _i19.CurrencyRepositoryImpl(get<_i7.Dio>()),
       registerFor: {_dev, _staging, _prod});
   gh.lazySingleton<_i21.LinkService>(
-      () => _i21.LinkService(get<_i9.PayRepository>()));
+      () => _i21.LinkService(get<_i9.ActionRepository>()));
   gh.lazySingleton<_i22.PotRepository>(
       () => _i23.MockPotRepository(
           get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
@@ -138,8 +138,8 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
       get<_i30.UserRepository>(), get<_i15.Websocket>()));
   gh.factory<_i33.ContactCubit>(
       () => _i33.ContactCubit(get<_i17.ContactRepository>()));
-  gh.lazySingleton<_i9.PayRepository>(
-      () => _i34.MockPayRepository(get<_i11.ReceiveRepository>(),
+  gh.lazySingleton<_i9.ActionRepository>(
+      () => _i34.MockActionRepository(get<_i11.ReceiveRepository>(),
           get<_i25.TransactionRepository>(), get<_i7.Dio>()),
       registerFor: {_mock});
   gh.factory<_i35.PotCubit>(() => _i35.PotCubit(get<_i22.PotRepository>()));

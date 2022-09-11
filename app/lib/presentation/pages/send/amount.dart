@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide ButtonBar;
+import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
@@ -8,7 +8,7 @@ import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart'
 import '../../../constants.dart';
 
 class AmountPage extends StatefulWidget {
-  final Payment payment;
+  final Action payment;
 
   const AmountPage(this.payment, {Key? key}) : super(key: key);
 

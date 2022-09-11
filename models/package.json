@@ -16,5 +16,8 @@
     "typescript": "^4.6.2"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "madge": "^5.0.1"
+  }
 }

@@ -1,5 +1,13 @@
 export * from './event';
-export * from './address-parse-response';
+export * from './address-parser';
+export * from './action';
+export * from './action-type';
+export * from './payment';
+export * from './payment-request';
+export * from './withdraw-request';
+export * from './bolt11';
+export * from './action-remote-response';
+export * from './withdraw';
 
 export * from './contact';
 export * from './contact-address';
@@ -9,7 +17,6 @@ export * from './transaction/lightning-transaction';
 export * from './offer';
 export * from './user';
 export * from './user-device';
-export * from './payment';
 export * from './pot';
 export * from './pot-user';
 export * from './settlement';

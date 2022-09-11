@@ -1,5 +1,4 @@
 class AddressParseResponse {
-  dynamic /* String | null */ originalInput;
   bool success;
   dynamic /* String | null */ message;
   dynamic data;
@@ -8,8 +7,7 @@ class AddressParseResponse {
   dynamic /* bool | null */ isBolt11;
   dynamic /* bool | null */ isBolt12;
   dynamic /* bool | null */ isOnChain;
-  AddressParseResponse(
-      this.originalInput, this.success, this.message, this.data,
+  AddressParseResponse(this.success, this.message, this.data,
       [this.isLnUrl = false,
       this.isLnAddress = false,
       this.isBolt11 = false,
@@ -17,7 +15,6 @@ class AddressParseResponse {
       this.isOnChain = false]) {}
   static AddressParseResponse fromJson(Map<String, dynamic> json) {
     return new AddressParseResponse(
-        json["originalInput"],
         json["success"],
         json["message"],
         json["data"],

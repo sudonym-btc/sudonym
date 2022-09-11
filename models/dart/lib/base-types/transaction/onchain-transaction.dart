@@ -8,6 +8,6 @@
 
 //     amount: number;
 
-//     data: Map<String, dynamic>;
+//     data: Object;
 
 // }

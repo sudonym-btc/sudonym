@@ -1,9 +1,6 @@
-import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
+import { Inject, } from "@nestjs/common";
 import { ReceiveService } from "src/module/receive/receive.service";
 import { LnUrlService } from "../lnurl.service";
-import fetch from 'node-fetch';
-import { selfSignedHttpsAgent } from "src/module/pay/address-parser";
-import { getConfig } from "src/config/config";
 import { MSATOSHIS } from "@sudonym/models";
 
 
@@ -18,13 +15,6 @@ export class LnUrlHandlerService {
             pr: receiver.data,
             routes: []
         }
-    }
-
-    async getCallback(callback, params) {
-        return fetch(callback + "?" + new URLSearchParams(params), getConfig().env == "development" ? {
-            agent: selfSignedHttpsAgent
-        } : {})
-        .then(r => r.json())
     }
 
 }

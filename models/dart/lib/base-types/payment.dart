@@ -1,6 +1,8 @@
-import "address-parse-response.dart" show AddressParseResponse;
+import "action-type.dart" show ActionType;
+import "action-remote-response.dart" show ActionRemoteResponse;
+import "payment-request.dart" show PaymentRequest;
 
-class Payment {
+class Payment extends ActionType {
   dynamic /* num | null */ potId;
   String originalAddress;
   dynamic /* String | null */ address;
@@ -8,8 +10,8 @@ class Payment {
   dynamic /* num | null */ amount;
   dynamic /* num | null */ minAmount;
   dynamic /* num | null */ maxAmount;
-  dynamic /* num | null */ feeMSat;
-  AddressParseResponse addressParseResponse;
+  dynamic /* num | null */ fee;
+  ActionRemoteResponse<dynamic> remoteResponse;
   Payment(
       this.potId,
       this.originalAddress,
@@ -18,8 +20,11 @@ class Payment {
       this.amount,
       this.minAmount,
       this.maxAmount,
-      this.feeMSat,
-      this.addressParseResponse) {}
+      this.fee,
+      this.remoteResponse)
+      : super("pay", originalAddress) {
+    /* super call moved to initializer */;
+  }
   static Payment fromJson(Map<String, dynamic> json) {
     return new Payment(
         json["potId"],
@@ -29,7 +34,7 @@ class Payment {
         json["amount"],
         json["minAmount"],
         json["maxAmount"],
-        json["feeMSat"],
-        AddressParseResponse.fromJson(json["AddressParseResponse"]));
+        json["fee"],
+        ActionRemoteResponse.fromJson(json["remoteResponse"]));
   }
 }

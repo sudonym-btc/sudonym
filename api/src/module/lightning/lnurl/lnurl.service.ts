@@ -35,4 +35,21 @@ export class LnUrlService extends BaseService(LnUrl) {
 
         return tag;
     }
+
+    async createWithdrawRequest(potId: number, mSatoshiAmount?: number) {
+        const tag = await this.create({
+            tag: 'withdrawRequest',
+            potId,
+            params: {
+                tag: 'withdrawRequest',
+                domain: getConfig().selfUrl,
+                minSendable: mSatoshiAmount || 0,
+                maxSendable: 10000000,
+                metadata: '',
+                commentAllowed: 500,
+            }
+        });
+
+        return tag;
+    }
 }

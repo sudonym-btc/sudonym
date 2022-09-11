@@ -14,6 +14,7 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState> {
   TransactionListenerCubit() : super(TransactionListenerCubitState()) {
     listen();
     link.init();
+    nfc.init();
   }
 
   listen() async {

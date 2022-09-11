@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart' hide ButtonBar;
+import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
@@ -19,8 +19,7 @@ class SendConfirmPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Payment payment =
-        ModalRoute.of(context)?.settings.arguments as Payment;
+    var payment = ModalRoute.of(context)?.settings.arguments as Action;
 
     return MultiBlocProvider(
         providers: [
@@ -109,7 +108,7 @@ class SendConfirmPage extends StatelessWidget {
                     ]),
                     TableRow(children: [
                       Text(AppLocalizations.of(context)!.fee),
-                      Text('${(r.get("feeMSat") ?? 0) / 1000} sats / \$0.01')
+                      Text('${(r.get("fee") ?? 0) / 1000} sats / \$0.01')
                     ]),
                     TableRow(children: [
                       Text(AppLocalizations.of(context)!.name),
@@ -131,7 +130,7 @@ class SendConfirmPage extends StatelessWidget {
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null
                       : () {
-                          BlocProvider.of<SendCubit>(context).pay(r);
+                          BlocProvider.of<SendCubit>(context).pay(r as Payment);
                         },
                   style: raisedButtonStyle,
                 )

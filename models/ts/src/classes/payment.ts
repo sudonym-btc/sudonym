@@ -1,6 +1,8 @@
-import { AddressParseResponse } from "./address-parse-response";
+import { ActionType } from "./action-type";
+import { ActionRemoteResponse } from "./action-remote-response";
+import { PaymentRequest } from "./payment-request";
 
-export class Payment {
+export class Payment extends ActionType {
 
     constructor(
         public potId: number | null,
@@ -10,9 +12,11 @@ export class Payment {
         public amount: number | null,
         public minAmount: number | null,
         public maxAmount: number | null,
-        public feeMSat: number | null,
-        public addressParseResponse: AddressParseResponse,
-    ) { }
+        public fee: number | null,
+        public remoteResponse: ActionRemoteResponse<any>, // can't add paymentrequest type here
+    ) {
+        super("pay", originalAddress);
+    }
 
     static fromJson(json: Object): Payment {
         return new Payment(
@@ -23,8 +27,8 @@ export class Payment {
             json["amount"],
             json["minAmount"],
             json["maxAmount"],
-            json["feeMSat"],
-            AddressParseResponse.fromJson(json["AddressParseResponse"])
+            json["fee"],
+            ActionRemoteResponse.fromJson(json["remoteResponse"])
         );
     }
 }

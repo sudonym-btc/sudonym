@@ -4,10 +4,11 @@ class Settlement {
   String toCurrency;
   String exchangeId;
   String orderId;
+  bool status;
   Settlement(this.id, this.fromCurrency, this.toCurrency, this.exchangeId,
-      this.orderId) {}
+      this.orderId, this.status) {}
   static Settlement fromJson(dynamic json) {
     return new Settlement(json["id"], json["fromCurrency"], json["toCurrency"],
-        json["exchangeId"], json["orderId"]);
+        json["exchangeId"], json["orderId"], json["status"]);
   }
 }

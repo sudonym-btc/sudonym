@@ -1,38 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/address-parse-response-to-payment.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/data/repository/pay.repository.dart';
+import 'package:sudonym/data/repository/action.repository.dart';
 import 'package:sudonym/presentation/pages/send/amount.dart';
 
 @lazySingleton
 @injectable
 class LinkService {
-  final PayRepository _payRepository;
+  final ActionRepository _actionRepository;
 
-  LinkService(this._payRepository);
+  LinkService(this._actionRepository);
 
   trigger(String link, BuildContext context, [int? potId]) async {
-    AddressParseResponse response = await _payRepository.parse(link);
+    Action response = await _actionRepository.parse(link);
+    response.set("potId", potId);
 
-    Payment pay = AddressParseResponseToPayment(response);
-    pay.set("potId", potId);
+    print(response.toJson());
 
-    if (response.get("success")) {
-      if (canChangeAmount(pay)) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AmountPage(pay)));
+    if (response.get("remoteResponse").get("success")) {
+      if (canChangeAmount(response)) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AmountPage(response)));
       } else {
-        Navigator.pushNamed(context, '/confirmSend', arguments: pay);
+        Navigator.pushNamed(context, '/confirmSend', arguments: response);
       }
     }
     return;
   }
 
-  canChangeAmount(Payment p) {
-    print("=====");
-    print(p.toJson());
-    print(p.get("addressParseResponse").toJson());
+  canChangeAmount(Action p) {
     if (p.get("minAmount") != p.get("maxAmount") ||
         p.get("amount") == 0 ||
         p.get("amount") == null) return true;
