@@ -8,13 +8,13 @@ import * as crypto from 'crypto';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
-
 	async create(params: RecursivePartial<LnUrl>, req?: RequestType) {
 		params.id = crypto.randomUUID();
 		const record = await super.create(params, req);
 		record.set('params', {
-			...record.params, callback: getConfig().selfUrl + '/lnurl/handle/' + record.id,
-		}); 
+			...record.params,
+			callback: getConfig().selfUrl + '/lnurl/handle/' + record.id,
+		});
 		await record.save();
 		return record;
 	}
@@ -30,7 +30,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				maxSendable: 10000000,
 				metadata: '',
 				commentAllowed: 500,
-			}
+			},
 		});
 
 		return tag;
@@ -47,7 +47,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				maxSendable: 10000000,
 				metadata: '',
 				commentAllowed: 500,
-			}
+			},
 		});
 
 		return tag;

@@ -1,11 +1,7 @@
 import { BaseClass } from './base-class';
 
 export class UserDevice extends BaseClass {
-
-	constructor(
-        public uid: string,
-        public token: string
-	) {
+	constructor(public uid: string, public token: string) {
 		super();
 	}
 

@@ -7,10 +7,13 @@ import { UserDeviceService } from './user-device.service';
 @Module({
 	imports: [SharedModule],
 	controllers: [UserDeviceController],
-	providers: [UserDeviceService, {
-		provide: UserDevice,
-		useValue: UserDevice,
-	},],
+	providers: [
+		UserDeviceService,
+		{
+			provide: UserDevice,
+			useValue: UserDevice,
+		},
+	],
 	exports: [UserDeviceService],
 })
-export class UserDeviceModule { }
+export class UserDeviceModule {}

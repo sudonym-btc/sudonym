@@ -7,6 +7,4 @@ import { UserDeviceService } from './user-device.service';
 export class UserDeviceController extends BaseController(
 	UserDeviceService,
 	UserDevice
-) {
-
-}
+) {}

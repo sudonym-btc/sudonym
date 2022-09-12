@@ -10,7 +10,7 @@ class Contact extends BaseClass {
     /* super call moved to initializer */;
   }
   static Contact fromJson(Map<String, dynamic> json) {
-    List<ContactAddress> addresses = [];
+    final List<ContactAddress> addresses = [];
     json["ContactAddresses"].forEach((e) {
       addresses.add(ContactAddress.fromJson(e));
     });
@@ -18,7 +18,7 @@ class Contact extends BaseClass {
   }
 
   toJson() {
-    List<Map<String, dynamic>> addresses = [];
+    final List<Map<String, dynamic>> addresses = [];
     this.ContactAddresses.forEach((e) {
       addresses.add(e.toJson());
     });

@@ -1,14 +1,12 @@
-
 export class Settlement {
-
 	constructor(
-        public id: number,
-        public fromCurrency: string,
-        public toCurrency: string,
-        public exchangeId: string,
-        public orderId: string,
-        public status: boolean
-	) { }
+		public id: number,
+		public fromCurrency: string,
+		public toCurrency: string,
+		public exchangeId: string,
+		public orderId: string,
+		public status: boolean
+	) {}
 
 	static fromJson(json: any): Settlement {
 		return new Settlement(
@@ -28,7 +26,7 @@ export class Settlement {
 			toCurrency: this.toCurrency,
 			exchangeId: this.exchangeId,
 			orderId: this.orderId,
-			status: this.status
+			status: this.status,
 		};
 	}
 }

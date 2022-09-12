@@ -5,11 +5,11 @@ import { User } from '../../module/user/user.model';
 import { createUsers } from './user';
 
 export type mockScaffold = {
-    app: INestApplication;
-    entities: {
-        user: User[]
-    }
-}
+	app: INestApplication;
+	entities: {
+		user: User[];
+	};
+};
 
 export const createMockApp = async () => {
 	const moduleFixture = await Test.createTestingModule({
@@ -23,6 +23,6 @@ export const createMockApp = async () => {
 
 export const createMockEntities = async () => {
 	return {
-		user: await createUsers()
+		user: await createUsers(),
 	};
 };

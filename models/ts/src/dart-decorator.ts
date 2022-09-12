@@ -5,7 +5,7 @@ function searchDir(prefix, dir) {
 	const fullPath = path.join(prefix, dir);
 	const files = fs.readdirSync(fullPath);
 
-	files.forEach(file => {
+	files.forEach((file) => {
 		const filePath = path.join(fullPath, file);
 		if (file.endsWith('.dart')) {
 			let str = fs.readFileSync(filePath).toString();
@@ -14,7 +14,10 @@ function searchDir(prefix, dir) {
 			str = str.replaceAll('Object', 'Map<String, dynamic>');
 			str = str.replaceAll('Date ', 'DateTime ');
 			str = str.replaceAll('Promise', 'Future');
-			str = str.replaceAll('json["createdAt"]', 'DateTime.parse(json["createdAt"])');
+			str = str.replaceAll(
+				'json["createdAt"]',
+				'DateTime.parse(json["createdAt"])'
+			);
 
 			fs.writeFileSync(filePath, str);
 		} else if (fs.lstatSync(fullPath).isDirectory()) {

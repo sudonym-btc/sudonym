@@ -3,15 +3,14 @@ import { ActionRemoteResponse } from './action-remote-response';
 import { WithdrawRequest } from './withdraw-request';
 
 export class Withdraw extends ActionType {
-
 	constructor(
-        public potId: number | null,
-        public originalAddress: string,
-        public currency: string | null,
-        public amount: number | null,
-        public minAmount: number | null,
-        public maxAmount: number | null,
-        public remoteResponse: ActionRemoteResponse<any>, // can't add withdrawrequest type here
+		public potId: number | null,
+		public originalAddress: string,
+		public currency: string | null,
+		public amount: number | null,
+		public minAmount: number | null,
+		public maxAmount: number | null,
+		public remoteResponse: ActionRemoteResponse<any> // can't add withdrawrequest type here
 	) {
 		super('withdraw', originalAddress);
 	}
@@ -36,7 +35,10 @@ export class Withdraw extends ActionType {
 			amount: this.amount,
 			minAmount: this.minAmount,
 			maxAmount: this.maxAmount,
-			remoteResponse: this.remoteResponse !== null ? this.remoteResponse.toJson() : null
+			remoteResponse:
+				this.remoteResponse !== null
+					? this.remoteResponse.toJson()
+					: null,
 		};
 	}
 }

@@ -5,14 +5,11 @@ import { PaymentRequest } from './payment-request';
 type TT = Bolt11 | WithdrawRequest | PaymentRequest;
 
 export class ActionRemoteResponse<T> {
-
 	constructor(
-        public success: boolean = true,
-        public message: string | null,
-        public data: T | null
-	) {
-
-	}
+		public success: boolean = true,
+		public message: string | null,
+		public data: T | null
+	) {}
 
 	static fromJson(json: Object): ActionRemoteResponse<any> {
 		return new ActionRemoteResponse(
@@ -26,7 +23,7 @@ export class ActionRemoteResponse<T> {
 		return {
 			success: this.success,
 			message: this.message,
-			data: this.data
+			data: this.data,
 		};
 	}
 }

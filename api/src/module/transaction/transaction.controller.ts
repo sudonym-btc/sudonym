@@ -7,5 +7,4 @@ import { TransactionService } from './transaction.service';
 export class TransactionController extends BaseController(
 	TransactionService,
 	Transaction
-) {
-}
+) {}

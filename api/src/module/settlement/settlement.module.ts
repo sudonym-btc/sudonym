@@ -6,10 +6,13 @@ import { SettlementService } from './settlement.service';
 @Module({
 	imports: [SharedModule],
 	controllers: [],
-	providers: [SettlementService, {
-		provide: Settlement,
-		useValue: Settlement,
-	},],
+	providers: [
+		SettlementService,
+		{
+			provide: Settlement,
+			useValue: Settlement,
+		},
+	],
 	exports: [SettlementService],
 })
-export class SettlementModule { }
+export class SettlementModule {}

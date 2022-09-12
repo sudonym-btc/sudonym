@@ -1,6 +1,13 @@
-import { createMockApp, createMockEntities, mockScaffold } from './create-mock-entities';
+import {
+	createMockApp,
+	createMockEntities,
+	mockScaffold,
+} from './create-mock-entities';
 
-export const scaffoldGroup = (description, callback: (scaffold: mockScaffold) => any) => {
+export const scaffoldGroup = (
+	description,
+	callback: (scaffold: mockScaffold) => any
+) => {
 	return describe(description, () => {
 		const scaffold: mockScaffold = {} as any;
 

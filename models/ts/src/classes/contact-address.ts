@@ -1,12 +1,11 @@
 import { BaseClass } from './base-class';
 
 export class ContactAddress extends BaseClass {
-
 	constructor(
-        public contactId: number,
-        public addressType: string,
-        public address: string,
-        public name: string
+		public contactId: number,
+		public addressType: string,
+		public address: string,
+		public name: string
 	) {
 		super();
 	}
@@ -16,7 +15,7 @@ export class ContactAddress extends BaseClass {
 			json['contactId'],
 			json['addressType'],
 			json['address'],
-			json['name'],
+			json['name']
 		);
 	}
 
@@ -25,7 +24,7 @@ export class ContactAddress extends BaseClass {
 			contactId: this.contactId,
 			addressType: this.addressType,
 			address: this.address,
-			name: this.name
+			name: this.name,
 		};
 	}
 }

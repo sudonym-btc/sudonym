@@ -14,7 +14,7 @@ class Pot extends BaseClass {
       : super() {
     /* super call moved to initializer */;
   }
-  static Pot fromJson(dynamic json) {
+  static Pot fromJson(Map<String, dynamic> json) {
     return new Pot(json["id"], json["name"], json["currency"], json["balance"],
         json["spendableBalance"]);
   }

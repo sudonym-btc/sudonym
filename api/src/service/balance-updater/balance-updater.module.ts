@@ -10,4 +10,4 @@ import { BalanceUpdaterService } from './balance-updater.service';
 	exports: [BalanceUpdaterService],
 	providers: [BalanceUpdaterService],
 })
-export class BalanceUpdaterModule { }
+export class BalanceUpdaterModule {}

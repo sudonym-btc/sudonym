@@ -7,10 +7,13 @@ import { PotService } from './pot.service';
 @Module({
 	imports: [SharedModule],
 	controllers: [PotController],
-	providers: [PotService, {
-		provide: Pot,
-		useValue: Pot,
-	},],
+	providers: [
+		PotService,
+		{
+			provide: Pot,
+			useValue: Pot,
+		},
+	],
 	exports: [PotService],
 })
-export class PotModule { }
+export class PotModule {}

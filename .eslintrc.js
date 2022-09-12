@@ -6,7 +6,9 @@ module.exports = {
 	'extends': [
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
-		"prettier"
+		"prettier",
+		"plugin:prettier/recommended"
+
 	],
 	'parser': '@typescript-eslint/parser',
 	'parserOptions': {
@@ -19,10 +21,6 @@ module.exports = {
 		"prettier"
 	],
 	'rules': {
-		'indent': [
-			'error',
-			'tab'
-		],
 		'linebreak-style': [
 			'error',
 			'unix'

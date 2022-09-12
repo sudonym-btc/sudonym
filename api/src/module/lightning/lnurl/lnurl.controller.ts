@@ -5,4 +5,4 @@ import { LnUrl } from './lnurl.model';
 import { LnUrlService } from './lnurl.service';
 
 @Controller('lnurl')
-export class LnUrlController extends BaseController(LnUrlService, LnUrl) { }
+export class LnUrlController extends BaseController(LnUrlService, LnUrl) {}

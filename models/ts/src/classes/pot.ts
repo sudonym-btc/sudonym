@@ -1,18 +1,17 @@
 import { BaseClass } from './base-class';
 
 export class Pot extends BaseClass {
-
 	constructor(
-        public id: number | null,
-        public name: string = '',
-        public currency: string = 'BTC',
-        public balance: number = 0,
-        public spendableBalance: number = 0
+		public id: number | null,
+		public name: string = '',
+		public currency: string = 'BTC',
+		public balance: number = 0,
+		public spendableBalance: number = 0
 	) {
 		super();
 	}
 
-	static fromJson(json: any): Pot {
+	static fromJson(json: Object): Pot {
 		return new Pot(
 			json['id'],
 			json['name'],
@@ -28,7 +27,7 @@ export class Pot extends BaseClass {
 			name: this.name,
 			currency: this.currency,
 			balance: this.balance,
-			spendableBalance: this.spendableBalance
+			spendableBalance: this.spendableBalance,
 		};
 	}
 }

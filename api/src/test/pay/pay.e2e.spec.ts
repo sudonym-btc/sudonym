@@ -1,13 +1,9 @@
-
-
 import * as request from 'supertest';
 import { scaffoldGroup } from '../mock/scaffold-group';
 import { USER_PASSWORD } from '../mock/user';
 
 scaffoldGroup('PaymentController (e2e)', (scaffold) => {
-
 	describe('Invoice', () => {
-
 		const endpoint = '/payment/payInvoice';
 
 		it(endpoint + ' (POST) should fail without login', () => {
@@ -26,15 +22,13 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 			return request(scaffold.app.getHttpServer())
 				.post(endpoint)
 				.send({
-					pass: USER_PASSWORD
+					pass: USER_PASSWORD,
 				})
 				.expect(200);
 		});
-
 	});
 
 	describe('Invoice Info', () => {
-
 		const endpoint = '/payment/getInfo';
 
 		it(endpoint + ' (GET) should fail without login', () => {
@@ -53,7 +47,7 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 			return request(scaffold.app.getHttpServer())
 				.get(endpoint)
 				.send({
-					pass: USER_PASSWORD
+					pass: USER_PASSWORD,
 				})
 				.expect(200);
 		});
@@ -62,7 +56,7 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 			return request(scaffold.app.getHttpServer())
 				.get(endpoint)
 				.send({
-					pass: USER_PASSWORD
+					pass: USER_PASSWORD,
 				})
 				.expect(200);
 		});
@@ -71,11 +65,9 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 			return request(scaffold.app.getHttpServer())
 				.get(endpoint)
 				.send({
-					pass: USER_PASSWORD
+					pass: USER_PASSWORD,
 				})
 				.expect(200);
 		});
-
 	});
-
 });

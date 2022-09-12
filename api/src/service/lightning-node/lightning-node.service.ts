@@ -8,10 +8,11 @@ import * as bolt11 from 'bolt11';
 
 @Injectable()
 export class LightningNodeService {
-
 	private readonly logger = new Logger(LightningNodeService.name);
 
-	private macaroon = Buffer.from(fs.readFileSync(getConfig().macaroonFile)).toString('base64');
+	private macaroon = Buffer.from(
+		fs.readFileSync(getConfig().macaroonFile)
+	).toString('base64');
 	private url = getConfig().lightningREST;
 	private info;
 	private peers;
@@ -26,21 +27,27 @@ export class LightningNodeService {
 			}
 		}
 
-		const validEntryExitIds = validEntryAndExists
-			.map(e => [e.outgoing.id, e.incoming.id]);
-
+		const validEntryExitIds = validEntryAndExists.map((e) => [
+			e.outgoing.id,
+			e.incoming.id,
+		]);
 
 		const channels = (await this.rpc('listchannels', [])).channels;
 
 		const circles = [];
-		const relevantChannels = channels.filter(c => {
-			const vv = validEntryExitIds.find(v => {
-				return (v[0] == c.source && v[1] == c.destination)
-					|| (v[0] == c.destination && v[1] == c.source);
-
+		const relevantChannels = channels.filter((c) => {
+			const vv = validEntryExitIds.find((v) => {
+				return (
+					(v[0] == c.source && v[1] == c.destination) ||
+					(v[0] == c.destination && v[1] == c.source)
+				);
 			});
 			if (vv) {
-				const circle = [this.connectedChannels.find(c => c.id == vv[0]), c, this.connectedChannels.find(c => c.id == vv[1])];
+				const circle = [
+					this.connectedChannels.find((c) => c.id == vv[0]),
+					c,
+					this.connectedChannels.find((c) => c.id == vv[1]),
+				];
 				circles.push(circle);
 			}
 			return !!vv;
@@ -49,12 +56,9 @@ export class LightningNodeService {
 		// @todo: order by capacity
 
 		return circles[0];
-
-
 	}
 
 	async onModuleInit() {
-
 		try {
 			this.logger.verbose('Loading lightning node information.');
 
@@ -62,7 +66,9 @@ export class LightningNodeService {
 			this.connectedChannels = await this.listChannels();
 			this.peers = await this.listPeers();
 
-			this.logger.verbose(`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`);
+			this.logger.verbose(
+				`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`
+			);
 		} catch (e) {
 			this.logger.error(e);
 		}
@@ -70,24 +76,24 @@ export class LightningNodeService {
 
 	async getInfo() {
 		return this.makeRequest({
-			path: '/v1/getinfo'
+			path: '/v1/getinfo',
 		});
 	}
 	async listPeers() {
 		return this.makeRequest({
-			path: '/v1/peer/listPeers'
+			path: '/v1/peer/listPeers',
 		});
 	}
 
 	async listChannels() {
 		return this.makeRequest({
-			path: '/v1/channel/listChannels'
+			path: '/v1/channel/listChannels',
 		});
 	}
 
 	async getInvoices() {
 		return this.makeRequest({
-			path: '/v1/invoice/listInvoices'
+			path: '/v1/invoice/listInvoices',
 		});
 	}
 
@@ -98,11 +104,10 @@ export class LightningNodeService {
 			data: {
 				amount,
 				label: label || uuid(),
-				description: description || 'test-description'
-			}
+				description: description || 'test-description',
+			},
 		});
 	}
-
 
 	async getFees(pubkey, amount = 0) {
 		const route = await this.getRoute(pubkey, amount);
@@ -111,41 +116,54 @@ export class LightningNodeService {
 
 	async getRoute(pubkey, amount = 0) {
 		return this.makeRequest({
-			path: '/v1/network/getRoute/' + pubkey + '/' + amount
+			path: '/v1/network/getRoute/' + pubkey + '/' + amount,
 		});
 	}
 
 	async pay(invoice) {
-
 		const inv = bolt11.decode(invoice);
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
 			const circle = await this.findCircular();
-			let blockoffset = 3 + ((circle.length + 1) * 6);
+			let blockoffset = 3 + (circle.length + 1) * 6;
 			this.logger.debug('Circular payment along route', circle);
 			let lastNodeId = '';
 			const circleRoute = circle.map((channel, index) => ({
-				id: index + 1 == circle.length ? this.info.id : lastNodeId = (channel.id || (channel.destination != lastNodeId ? channel.destination : channel.source)),
+				id:
+					index + 1 == circle.length
+						? this.info.id
+						: (lastNodeId =
+								channel.id ||
+								(channel.destination != lastNodeId
+									? channel.destination
+									: channel.source)),
 				channel: channel.short_channel_id,
-				direction: (index < 2) ? 1 : 0,
-				amount_msat: (parseInt(inv.millisatoshis) + circle.length - index - 1).toString(),
-				delay: blockoffset -= 6,
-				style: 'tlv'
+				direction: index < 2 ? 1 : 0,
+				amount_msat: (
+					parseInt(inv.millisatoshis) +
+					circle.length -
+					index -
+					1
+				).toString(),
+				delay: (blockoffset -= 6),
+				style: 'tlv',
 			}));
-			this.logger.debug(circleRoute,
-				inv.tagsObject.payment_hash,
-				'selfpaymentlabel',
-				inv.millisatoshis,
-				invoice,
-				inv.tagsObject.payment_secret);
-			return this.rpc('sendpay', [
+			this.logger.debug(
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
 				inv.millisatoshis,
 				invoice,
 				inv.tagsObject.payment_secret
+			);
+			return this.rpc('sendpay', [
+				circleRoute,
+				inv.tagsObject.payment_hash,
+				'selfpaymentlabel',
+				inv.millisatoshis,
+				invoice,
+				inv.tagsObject.payment_secret,
 			]);
 		}
 
@@ -154,8 +172,8 @@ export class LightningNodeService {
 			method: 'POST',
 			data: {
 				invoice,
-				retry_for: 20 //seconds
-			}
+				retry_for: 20, //seconds
+			},
 		});
 	}
 
@@ -165,8 +183,8 @@ export class LightningNodeService {
 			method: 'POST',
 			data: {
 				amount,
-				description: description || 'test-description-' + uuid()
-			}
+				description: description || 'test-description-' + uuid(),
+			},
 		});
 	}
 
@@ -175,15 +193,15 @@ export class LightningNodeService {
 			path: '/v1/offers/fetchInvoice',
 			method: 'POST',
 			data: {
-				offer
-			}
+				offer,
+			},
 		});
 	}
 
 	async generateOnChainAddress() {
 		return this.makeRequest({
 			path: '/v1/newaddr',
-			method: 'GET'
+			method: 'GET',
 		});
 	}
 
@@ -191,9 +209,7 @@ export class LightningNodeService {
 		return this.makeRequest({
 			path: '/v1/withdraw',
 			method: 'POST',
-			data: {
-
-			}
+			data: {},
 		});
 	}
 
@@ -203,15 +219,15 @@ export class LightningNodeService {
 			method: 'POST',
 			data: {
 				method,
-				params
-			}
+				params,
+			},
 		});
 	}
 
 	async decodeInvoice(invoice) {
 		return this.makeRequest({
 			path: '/v1/pay/decodePay/' + invoice,
-			method: 'GET'
+			method: 'GET',
 		});
 	}
 
@@ -220,13 +236,13 @@ export class LightningNodeService {
 			url: this.url + options.path,
 			method: 'GET',
 			httpsAgent: new https.Agent({
-				rejectUnauthorized: false
+				rejectUnauthorized: false,
 			}),
 			headers: {
-				'macaroon': this.macaroon
+				macaroon: this.macaroon,
 			},
 			...options,
-		}).catch(e => {
+		}).catch((e) => {
 			this.logger.error('LIGHTNING ERROR', this.macaroon);
 			throw e;
 		});

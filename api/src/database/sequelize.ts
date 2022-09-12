@@ -31,6 +31,6 @@ export const sequelize = new Sequelize({
 		LnUrl,
 		Transaction,
 		Settlement,
-		SettlementTransaction
-	]
+		SettlementTransaction,
+	],
 });

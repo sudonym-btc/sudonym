@@ -1,27 +1,25 @@
 export class Bolt11 {
 	constructor(
-        public millisatoshis: number,
-        public network: {
-            bech32: string,
-            pubKeyHash: number,
-            scriptHash: number,
-            validWitnessVersions: number[]
-        },
-        public payeeNodeKey: string,
-        public paymentRequest: string,
-        public prefix: string,
-        public recoveryFlag: number,
-        public satoshis: number,
-        public signature: string,
-        public tags: { tagName: string, data: string }[],
-        public timeExpireDate: number,
-        public timeExpireDateString: string,
-        public timestamp: number,
-        public timestampString: string,
-        public wordsTemp: string,
-	) {
-
-	}
+		public millisatoshis: number,
+		public network: {
+			bech32: string;
+			pubKeyHash: number;
+			scriptHash: number;
+			validWitnessVersions: number[];
+		},
+		public payeeNodeKey: string,
+		public paymentRequest: string,
+		public prefix: string,
+		public recoveryFlag: number,
+		public satoshis: number,
+		public signature: string,
+		public tags: { tagName: string; data: string }[],
+		public timeExpireDate: number,
+		public timeExpireDateString: string,
+		public timestamp: number,
+		public timestampString: string,
+		public wordsTemp: string
+	) {}
 
 	static fromJson(json: Object): Bolt11 {
 		return new Bolt11(
@@ -38,7 +36,7 @@ export class Bolt11 {
 			json['timeExpireDateString'],
 			json['timestamp'],
 			json['timestampString'],
-			json['wordsTemp'],
+			json['wordsTemp']
 		);
 	}
 
@@ -49,9 +47,9 @@ export class Bolt11 {
 			payeeNodeKey: this.payeeNodeKey,
 			paymentRequest: this.paymentRequest,
 			prefix: this.prefix,
-			recoveryFlag:this.recoveryFlag,
-			satoshis:this.satoshis,
-			signature:this.signature,
+			recoveryFlag: this.recoveryFlag,
+			satoshis: this.satoshis,
+			signature: this.signature,
 			tags: this.tags,
 			timeExpireDate: this.timeExpireDate,
 			timeExpireDateString: this.timeExpireDateString,

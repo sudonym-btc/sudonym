@@ -7,7 +7,6 @@ import { SettlementService } from '../..//module/settlement/settlement.service';
 
 @Injectable()
 export class ExchangeSettler {
-
 	private readonly logger = new Logger(ExchangeSettler.name);
 
 	@Inject() settlementService: SettlementService;
@@ -17,12 +16,17 @@ export class ExchangeSettler {
 	exchanges: ccxt.Exchange[] = [];
 
 	async onModuleInit() {
-		this.exchanges = fs.readdirSync('src/exchanges')
-			.filter(f => f.includes('.json'))
-			.map(f => {
-				return new ccxt[f.split('.')[0]](JSON.parse(fs.readFileSync('src/exchanges/' + f, {
-					encoding: 'utf8'
-				})));
+		this.exchanges = fs
+			.readdirSync('src/exchanges')
+			.filter((f) => f.includes('.json'))
+			.map((f) => {
+				return new ccxt[f.split('.')[0]](
+					JSON.parse(
+						fs.readFileSync('src/exchanges/' + f, {
+							encoding: 'utf8',
+						})
+					)
+				);
 			});
 
 		for (const exchange of this.exchanges) {
@@ -34,11 +38,17 @@ export class ExchangeSettler {
 	}
 
 	listenIncoming() {
-		this.transactionService.onAfterCreated.listen(async transaction => {
+		this.transactionService.onAfterCreated.listen(async (transaction) => {
 			if (!transaction.outgoing) {
 				const pot = await this.potService.findOne(transaction.potId);
 				if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
-					this.createSettlement([transaction], 'BTC', pot.currency, transaction.amount, 'sell');
+					this.createSettlement(
+						[transaction],
+						'BTC',
+						pot.currency,
+						transaction.amount,
+						'sell'
+					);
 				}
 			}
 		});
@@ -49,7 +59,13 @@ export class ExchangeSettler {
 			if (transaction.outgoing) {
 				const pot = await this.potService.findOne(transaction.potId);
 				if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
-					this.createSettlement([transaction], 'BTC', pot.currency, transaction.amount, 'buy');
+					this.createSettlement(
+						[transaction],
+						'BTC',
+						pot.currency,
+						transaction.amount,
+						'buy'
+					);
 				}
 			}
 		});
@@ -57,19 +73,29 @@ export class ExchangeSettler {
 
 	async createSettlement(transactions, from, to, amount, side) {
 		const markets = await this.exchanges[0].fetchMarkets();
-		const market = markets.find(m => (m.baseId == from && m.quoteId == to) || (m.baseId == to && m.quoteId == from));
+		const market = markets.find(
+			(m) =>
+				(m.baseId == from && m.quoteId == to) ||
+				(m.baseId == to && m.quoteId == from)
+		);
 		// console.log(market);
-		await this.exchanges[0].createMarketOrder(market.symbol, market.baseId == from ? side : (side == 'buy' ? 'sell' : side), amount).then(async order => {
-			await this.settlementService.create({
-				exchangeId: this.exchanges[0].name,
-				fromCurrency: from,
-				toCurrency: to,
-				amount: amount,
-				orderId: order.id
+		await this.exchanges[0]
+			.createMarketOrder(
+				market.symbol,
+				market.baseId == from ? side : side == 'buy' ? 'sell' : side,
+				amount
+			)
+			.then(async (order) => {
+				await this.settlementService.create({
+					exchangeId: this.exchanges[0].name,
+					fromCurrency: from,
+					toCurrency: to,
+					amount: amount,
+					orderId: order.id,
+				});
 			});
-		});
 	}
-
 }
 
-export const isBitcoin = (type) => ['lightningaddress', 'lnurl', 'bolt11', 'bolt12', 'onchain'].includes(type);
+export const isBitcoin = (type) =>
+	['lightningaddress', 'lnurl', 'bolt11', 'bolt12', 'onchain'].includes(type);

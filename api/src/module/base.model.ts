@@ -3,11 +3,11 @@ import { FindOptions } from 'sequelize/types';
 import { RequestType } from 'src/helper/parse-request.decorator';
 
 export class BaseModel extends Model {
-    static scopes: {
-        [key: string]: (req: RequestType) => FindOptions
-    } = {};
+	static scopes: {
+		[key: string]: (req: RequestType) => FindOptions;
+	} = {};
 
-    toJson() {
-        return super.toJSON();
-    }
+	toJson() {
+		return super.toJSON();
+	}
 }

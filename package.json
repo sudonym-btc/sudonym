@@ -24,7 +24,7 @@
     "prepare": "husky install",
     "lint:fix": "eslint \"**/{src,apps,libs,test}/**/*.ts\" --fix",
     "lint": "eslint \"**/{src,apps,libs,test}/**/*.ts\"",
-    "prettier": "prettier --config .prettierrc '**/src/**/*.ts'"
+    "prettier": "prettier --config .prettierrc.js '**/src/**/*.ts' --write"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,10 @@
     "models",
     "models/ts"
   ],
+  "lint-staged": {
+    "*": "prettier --write",
+    "*.ts": "eslint --fix"
+  },
   "dependencies": {
     "ts-node": "^10.8.2"
   },
@@ -51,6 +55,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1"
   }
 }

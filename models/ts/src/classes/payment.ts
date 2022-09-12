@@ -3,18 +3,17 @@ import { ActionRemoteResponse } from './action-remote-response';
 import { PaymentRequest } from './payment-request';
 
 export class Payment extends ActionType {
-
 	constructor(
-        public potId: number | null,
-        public originalAddress: string,
-        public address: string | null,
-        public currency: string | null,
-        public amount: number | null,
-        public minAmount: number | null,
-        public maxAmount: number | null,
-        public fee: number | null,
-        public feeCurrency: string | null,
-        public remoteResponse: ActionRemoteResponse<any>, // can't add paymentrequest type here
+		public potId: number | null,
+		public originalAddress: string,
+		public address: string | null,
+		public currency: string | null,
+		public amount: number | null,
+		public minAmount: number | null,
+		public maxAmount: number | null,
+		public fee: number | null,
+		public feeCurrency: string | null,
+		public remoteResponse: ActionRemoteResponse<any> // can't add paymentrequest type here
 	) {
 		super('pay', originalAddress);
 	}
@@ -45,7 +44,10 @@ export class Payment extends ActionType {
 			maxAmount: this.maxAmount,
 			fee: this.fee,
 			feeCurrency: this.feeCurrency,
-			remoteResponse: this.remoteResponse !== null ? this.remoteResponse.toJson() : null
+			remoteResponse:
+				this.remoteResponse !== null
+					? this.remoteResponse.toJson()
+					: null,
 		};
 	}
 }

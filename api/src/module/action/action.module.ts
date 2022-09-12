@@ -9,9 +9,15 @@ import { ActionService } from './action.service';
 import { AddressParser } from './address-parser/address-parser';
 
 @Module({
-	imports: [SharedModule, CurrencyModule, LnUrlHandlerModule, LightningNodeModule, TransactionModule],
+	imports: [
+		SharedModule,
+		CurrencyModule,
+		LnUrlHandlerModule,
+		LightningNodeModule,
+		TransactionModule,
+	],
 	controllers: [ActionController],
 	providers: [ActionService, AddressParser],
 	exports: [ActionService],
 })
-export class ActionModule { }
+export class ActionModule {}

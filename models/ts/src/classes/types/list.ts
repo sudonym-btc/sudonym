@@ -1,9 +1,8 @@
 export class ListState<T> {
-
 	constructor(
-        private data: T[],
-        private metadata: {
-            count: number
-        }
-	) { }
+		private data: T[],
+		private metadata: {
+			count: number;
+		}
+	) {}
 }

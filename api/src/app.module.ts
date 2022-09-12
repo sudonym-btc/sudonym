@@ -26,16 +26,16 @@ import { ExchangeSettlerModule } from './service/transaction-listener/exchange-s
 		LightningModule,
 		LnUrlModule,
 		EventsModule,
-		AuthModule, 
+		AuthModule,
 		UserModule,
 		UserDeviceModule,
 		PotModule,
 		ActionModule,
 		BalanceUpdaterModule,
 		ReceiveModule,
-		TransactionModule
+		TransactionModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -4,9 +4,4 @@ import { BaseController } from '../base.controller';
 import { UserService } from './user.service';
 
 @Controller('user')
-export class UserController extends BaseController(
-	UserService,
-	User
-) {
-
-}
+export class UserController extends BaseController(UserService, User) {}

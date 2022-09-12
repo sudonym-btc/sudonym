@@ -5,4 +5,4 @@ import { EventsModule } from './events/events.module';
 	imports: [EventsModule],
 	exports: [EventsModule],
 })
-export class SharedModule { }
+export class SharedModule {}

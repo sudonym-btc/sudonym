@@ -1,15 +1,14 @@
 import { BaseClass } from './base-class';
 
 export class Receiver extends BaseClass {
-
 	constructor(
-        public id: number,
-        public potId: number,
-        public type: string,
-        public amount: number,
-        public amountCurrency: string,
-        public data: string,
-        public createdAt: Date
+		public id: number,
+		public potId: number,
+		public type: string,
+		public amount: number,
+		public amountCurrency: string,
+		public data: string,
+		public createdAt: Date
 	) {
 		super();
 	}
@@ -34,7 +33,7 @@ export class Receiver extends BaseClass {
 			amount: this.amount,
 			amountCurrency: this.amountCurrency,
 			data: this.data,
-			createdAt: this.createdAt
+			createdAt: this.createdAt,
 		};
 	}
 }

@@ -7,14 +7,12 @@ import { contextRequest } from './helper/context-request';
 import { downloadFiles } from './helper/config-loader';
 
 async function bootstrap() {
-
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule);
 	app.useWebSocketAdapter(new WsAdapter(app));
 	app.use(requestLogger);
 	app.use(contextRequest);
 
-  
 	const config = new DocumentBuilder()
 		.setTitle('Sudonym')
 		.setDescription('Sudonym API')

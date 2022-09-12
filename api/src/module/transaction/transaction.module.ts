@@ -7,10 +7,13 @@ import { TransactionService } from './transaction.service';
 @Module({
 	imports: [SharedModule],
 	controllers: [TransactionController],
-	providers: [TransactionService, {
-		provide: Transaction,
-		useValue: Transaction,
-	},],
+	providers: [
+		TransactionService,
+		{
+			provide: Transaction,
+			useValue: Transaction,
+		},
+	],
 	exports: [TransactionService],
 })
-export class TransactionModule { }
+export class TransactionModule {}

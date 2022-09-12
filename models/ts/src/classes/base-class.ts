@@ -1,6 +1,4 @@
-
 export class BaseClass {
-
 	toJson() {
 		return {};
 	}

@@ -3,5 +3,4 @@ import { BaseService } from '../base.service';
 import { Pot } from './pot.model';
 
 @Injectable()
-export class PotService extends BaseService(Pot) {
-}
+export class PotService extends BaseService(Pot) {}

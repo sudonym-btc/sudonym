@@ -1,4 +1,4 @@
 export class AuthError extends Error {
-    message = 'authentication details incorrect';
-    statusCode = 401;
+	message = 'authentication details incorrect';
+	statusCode = 401;
 }

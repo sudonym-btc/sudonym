@@ -3,5 +3,4 @@ import { BaseService } from '../base.service';
 import { Settlement } from './settlement.model';
 
 @Injectable()
-export class SettlementService extends BaseService(Settlement) {
-}
+export class SettlementService extends BaseService(Settlement) {}

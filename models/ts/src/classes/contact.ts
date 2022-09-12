@@ -2,12 +2,11 @@ import { BaseClass } from './base-class';
 import { ContactAddress } from './contact-address';
 
 export class Contact extends BaseClass {
-
 	constructor(
-        public id: number,
-        public userId: string,
-        public name: string,
-        public ContactAddresses: ContactAddress[]
+		public id: number,
+		public userId: string,
+		public name: string,
+		public ContactAddresses: ContactAddress[]
 	) {
 		super();
 	}
@@ -17,12 +16,7 @@ export class Contact extends BaseClass {
 		json['ContactAddresses'].forEach((e) => {
 			addresses.push(ContactAddress.fromJson(e));
 		});
-		return new Contact(
-			json['id'],
-			json['userId'],
-			json['name'],
-			addresses
-		);
+		return new Contact(json['id'], json['userId'], json['name'], addresses);
 	}
 
 	toJson() {
@@ -34,7 +28,7 @@ export class Contact extends BaseClass {
 			id: this.id,
 			userId: this.userId,
 			name: this.name,
-			ContactAddresses: addresses
+			ContactAddresses: addresses,
 		};
 	}
 }

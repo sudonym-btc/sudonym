@@ -5,8 +5,8 @@ import { AuthService } from './auth.service';
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(200)
-  @Post('')
+	@HttpCode(200)
+	@Post('')
 	auth(@Body('pass') pass) {
 		return this.authService.auth(pass);
 	}

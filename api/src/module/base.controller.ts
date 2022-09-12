@@ -3,42 +3,41 @@ import { Constructor } from 'sequelize-typescript/dist/shared/types';
 import { ParseRequest } from 'src/helper/parse-request.decorator';
 import { TBaseService, TControllerAndService } from './base.service';
 
-export interface TBaseController<TService, TModel> extends TControllerAndService<TModel> {
-    service: TService;
+export interface TBaseController<TService, TModel>
+	extends TControllerAndService<TModel> {
+	service: TService;
 }
 
 export interface BaseControllerOptions<TModel> {
-    model?: TModel;
+	model?: TModel;
 }
 
 export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 	service: Constructor<TService>,
 	model: Constructor<TModel>
-):
-    Constructor<TBaseController<TService, TModel>> => {
-
+): Constructor<TBaseController<TService, TModel>> => {
 	class X {
-        @Inject(service) service: TService;
+		@Inject(service) service: TService;
 
-        @Get(':id')
-        findOne(@Param('id') id: string | number, @ParseRequest() req) {
-        	return this.service.findOne(id, req);
-        }
+		@Get(':id')
+		findOne(@Param('id') id: string | number, @ParseRequest() req) {
+			return this.service.findOne(id, req);
+		}
 
-        @Get('')
-        list(@Query() params, @ParseRequest() req) {
-        	return this.service.list(params, req);
-        }
+		@Get('')
+		list(@Query() params, @ParseRequest() req) {
+			return this.service.list(params, req);
+		}
 
-        @Post('')
-        create(@Body() data, @ParseRequest() req) {
-        	return this.service.create(data, req);
-        }
+		@Post('')
+		create(@Body() data, @ParseRequest() req) {
+			return this.service.create(data, req);
+		}
 
-        @Put(':id')
-        update(@Param('id') id, @Body() data, @ParseRequest() req) {
-        	return this.service.update(id, data, req);
-        }
+		@Put(':id')
+		update(@Param('id') id, @Body() data, @ParseRequest() req) {
+			return this.service.update(id, data, req);
+		}
 	}
 	return X;
 };

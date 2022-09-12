@@ -7,7 +7,7 @@ export const USER_PASSWORD_HASH = hash(USER_PASSWORD);
 export const createUsers = () => {
 	return User.bulkCreate([
 		{
-			id: 1
-		}
+			id: 1,
+		},
 	]);
 };

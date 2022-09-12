@@ -9,12 +9,12 @@ import { LnUrlService } from './lnurl.service';
 	imports: [SharedModule],
 	controllers: [LnUrlController, LightningAddressController],
 	exports: [LnUrlService],
-	providers: [{
-		provide: LnUrl,
-		useValue: LnUrl
-	}, LnUrlService],
+	providers: [
+		{
+			provide: LnUrl,
+			useValue: LnUrl,
+		},
+		LnUrlService,
+	],
 })
-export class LnUrlModule {
-
-
-}
+export class LnUrlModule {}

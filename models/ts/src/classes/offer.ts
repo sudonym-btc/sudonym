@@ -1,14 +1,13 @@
 import { BaseClass } from './base-class';
 
 export class Offer extends BaseClass {
-
 	constructor(
-        public id: string,
-        public potId: number,
-        public active: boolean,
-        public amount: number | null,
-        public bolt12: string,
-        public bolt12Unsigned: string,
+		public id: string,
+		public potId: number,
+		public active: boolean,
+		public amount: number | null,
+		public bolt12: string,
+		public bolt12Unsigned: string
 	) {
 		super();
 	}
@@ -20,7 +19,7 @@ export class Offer extends BaseClass {
 			json['active'],
 			json['amount'],
 			json['bolt12'],
-			json['bolt12Unsigned'],
+			json['bolt12Unsigned']
 		);
 	}
 	toJson() {
@@ -30,7 +29,7 @@ export class Offer extends BaseClass {
 			active: this.active,
 			amount: this.amount,
 			bolt12: this.bolt12,
-			bolt12Unsigned: this.bolt12Unsigned
+			bolt12Unsigned: this.bolt12Unsigned,
 		};
 	}
 }

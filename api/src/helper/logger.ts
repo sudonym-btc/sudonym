@@ -2,7 +2,11 @@ import { Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
 const logger = new Logger('HTTP');
-export function requestLogger(request: Request, response: Response, next: NextFunction) {
+export function requestLogger(
+	request: Request,
+	response: Response,
+	next: NextFunction
+) {
 	const { ip, method, originalUrl } = request;
 	const userAgent = request.get('user-agent') || '';
 
@@ -11,7 +15,7 @@ export function requestLogger(request: Request, response: Response, next: NextFu
 		const contentLength = response.get('content-length');
 
 		logger.verbose(
-			`${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
+			`${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`
 		);
 	});
 

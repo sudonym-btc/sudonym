@@ -6,14 +6,13 @@ import * as serviceAccount from '../../service-account.json';
 import { AuthError } from './types/error';
 // Firebase Setup
 admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount as ServiceAccount)
+	credential: admin.credential.cert(serviceAccount as ServiceAccount),
 });
 
 @Injectable()
 export class AuthService {
-
 	async auth(token: string) {
-		if(!token) return null;
+		if (!token) return null;
 		return await admin.auth().verifyIdToken(token);
 	}
 }

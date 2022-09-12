@@ -3,17 +3,24 @@ import { Payment } from './payment';
 import { Withdraw } from './withdraw';
 
 export class Action extends ActionType {
-
 	constructor(
-        public type: 'pay' | 'withdraw',
-        public originalAddress: string,
-        public isLnUrl: boolean | null = false,
-        public isLnAddress: boolean | null = false,
-        public isBolt11: boolean | null = false,
-        public isBolt12: boolean | null = false,
-        public isOnChain: boolean | null = false,
+		public type: 'pay' | 'withdraw',
+		public originalAddress: string,
+		public isLnUrl: boolean | null = false,
+		public isLnAddress: boolean | null = false,
+		public isBolt11: boolean | null = false,
+		public isBolt12: boolean | null = false,
+		public isOnChain: boolean | null = false
 	) {
-		super(type, originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain);
+		super(
+			type,
+			originalAddress,
+			isLnUrl,
+			isLnAddress,
+			isBolt11,
+			isBolt12,
+			isOnChain
+		);
 	}
 
 	static fromJson(json: Object): Action {
@@ -24,7 +31,7 @@ export class Action extends ActionType {
 			json['isLnAddress'],
 			json['isBolt11'],
 			json['isBolt12'],
-			json['isOnChain'],
+			json['isOnChain']
 		);
 	}
 

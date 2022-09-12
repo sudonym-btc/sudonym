@@ -10,10 +10,13 @@ import { Receiver } from './receiver.model';
 @Module({
 	imports: [SharedModule, CurrencyModule, LightningNodeModule, LnUrlModule],
 	controllers: [ReceiveController],
-	providers: [ReceiveService, {
-		provide: Receiver,
-		useValue: Receiver,
-	}],
+	providers: [
+		ReceiveService,
+		{
+			provide: Receiver,
+			useValue: Receiver,
+		},
+	],
 	exports: [ReceiveService],
 })
-export class ReceiveModule { }
+export class ReceiveModule {}

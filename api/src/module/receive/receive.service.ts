@@ -14,9 +14,17 @@ export class ReceiveService extends BaseService(Receiver) {
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 
-	async getInvoice(potId, type: TAddressType, amount = 0, currency: CurrencyCode = 'BTC') {
-
-		const amountInBTC = currency == 'BTC' ? amount : (await this.currencyService.convert(currency, 'BTC', amount)).amount;
+	async getInvoice(
+		potId,
+		type: TAddressType,
+		amount = 0,
+		currency: CurrencyCode = 'BTC'
+	) {
+		const amountInBTC =
+			currency == 'BTC'
+				? amount
+				: (await this.currencyService.convert(currency, 'BTC', amount))
+						.amount;
 		const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
 		if (type != 'bolt11' && type != 'lnurl') {
@@ -25,27 +33,37 @@ export class ReceiveService extends BaseService(Receiver) {
 					potId,
 					type,
 					amount,
-					currency
-				}
+					currency,
+				},
 			});
-			if (exists)
-				return exists;
+			if (exists) return exists;
 		}
 		let data;
 
 		switch (type) {
 			case 'bolt11':
-				data = (await this.lightningNodeService.createInvoice(mSatoshiAmount)).bolt11;
+				data = (
+					await this.lightningNodeService.createInvoice(
+						mSatoshiAmount
+					)
+				).bolt11;
 				break;
 			case 'bolt12':
-				data = (await this.lightningNodeService.createOffer(mSatoshiAmount)).bolt12;
+				data = (
+					await this.lightningNodeService.createOffer(mSatoshiAmount)
+				).bolt12;
 				break;
 			case 'lnurl':
-				const tag = await this.lnUrlService.createPayRequest(potId, mSatoshiAmount);
+				const tag = await this.lnUrlService.createPayRequest(
+					potId,
+					mSatoshiAmount
+				);
 				data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);
 				break;
 			case 'onchain':
-				data = (await this.lightningNodeService.generateOnChainAddress()).address;
+				data = (
+					await this.lightningNodeService.generateOnChainAddress()
+				).address;
 				break;
 		}
 		return Receiver.create({
@@ -53,8 +71,7 @@ export class ReceiveService extends BaseService(Receiver) {
 			amount: Number(amountInBTC),
 			currency: 'BTC',
 			type,
-			data
+			data,
 		});
-
 	}
 }

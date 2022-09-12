@@ -1,10 +1,5 @@
-
 export class SettlementTransaction {
-
-	constructor(
-        public transactionId: number,
-        public settlementId: number
-	) { }
+	constructor(public transactionId: number, public settlementId: number) {}
 
 	static fromJson(json: any): SettlementTransaction {
 		return new SettlementTransaction(
@@ -13,10 +8,10 @@ export class SettlementTransaction {
 		);
 	}
 
-	toJson(){
+	toJson() {
 		return {
 			transactionId: this.transactionId,
-			settlementId: this.settlementId
+			settlementId: this.settlementId,
 		};
 	}
 }

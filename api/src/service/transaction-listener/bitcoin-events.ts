@@ -9,13 +9,13 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class BitcoinEvents {
-
 	onTransaction = new Subject();
 	private readonly logger = new Logger(BitcoinEvents.name);
 
 	onModuleInit() {
-
-		this.logger.verbose('Connecting to bitcoin message queue at ' + getConfig().bitcoinMQ);
+		this.logger.verbose(
+			'Connecting to bitcoin message queue at ' + getConfig().bitcoinMQ
+		);
 
 		sock.connect_timeout = 1;
 
@@ -24,21 +24,26 @@ export class BitcoinEvents {
 		sock.subscribe('rawblock');
 
 		sock.on('message', (topic, message) => {
-
 			if (topic.toString() === 'rawtx') {
 				const rawTx = message.toString('hex');
 				const tx = bitcoin.Transaction.fromHex(rawTx);
 				const txid = tx.getId();
 				tx.ins = tx.ins.map(function (inn) {
 					try {
-						(inn as any).address = bitcoin.address.fromOutputScript(inn.script, bitcoin.networks.bitcoin);
-					} catch (e) { }
+						(inn as any).address = bitcoin.address.fromOutputScript(
+							inn.script,
+							bitcoin.networks.bitcoin
+						);
+					} catch (e) {}
 					return inn;
 				});
 				tx.outs = tx.outs.map(function (out) {
 					try {
-						(out as any).address = bitcoin.address.fromOutputScript(out.script, bitcoin.networks.bitcoin);
-					} catch (e) { }
+						(out as any).address = bitcoin.address.fromOutputScript(
+							out.script,
+							bitcoin.networks.bitcoin
+						);
+					} catch (e) {}
 					return out;
 				});
 
@@ -49,5 +54,4 @@ export class BitcoinEvents {
 
 		sock.on('error', this.logger.error);
 	}
-
 }

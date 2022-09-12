@@ -7,4 +7,4 @@ import { LightningNodeModule } from 'src/service/lightning-node/lightning-node.m
 	exports: [],
 	providers: [],
 })
-export class LightningModule { }
+export class LightningModule {}

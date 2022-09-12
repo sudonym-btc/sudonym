@@ -4,6 +4,4 @@ import { Pot } from './pot.model';
 import { PotService } from './pot.service';
 
 @Controller('pot')
-export class PotController extends BaseController(PotService, Pot)
-{
-}
+export class PotController extends BaseController(PotService, Pot) {}

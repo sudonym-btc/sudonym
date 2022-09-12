@@ -7,10 +7,13 @@ import { UserService } from './user.service';
 @Module({
 	imports: [SharedModule],
 	controllers: [UserController],
-	providers: [UserService, {
-		provide: User,
-		useValue: User,
-	},],
+	providers: [
+		UserService,
+		{
+			provide: User,
+			useValue: User,
+		},
+	],
 	exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}

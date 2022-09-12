@@ -6,19 +6,15 @@ import { LightningNodeService } from '../lightning-node/lightning-node.service';
 
 @Injectable()
 export class BitcoinListener extends TransactionListener {
+	@Inject() LightningNodeService: LightningNodeService;
+	@Inject() bitcoinEvents: BitcoinEvents;
+	@Inject() transactionService: TransactionService;
 
-    @Inject() LightningNodeService: LightningNodeService;
-    @Inject() bitcoinEvents: BitcoinEvents;
-    @Inject() transactionService: TransactionService;
+	listenIncoming() {
+		this.bitcoinEvents.onTransaction.subscribe((e) => {
+			// console.log(e);
+		});
+	}
 
-    listenIncoming() {
-        this.bitcoinEvents.onTransaction.subscribe(e => {
-            // console.log(e);
-        });
-    }
-
-    listenOutgoing() {
-
-    }
-
+	listenOutgoing() {}
 }

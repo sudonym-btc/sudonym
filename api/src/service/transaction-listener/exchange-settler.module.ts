@@ -10,4 +10,4 @@ import { ExchangeSettler } from './exchange-settler';
 	providers: [ExchangeSettler],
 	exports: [],
 })
-export class ExchangeSettlerModule { }
+export class ExchangeSettlerModule {}

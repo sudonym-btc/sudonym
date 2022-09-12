@@ -7,7 +7,15 @@ import { CurrencyService, MockCurrencyService } from './currency.service';
 @Module({
 	imports: [SharedModule],
 	controllers: [CurrencyController],
-	providers: [{ provide: CurrencyService, useClass: getConfig().env == 'development' ? MockCurrencyService : CurrencyService }],
+	providers: [
+		{
+			provide: CurrencyService,
+			useClass:
+				getConfig().env == 'development'
+					? MockCurrencyService
+					: CurrencyService,
+		},
+	],
 	exports: [CurrencyService],
 })
-export class CurrencyModule { }
+export class CurrencyModule {}

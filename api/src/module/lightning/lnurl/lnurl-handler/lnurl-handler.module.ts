@@ -11,7 +11,4 @@ import { LnUrlHandlerService } from './lnurl-handler.service';
 	exports: [LnUrlHandlerService],
 	providers: [LnUrlHandlerService],
 })
-export class LnUrlHandlerModule {
-
-
-}
+export class LnUrlHandlerModule {}

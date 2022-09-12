@@ -4,21 +4,20 @@ import { ActionService } from './action.service';
 
 @Controller('action')
 export class ActionController {
+	@Inject(ActionService) actionService: ActionService;
 
-  @Inject(ActionService) actionService: ActionService;
+	@Get('parse')
+	async parse(@Query('address') address) {
+		return this.actionService.parse(address);
+	}
 
-  @Get('parse')
-  async parse(@Query('address') address) {
-  	return this.actionService.parse(address);
-  }
+	@Post('info')
+	async getInfo(@Body('action') action: Action) {
+		return this.actionService.getInfo(Action.from(action));
+	}
 
-  @Post('info')
-  async getInfo(@Body('action') action: Action) {
-  	return this.actionService.getInfo(Action.from(action));
-  }
-
-  @Post('')
-  execute(@Body('action') action: Action) {
-  	return this.actionService.execute(Action.from(action));
-  } 
+	@Post('')
+	execute(@Body('action') action: Action) {
+		return this.actionService.execute(Action.from(action));
+	}
 }
