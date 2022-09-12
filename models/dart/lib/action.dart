@@ -1,24 +1,50 @@
+import "action-type.dart" show ActionType;
+import "payment.dart" show Payment;
+import "withdraw.dart" show Withdraw;
 
-        import 'base-types/action.dart' as Model;
-        import 'base-class.dart';
+class Action extends ActionType {
+  dynamic /* | */ type;
+  String originalAddress;
+  dynamic /* bool | null */ isLnUrl;
+  dynamic /* bool | null */ isLnAddress;
+  dynamic /* bool | null */ isBolt11;
+  dynamic /* bool | null */ isBolt12;
+  dynamic /* bool | null */ isOnChain;
+  Action(this.type, this.originalAddress,
+      [this.isLnUrl = false,
+      this.isLnAddress = false,
+      this.isBolt11 = false,
+      this.isBolt12 = false,
+      this.isOnChain = false])
+      : super(type, originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
+            isOnChain) {
+    /* super call moved to initializer */;
+  }
+  static Action fromJson(Map<String, dynamic> json) {
+    return new Action(
+        json["type"],
+        json["originalAddress"],
+        json["isLnUrl"],
+        json["isLnAddress"],
+        json["isBolt11"],
+        json["isBolt12"],
+        json["isOnChain"]);
+  }
 
-        class Action extends BaseClass {
-            Map<String, dynamic> data = {};
+  static dynamic /* Payment | Withdraw */ from(json) {
+    if (json["type"] == "pay") return Payment.fromJson(json);
+    return Withdraw.fromJson(json);
+  }
 
-            Action(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "type": this.type,
+      "originalAddress": this.originalAddress,
+      "isLnUrl": this.isLnUrl,
+      "isLnAddress": this.isLnAddress,
+      "isBolt11": this.isBolt11,
+      "isBolt12": this.isBolt12,
+      "isOnChain": this.isOnChain
+    };
+  }
+}

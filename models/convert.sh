@@ -1,6 +1,6 @@
 # Generate mock data for tests
 npm run genMocks
-dir=../../../dart/lib/base-types
+dir=../../../dart/lib/
 # Convert files from TS to Dart
 cd ./ts/src/classes
 for file in **/*.ts *.ts
@@ -9,5 +9,4 @@ do
 done
 
 cd ../../
-npx ts-node src/dart-file-replacements.ts
 npm run build

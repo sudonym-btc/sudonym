@@ -54,8 +54,7 @@ class SendReceive extends StatelessWidget {
                                   size: 14),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/receive',
-                                    arguments:
-                                        ReceivePageArgs(entity.get("id")));
+                                    arguments: ReceivePageArgs(entity.id));
                               },
                             ),
                             Button(
@@ -67,7 +66,7 @@ class SendReceive extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SendPage(
-                                              potId: entity.get("id"),
+                                              potId: entity.id,
                                             )));
                               },
                             )

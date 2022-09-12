@@ -1,5 +1,6 @@
+import { BaseClass } from "./base-class";
 
-export class Transaction {
+export class Transaction extends BaseClass {
 
     constructor(
         public id: number,
@@ -15,7 +16,9 @@ export class Transaction {
         public status: boolean | null,
         public currencyCode: string,
         public createdAt: Date
-    ) { }
+    ) {
+        super();
+    }
 
     static fromJson(json: Object): Transaction {
         return new Transaction(
@@ -33,5 +36,23 @@ export class Transaction {
             json["currencyCode"],
             json["createdAt"]
         );
+    }
+
+    toJson() {
+        return {
+            id: this.id,
+            txid: this.txid,
+            potId: this.potId,
+            outgoing: this.outgoing,
+            type :this.type,
+            originalAddress: this.originalAddress,
+            address: this.address,
+            description:this.description,
+            transactionId: this.transactionId,
+            amount: this.amount,
+            status: this.status,
+            currencyCode: this.currencyCode,
+            createdAt: this.createdAt
+        }
     }
 }

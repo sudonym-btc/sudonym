@@ -20,4 +20,15 @@ export class Settlement {
             json["status"]
         );
     }
+
+    toJson() {
+        return {
+            id: this.id,
+            fromCurrency: this.fromCurrency,
+            toCurrency: this.toCurrency,
+            exchangeId: this.exchangeId,
+            orderId: this.orderId,
+            status: this.status
+        }
+    }
 }

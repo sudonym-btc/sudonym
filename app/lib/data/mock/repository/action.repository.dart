@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/base-types/action-remote-response.dart';
-import 'package:sudonym.models/index.dart' hide ActionRemoteResponse;
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/data/helper/address-parser.dart';
 import 'package:sudonym/data/repository/receive.repository.dart';
 import 'package:sudonym/data/repository/transaction.repository.dart';
@@ -19,30 +19,37 @@ class MockActionRepository implements ActionRepository {
       this._receiveRepository, this._transactionRepository, this.dio);
 
   @override
-  Future<Action> parse(String address) async {
+  Future<ActionParseResponse> parse(String address) async {
     await Future.delayed(requestDelay);
+    return ActionParseResponse(await parseHelper(address));
+  }
+
+  Future<dynamic> parseHelper(String address) async {
     var x = getType(address);
     String type = x[0];
     String trimmedAddress = x[1];
 
     switch (type) {
       case 'lightningaddress':
-        return Action({
+        return Action.from({
           'type': 'pay',
+          'originalAddress': trimmedAddress,
           'isLnUrl': true,
           'isLightningAddress': true,
           'remoteResponse': await fetchRemoteLightningAddress(trimmedAddress)
         });
       case 'lnurl':
         var response = await fetchRemoteLnUrl(trimmedAddress);
-        return Action({
+        return Action.from({
           'type': response["data"]["tag"].replace("Request", ""),
+          'originalAddress': trimmedAddress,
           'isLnUrl': true,
           'remoteResponse': response
         });
       default:
-        return Action({
+        return Action.from({
           'type': 'pay',
+          'originalAddress': trimmedAddress,
           'isBolt11': true,
           'remoteResponse': await fetchBolt11(trimmedAddress)
         });
@@ -57,65 +64,61 @@ class MockActionRepository implements ActionRepository {
   }
 
   @override
-  getInfo(Action action) async {
+  getPaymentInfo(Payment action) async {
     await Future.delayed(requestDelay);
-    if (action.get("type") == "pay") {
-      return Action({
-        "originalAddress": action.get("originalAddress"),
-        "address": action.get("address"),
-        "amount": action.get("amount"),
-        "maxAmount": action.get("amount"),
-        "minAmount": action.get("amount"),
-        "fee": 1000
-      });
-    } else {
-      return Action({
-        "type": "withdraw",
-        "originalAddress": action.get("originalAddress"),
-        "address": action.get("address"),
-        "amount": action.get("amount"),
-        "maxAmount": action.get("amount"),
-        "minAmount": action.get("amount"),
-        "fee": 1000
-      });
-    }
+    return Payment.fromJson({
+      ...action.toJson(),
+      "address": 'lnbc123423432',
+      "fee": 1000 / MSATOSHIS,
+      "feeCurrency": "BTC"
+    });
+  }
+
+  @override
+  getWithdrawInfo(Withdraw action) async {
+    return Withdraw.fromJson({
+      ...action.toJson(),
+      "address": 'lnbc123423432',
+      "fee": 1000 / MSATOSHIS,
+      "feeCurrency": "BTC"
+    });
   }
 
   @override
   pay(Payment p) async {
     await Future.delayed(requestDelay);
-    return _transactionRepository.create(Transaction({
+    return _transactionRepository.create(Transaction.fromJson({
       "id": 1,
       "txid": null,
-      "potId": p.get("potId"),
+      "potId": p.potId,
       "outgoing": true,
       "type": "lnurl",
-      "address": p.get("originalAddress"),
-      "originalAddress": p.get("originalAddress"),
+      "address": p.originalAddress,
+      "originalAddress": p.originalAddress,
       "description": "",
-      "amount": p.get("amount") ?? 100,
+      "amount": p.amount ?? 100,
       "status": null,
       "currencyCode": "BTC",
-      "createdAt": DateTime.now()
+      "createdAt": DateTime.now().toString()
     }));
   }
 
   @override
   withdraw(Withdraw p) async {
     await Future.delayed(requestDelay);
-    return Action({
+    return Action.from({
       "id": 1,
       "txid": null,
-      "potId": p.get("potId"),
+      "potId": p.potId,
       "outgoing": true,
       "type": "lnurl",
-      "address": p.get("originalAddress"),
-      "originalAddress": p.get("originalAddress"),
+      "address": p.originalAddress,
+      "originalAddress": p.originalAddress,
       "description": "",
-      "amount": p.get("amount") ?? 100,
+      "amount": p.amount ?? 100,
       "status": null,
       "currencyCode": "BTC",
-      "createdAt": DateTime.now()
+      "createdAt": DateTime.now().toString()
     });
   }
 
@@ -143,7 +146,7 @@ class MockActionRepository implements ActionRepository {
         'signature':
             '3045022100f3c4957ba6d34509f298d73c400268268c8e21a1e2dc345285e61051e7ea463702203f936c66e005f4ff568caf2033200b461e3abdc8080ae24bccd8bb1ee239f548'
       }
-    });
+    }).toJson();
   }
 
   fetchRemoteLightningAddress(String internetIdentifier) async {
@@ -161,7 +164,7 @@ class MockActionRepository implements ActionRepository {
         'domain': 'coincorner.io',
         'username': 'paco'
       }
-    });
+    }).toJson();
   }
 
   fetchRemoteLnUrl(String invoice) {

@@ -1,24 +1,35 @@
+class WithdrawRequest {
+  var tag;
+  dynamic /* String | null */ callback;
+  dynamic /* String | null */ k1;
+  dynamic /* String | null */ defaultDescription;
+  dynamic /* num | null */ minWithdrawable;
+  dynamic /* num | null */ maxWithdrawable;
+  WithdrawRequest(
+      [this.tag = "withdrawRequest",
+      this.callback,
+      this.k1,
+      this.defaultDescription,
+      this.minWithdrawable,
+      this.maxWithdrawable]) {}
+  static WithdrawRequest fromJson(Map<String, dynamic> json) {
+    return new WithdrawRequest(
+        json["tag"],
+        json["callback"],
+        json["k1"],
+        json["defaultDescription"],
+        json["minWithdrawable"],
+        json["maxWithdrawable"]);
+  }
 
-        import 'base-types/withdraw-request.dart' as Model;
-        import 'base-class.dart';
-
-        class WithdrawRequest extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            WithdrawRequest(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "tag": this.tag,
+      "callback": this.callback,
+      "k1": this.k1,
+      "defaultDescription": this.defaultDescription,
+      "minWithdrawable": this.minWithdrawable,
+      "maxWithdrawable": this.maxWithdrawable
+    };
+  }
+}

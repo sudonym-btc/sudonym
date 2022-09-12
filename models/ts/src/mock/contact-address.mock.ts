@@ -5,7 +5,7 @@ import { ContactAddress } from "../classes/contact-address";
     return this[Math.floor((Math.random() * this.length))];
 }
 
-export const factory = Factory.Sync.makeFactory<ContactAddress>({
+export const factory = Factory.Sync.makeFactory<Partial<ContactAddress>>({
     // id: Factory.each(i => i.toString()),
     contactId: Factory.each(i => i),
     addressType: (['lnurl'] as any).random(),

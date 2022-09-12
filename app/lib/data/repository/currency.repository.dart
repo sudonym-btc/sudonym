@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/base-types/types/currency.dart';
+import 'package:sudonym.models/types/currency.dart';
 
 import '../../injection.dart';
 

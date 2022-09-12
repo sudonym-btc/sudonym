@@ -1,5 +1,5 @@
 export * from './event';
-export * from './address-parser';
+export * from './types/address-parser';
 export * from './action';
 export * from './action-type';
 export * from './payment';

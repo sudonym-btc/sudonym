@@ -24,5 +24,5 @@ class UserDeviceRepositoryProps {
   String get endpoint => "userDevice";
 
   @override
-  Function converter = (e) => UserDevice(e);
+  Function converter = (e) => UserDevice.fromJson(e);
 }

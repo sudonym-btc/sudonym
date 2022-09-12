@@ -11,4 +11,11 @@ export class Event {
             json["data"]
         );
     }
+
+    toJson() {
+        return {
+            name: this.name,
+            data: this.data
+        }
+    }
 }

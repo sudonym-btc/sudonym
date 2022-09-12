@@ -63,17 +63,15 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   getLargestId() {
     return state.data.fold(
         0,
-        (previousValue, element) => element.get("id") > previousValue
-            ? element.get("id")
-            : previousValue);
+        (previousValue, element) =>
+            element.id > previousValue ? element.id : previousValue);
   }
 
   getSmallestId() {
     return state.data.fold(
         99999999999999,
-        (previousValue, element) => element.get("id") < previousValue
-            ? element.get("id")
-            : previousValue);
+        (previousValue, element) =>
+            element.id < previousValue ? element.id : previousValue);
   }
 }
 

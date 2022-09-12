@@ -19,4 +19,15 @@ export class WithdrawRequest {
             json["maxWithdrawable"]
         );
     }
+
+    toJson() {
+        return {
+            tag: this.tag,
+            callback: this.callback,
+            k1: this.k1,
+            defaultDescription: this.defaultDescription,
+            minWithdrawable: this.minWithdrawable,
+            maxWithdrawable: this.maxWithdrawable
+        }
+    }
 }

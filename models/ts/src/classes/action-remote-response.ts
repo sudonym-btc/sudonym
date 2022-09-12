@@ -21,4 +21,12 @@ export class ActionRemoteResponse<T> {
             json["data"]
         );
     }
+
+    toJson() {
+        return {
+            success: this.success,
+            message: this.message,
+            data: this.data
+        }
+    }
 }

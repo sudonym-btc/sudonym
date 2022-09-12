@@ -1,4 +1,6 @@
-export class Receiver {
+import { BaseClass } from "./base-class";
+
+export class Receiver extends BaseClass {
 
     constructor(
         public id: number,
@@ -8,7 +10,9 @@ export class Receiver {
         public amountCurrency: string,
         public data: string,
         public createdAt: Date
-    ) { }
+    ) {
+        super();
+    }
 
     static fromJson(json: Object): Receiver {
         return new Receiver(
@@ -20,5 +24,17 @@ export class Receiver {
             json["data"],
             json["createdAt"]
         );
+    }
+
+    toJson() {
+        return {
+            id: this.id,
+            potId: this.potId,
+            type: this.type,
+            amount: this.amount,
+            amountCurrency: this.amountCurrency,
+            data: this.data,
+            createdAt: this.createdAt
+        }
     }
 }

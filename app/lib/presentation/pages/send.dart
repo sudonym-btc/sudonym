@@ -3,16 +3,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/qr/qr.dart';
-import 'package:sudonym/presentation/widgets/contacts/contact_list.dart';
-import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
-import 'package:sudonym/presentation/widgets/send/qr.dart';
+// import 'package:sudonym/presentation/widgets/contacts/contact_list.dart';
+// import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
+// import 'package:sudonym/presentation/widgets/send/qr.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../logic/bloc/link.service.dart';
 
 class SendPage extends StatefulWidget {
-  final int? potId;
+  final dynamic potId;
 
   const SendPage({this.potId, Key? key}) : super(key: key);
 
@@ -79,9 +79,7 @@ class _InvoiceInput extends StatefulWidget {
     controller ??= TextEditingController();
   }
   @override
-  State<StatefulWidget> createState() {
-    return _InvoiceInputState(controller!);
-  }
+  State<StatefulWidget> createState() => _InvoiceInputState(controller!);
 }
 
 class _InvoiceInputState extends State<_InvoiceInput> {
@@ -114,6 +112,7 @@ class _InvoiceInputState extends State<_InvoiceInput> {
       children: [
         Expanded(
             child: TextField(
+          keyboardType: TextInputType.emailAddress,
           controller: _controller,
           decoration: InputDecoration(
               // border: OutlineInputBorder(),

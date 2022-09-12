@@ -31,7 +31,7 @@ class CurrencyInputOutput {
 
   List<List<dynamic>> outputs = [];
 
-  CurrencyInputOutput(this.amount, this.currency) {}
+  CurrencyInputOutput(this.amount, this.currency);
 }
 
 class _CurrencyInputState extends State<CurrencyInput> {

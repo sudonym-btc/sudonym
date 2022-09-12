@@ -23,7 +23,7 @@ class ContactList extends StatelessWidget {
             height: padding,
           ),
           Expanded(
-              child: List(
+              child: ListWidget(
             builder: (el) {
               return ContactListItem(contact: el);
             },

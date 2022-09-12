@@ -1,5 +1,6 @@
 import faker from "@faker-js/faker";
 import * as Factory from "factory.ts";
+import { RecursivePartial } from "index";
 import { Transaction } from "../classes/transaction";
 
 const addresses = [
@@ -15,7 +16,7 @@ const addressTypes = [
   'onchain'
 ];
 
-export const factory = Factory.Sync.makeFactory<Transaction>({
+export const factory = Factory.Sync.makeFactory<RecursivePartial<Transaction>>({
   id: Factory.each(i => i),
   txid: Factory.each(i => i.toString()),
   potId: Factory.each(i => i),

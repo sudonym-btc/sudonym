@@ -12,4 +12,11 @@ export class SettlementTransaction {
             json["settlementId"]
         );
     }
+
+    toJson(){
+        return {
+            transactionId: this.transactionId,
+            settlementId: this.settlementId
+        }
+    }
 }

@@ -27,7 +27,6 @@ class _ScreenSlideableState extends State<ScreenSlideable> {
         children: [
           MeasureSize(
               onChange: (Size s) {
-                print(s.toString());
                 setState(() {
                   topSize = s;
                 });
@@ -93,8 +92,6 @@ class _BottomSlideableState extends State<BottomSlideable>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        print(minHeightGetter());
-        print(maxHeight);
         return Positioned(
           height: lerp(minHeightGetter(), maxHeight),
           left: 0,

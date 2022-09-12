@@ -1,24 +1,32 @@
+import "base-class.dart" show BaseClass;
+import "contact-address.dart" show ContactAddress;
 
-        import 'base-types/contact.dart' as Model;
-        import 'base-class.dart';
+class Contact extends BaseClass {
+  num id;
+  String userId;
+  String name;
+  List<ContactAddress> ContactAddresses;
+  Contact(this.id, this.userId, this.name, this.ContactAddresses) : super() {
+    /* super call moved to initializer */;
+  }
+  static Contact fromJson(Map<String, dynamic> json) {
+    List<ContactAddress> addresses = [];
+    json["ContactAddresses"].forEach((e) {
+      addresses.add(ContactAddress.fromJson(e));
+    });
+    return new Contact(json["id"], json["userId"], json["name"], addresses);
+  }
 
-        class Contact extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            Contact(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    List<Map<String, dynamic>> addresses = [];
+    this.ContactAddresses.forEach((e) {
+      addresses.add(e.toJson());
+    });
+    return {
+      "id": this.id,
+      "userId": this.userId,
+      "name": this.name,
+      "ContactAddresses": addresses
+    };
+  }
+}

@@ -21,7 +21,7 @@ class TransactionPage extends StatelessWidget {
               create: (_) => TransactionCubit(getIt<TransactionRepository>())
                 ..fetch(
                     (ModalRoute.of(context)?.settings.arguments as Transaction)
-                        .get("id")))
+                        .id))
         ],
         child: BlocBuilder<TransactionCubit, TransactionCubitState>(
             builder: ((context, state) {
@@ -32,18 +32,18 @@ class TransactionPage extends StatelessWidget {
                 content: const Center(
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
-          } else if (state.entity!.get("outgoing")) {
-            if (state.entity!.get("status") == true) {
+          } else if (state.entity!.outgoing) {
+            if (state.entity!.status == true) {
               return _OutgoingComplete(transaction: state.entity!);
-            } else if (state.entity!.get("status") == null) {
+            } else if (state.entity!.status == null) {
               return _OutgoingPending(transaction: state.entity!);
             } else {
               return _OutgoingFailed(transaction: state.entity!);
             }
           } else {
-            if (state.entity!.get("status") == true) {
+            if (state.entity!.status == true) {
               return _IncomingComplete(transaction: state.entity!);
-            } else if (state.entity!.get("status") == null) {
+            } else if (state.entity!.status == null) {
               return _IncomingPending(transaction: state.entity!);
             } else {
               return _IncomingFailed(transaction: state.entity!);
@@ -83,7 +83,7 @@ class _OutgoingFailed extends _TransactionStatusPage {
     return StatusPage(
         title: "Payment failed",
         subtitle:
-            "Outgoing payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} failed to ${transaction.get("originalAddress")}",
+            "Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.originalAddress}",
         color: Theme.of(context).errorColor);
   }
 }
@@ -111,7 +111,7 @@ class _IncomingPending extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentIncoming,
         subtitle:
-            "Payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} is currently in transit",
+            "Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} is currently in transit",
         content:
             const Center(child: CircularProgressIndicator(color: Colors.white)),
         color: Colors.indigo.shade800);
@@ -127,7 +127,7 @@ class _IncomingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
         subtitle:
-            "Payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} received",
+            "Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} received",
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -142,7 +142,7 @@ class _IncomingFailed extends _TransactionStatusPage {
     return StatusPage(
         title: "Payment failed",
         subtitle:
-            "Outgoing payment of ${FormatCurrency().format(transaction.get("currencyCode"), transaction.get("amount"))} failed to ${transaction.get("address")}",
+            "Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.address}",
         color: Theme.of(context).errorColor);
   }
 }

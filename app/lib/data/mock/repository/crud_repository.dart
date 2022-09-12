@@ -22,18 +22,23 @@ abstract class MockCrudRepository<T extends BaseClass>
 
   @override
   Future<T> create(T entity) async {
-    var sorted = availableData.map((dynamic e) => e.get("id")).toList();
+    var sorted = availableData.map((dynamic e) => e.id).toList();
     sorted.sort();
-    entity["id"] = sorted.last.runtimeType == num ? sorted.last + 1 : "random";
+    (entity as dynamic).id =
+        isNumType(sorted.last.runtimeType) ? sorted.last + 1 : "random";
     availableData.add(entity);
     created.add(entity);
     return entity;
   }
 
+  isNumType(dynamic t) {
+    return t == num || t == int;
+  }
+
   @override
   Future<T> fetch(dynamic id) async {
     await Future.delayed(requestDelay);
-    return availableData.firstWhere((dynamic e) => e!.get("id") == id);
+    return availableData.firstWhere((dynamic e) => e!.id == id);
   }
 
   @override
@@ -47,13 +52,13 @@ abstract class MockCrudRepository<T extends BaseClass>
           } else {
             return where.keys.every((key) {
               if (where[key].runtimeType == int) {
-                return element.get(key) == where[key];
+                return element.toJson()[key] == where[key];
               }
               if (where[key]["gt"] != null) {
-                return element.get(key) > where[key]["gt"];
+                return element.toJson()[key] > where[key]["gt"];
               }
               if (where[key]["lt"] != null) {
-                return element.get(key) < where[key]["lt"];
+                return element.toJson()[key] < where[key]["lt"];
               }
               return false;
             });
@@ -65,7 +70,8 @@ abstract class MockCrudRepository<T extends BaseClass>
   @override
   Future<T> update(T entity) async {
     await Future.delayed(requestDelay);
-    return availableData.firstWhere((e) => e.get("id") == entity.get("id"));
+    return availableData
+        .firstWhere((e) => (e as dynamic).id == (entity as dynamic).id);
   }
 
   @override

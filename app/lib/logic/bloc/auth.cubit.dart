@@ -28,15 +28,15 @@ class AuthCubit extends Cubit<AuthState> {
   loginWithGoogle() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithGoogle();
-    emit(LoadedState(await _userRepository
-        .create(User({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
+    emit(LoadedState(await _userRepository.create(
+        User.fromJson({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
   }
 
   loginWithFacebook() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithFacebook();
-    emit(LoadedState(await _userRepository
-        .create(User({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
+    emit(LoadedState(await _userRepository.create(
+        User.fromJson({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
   }
 
   logout() async {

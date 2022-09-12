@@ -13,16 +13,16 @@ class TransactionListItem extends StatelessWidget {
 
   getTitle() {
     String networkName = ["lnurl", "bolt11", "bolt12", "lightningaddress"]
-            .contains(transaction.get("type"))
+            .contains(transaction.type)
         ? "lightning network"
         : "onchain";
-    return transaction.get("outgoing")
-        ? transaction.get("address") ?? "Spend via " + networkName
-        : "Received " + networkName;
+    return transaction.outgoing
+        ? transaction.address ?? "Spend via $networkName"
+        : "Received $networkName";
   }
 
   getDescription() {
-    return transaction.get("description") ?? "No description";
+    return transaction.description ?? "No description";
   }
 
   @override
@@ -33,7 +33,7 @@ class TransactionListItem extends StatelessWidget {
               .pushNamed('/transaction', arguments: transaction);
         },
         child: Opacity(
-            opacity: transaction.get("status") == true ? 1 : 0.6,
+            opacity: transaction.status == true ? 1 : 0.6,
             child: Container(
                 padding: const EdgeInsets.all(padding),
                 child: Row(
@@ -41,13 +41,12 @@ class TransactionListItem extends StatelessWidget {
                     SizedBox(
                         width: 75,
                         child: Text(
-                          (transaction.get("outgoing") ? "-" : "") +
-                              FormatCurrency().format(
-                                  transaction.get("currencyCode"),
-                                  transaction.get("amount").toDouble()),
+                          (transaction.outgoing ? "-" : "") +
+                              FormatCurrency().format(transaction.currencyCode,
+                                  transaction.amount.toDouble()),
                           style: TextStyle(
                               fontSize: 12,
-                              color: transaction.get("outgoing")
+                              color: transaction.outgoing
                                   ? Theme.of(context).errorColor
                                   : Theme.of(context).primaryColorDark),
                         )),
@@ -66,12 +65,7 @@ class TransactionListItem extends StatelessWidget {
                     SizedBox(
                         width: 50,
                         child: Center(
-                            child: Info(timeago.format(
-                                transaction.get("createdAt").runtimeType ==
-                                        DateTime
-                                    ? transaction.get("createdAt")
-                                    : DateTime.parse(
-                                        transaction.get("createdAt")),
+                            child: Info(timeago.format(transaction.createdAt,
                                 locale: 'en_short')))),
                   ],
                 ))));

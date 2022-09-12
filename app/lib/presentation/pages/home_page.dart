@@ -7,7 +7,7 @@ import 'package:sudonym/data/repository/pot.repository.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/pot/edit-pot.dart';
-import 'package:sudonym.models/index.dart' as Models;
+import 'package:sudonym.models/index.dart' as models;
 import '../../injection.dart';
 import '../widgets/pot/pot.dart';
 
@@ -32,13 +32,8 @@ class _HomePageState extends State<HomePage> {
         ],
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {
-            var children = <Widget>[];
-            state.data.forEach((el) {
-              children.add(Pot(
-                entity: el,
-              ));
-            });
-
+            List<Widget> children =
+                state.data.map<Widget>((e) => Pot(entity: e)).toList();
             children.add(const AddPotSlide());
 
             return Container(
@@ -51,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () {
                               Navigator.pushNamed(context, '/settings');
                             },
-                            icon: const FaIcon(FontAwesomeIcons.cog, size: 14),
+                            icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
                           )
                         ]),
                         body: state.loading
@@ -70,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                                       child: SmoothPageIndicator(
                                         controller:
                                             controller, // PageController
-                                        count: (children.length > 0
+                                        count: (children.isNotEmpty
                                             ? children.length
                                             : 1),
 
@@ -101,7 +96,7 @@ class AddPotSlide extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => EditPot(
-                              entity: Models.Pot({
+                              entity: models.Pot.fromJson({
                             "currency": "BTC",
                             "spendableBalance": 0,
                             "balance": 0

@@ -23,5 +23,5 @@ class UserRepositoryProps {
   @override
   String get endpoint => "user";
   @override
-  Function converter = (e) => User(e);
+  Function converter = (e) => User.fromJson(e);
 }

@@ -1,24 +1,22 @@
+import "bolt11.dart" show Bolt11;
+import "withdraw-request.dart" show WithdrawRequest;
+import "payment-request.dart" show PaymentRequest;
 
-        import 'base-types/action-remote-response.dart' as Model;
-        import 'base-class.dart';
+class ActionRemoteResponse<T> {
+  bool success;
+  dynamic /* String | null */ message;
+  dynamic /* T | null */ data;
+  ActionRemoteResponse([this.success = true, this.message, this.data]) {}
+  static ActionRemoteResponse<dynamic> fromJson(Map<String, dynamic> json) {
+    return new ActionRemoteResponse(
+        json["success"], json["message"], json["data"]);
+  }
 
-        class ActionRemoteResponse extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            ActionRemoteResponse(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "success": this.success,
+      "message": this.message,
+      "data": this.data
+    };
+  }
+}

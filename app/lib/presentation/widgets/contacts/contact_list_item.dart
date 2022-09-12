@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym.models/contact.dart' as Model;
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/constants.dart';
 
 class ContactListItem extends StatelessWidget {
-  Model.Contact contact;
+  Contact contact;
 
   ContactListItem({required this.contact, Key? key}) : super(key: key);
 
@@ -19,12 +19,12 @@ class ContactListItem extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.blue.shade100,
-                  child: Text(contact.get("name").substring(0, 1).toString()),
+                  child: Text(contact.name.substring(0, 1).toString()),
                 ),
                 const SizedBox(
                   width: padding,
                 ),
-                SizedBox(child: Text(contact.get("name").toString())),
+                SizedBox(child: Text(contact.name.toString())),
               ],
             )));
   }

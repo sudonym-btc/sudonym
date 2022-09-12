@@ -1,24 +1,32 @@
+import "base-class.dart" show BaseClass;
 
-        import 'base-types/receiver.dart' as Model;
-        import 'base-class.dart';
+class Receiver extends BaseClass {
+  num id;
+  num potId;
+  String type;
+  num amount;
+  String amountCurrency;
+  String data;
+  DateTime createdAt;
+  Receiver(this.id, this.potId, this.type, this.amount, this.amountCurrency,
+      this.data, this.createdAt)
+      : super() {
+    /* super call moved to initializer */;
+  }
+  static Receiver fromJson(Map<String, dynamic> json) {
+    return new Receiver(json["id"], json["potId"], json["type"], json["amount"],
+        json["amountCurrency"], json["data"], DateTime.parse(json["createdAt"]));
+  }
 
-        class Receiver extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            Receiver(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "id": this.id,
+      "potId": this.potId,
+      "type": this.type,
+      "amount": this.amount,
+      "amountCurrency": this.amountCurrency,
+      "data": this.data,
+      "createdAt": this.createdAt
+    };
+  }
+}

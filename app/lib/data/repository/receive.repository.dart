@@ -15,7 +15,7 @@ class ReceiveRepositoryImpl extends ReceiveRepository {
       "type": type.toString(),
       "amount": amount.toString(),
       "currency": currency.toString()
-    }).then((value) => Receiver(value.data));
+    }).then((value) => Receiver.fromJson(value.data));
   }
 }
 

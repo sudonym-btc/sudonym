@@ -1,5 +1,5 @@
 export "event.dart";
-export "address-parser.dart";
+export "types/address-parser.dart";
 export "action.dart";
 export "action-type.dart";
 export "payment.dart";

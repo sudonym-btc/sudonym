@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/components/typography/info.dart';
 import 'package:sudonym/presentation/components/typography/subtitle.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

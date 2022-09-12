@@ -23,5 +23,5 @@ class TransactionRepositoryProps {
   @override
   String get endpoint => "transaction";
   @override
-  Function converter = (e) => Transaction(e);
+  Function converter = (e) => Transaction.fromJson(e);
 }

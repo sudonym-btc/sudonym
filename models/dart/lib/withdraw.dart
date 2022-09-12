@@ -1,24 +1,42 @@
+import "action-type.dart" show ActionType;
+import "action-remote-response.dart" show ActionRemoteResponse;
+import "withdraw-request.dart" show WithdrawRequest;
 
-        import 'base-types/withdraw.dart' as Model;
-        import 'base-class.dart';
+class Withdraw extends ActionType {
+  dynamic /* num | null */ potId;
+  String originalAddress;
+  dynamic /* String | null */ currency;
+  dynamic /* num | null */ amount;
+  dynamic /* num | null */ minAmount;
+  dynamic /* num | null */ maxAmount;
+  ActionRemoteResponse<dynamic> remoteResponse;
+  Withdraw(this.potId, this.originalAddress, this.currency, this.amount,
+      this.minAmount, this.maxAmount, this.remoteResponse)
+      : super("withdraw", originalAddress) {
+    /* super call moved to initializer */;
+  }
+  static Withdraw fromJson(Map<String, dynamic> json) {
+    return new Withdraw(
+        json["potId"],
+        json["originalAddress"],
+        json["currency"],
+        json["amount"],
+        json["minAmount"],
+        json["maxAmount"],
+        ActionRemoteResponse.fromJson(json["remoteResponse"]));
+  }
 
-        class Withdraw extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            Withdraw(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "potId": this.potId,
+      "originalAddress": this.originalAddress,
+      "currency": this.currency,
+      "amount": this.amount,
+      "minAmount": this.minAmount,
+      "maxAmount": this.maxAmount,
+      "remoteResponse": !identical(this.remoteResponse, null)
+          ? this.remoteResponse.toJson()
+          : null
+    };
+  }
+}

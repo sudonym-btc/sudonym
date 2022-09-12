@@ -1,12 +1,15 @@
+import { BaseClass } from "./base-class";
 
-export class ContactAddress {
+export class ContactAddress extends BaseClass {
 
     constructor(
         public contactId: number,
         public addressType: string,
         public address: string,
         public name: string
-    ) { }
+    ) {
+        super();
+    }
 
     static fromJson(json: Object): ContactAddress {
         return new ContactAddress(
@@ -15,5 +18,14 @@ export class ContactAddress {
             json["address"],
             json["name"],
         );
+    }
+
+    toJson() {
+        return {
+            contactId: this.contactId,
+            addressType: this.addressType,
+            address: this.address,
+            name: this.name
+        }
     }
 }

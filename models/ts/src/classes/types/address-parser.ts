@@ -1,8 +1,8 @@
-import { Action } from "./action";
-import { WithdrawRequest } from "./withdraw-request";
-import { PaymentRequest } from "./payment-request";
-import { Bolt11 } from "./bolt11";
-import { ActionRemoteResponse } from "./action-remote-response";
+import { Action } from "../action";
+import { WithdrawRequest } from "../withdraw-request";
+import { PaymentRequest } from "../payment-request";
+import { Bolt11 } from "../bolt11";
+import { ActionRemoteResponse } from "../action-remote-response";
 
 export interface IAddressParser {
     parse(address: string): Promise<Action>;

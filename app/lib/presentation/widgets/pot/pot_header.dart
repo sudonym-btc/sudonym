@@ -17,9 +17,9 @@ class PotHeader extends StatelessWidget {
           padding: const EdgeInsets.all(padding * 2),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Subtitle(state.entity?.get("name") ?? ""),
-            Header(FormatCurrency().format(
-                state.entity!.get("currency"), state.entity!.get("balance")))
+            Subtitle(state.entity?.name ?? ""),
+            Header(FormatCurrency()
+                .format(state.entity!.currency, state.entity!.balance))
           ]));
     });
   }

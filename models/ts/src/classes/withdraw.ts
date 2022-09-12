@@ -10,7 +10,7 @@ export class Withdraw extends ActionType {
         public currency: string | null,
         public amount: number | null,
         public minAmount: number | null,
-        public maxAmount: number | null, 
+        public maxAmount: number | null,
         public remoteResponse: ActionRemoteResponse<any>, // can't add withdrawrequest type here
     ) {
         super("withdraw", originalAddress);
@@ -26,5 +26,17 @@ export class Withdraw extends ActionType {
             json["maxAmount"],
             ActionRemoteResponse.fromJson(json["remoteResponse"])
         );
+    }
+
+    toJson() {
+        return {
+            potId: this.potId,
+            originalAddress: this.originalAddress,
+            currency: this.currency,
+            amount: this.amount,
+            minAmount: this.minAmount,
+            maxAmount: this.maxAmount,
+            remoteResponse: this.remoteResponse !== null ? this.remoteResponse.toJson() : null
+        }
     }
 }

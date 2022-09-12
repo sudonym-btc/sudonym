@@ -1,24 +1,25 @@
+import "base-class.dart" show BaseClass;
 
-        import 'base-types/contact-address.dart' as Model;
-        import 'base-class.dart';
+class ContactAddress extends BaseClass {
+  num contactId;
+  String addressType;
+  String address;
+  String name;
+  ContactAddress(this.contactId, this.addressType, this.address, this.name)
+      : super() {
+    /* super call moved to initializer */;
+  }
+  static ContactAddress fromJson(Map<String, dynamic> json) {
+    return new ContactAddress(
+        json["contactId"], json["addressType"], json["address"], json["name"]);
+  }
 
-        class ContactAddress extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            ContactAddress(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "contactId": this.contactId,
+      "addressType": this.addressType,
+      "address": this.address,
+      "name": this.name
+    };
+  }
+}

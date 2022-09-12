@@ -1,10 +1,9 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/bloc/send.cubit.dart';
+import 'package:sudonym/logic/currency/format-currency.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -19,7 +18,7 @@ class SendConfirmPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var payment = ModalRoute.of(context)?.settings.arguments as Action;
+    var payment = ModalRoute.of(context)?.settings.arguments as Payment;
 
     return MultiBlocProvider(
         providers: [
@@ -48,7 +47,7 @@ class SendConfirmPage extends StatelessWidget {
           Widget? content = const Center(
               child: CircularProgressIndicator(color: Colors.white));
           Color color = Colors.indigo.shade800;
-          Widget? actions = null;
+          Widget? actions;
 
           if (state.loadingSend) {
             title = 'Sending';
@@ -65,14 +64,14 @@ class SendConfirmPage extends StatelessWidget {
               title = (AppLocalizations.of(context)!.failed);
               subtitle =
                   (AppLocalizations.of(context)!.failedToCreateTransactions);
-              icon = FontAwesomeIcons.exclamationCircle;
+              icon = FontAwesomeIcons.circleExclamation;
               content = Text(l.toString());
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.retry),
                     style: raisedButtonStyle,
                     onPressed: () {},
+                    child: Text(AppLocalizations.of(context)!.retry),
                   )
                 ],
               );
@@ -85,9 +84,9 @@ class SendConfirmPage extends StatelessWidget {
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
-                    child: Text(AppLocalizations.of(context)!.retry),
                     style: raisedButtonStyle,
                     onPressed: () {},
+                    child: Text(AppLocalizations.of(context)!.retry),
                   )
                 ],
               );
@@ -100,7 +99,7 @@ class SendConfirmPage extends StatelessWidget {
                     TableRow(children: [
                       const Text('address'),
                       Text(
-                        r.get("address"),
+                        r.address,
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -108,12 +107,13 @@ class SendConfirmPage extends StatelessWidget {
                     ]),
                     TableRow(children: [
                       Text(AppLocalizations.of(context)!.fee),
-                      Text('${(r.get("fee") ?? 0) / 1000} sats / \$0.01')
+                      Text(FormatCurrency()
+                          .format(r.feeCurrency ?? "BTC", r.fee ?? 0))
                     ]),
                     TableRow(children: [
                       Text(AppLocalizations.of(context)!.name),
                       Text(
-                        r.get("originalAddress"),
+                        r.originalAddress,
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -130,7 +130,7 @@ class SendConfirmPage extends StatelessWidget {
                   onPressed: state.loadingInfo || state.loadingSend
                       ? null
                       : () {
-                          BlocProvider.of<SendCubit>(context).pay(r as Payment);
+                          BlocProvider.of<SendCubit>(context).pay(r);
                         },
                   style: raisedButtonStyle,
                 )

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
+import 'package:sudonym/config/repository-logger.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
 
 import '../../../constants.dart';
 
-class AmountPage extends StatefulWidget {
-  final Action payment;
+class AmountPage extends StatefulWidget with AmountLogger {
+  final dynamic payment;
 
   const AmountPage(this.payment, {Key? key}) : super(key: key);
 
@@ -18,15 +19,15 @@ class AmountPage extends StatefulWidget {
   }
 }
 
-class _AmountPageState extends State<AmountPage> {
+class _AmountPageState extends State<AmountPage> with AmountLogger {
   TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     CurrencyInput currencyInput = CurrencyInput(onChanged: (val) {
-      print(val);
-      widget.payment.set("amount", val.amount);
-      widget.payment.set("currency", val.currency);
+      loggy.debug(val);
+      widget.payment.amount = val.amount;
+      widget.payment.currency = val.currency;
     });
 
     return Container(

@@ -23,5 +23,5 @@ class ContactRepositoryProps {
   @override
   String endpoint = "contact";
   @override
-  Function converter = (e) => Contact(e);
+  Function converter = (e) => Contact.fromJson(e);
 }

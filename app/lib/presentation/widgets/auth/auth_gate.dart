@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
 import 'package:sudonym/logic/bloc/link.service.dart';
 import 'package:sudonym/main.dart';

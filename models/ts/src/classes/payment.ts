@@ -13,6 +13,7 @@ export class Payment extends ActionType {
         public minAmount: number | null,
         public maxAmount: number | null,
         public fee: number | null,
+        public feeCurrency: string | null,
         public remoteResponse: ActionRemoteResponse<any>, // can't add paymentrequest type here
     ) {
         super("pay", originalAddress);
@@ -28,7 +29,23 @@ export class Payment extends ActionType {
             json["minAmount"],
             json["maxAmount"],
             json["fee"],
+            json["feeCurrency"],
             ActionRemoteResponse.fromJson(json["remoteResponse"])
         );
+    }
+
+    toJson() {
+        return {
+            potId: this.potId,
+            originalAddress: this.originalAddress,
+            address: this.address,
+            currency: this.currency,
+            amount: this.amount,
+            minAmount: this.minAmount,
+            maxAmount: this.maxAmount,
+            fee: this.fee,
+            feeCurrency: this.feeCurrency,
+            remoteResponse: this.remoteResponse !== null ? this.remoteResponse.toJson() : null
+        };
     }
 }

@@ -1,5 +1,6 @@
+import { BaseClass } from "./base-class";
 
-export class Pot {
+export class Pot extends BaseClass {
 
     constructor(
         public id: number,
@@ -7,7 +8,9 @@ export class Pot {
         public currency: string,
         public balance: number,
         public spendableBalance: number
-    ) { }
+    ) {
+        super();
+    }
 
     static fromJson(json: any): Pot {
         return new Pot(
@@ -17,5 +20,15 @@ export class Pot {
             json["balance"],
             json["spendableBalance"]
         );
+    }
+
+    toJson() {
+        return {
+            id: this.id,
+            name: this.name,
+            currency: this.currency,
+            balance: this.balance,
+            spendableBalance: this.spendableBalance
+        };
     }
 }

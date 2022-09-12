@@ -10,5 +10,5 @@ export const factory = Factory.Sync.each<Action>(i => ({
     isLnAddress: false,
     isOnChain: false,
     isBolt12: false
-}));
+}) as Action);
 export const mocks = factory.build(20);

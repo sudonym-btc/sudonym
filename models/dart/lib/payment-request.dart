@@ -1,24 +1,27 @@
+class PaymentRequest {
+  var tag;
+  dynamic /* String | null */ callback;
+  dynamic /* num | null */ maxSendable;
+  dynamic /* num | null */ minSendable;
+  dynamic /* String | null */ metadata;
+  PaymentRequest(
+      [this.tag = "payRequest",
+      this.callback,
+      this.maxSendable,
+      this.minSendable,
+      this.metadata]) {}
+  static PaymentRequest fromJson(Map<String, dynamic> json) {
+    return new PaymentRequest(json["tag"], json["callback"],
+        json["maxSendable"], json["minSendable"], json["metadata"]);
+  }
 
-        import 'base-types/payment-request.dart' as Model;
-        import 'base-class.dart';
-
-        class PaymentRequest extends BaseClass {
-            Map<String, dynamic> data = {};
-
-            PaymentRequest(this.data): super(data);
-
-            operator [](String i) => data[i];
-            operator []=(String i, dynamic value) => data[i] = value;
-
-            get(String i) {
-              return this[i];
-            }
-
-            set(String i, dynamic val) {
-                this[i] = val;
-            }
-
-            Map<String, dynamic> toJson() => data;
-        }
-
-        
+  toJson() {
+    return {
+      "tag": this.tag,
+      "callback": this.callback,
+      "maxSendable": this.maxSendable,
+      "minSendable": this.minSendable,
+      "metadata": this.metadata
+    };
+  }
+}

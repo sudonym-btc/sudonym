@@ -31,13 +31,13 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   onInit() {
     loggy.debug("Listening to this stream $endpoint");
     websocket.getStream().listen((event) {
-      Event e = Event(jsonDecode(event));
-      if (e.get("name").split('.')[0] == endpoint.toLowerCase()) {
-        loggy.debug("Websocket: " + event);
-        if (e.get("name").split('.')[1] == 'created') {
-          created.add(converter(e.get("data")));
-        } else if (e.get("name").split('.')[1] == 'updated') {
-          updated.add(converter(e.get("data")));
+      Event e = Event.fromJson(jsonDecode(event));
+      if (e.name.split('.')[0] == endpoint.toLowerCase()) {
+        loggy.debug('Websocket: ' + event);
+        if (e.name.split('.')[1] == 'created') {
+          created.add(converter(e.data));
+        } else if (e.name.split('.')[1] == 'updated') {
+          updated.add(converter(e.data));
         }
       }
     });
@@ -69,7 +69,7 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
 
   Future<T> update(T entity) async {
     return dio
-        .put("/$endpoint/" + entity.get("id"), data: entity)
+        .put("/$endpoint/${(entity as dynamic).id}", data: entity)
         .then((value) {
       return converter(value.data);
     });

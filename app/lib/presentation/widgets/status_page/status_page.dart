@@ -54,7 +54,7 @@ class StatusPage extends StatelessWidget {
       Header(title),
       Subtitle(subtitle),
       const SizedBox(height: padding * 2),
-      if (content == null && icon == null) Expanded(child: new Container())
+      if (content == null && icon == null) Expanded(child: Container())
     ];
 
     if (icon != null) {
@@ -77,7 +77,7 @@ class StatusPage extends StatelessWidget {
 
     children = [
       ...children,
-      if (actions != null) Expanded(child: new Container()),
+      if (actions != null) Expanded(child: Container()),
       if (actions != null) actions!
     ];
 

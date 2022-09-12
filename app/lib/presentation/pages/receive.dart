@@ -10,7 +10,7 @@ import '../widgets/receive/bolt12.dart';
 class ReceivePageArgs {
   num potId;
 
-  ReceivePageArgs(@required this.potId);
+  ReceivePageArgs(this.potId);
 }
 
 class ReceivePage extends StatelessWidget {

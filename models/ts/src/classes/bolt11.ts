@@ -41,4 +41,23 @@ export class Bolt11 {
             json["wordsTemp"],
         );
     }
+
+    toJson() {
+        return {
+            millisatoshis: this.millisatoshis,
+            network: this.network,
+            payeeNodeKey: this.payeeNodeKey,
+            paymentRequest: this.paymentRequest,
+            prefix: this.prefix,
+            recoveryFlag:this.recoveryFlag,
+            satoshis:this.satoshis,
+            signature:this.signature,
+            tags: this.tags,
+            timeExpireDate: this.timeExpireDate,
+            timeExpireDateString: this.timeExpireDateString,
+            timestamp: this.timestamp,
+            timestampString: this.timestampString,
+            wordsTemp: this.wordsTemp,
+        };
+    }
 }

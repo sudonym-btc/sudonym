@@ -1,4 +1,4 @@
-import 'package:loggy/loggy.dart';
+import 'package:loggy/loggy.dart' show Loggy, LoggyType;
 
 mixin RepoLogger implements LoggyType {
   @override
@@ -10,6 +10,18 @@ mixin ListLogger implements LoggyType {
   @override
   Loggy<ListLogger> get loggy =>
       Loggy<ListLogger>('List Logger - $runtimeType');
+}
+
+mixin ActionLogger implements LoggyType {
+  @override
+  Loggy<ActionLogger> get loggy =>
+      Loggy<ActionLogger>('Action Logger - $runtimeType');
+}
+
+mixin AmountLogger implements LoggyType {
+  @override
+  Loggy<AmountLogger> get loggy =>
+      Loggy<AmountLogger>('Amount Logger - $runtimeType');
 }
 
 mixin WebsocketLogger implements LoggyType {

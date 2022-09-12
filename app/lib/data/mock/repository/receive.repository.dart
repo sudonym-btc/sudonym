@@ -27,7 +27,7 @@ class MockReceiveRepository implements ReceiveRepository {
     } else if (type == "onchain") {
       data = "bc1qw69mpwfcmcg4segjdm9qmrwfn0n230tcve8wg6h7fa8r996zm7pqfuk0me";
     }
-    Receiver r = Receiver({
+    Receiver r = Receiver.fromJson({
       "id": 1,
       "potId": 1,
       "type": type,

@@ -18,8 +18,7 @@ class Pot extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
-              create: (_) => getIt.get<PotCubit>()..fetch(entity.get("id")))
+          BlocProvider(create: (_) => getIt.get<PotCubit>()..fetch(entity.id))
         ],
         child: BlocBuilder<PotCubit, PotCubitState>(
             builder: (BuildContext context, state) {

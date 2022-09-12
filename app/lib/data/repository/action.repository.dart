@@ -9,36 +9,55 @@ class ActionRepositoryImpl extends ActionRepository {
   ActionRepositoryImpl(Dio dio) : super(dio);
 
   @override
-  Future<Action> parse(String address) {
-    return dio
-        .get('/action/parse?address=$address')
-        .then((value) => Action(value.data));
+  Future<ActionParseResponse> parse(String address) {
+    return dio.get('/action/parse?address=$address').then((value) {
+      return ActionParseResponse(Action.from(value.data));
+    });
   }
 
   @override
-  Future<Action> getInfo(Action action) {
+  Future<Withdraw> getWithdrawInfo(Withdraw action) {
+    return dio.post('/action/info', data: {"action": action}).then(
+        (value) => Withdraw.fromJson(value.data));
+  }
+
+  @override
+  Future<Payment> getPaymentInfo(Payment action) {
     return dio.post('/action/info',
-        data: {"action": action}).then((value) => Action(value.data));
+        data: {"action": action}).then((value) => Payment.fromJson(value.data));
   }
 
   @override
   Future<Transaction> pay(Payment p) {
     return dio.post('/pay',
-        data: {'action': p}).then((value) => Transaction(value.data));
+        data: {'action': p}).then((value) => Transaction.fromJson(value.data));
   }
 
   @override
-  Future<Action> withdraw(Withdraw w) {
+  Future<Withdraw> withdraw(Withdraw w) {
     return dio.post('/withdraw',
-        data: {'action': w}).then((value) => Action(value.data));
+        data: {'action': w}).then((value) => Withdraw.fromJson(value.data));
   }
 }
 
 abstract class ActionRepository {
   Dio dio;
-  Future<Action> parse(String address);
-  Future<Action> getInfo(Action action);
+  Future<ActionParseResponse> parse(String address);
+  Future<Payment> getPaymentInfo(Payment action);
+  Future<Withdraw> getWithdrawInfo(Withdraw action);
   Future<Transaction> pay(Payment p);
-  Future<Action> withdraw(Withdraw w);
+  Future<Withdraw> withdraw(Withdraw w);
   ActionRepository(this.dio);
+}
+
+class ActionParseResponse {
+  Payment? payment;
+  Withdraw? withdraw;
+  ActionParseResponse(dynamic e) {
+    if (e is Payment) {
+      payment = e;
+    } else if (e is Withdraw) {
+      withdraw = e;
+    }
+  }
 }

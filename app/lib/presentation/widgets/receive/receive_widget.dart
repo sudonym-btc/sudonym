@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:sudonym.models/base-types/types/currency.dart';
+import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
@@ -33,7 +33,7 @@ class ReceiveWidget extends StatelessWidget {
           Widget image = const Center(child: CircularProgressIndicator());
           if (!state.loading) {
             image = QrImage(
-              data: state.data!.get("data"),
+              data: state.data!.data,
               version: QrVersions.auto,
               // embeddedImage: AssetImage('assets/images/my_embedded_image.png'),
               // embeddedImageStyle: QrEmbeddedImageStyle(
@@ -48,7 +48,6 @@ class ReceiveWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(padding),
                 child: CurrencyInput(onChanged: (amount) {
-                  print(amount);
                   BlocProvider.of<ReceiveCubit>(context)
                       .getInvoice(potId, type, amount.amount, amount.currency);
                 }),
@@ -61,7 +60,7 @@ class ReceiveWidget extends StatelessWidget {
                       onPressed: state.loading
                           ? null
                           : () {
-                              FlutterClipboard.copy(state.data!.get("data"))
+                              FlutterClipboard.copy(state.data!.data)
                                   .then((value) {
                                 const snackBar = SnackBar(
                                   content: Text('Copied to Clipboard'),

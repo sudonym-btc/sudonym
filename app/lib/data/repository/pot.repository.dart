@@ -23,5 +23,5 @@ class PotRepositoryProps {
   @override
   String get endpoint => "pot";
   @override
-  Function converter = (e) => Pot(e);
+  Function converter = (e) => Pot.fromJson(e);
 }

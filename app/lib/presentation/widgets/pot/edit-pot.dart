@@ -18,8 +18,7 @@ class EditPot extends StatelessWidget {
             bottom: false,
             child: Scaffold(
                 appBar: AppBar(
-                  title: Text(
-                      (entity?.get("id") == null ? "Create" : "Edit") + " Pot"),
+                  title: Text("${entity?.id == null ? "Create" : "Edit"} Pot"),
                 ),
                 body: Padding(
                     padding: const EdgeInsets.all(padding),
@@ -49,7 +48,7 @@ class EditPotFormState extends State<EditPotForm> {
   @override
   Widget build(BuildContext context) {
     return CustomForm(
-        entity: widget.entity ?? Pot({}),
+        entity: widget.entity ?? Pot.fromJson({}),
         onSave: widget.onSave,
         cubit: getIt<PotCubit>(),
         children: [
@@ -58,7 +57,7 @@ class EditPotFormState extends State<EditPotForm> {
             decoration: const InputDecoration(
               labelText: 'Pot name',
             ),
-            initialValue: widget.entity!.get("name"),
+            initialValue: widget.entity!.name,
           ),
           FormBuilderDropdown(
             name: 'currency',

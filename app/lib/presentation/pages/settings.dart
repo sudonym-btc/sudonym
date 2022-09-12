@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
@@ -31,8 +30,7 @@ class SettingsPage extends StatelessWidget {
                     children: [
                       FormBuilderTextField(
                         name: 'lightningAddress',
-                        initialValue:
-                            getIt<AuthCubit>().user!.get("lightningAddress"),
+                        initialValue: getIt<AuthCubit>().user!.lightningAddress,
                         decoration: InputDecoration(
                             hintText: 'e.g. satoshi',
                             labelText:
@@ -52,7 +50,7 @@ class SettingsPage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => EditPot(
-                                            entity: Pot({
+                                            entity: Pot.fromJson({
                                           "currency": "BTC",
                                           "spendableBalance": 0,
                                           "balance": 0

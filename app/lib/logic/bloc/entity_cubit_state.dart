@@ -24,7 +24,7 @@ abstract class EntityCubit<StateType, EntityType extends BaseClass>
     if (!isClosed) {
       emit(x);
       updater = repository.updated.stream.listen((event) {
-        if (event.get("id") == id) {
+        if ((event as dynamic).id == id) {
           emit(stateClass(entity: event, loading: false));
         }
       });
@@ -32,7 +32,7 @@ abstract class EntityCubit<StateType, EntityType extends BaseClass>
   }
 
   createOrUpdate(EntityType params) {
-    if (params.get("id") != null) {
+    if ((params as dynamic).id != null) {
       return update(params);
     }
     return create(params);

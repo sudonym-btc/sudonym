@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 
-class List extends StatefulWidget {
+class ListWidget extends StatefulWidget {
   final String emptyText;
   final ListCubit list;
-  final Function builder;
+  final Widget Function(dynamic el) builder;
 
-  const List(
+  const ListWidget(
       {required this.emptyText,
       required this.list,
       required this.builder,
@@ -15,17 +15,16 @@ class List extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ListState();
+  State<StatefulWidget> createState() => _ListWidgetState();
 }
 
-class _ListState extends State<List> {
+class _ListWidgetState extends State<ListWidget> {
   final ScrollController controller = ScrollController();
 
   @override
   void initState() {
     controller.addListener(() {
       if (controller.position.pixels >= controller.position.maxScrollExtent) {
-        print("Scroller triggering next");
         widget.list.loadNext();
       }
     });
@@ -45,16 +44,14 @@ class _ListState extends State<List> {
         providers: [BlocProvider(create: (_) => widget.list)],
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {
-            var children = <Widget>[];
-            state.data.forEach((el) {
-              children.add(widget.builder(el));
-            });
+            List<Widget> children =
+                state.data.map<Widget>((e) => widget.builder(e)).toList();
             if (state.loading) {
-              children.add(Center(
-                  child: Container(
+              children.add(const Center(
+                  child: SizedBox(
                       width: 20,
                       height: 20,
-                      child: const CircularProgressIndicator())));
+                      child: CircularProgressIndicator())));
             } else {
               if (state.data.isEmpty) {
                 children.add(Text(widget.emptyText));
@@ -62,8 +59,8 @@ class _ListState extends State<List> {
             }
 
             return ListView(
-              children: children,
               controller: controller,
+              children: children,
             );
           },
         ));

@@ -17,4 +17,13 @@ export class PaymentRequest {
             json["metadata"]
         );
     }
+    toJson() {
+        return {
+            tag: this.tag,
+            callback: this.callback,
+            maxSendable: this.maxSendable,
+            minSendable: this.minSendable,
+            metadata: this.metadata
+        };
+    }
 }

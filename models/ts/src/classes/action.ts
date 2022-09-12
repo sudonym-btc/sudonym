@@ -32,4 +32,16 @@ export class Action extends ActionType {
         if (json["type"] == "pay") return Payment.fromJson(json);
         return Withdraw.fromJson(json);
     }
+
+    toJson() {
+        return {
+            type: this.type,
+            originalAddress: this.originalAddress,
+            isLnUrl: this.isLnUrl,
+            isLnAddress: this.isLnAddress,
+            isBolt11: this.isBolt11,
+            isBolt12: this.isBolt12,
+            isOnChain: this.isOnChain,
+        }
+    }
 }
