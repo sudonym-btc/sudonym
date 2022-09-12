@@ -6,7 +6,7 @@ const buttonRadius = 44 / 2;
 //colors
 const textColor = Colors.black;
 const textColorLight = Colors.black;
-const primary = Colors.blue;
+const primary = Colors.indigo;
 const successColor = Color.fromARGB(194, 20, 116, 46);
 const errorColor = Color.fromARGB(194, 206, 0, 0);
 const greyTint = Color.fromARGB(100, 94, 94, 94);

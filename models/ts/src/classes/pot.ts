@@ -3,11 +3,11 @@ import { BaseClass } from "./base-class";
 export class Pot extends BaseClass {
 
     constructor(
-        public id: number,
-        public name: string,
-        public currency: string,
-        public balance: number,
-        public spendableBalance: number
+        public id: number | null,
+        public name: string = "",
+        public currency: string = "BTC",
+        public balance: number = 0,
+        public spendableBalance: number = 0
     ) {
         super();
     }

@@ -1,12 +1,16 @@
 import "base-class.dart" show BaseClass;
 
 class Pot extends BaseClass {
-  num id;
+  dynamic /* num | null */ id;
   String name;
   String currency;
   num balance;
   num spendableBalance;
-  Pot(this.id, this.name, this.currency, this.balance, this.spendableBalance)
+  Pot(this.id,
+      [this.name = "",
+      this.currency = "BTC",
+      this.balance = 0,
+      this.spendableBalance = 0])
       : super() {
     /* super call moved to initializer */;
   }

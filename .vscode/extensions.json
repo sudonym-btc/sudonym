@@ -13,6 +13,8 @@
         "mtxr.sqltools-driver-sqlite",
         "ms-kubernetes-tools.vscode-kubernetes-tools",
         "davidanson.vscode-markdownlint",
-        "foxundermoon.shell-format"
+        "foxundermoon.shell-format",
+        "eamodio.gitlens",
+        "GitHub.vscode-pull-request-github"
     ]
 }

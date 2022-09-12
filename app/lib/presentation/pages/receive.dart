@@ -31,30 +31,23 @@ class ReceivePage extends StatelessWidget {
                     title: Text(AppLocalizations.of(context)!.receive),
                     bottom: const TabBar(
                       tabs: [
+                        Tab(icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
+                        Tab(icon: FaIcon(FontAwesomeIcons.link, size: 12)),
                         Tab(
-                            text: 'Bolt 11',
                             icon: FaIcon(
-                              FontAwesomeIcons.bolt,
-                              size: 12,
-                            )),
-                        Tab(
-                            text: 'Bolt 12',
-                            icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
-                        Tab(
-                            text: 'LnUrl',
-                            icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
-                        Tab(
-                            text: 'Onchain',
-                            icon: FaIcon(FontAwesomeIcons.link, size: 12)),
+                          FontAwesomeIcons.bolt,
+                          size: 12,
+                        )),
+                        Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
                       ],
                     ),
                   ),
                   body: TabBarView(
                     children: [
-                      ReceiveBolt11(potId: data.potId),
-                      ReceiveBolt12(potId: data.potId),
                       ReceiveLnUrl(potId: data.potId),
                       ReceiveOnchain(potId: data.potId),
+                      ReceiveBolt11(potId: data.potId),
+                      ReceiveBolt12(potId: data.potId),
                     ],
                   ),
                 ))));

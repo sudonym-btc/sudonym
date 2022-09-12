@@ -41,7 +41,7 @@ class MockActionRepository implements ActionRepository {
       case 'lnurl':
         var response = await fetchRemoteLnUrl(trimmedAddress);
         return Action.from({
-          'type': response["data"]["tag"].replace("Request", ""),
+          'type': response["data"]["tag"].replaceAll("Request", ""),
           'originalAddress': trimmedAddress,
           'isLnUrl': true,
           'remoteResponse': response

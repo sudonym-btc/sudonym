@@ -10,4 +10,4 @@ export const factory = Factory.Sync.makeFactory<RecursivePartial<Pot>>({
     balance: Factory.each(i => Math.random() * 10),
     spendableBalance: Factory.each(i => Math.random() * 10)
 });
-export const mocks = factory.buildList(20);
+export const mocks = factory.buildList(3);

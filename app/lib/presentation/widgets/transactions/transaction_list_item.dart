@@ -48,7 +48,7 @@ class TransactionListItem extends StatelessWidget {
                               fontSize: 12,
                               color: transaction.outgoing
                                   ? Theme.of(context).errorColor
-                                  : Theme.of(context).primaryColorDark),
+                                  : Theme.of(context).primaryColor),
                         )),
                     Expanded(
                         child: Column(

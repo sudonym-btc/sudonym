@@ -97,6 +97,7 @@ class AddPotSlide extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => EditPot(
                               entity: models.Pot.fromJson({
+                            "name": "",
                             "currency": "BTC",
                             "spendableBalance": 0,
                             "balance": 0

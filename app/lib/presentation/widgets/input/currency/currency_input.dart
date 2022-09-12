@@ -41,6 +41,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
   num altValue = 0;
   String currCurrency = "USD";
   String altCurrency = "BTC";
+  bool altValueLoading = false;
 
   @override
   void initState() {
@@ -48,9 +49,16 @@ class _CurrencyInputState extends State<CurrencyInput> {
     _controller.addListener(() async {
       widget.onChanged!(
           CurrencyInputOutput(_controller.numberValue, currCurrency));
+      setState(() {
+        altValueLoading = true;
+      });
       altValue = (await getIt<CurrencyRepository>().getRate(
               currCurrency, altCurrency, _controller.numberValue, null))
           .amount;
+      setState(() {
+        altValue = altValue;
+        altValueLoading = false;
+      });
     });
   }
 
@@ -75,7 +83,9 @@ class _CurrencyInputState extends State<CurrencyInput> {
           decoration: InputDecoration(
               prefixText: "\$",
               labelText: AppLocalizations.of(context)!.amount,
-              helperText: FormatCurrency().format(altCurrency, altValue)),
+              helperText: altValueLoading
+                  ? '...'
+                  : FormatCurrency().format(altCurrency, altValue)),
           controller: _controller,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           keyboardType: TextInputType.number,

@@ -51,6 +51,7 @@ class SettingsPage extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) => EditPot(
                                             entity: Pot.fromJson({
+                                          "name": "",
                                           "currency": "BTC",
                                           "spendableBalance": 0,
                                           "balance": 0

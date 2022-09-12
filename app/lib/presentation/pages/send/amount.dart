@@ -25,7 +25,6 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
   @override
   Widget build(BuildContext context) {
     CurrencyInput currencyInput = CurrencyInput(onChanged: (val) {
-      loggy.debug(val);
       widget.payment.amount = val.amount;
       widget.payment.currency = val.currency;
     });

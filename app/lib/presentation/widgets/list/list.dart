@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sudonym/constants.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 
 class ListWidget extends StatefulWidget {
@@ -47,11 +48,14 @@ class _ListWidgetState extends State<ListWidget> {
             List<Widget> children =
                 state.data.map<Widget>((e) => widget.builder(e)).toList();
             if (state.loading) {
-              children.add(const Center(
-                  child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator())));
+              children.add(Center(
+                  child: Column(children: const [
+                SizedBox(
+                  height: padding * 2,
+                ),
+                SizedBox(
+                    width: 20, height: 20, child: CircularProgressIndicator())
+              ])));
             } else {
               if (state.data.isEmpty) {
                 children.add(Text(widget.emptyText));

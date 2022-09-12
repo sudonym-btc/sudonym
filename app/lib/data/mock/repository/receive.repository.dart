@@ -32,12 +32,11 @@ class MockReceiveRepository implements ReceiveRepository {
       "potId": 1,
       "type": type,
       "amount": amount,
-      "currency": currency,
+      "amountCurrency": currency,
       "data": data,
-      "createdAt": DateTime.now()
+      "createdAt": DateTime.now().toString()
     });
     receivers.add(r);
-    print(receivers);
     return r;
   }
 

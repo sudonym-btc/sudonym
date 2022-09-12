@@ -56,9 +56,10 @@ class _CustomFormState extends State<CustomForm> {
                   if (_formKey.currentState!.validate()) {
                     try {
                       final formData = _formKey.currentState?.value;
-                      await widget.cubit.createOrUpdate(widget.cubit.repository
-                          .converter(
-                              {...widget.entity.toJson(), ...formData!}));
+                      Map<String, dynamic> d =
+                          ({...widget.entity.toJson(), ...formData!});
+                      await widget.cubit
+                          .createOrUpdate(widget.cubit.repository.converter(d));
                       if (widget.onSave != null) widget.onSave!();
                     } catch (e) {
                       rethrow;

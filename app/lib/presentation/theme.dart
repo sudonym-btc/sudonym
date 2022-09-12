@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 ThemeData themeData = ThemeData(
-    tabBarTheme: const TabBarTheme(labelColor: textColor),
+    tabBarTheme: const TabBarTheme(
+      labelColor: textColor,
+      indicator: BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(color: primary, width: 2))),
+    ),
     appBarTheme: const AppBarTheme(
         foregroundColor: textColor,
         toolbarTextStyle: TextStyle(color: textColor),
@@ -15,6 +20,7 @@ ThemeData themeData = ThemeData(
         toolbarHeight: 60,
         elevation: 0),
     scaffoldBackgroundColor: Colors.white,
+    progressIndicatorTheme: const ProgressIndicatorThemeData(color: primary),
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
             foregroundColor: MaterialStateProperty.resolveWith<Color?>((s) {
@@ -30,8 +36,15 @@ ThemeData themeData = ThemeData(
               return primary; // Enabled button color
             }),
             shadowColor: MaterialStateProperty.all<Color>(Colors.transparent))),
-    fontFamily: 'Satoshi',
+    // fontFamily: 'Satoshi',
     backgroundColor: Colors.white,
+    primaryColor: primary,
+    inputDecorationTheme: const InputDecorationTheme(
+        floatingLabelStyle: TextStyle(color: primary),
+        focusedBorder: UnderlineInputBorder(
+          borderSide:
+              BorderSide(style: BorderStyle.solid, width: 2, color: primary),
+        )),
     textTheme: const TextTheme(
         subtitle1: TextStyle(),
         headlineLarge: TextStyle(

@@ -29,3 +29,9 @@ mixin WebsocketLogger implements LoggyType {
   Loggy<WebsocketLogger> get loggy =>
       Loggy<WebsocketLogger>('Websocket Logger - $runtimeType');
 }
+
+mixin NotificationLogger implements LoggyType {
+  @override
+  Loggy<NotificationLogger> get loggy =>
+      Loggy<NotificationLogger>('Notification Logger - $runtimeType');
+}

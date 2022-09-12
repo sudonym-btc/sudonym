@@ -53,7 +53,7 @@ class _SendPageState extends State<SendPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const QRPage()));
+                                builder: (context) => QRPage(widget.potId)));
                       },
                       icon: const FaIcon(FontAwesomeIcons.camera))
                 ],
@@ -103,7 +103,7 @@ class _InvoiceInputState extends State<_InvoiceInput> {
   }
 
   void _onFocusChange() {
-    debugPrint("Focus: ${_focus.hasFocus.toString()}");
+    // debugPrint("Focus: ${_focus.hasFocus.toString()}");
   }
 
   @override
