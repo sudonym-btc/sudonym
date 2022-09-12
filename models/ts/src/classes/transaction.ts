@@ -1,8 +1,8 @@
-import { BaseClass } from "./base-class";
+import { BaseClass } from './base-class';
 
 export class Transaction extends BaseClass {
 
-    constructor(
+	constructor(
         public id: number,
         public txid: string | null,
         public potId: number,
@@ -16,43 +16,43 @@ export class Transaction extends BaseClass {
         public status: boolean | null,
         public currencyCode: string,
         public createdAt: Date
-    ) {
-        super();
-    }
+	) {
+		super();
+	}
 
-    static fromJson(json: Object): Transaction {
-        return new Transaction(
-            json["id"],
-            json["txid"],
-            json["potId"],
-            json["outgoing"],
-            json["type"],
-            json["originalAddress"],
-            json["address"],
-            json["description"],
-            json["transactionId"],
-            json["amount"],
-            json["status"],
-            json["currencyCode"],
-            json["createdAt"]
-        );
-    }
+	static fromJson(json: Object): Transaction {
+		return new Transaction(
+			json['id'],
+			json['txid'],
+			json['potId'],
+			json['outgoing'],
+			json['type'],
+			json['originalAddress'],
+			json['address'],
+			json['description'],
+			json['transactionId'],
+			json['amount'],
+			json['status'],
+			json['currencyCode'],
+			json['createdAt']
+		);
+	}
 
-    toJson() {
-        return {
-            id: this.id,
-            txid: this.txid,
-            potId: this.potId,
-            outgoing: this.outgoing,
-            type :this.type,
-            originalAddress: this.originalAddress,
-            address: this.address,
-            description:this.description,
-            transactionId: this.transactionId,
-            amount: this.amount,
-            status: this.status,
-            currencyCode: this.currencyCode,
-            createdAt: this.createdAt
-        }
-    }
+	toJson() {
+		return {
+			id: this.id,
+			txid: this.txid,
+			potId: this.potId,
+			outgoing: this.outgoing,
+			type :this.type,
+			originalAddress: this.originalAddress,
+			address: this.address,
+			description:this.description,
+			transactionId: this.transactionId,
+			amount: this.amount,
+			status: this.status,
+			currencyCode: this.currencyCode,
+			createdAt: this.createdAt
+		};
+	}
 }

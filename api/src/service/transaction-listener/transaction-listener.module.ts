@@ -8,9 +8,9 @@ import { LightningEvents } from './lightning-events';
 import { LightningListener } from './lightning-listener';
 
 @Module({
-    imports: [LightningNodeModule, TransactionModule, ReceiveModule],
-    controllers: [],
-    providers: [LightningListener, BitcoinListener, LightningEvents, BitcoinEvents],
-    exports: [],
+	imports: [LightningNodeModule, TransactionModule, ReceiveModule],
+	controllers: [],
+	providers: [LightningListener, BitcoinListener, LightningEvents, BitcoinEvents],
+	exports: [],
 })
 export class TransactionListenerModule { }

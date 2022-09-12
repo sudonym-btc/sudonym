@@ -1,10 +1,10 @@
-import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
-import { Op, Sequelize } from "sequelize";
-import { PotUser } from "src/module/pot-user/pot-user.model";
-import { Pot } from "src/module/pot/pot.model";
-import { User } from "src/module/user/user.model";
+import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
+import { Op, Sequelize } from 'sequelize';
+import { PotUser } from 'src/module/pot-user/pot-user.model';
+import { Pot } from 'src/module/pot/pot.model';
+import { User } from 'src/module/user/user.model';
 
-import { LnUrlService } from "./lnurl.service";
+import { LnUrlService } from './lnurl.service';
 
 @Controller('')
 export class LightningAddressController {
@@ -12,34 +12,34 @@ export class LightningAddressController {
 
     @Get('.well-known/lnurlp/:user')
     async lightningAddress(@Param('user') lightningAddress) {
-        let indexOfLastStop = lightningAddress.lastIndexOf(".");
-        indexOfLastStop = indexOfLastStop >= 0 ? indexOfLastStop : lightningAddress.length
-        const user = await User.findOne({
-            where: {
-                lightningAddress: lightningAddress.substring(0, indexOfLastStop)
-            }
-        });
+    	let indexOfLastStop = lightningAddress.lastIndexOf('.');
+    	indexOfLastStop = indexOfLastStop >= 0 ? indexOfLastStop : lightningAddress.length;
+    	const user = await User.findOne({
+    		where: {
+    			lightningAddress: lightningAddress.substring(0, indexOfLastStop)
+    		}
+    	});
 
-        let potName = null;
-        if (indexOfLastStop != lightningAddress.length) {
-            potName = lightningAddress.substring(indexOfLastStop + 1, lightningAddress.length);
-        }
-        const pot = await Pot.findOne({
-            where: {
-                id: {
-                    [Op.in]: (await PotUser.findAll({
-                        where: {
-                            userId: user.id
-                        }
-                    })).map(i => i.potId)
-                }
-            },
-            order: potName ? [[Sequelize.literal(`
+    	let potName = null;
+    	if (indexOfLastStop != lightningAddress.length) {
+    		potName = lightningAddress.substring(indexOfLastStop + 1, lightningAddress.length);
+    	}
+    	const pot = await Pot.findOne({
+    		where: {
+    			id: {
+    				[Op.in]: (await PotUser.findAll({
+    					where: {
+    						userId: user.id
+    					}
+    				})).map(i => i.potId)
+    			}
+    		},
+    		order: potName ? [[Sequelize.literal(`
                 name="${potName}"`
-            ), "DESC"]] : []
-        });
+    		), 'DESC']] : []
+    	});
 
-        return (await this.lnUrlService.createPayRequest(pot.id)).params;
+    	return (await this.lnUrlService.createPayRequest(pot.id)).params;
     }
 
 }

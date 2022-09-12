@@ -5,12 +5,12 @@ import { Pot } from './pot.model';
 import { PotService } from './pot.service';
 
 @Module({
-  imports: [SharedModule],
-  controllers: [PotController],
-  providers: [PotService, {
-    provide: Pot,
-    useValue: Pot,
-  },],
-  exports: [PotService],
+	imports: [SharedModule],
+	controllers: [PotController],
+	providers: [PotService, {
+		provide: Pot,
+		useValue: Pot,
+	},],
+	exports: [PotService],
 })
 export class PotModule { }

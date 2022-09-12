@@ -6,10 +6,10 @@ import { LnUrlHandlerController } from './lnurl-handler.controller';
 import { LnUrlHandlerService } from './lnurl-handler.service';
 
 @Module({
-  imports: [SharedModule, ReceiveModule, LnUrlModule],
-  controllers: [LnUrlHandlerController],
-  exports: [LnUrlHandlerService],
-  providers: [LnUrlHandlerService],
+	imports: [SharedModule, ReceiveModule, LnUrlModule],
+	controllers: [LnUrlHandlerController],
+	exports: [LnUrlHandlerService],
+	providers: [LnUrlHandlerService],
 })
 export class LnUrlHandlerModule {
 

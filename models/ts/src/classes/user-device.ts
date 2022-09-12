@@ -1,22 +1,22 @@
-import { BaseClass } from "./base-class";
+import { BaseClass } from './base-class';
 
 export class UserDevice extends BaseClass {
 
-    constructor(
+	constructor(
         public uid: string,
         public token: string
-    ) {
-        super();
-    }
+	) {
+		super();
+	}
 
-    static fromJson(json: Object): UserDevice {
-        return new UserDevice(json["uid"], json["token"]);
-    }
+	static fromJson(json: Object): UserDevice {
+		return new UserDevice(json['uid'], json['token']);
+	}
 
-    toJson() {
-        return {
-            uid: this.uid,
-            token: this.token,
-        }
-    }
+	toJson() {
+		return {
+			uid: this.uid,
+			token: this.token,
+		};
+	}
 }

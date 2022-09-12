@@ -5,12 +5,12 @@ import { User } from './user.model';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [SharedModule],
-  controllers: [UserController],
-  providers: [UserService, {
-    provide: User,
-    useValue: User,
-  },],
-  exports: [UserService],
+	imports: [SharedModule],
+	controllers: [UserController],
+	providers: [UserService, {
+		provide: User,
+		useValue: User,
+	},],
+	exports: [UserService],
 })
 export class UserModule { }

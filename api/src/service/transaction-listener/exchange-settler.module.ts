@@ -5,9 +5,9 @@ import { TransactionModule } from 'src/module/transaction/transaction.module';
 import { ExchangeSettler } from './exchange-settler';
 
 @Module({
-    imports: [TransactionModule, PotModule, SettlementModule],
-    controllers: [],
-    providers: [ExchangeSettler],
-    exports: [],
+	imports: [TransactionModule, PotModule, SettlementModule],
+	controllers: [],
+	providers: [ExchangeSettler],
+	exports: [],
 })
 export class ExchangeSettlerModule { }

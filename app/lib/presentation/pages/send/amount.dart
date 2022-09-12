@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/config/repository-logger.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';

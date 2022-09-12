@@ -1,31 +1,31 @@
-import { BaseClass } from "./base-class";
+import { BaseClass } from './base-class';
 
 export class ContactAddress extends BaseClass {
 
-    constructor(
+	constructor(
         public contactId: number,
         public addressType: string,
         public address: string,
         public name: string
-    ) {
-        super();
-    }
+	) {
+		super();
+	}
 
-    static fromJson(json: Object): ContactAddress {
-        return new ContactAddress(
-            json["contactId"],
-            json["addressType"],
-            json["address"],
-            json["name"],
-        );
-    }
+	static fromJson(json: Object): ContactAddress {
+		return new ContactAddress(
+			json['contactId'],
+			json['addressType'],
+			json['address'],
+			json['name'],
+		);
+	}
 
-    toJson() {
-        return {
-            contactId: this.contactId,
-            addressType: this.addressType,
-            address: this.address,
-            name: this.name
-        }
-    }
+	toJson() {
+		return {
+			contactId: this.contactId,
+			addressType: this.addressType,
+			address: this.address,
+			name: this.name
+		};
+	}
 }

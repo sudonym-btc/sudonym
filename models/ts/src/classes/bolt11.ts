@@ -1,5 +1,5 @@
 export class Bolt11 {
-    constructor(
+	constructor(
         public millisatoshis: number,
         public network: {
             bech32: string,
@@ -19,45 +19,45 @@ export class Bolt11 {
         public timestamp: number,
         public timestampString: string,
         public wordsTemp: string,
-    ) {
+	) {
 
-    }
+	}
 
-    static fromJson(json: Object): Bolt11 {
-        return new Bolt11(
-            json["millisatoshis"],
-            json["network"],
-            json["payeeNodeKey"],
-            json["paymentRequest"],
-            json["prefix"],
-            json["recoveryFlag"],
-            json["satoshis"],
-            json["signature"],
-            json["tags"],
-            json["timeExpireDate"],
-            json["timeExpireDateString"],
-            json["timestamp"],
-            json["timestampString"],
-            json["wordsTemp"],
-        );
-    }
+	static fromJson(json: Object): Bolt11 {
+		return new Bolt11(
+			json['millisatoshis'],
+			json['network'],
+			json['payeeNodeKey'],
+			json['paymentRequest'],
+			json['prefix'],
+			json['recoveryFlag'],
+			json['satoshis'],
+			json['signature'],
+			json['tags'],
+			json['timeExpireDate'],
+			json['timeExpireDateString'],
+			json['timestamp'],
+			json['timestampString'],
+			json['wordsTemp'],
+		);
+	}
 
-    toJson() {
-        return {
-            millisatoshis: this.millisatoshis,
-            network: this.network,
-            payeeNodeKey: this.payeeNodeKey,
-            paymentRequest: this.paymentRequest,
-            prefix: this.prefix,
-            recoveryFlag:this.recoveryFlag,
-            satoshis:this.satoshis,
-            signature:this.signature,
-            tags: this.tags,
-            timeExpireDate: this.timeExpireDate,
-            timeExpireDateString: this.timeExpireDateString,
-            timestamp: this.timestamp,
-            timestampString: this.timestampString,
-            wordsTemp: this.wordsTemp,
-        };
-    }
+	toJson() {
+		return {
+			millisatoshis: this.millisatoshis,
+			network: this.network,
+			payeeNodeKey: this.payeeNodeKey,
+			paymentRequest: this.paymentRequest,
+			prefix: this.prefix,
+			recoveryFlag:this.recoveryFlag,
+			satoshis:this.satoshis,
+			signature:this.signature,
+			tags: this.tags,
+			timeExpireDate: this.timeExpireDate,
+			timeExpireDateString: this.timeExpireDateString,
+			timestamp: this.timestamp,
+			timestampString: this.timestampString,
+			wordsTemp: this.wordsTemp,
+		};
+	}
 }

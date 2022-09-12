@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym/config/repository-logger.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/repository/crud_repository.dart';
 import 'package:sudonym.models/types/list.dart';
 

@@ -6,7 +6,7 @@ import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/repository/pot.repository.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/widgets/pot/edit-pot.dart';
+import 'package:sudonym/presentation/widgets/pot/edit_pot.dart';
 import 'package:sudonym.models/index.dart' as models;
 import '../../injection.dart';
 import '../widgets/pot/pot.dart';

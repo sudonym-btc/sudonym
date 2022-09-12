@@ -1,9 +1,9 @@
-import { Table, Column, Model, HasMany, CreatedAt, PrimaryKey, Default, AutoIncrement, AllowNull, NotNull } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany, CreatedAt, PrimaryKey, Default, AutoIncrement, AllowNull, NotNull } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 
 @Table({
-  scopes: Transaction.scopes
+	scopes: Transaction.scopes
 })
 export class Transaction extends BaseModel implements Models.Transaction {
 

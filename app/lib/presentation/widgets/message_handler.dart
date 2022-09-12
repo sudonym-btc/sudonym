@@ -3,14 +3,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/config/repository-logger.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/repository/user-device.repository.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
 
 class MessageHandler extends StatefulWidget {
-  Widget child;
-  MessageHandler({required this.child, Key? key}) : super(key: key);
+  final Widget child;
+  const MessageHandler({required this.child, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _MessageHandlerState();
@@ -64,10 +64,10 @@ class _MessageHandlerState extends State<MessageHandler>
 
 // getInitialMessage(): If the application is opened from a terminated state a Future containing a RemoteMessage will be returned. Once consumed, the RemoteMessage will be removed
     FirebaseMessaging.onMessage.listen((event) {
-      print("Notification clicked & app = closed");
+      loggy.debug("Notification clicked & app = closed");
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("Notification clicked & app was in background");
+      loggy.debug("Notification clicked & app was in background");
     });
   }
 

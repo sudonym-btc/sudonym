@@ -1,6 +1,6 @@
-import { Inject } from "@nestjs/common";
-import { ReceiveService } from "src/module/receive/receive.service";
-import { TransactionService } from "src/module/transaction/transaction.service";
+import { Inject } from '@nestjs/common';
+import { ReceiveService } from 'src/module/receive/receive.service';
+import { TransactionService } from 'src/module/transaction/transaction.service';
 
 export abstract class TransactionListener {
     @Inject() receiveService: ReceiveService;
@@ -10,6 +10,6 @@ export abstract class TransactionListener {
         this.listenIncoming();
         this.listenOutgoing();
     }
-    listenIncoming() {}
-    listenOutgoing() {}
+    listenIncoming() { }
+    listenOutgoing() { }
 }

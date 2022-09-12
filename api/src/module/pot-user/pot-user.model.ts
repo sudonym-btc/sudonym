@@ -1,10 +1,10 @@
-import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement, BelongsTo, ForeignKey } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement, BelongsTo, ForeignKey } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from '../pot/pot.model';
 
 @Table({
-    scopes: PotUser.scopes
+	scopes: PotUser.scopes
 })
 export class PotUser extends BaseModel implements Models.PotUser {
     @PrimaryKey

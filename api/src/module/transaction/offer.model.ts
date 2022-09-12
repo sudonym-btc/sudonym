@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, CreatedAt } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany, CreatedAt } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 
 @Table

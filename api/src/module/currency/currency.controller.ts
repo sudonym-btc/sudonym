@@ -8,6 +8,6 @@ export class CurrencyController {
 
     @Get('')
     convert(@Query('fromCurrency') from, @Query('toCurrency') to, @Query('amount') amount, @Query('time') time) {
-        return this.service.convert(from, to, amount, time);
+    	return this.service.convert(from, to, amount, time);
     }
 }

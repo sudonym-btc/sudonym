@@ -6,13 +6,13 @@ import { LnUrl } from './lnurl.model';
 import { LnUrlService } from './lnurl.service';
 
 @Module({
-  imports: [SharedModule],
-  controllers: [LnUrlController, LightningAddressController],
-  exports: [LnUrlService],
-  providers: [{
-    provide: LnUrl,
-    useValue: LnUrl
-  }, LnUrlService],
+	imports: [SharedModule],
+	controllers: [LnUrlController, LightningAddressController],
+	exports: [LnUrlService],
+	providers: [{
+		provide: LnUrl,
+		useValue: LnUrl
+	}, LnUrlService],
 })
 export class LnUrlModule {
 

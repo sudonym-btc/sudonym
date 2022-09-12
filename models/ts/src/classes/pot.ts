@@ -1,34 +1,34 @@
-import { BaseClass } from "./base-class";
+import { BaseClass } from './base-class';
 
 export class Pot extends BaseClass {
 
-    constructor(
+	constructor(
         public id: number | null,
-        public name: string = "",
-        public currency: string = "BTC",
+        public name: string = '',
+        public currency: string = 'BTC',
         public balance: number = 0,
         public spendableBalance: number = 0
-    ) {
-        super();
-    }
+	) {
+		super();
+	}
 
-    static fromJson(json: any): Pot {
-        return new Pot(
-            json["id"],
-            json["name"],
-            json["currency"],
-            json["balance"],
-            json["spendableBalance"]
-        );
-    }
+	static fromJson(json: any): Pot {
+		return new Pot(
+			json['id'],
+			json['name'],
+			json['currency'],
+			json['balance'],
+			json['spendableBalance']
+		);
+	}
 
-    toJson() {
-        return {
-            id: this.id,
-            name: this.name,
-            currency: this.currency,
-            balance: this.balance,
-            spendableBalance: this.spendableBalance
-        };
-    }
+	toJson() {
+		return {
+			id: this.id,
+			name: this.name,
+			currency: this.currency,
+			balance: this.balance,
+			spendableBalance: this.spendableBalance
+		};
+	}
 }

@@ -8,12 +8,12 @@ import { ReceiveService } from './receive.service';
 import { Receiver } from './receiver.model';
 
 @Module({
-  imports: [SharedModule, CurrencyModule, LightningNodeModule, LnUrlModule],
-  controllers: [ReceiveController],
-  providers: [ReceiveService, {
-    provide: Receiver,
-    useValue: Receiver,
-  }],
-  exports: [ReceiveService],
+	imports: [SharedModule, CurrencyModule, LightningNodeModule, LnUrlModule],
+	controllers: [ReceiveController],
+	providers: [ReceiveService, {
+		provide: Receiver,
+		useValue: Receiver,
+	}],
+	exports: [ReceiveService],
 })
 export class ReceiveModule { }

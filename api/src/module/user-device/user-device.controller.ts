@@ -5,8 +5,8 @@ import { UserDeviceService } from './user-device.service';
 
 @Controller('userDevice')
 export class UserDeviceController extends BaseController(
-  UserDeviceService,
-  UserDevice
+	UserDeviceService,
+	UserDevice
 ) {
 
 }

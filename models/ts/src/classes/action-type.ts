@@ -1,6 +1,6 @@
 export class ActionType {
 
-    constructor(
+	constructor(
         public type: 'pay' | 'withdraw',
         public originalAddress: string,
         public isLnUrl: boolean | null = false,
@@ -8,5 +8,5 @@ export class ActionType {
         public isBolt11: boolean | null = false,
         public isBolt12: boolean | null = false,
         public isOnChain: boolean | null = false,
-    ) { }
+	) { }
 }

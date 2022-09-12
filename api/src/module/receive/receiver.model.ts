@@ -1,10 +1,10 @@
-import { Table, Column, Model, CreatedAt, PrimaryKey, DataType, AutoIncrement } from 'sequelize-typescript'
+import { Table, Column, Model, CreatedAt, PrimaryKey, DataType, AutoIncrement } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
 import { BaseModel } from '../base.model';
 
 @Table({
-  scopes: Receiver.scopes
+	scopes: Receiver.scopes
 })
 export class Receiver extends BaseModel implements Models.Receiver {
   @PrimaryKey

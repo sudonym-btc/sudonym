@@ -9,7 +9,7 @@ import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/components/form/form.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../widgets/pot/edit-pot.dart';
+import '../widgets/pot/edit_pot.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);

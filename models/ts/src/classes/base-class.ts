@@ -1,11 +1,11 @@
 
 export class BaseClass {
 
-    toJson() {
-        return {};
-    }
+	toJson() {
+		return {};
+	}
 
-    static fromJson(json: any) {
-        return new BaseClass();
-    }
+	static fromJson(json: any) {
+		return new BaseClass();
+	}
 }

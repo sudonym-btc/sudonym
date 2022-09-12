@@ -9,16 +9,16 @@ export class ActionController {
 
   @Get('parse')
   async parse(@Query('address') address) {
-    return this.actionService.parse(address);
+  	return this.actionService.parse(address);
   }
 
   @Post('info')
   async getInfo(@Body('action') action: Action) {
-    return this.actionService.getInfo(Action.from(action));
+  	return this.actionService.getInfo(Action.from(action));
   }
 
   @Post('')
   execute(@Body('action') action: Action) {
-    return this.actionService.execute(Action.from(action));
+  	return this.actionService.execute(Action.from(action));
   } 
 }

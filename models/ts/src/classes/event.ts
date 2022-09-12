@@ -1,21 +1,21 @@
 export class Event {
 
-    constructor(
+	constructor(
         public name: string,
         public data
-    ) { }
+	) { }
 
-    static fromJson(json: Object): Event {
-        return new Event(
-            json["name"],
-            json["data"]
-        );
-    }
+	static fromJson(json: Object): Event {
+		return new Event(
+			json['name'],
+			json['data']
+		);
+	}
 
-    toJson() {
-        return {
-            name: this.name,
-            data: this.data
-        }
-    }
+	toJson() {
+		return {
+			name: this.name,
+			data: this.data
+		};
+	}
 }

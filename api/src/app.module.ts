@@ -18,24 +18,24 @@ import { BalanceUpdaterModule } from './service/balance-updater/balance-updater.
 import { ExchangeSettlerModule } from './service/transaction-listener/exchange-settler.module';
 
 @Module({
-  imports: [
-    TransactionListenerModule,
-    ExchangeSettlerModule,
-    DatabaseModule,
-    CurrencyModule,
-    LightningModule,
-    LnUrlModule,
-    EventsModule,
-    AuthModule, 
-    UserModule,
-    UserDeviceModule,
-    PotModule,
-    ActionModule,
-    BalanceUpdaterModule,
-    ReceiveModule,
-    TransactionModule
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		TransactionListenerModule,
+		ExchangeSettlerModule,
+		DatabaseModule,
+		CurrencyModule,
+		LightningModule,
+		LnUrlModule,
+		EventsModule,
+		AuthModule, 
+		UserModule,
+		UserDeviceModule,
+		PotModule,
+		ActionModule,
+		BalanceUpdaterModule,
+		ReceiveModule,
+		TransactionModule
+	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule { }

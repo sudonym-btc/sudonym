@@ -6,7 +6,7 @@ import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/config/config.dart';
-import 'package:sudonym/config/repository-logger.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
 const List<List<String>> order = [

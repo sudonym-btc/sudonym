@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
-import 'package:sudonym/config/repository-logger.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:sudonym/config/config.dart';
 

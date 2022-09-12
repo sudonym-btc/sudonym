@@ -6,18 +6,18 @@ import * as serviceAccount from '../../service-account.json';
 import { AuthError } from './types/error';
 // Firebase Setup
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as ServiceAccount)
+	credential: admin.credential.cert(serviceAccount as ServiceAccount)
 });
 
 @Injectable()
 export class AuthService {
 
-    async auth(token: string) {
-        if(!token) return null;
-        return await admin.auth().verifyIdToken(token);
-    }
+	async auth(token: string) {
+		if(!token) return null;
+		return await admin.auth().verifyIdToken(token);
+	}
 }
 
 export const hash = (str: string) => {
-    return crypto.createHash('md5').update(str).digest('hex');
-}
+	return crypto.createHash('md5').update(str).digest('hex');
+};

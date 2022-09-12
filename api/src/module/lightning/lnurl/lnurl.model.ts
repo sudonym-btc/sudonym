@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement, Sequelize } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement, Sequelize } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { BaseModel } from '../../../module/base.model';
 

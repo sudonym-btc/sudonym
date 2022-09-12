@@ -6,6 +6,6 @@ import { Callback } from '../../helper/callback';
 export class EventsService {
     onEvent = new Callback();
     trigger(e: Event) {
-        this.onEvent.execute(e);
+    	this.onEvent.execute(e);
     }
 }

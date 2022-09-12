@@ -5,7 +5,7 @@ import { TransactionService } from './transaction.service';
 
 @Controller('transaction')
 export class TransactionController extends BaseController(
-  TransactionService,
-  Transaction
+	TransactionService,
+	Transaction
 ) {
 }

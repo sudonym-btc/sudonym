@@ -5,8 +5,8 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController extends BaseController(
-  UserService,
-  User
+	UserService,
+	User
 ) {
 
 }
