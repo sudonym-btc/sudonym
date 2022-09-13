@@ -13,12 +13,15 @@ abstract class Record {
     if (record.typeNameFormat == NdefTypeNameFormat.nfcWellknown &&
         record.type.length == 1 &&
         record.type.first == 0x55) return WellknownUriRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.media)
+    if (record.typeNameFormat == NdefTypeNameFormat.media) {
       return MimeRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.absoluteUri)
+    }
+    if (record.typeNameFormat == NdefTypeNameFormat.absoluteUri) {
       return AbsoluteUriRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.nfcExternal)
+    }
+    if (record.typeNameFormat == NdefTypeNameFormat.nfcExternal) {
       return ExternalRecord.fromNdef(record);
+    }
     return UnsupportedRecord(record);
   }
 }

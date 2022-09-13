@@ -27,8 +27,8 @@ class TransactionPage extends StatelessWidget {
             builder: ((context, state) {
           if (state.entity == null) {
             return StatusPage(
-                title: "",
-                subtitle: "",
+                title: '',
+                subtitle: '',
                 content: const Center(
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
@@ -81,9 +81,9 @@ class _OutgoingFailed extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: "Payment failed",
+        title: 'Payment failed',
         subtitle:
-            "Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.originalAddress}",
+            'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.originalAddress}',
         color: Theme.of(context).errorColor);
   }
 }
@@ -111,7 +111,7 @@ class _IncomingPending extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentIncoming,
         subtitle:
-            "Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} is currently in transit",
+            'Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} is currently in transit',
         content:
             const Center(child: CircularProgressIndicator(color: Colors.white)),
         color: Colors.indigo.shade800);
@@ -127,7 +127,7 @@ class _IncomingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
         subtitle:
-            "Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} received",
+            'Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} received',
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -140,9 +140,9 @@ class _IncomingFailed extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: "Payment failed",
+        title: 'Payment failed',
         subtitle:
-            "Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.address}",
+            'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.address}',
         color: Theme.of(context).errorColor);
   }
 }

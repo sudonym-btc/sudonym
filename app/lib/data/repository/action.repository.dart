@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
@@ -17,14 +19,14 @@ class ActionRepositoryImpl extends ActionRepository {
 
   @override
   Future<Withdraw> getWithdrawInfo(Withdraw action) {
-    return dio.post('/action/info', data: {"action": action}).then(
+    return dio.post('/action/info', data: {'action': action}).then(
         (value) => Withdraw.fromJson(value.data));
   }
 
   @override
   Future<Payment> getPaymentInfo(Payment action) {
     return dio.post('/action/info',
-        data: {"action": action}).then((value) => Payment.fromJson(value.data));
+        data: {'action': action}).then((value) => Payment.fromJson(value.data));
   }
 
   @override

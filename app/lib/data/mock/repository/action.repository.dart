@@ -41,7 +41,7 @@ class MockActionRepository implements ActionRepository {
       case 'lnurl':
         var response = await fetchRemoteLnUrl(trimmedAddress);
         return Action.from({
-          'type': response["data"]["tag"].replaceAll("Request", ""),
+          'type': response['data']['tag'].replaceAll('Request', ''),
           'originalAddress': trimmedAddress,
           'isLnUrl': true,
           'remoteResponse': response
@@ -68,9 +68,9 @@ class MockActionRepository implements ActionRepository {
     await Future.delayed(requestDelay);
     return Payment.fromJson({
       ...action.toJson(),
-      "address": 'lnbc123423432',
-      "fee": 1000 / MSATOSHIS,
-      "feeCurrency": "BTC"
+      'address': 'lnbc123423432',
+      'fee': 1000 / MSATOSHIS,
+      'feeCurrency': 'BTC'
     });
   }
 
@@ -78,9 +78,9 @@ class MockActionRepository implements ActionRepository {
   getWithdrawInfo(Withdraw action) async {
     return Withdraw.fromJson({
       ...action.toJson(),
-      "address": 'lnbc123423432',
-      "fee": 1000 / MSATOSHIS,
-      "feeCurrency": "BTC"
+      'address': 'lnbc123423432',
+      'fee': 1000 / MSATOSHIS,
+      'feeCurrency': 'BTC'
     });
   }
 
@@ -88,18 +88,18 @@ class MockActionRepository implements ActionRepository {
   pay(Payment p) async {
     await Future.delayed(requestDelay);
     return _transactionRepository.create(Transaction.fromJson({
-      "id": 1,
-      "txid": null,
-      "potId": p.potId,
-      "outgoing": true,
-      "type": "lnurl",
-      "address": p.originalAddress,
-      "originalAddress": p.originalAddress,
-      "description": "",
-      "amount": p.amount ?? 100,
-      "status": null,
-      "currencyCode": "BTC",
-      "createdAt": DateTime.now().toString()
+      'id': 1,
+      'txid': null,
+      'potId': p.potId,
+      'outgoing': true,
+      'type': 'lnurl',
+      'address': p.originalAddress,
+      'originalAddress': p.originalAddress,
+      'description': '',
+      'amount': p.amount ?? 100,
+      'status': null,
+      'currencyCode': 'BTC',
+      'createdAt': DateTime.now().toString()
     }));
   }
 
@@ -107,18 +107,18 @@ class MockActionRepository implements ActionRepository {
   withdraw(Withdraw p) async {
     await Future.delayed(requestDelay);
     return Action.from({
-      "id": 1,
-      "txid": null,
-      "potId": p.potId,
-      "outgoing": true,
-      "type": "lnurl",
-      "address": p.originalAddress,
-      "originalAddress": p.originalAddress,
-      "description": "",
-      "amount": p.amount ?? 100,
-      "status": null,
-      "currencyCode": "BTC",
-      "createdAt": DateTime.now().toString()
+      'id': 1,
+      'txid': null,
+      'potId': p.potId,
+      'outgoing': true,
+      'type': 'lnurl',
+      'address': p.originalAddress,
+      'originalAddress': p.originalAddress,
+      'description': '',
+      'amount': p.amount ?? 100,
+      'status': null,
+      'currencyCode': 'BTC',
+      'createdAt': DateTime.now().toString()
     });
   }
 
@@ -127,8 +127,8 @@ class MockActionRepository implements ActionRepository {
 
   fetchBolt11(String invoice) async {
     return ActionRemoteResponse.fromJson({
-      "success": true,
-      "data": {
+      'success': true,
+      'data': {
         'currency': 'bc',
         'created_at': 1656710563,
         'expiry': 86400,
@@ -151,8 +151,8 @@ class MockActionRepository implements ActionRepository {
 
   fetchRemoteLightningAddress(String internetIdentifier) async {
     return ActionRemoteResponse.fromJson({
-      "success": true,
-      "data": {
+      'success': true,
+      'data': {
         'status': 'OK',
         'callback':
             'https://coincorner.io/lnurl/payreq/2b8113a7-63e8-4bcd-ab9d-2908b1379652',
@@ -199,6 +199,6 @@ class MockActionRepository implements ActionRepository {
     // Parse LNURL or BOLT11
     var isLnUrl = address.startsWith(LNURL_SCHEME);
 
-    return [isLnUrl ? "lnurl" : "bolt11", address];
+    return [isLnUrl ? 'lnurl' : 'bolt11', address];
   }
 }

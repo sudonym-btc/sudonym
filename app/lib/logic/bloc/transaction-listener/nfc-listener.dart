@@ -1,11 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:injectable/injectable.dart';
 import 'package:nfc_manager/nfc_manager.dart';
-import 'package:nfc_manager/platform_tags.dart';
-import 'package:nfc_manager/src/nfc_manager/nfc_ndef.dart';
 import 'package:sudonym/logic/bloc/transaction-listener/ndef-record.dart';
 
 import 'clipboard-listener.dart';

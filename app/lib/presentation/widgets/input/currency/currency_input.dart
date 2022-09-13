@@ -9,7 +9,7 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-const List<String> defaultCurrencies = ["USD", "BTC"];
+const List<String> defaultCurrencies = ['USD', 'BTC'];
 
 class CurrencyInput extends StatefulWidget {
   final Function(CurrencyInputOutput)? onChanged;
@@ -39,8 +39,8 @@ class _CurrencyInputState extends State<CurrencyInput> {
   final MoneyMaskedTextController _controller = MoneyMaskedTextController(
       initialValue: 0.0, decimalSeparator: '.', thousandSeparator: ',');
   num altValue = 0;
-  String currCurrency = "USD";
-  String altCurrency = "BTC";
+  String currCurrency = 'USD';
+  String altCurrency = 'BTC';
   bool altValueLoading = false;
 
   @override
@@ -81,7 +81,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
       Expanded(
         child: TextField(
           decoration: InputDecoration(
-              prefixText: "\$",
+              prefixText: '\$',
               labelText: AppLocalizations.of(context)!.amount,
               helperText: altValueLoading
                   ? '...'

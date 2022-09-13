@@ -25,7 +25,7 @@ abstract class MockCrudRepository<T extends BaseClass>
     var sorted = availableData.map((dynamic e) => e.id).toList();
     sorted.sort();
     (entity as dynamic).id =
-        isNumType(sorted.last.runtimeType) ? sorted.last + 1 : "random";
+        isNumType(sorted.last.runtimeType) ? sorted.last + 1 : 'random';
     availableData.add(entity);
     created.add(entity);
     return entity;
@@ -54,11 +54,11 @@ abstract class MockCrudRepository<T extends BaseClass>
               if (where[key].runtimeType == int) {
                 return element.toJson()[key] == where[key];
               }
-              if (where[key]["gt"] != null) {
-                return element.toJson()[key] > where[key]["gt"];
+              if (where[key]['gt'] != null) {
+                return element.toJson()[key] > where[key]['gt'];
               }
-              if (where[key]["lt"] != null) {
-                return element.toJson()[key] < where[key]["lt"];
+              if (where[key]['lt'] != null) {
+                return element.toJson()[key] < where[key]['lt'];
               }
               return false;
             });

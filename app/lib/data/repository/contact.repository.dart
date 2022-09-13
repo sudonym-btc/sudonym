@@ -21,7 +21,7 @@ abstract class ContactRepository extends CrudRepository<Contact>
 
 class ContactRepositoryProps {
   @override
-  String endpoint = "contact";
+  String endpoint = 'contact';
   @override
   Function converter = (e) => Contact.fromJson(e);
 }

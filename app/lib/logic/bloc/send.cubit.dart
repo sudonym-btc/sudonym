@@ -38,7 +38,7 @@ class SendCubitState {
   SendCubitState(
       {this.loadingInfo = false,
       this.loadingSend = false,
-      this.transactionData = null,
-      this.infoData = null,
+      this.transactionData,
+      this.infoData,
       this.completed = false});
 }

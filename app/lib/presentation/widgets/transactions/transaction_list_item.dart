@@ -12,17 +12,17 @@ class TransactionListItem extends StatelessWidget {
       : super(key: key);
 
   getTitle() {
-    String networkName = ["lnurl", "bolt11", "bolt12", "lightningaddress"]
+    String networkName = ['lnurl', 'bolt11', 'bolt12', 'lightningaddress']
             .contains(transaction.type)
-        ? "lightning network"
-        : "onchain";
+        ? 'lightning network'
+        : 'onchain';
     return transaction.outgoing
-        ? transaction.address ?? "Spend via $networkName"
-        : "Received $networkName";
+        ? transaction.address ?? 'Spend via $networkName'
+        : 'Received $networkName';
   }
 
   getDescription() {
-    return transaction.description ?? "No description";
+    return transaction.description ?? 'No description';
   }
 
   @override
@@ -41,7 +41,7 @@ class TransactionListItem extends StatelessWidget {
                     SizedBox(
                         width: 75,
                         child: Text(
-                          (transaction.outgoing ? "-" : "") +
+                          (transaction.outgoing ? '- ' : '') +
                               FormatCurrency().format(transaction.currencyCode,
                                   transaction.amount.toDouble()),
                           style: TextStyle(

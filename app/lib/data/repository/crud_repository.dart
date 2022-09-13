@@ -10,11 +10,11 @@ import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/repository/websocket.dart';
 
 const List<List<String>> order = [
-  ["id", "DESC"]
+  ['id', 'DESC']
 ];
 
 abstract class CrudRepository<T extends BaseClass> with RepoLogger {
-  String endpoint = "";
+  String endpoint = '';
   Function converter = <T>(obj) {
     throw Error();
   };
@@ -29,7 +29,7 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   onInit() {
-    loggy.debug("Listening to this stream $endpoint");
+    loggy.debug('Listening to this stream $endpoint');
     websocket.getStream().listen((event) {
       Event e = Event.fromJson(jsonDecode(event));
       if (e.name.split('.')[0] == endpoint.toLowerCase()) {
@@ -44,16 +44,16 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   Future<T> fetch(dynamic id) async {
-    return dio.get("/$endpoint/$id").then((value) {
+    return dio.get('/$endpoint/$id').then((value) {
       return converter(value.data);
     });
   }
 
   Future<ListState<T>> list(
       {Map<String, dynamic>? where, List<List<String>>? order = order}) async {
-    return dio.get("/$endpoint",
-        queryParameters: {"where": where, "order": order}).then((value) {
-      var list = (value.data["data"] as List).map((e) {
+    return dio.get('/$endpoint',
+        queryParameters: {'where': where, 'order': order}).then((value) {
+      var list = (value.data['data'] as List).map((e) {
         return converter(e) as T;
       }).toList();
 
@@ -62,21 +62,21 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   Future<T> create(T entity) async {
-    return dio.post("/$endpoint", data: entity).then((value) {
+    return dio.post('/$endpoint', data: entity).then((value) {
       return converter(value.data);
     });
   }
 
   Future<T> update(T entity) async {
     return dio
-        .put("/$endpoint/${(entity as dynamic).id}", data: entity)
+        .put('/$endpoint/${(entity as dynamic).id}', data: entity)
         .then((value) {
       return converter(value.data);
     });
   }
 
   Future<ListState<T>> search(String term) async {
-    return dio.get("/$endpoint").then((value) {
+    return dio.get('/$endpoint').then((value) {
       var list = (value.data as List).map((e) {
         return converter(e) as T;
       }).toList();

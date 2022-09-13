@@ -44,17 +44,17 @@ class SettingsPage extends StatelessWidget {
                         },
                       ),
                       Button(
-                          text: "Add Pot",
+                          text: 'Add Pot',
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => EditPot(
                                             entity: Pot.fromJson({
-                                          "name": "",
-                                          "currency": "BTC",
-                                          "spendableBalance": 0,
-                                          "balance": 0
+                                          'name': '',
+                                          'currency': 'BTC',
+                                          'spendableBalance': 0,
+                                          'balance': 0
                                         }))));
                           }),
                     ],

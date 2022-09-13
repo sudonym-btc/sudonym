@@ -28,8 +28,8 @@ class _MessageHandlerState extends State<MessageHandler>
     //   event.user;
     // }));
     _userDeviceRepo.create(UserDevice.fromJson(
-        {"uid": _authCubit.state.user!.id, "token": token}));
-    loggy.debug("Got new notification token $token");
+        {'uid': _authCubit.state.user!.id, 'token': token}));
+    loggy.debug('Got new notification token $token');
   }
 
   @override
@@ -64,10 +64,10 @@ class _MessageHandlerState extends State<MessageHandler>
 
 // getInitialMessage(): If the application is opened from a terminated state a Future containing a RemoteMessage will be returned. Once consumed, the RemoteMessage will be removed
     FirebaseMessaging.onMessage.listen((event) {
-      loggy.debug("Notification clicked & app = closed");
+      loggy.debug('Notification clicked & app = closed');
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      loggy.debug("Notification clicked & app was in background");
+      loggy.debug('Notification clicked & app was in background');
     });
   }
 

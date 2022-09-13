@@ -17,12 +17,12 @@ WidgetbookCategory widgets = WidgetbookCategory(
                 top: Container(
                   color: Colors.green,
                   child: const Header(
-                    "Yodel",
+                    'Yodel',
                   ),
                 ),
                 bottom: Container(
                   color: Colors.red,
-                  child: const Text("LeyHiHooo"),
+                  child: const Text('LeyHiHooo'),
                 )),
           ),
         ),

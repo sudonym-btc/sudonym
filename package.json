@@ -42,8 +42,7 @@
     "models/ts"
   ],
   "lint-staged": {
-    "*": "prettier --write",
-    "*.ts": "eslint --fix"
+    "*.ts": ["prettier --write", "eslint --fix"]
   },
   "dependencies": {
     "ts-node": "^10.8.2"

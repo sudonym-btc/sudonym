@@ -13,9 +13,9 @@ WidgetbookCategory typography = WidgetbookCategory(
         WidgetbookUseCase(
           name: 'Header',
           builder: (context) => Column(children: const [
-            Header("Test Header"),
-            Subtitle("Subtitle"),
-            Emphasized("Emphasized")
+            Header('Test Header'),
+            Subtitle('Subtitle'),
+            Emphasized('Emphasized')
           ]),
         ),
       ],

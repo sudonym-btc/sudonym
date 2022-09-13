@@ -11,7 +11,7 @@ WidgetbookCategory buttons = WidgetbookCategory(
       useCases: [
         WidgetbookUseCase(
           name: 'elevated',
-          builder: (context) => const Button(text: "Ok"),
+          builder: (context) => const Button(text: 'Ok'),
         ),
         WidgetbookUseCase(
           name: 'icon',
@@ -21,7 +21,7 @@ WidgetbookCategory buttons = WidgetbookCategory(
         WidgetbookUseCase(
           name: 'icon and text',
           builder: (context) => const Button(
-              text: "OK", icon: FaIcon(FontAwesomeIcons.addressBook)),
+              text: 'OK', icon: FaIcon(FontAwesomeIcons.addressBook)),
         ),
         WidgetbookUseCase(name: 'NFC', builder: (context) => const NFC())
       ],

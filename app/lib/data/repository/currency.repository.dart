@@ -12,12 +12,12 @@ class CurrencyRepositoryImpl extends CurrencyRepository {
   Future<CurrencyResponse> getRate(
       String fromCurrency, String toCurrency, num amount, DateTime? time) {
     return dio.get('/currency', queryParameters: {
-      "fromCurrency": fromCurrency,
-      "toCurrency": toCurrency,
-      "amount": amount,
-      "time": time
+      'fromCurrency': fromCurrency,
+      'toCurrency': toCurrency,
+      'amount': amount,
+      'time': time
     }).then((value) {
-      return CurrencyResponse(value.data["amount"]);
+      return CurrencyResponse(value.data['amount']);
     });
   }
 }
