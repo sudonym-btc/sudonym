@@ -13,4 +13,4 @@ jobs:
           cache: true
           cache-key: flutter # optional, change this to force refresh cache
           cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
-      - run: cd flutter && flutter test
+      - run: cd app && flutter test
