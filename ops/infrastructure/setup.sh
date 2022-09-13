@@ -3,6 +3,7 @@
 # gcloud services enable container.googleapis.com &&
 # gcloud services enable storage.googleapis.com
 # gcloud services enable dns.googleapis.com
+# gcloud services enable androidpublisher.googleapis.com
 # gcloud beta builds triggers create github \
 #     --repo-name=sudonym \
 #     --repo-owner=sudonym-btc \

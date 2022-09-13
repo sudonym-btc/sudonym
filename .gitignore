@@ -6,6 +6,8 @@ dist
 **.bak
 minikube.yaml
 
+release
+.idea
 ops/infrastructure/local-volumes/*/*
 api/src/exchanges/*
 !*.gitkeep
