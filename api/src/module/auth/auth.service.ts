@@ -1,13 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 import admin, { ServiceAccount } from 'firebase-admin';
-import { UserService } from '../user/user.service';
-import * as serviceAccount from '../../service-account.json';
-import { AuthError } from './types/error';
+import * as fs from 'fs';
+
+const serviceAccountPath = process.cwd() + '/src/service-account.json';
+const serviceAccount = fs.existsSync(serviceAccountPath) ? require(serviceAccountPath) : null;
 // Firebase Setup
-admin.initializeApp({
+admin.initializeApp(serviceAccount ? {
 	credential: admin.credential.cert(serviceAccount as ServiceAccount),
-});
+}: {});
 
 @Injectable()
 export class AuthService {
