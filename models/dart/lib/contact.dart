@@ -17,7 +17,7 @@ class Contact extends BaseClass {
     return new Contact(json["id"], json["userId"], json["name"], addresses);
   }
 
-  toJson() {
+  dynamic toJson() {
     final List<Map<String, dynamic>> addresses = [];
     this.ContactAddresses.forEach((e) {
       addresses.add(e.toJson());

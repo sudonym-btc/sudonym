@@ -17,7 +17,7 @@ export class User extends BaseClass {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			firebaseId: this.firebaseId,

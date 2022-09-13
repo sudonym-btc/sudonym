@@ -1,8 +1,8 @@
 import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
 import { Op, Sequelize } from 'sequelize';
-import { PotUser } from 'src/module/pot-user/pot-user.model';
-import { Pot } from 'src/module/pot/pot.model';
-import { User } from 'src/module/user/user.model';
+import { PotUser } from 'module/pot-user/pot-user.model';
+import { Pot } from 'module/pot/pot.model';
+import { User } from 'module/user/user.model';
 
 import { LnUrlService } from './lnurl.service';
 

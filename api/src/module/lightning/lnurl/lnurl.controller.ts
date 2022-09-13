@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { BaseController } from 'src/module/base.controller';
+import { BaseController } from 'module/base.controller';
 import { LnUrl } from './lnurl.model';
 
 import { LnUrlService } from './lnurl.service';

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LightningNodeModule } from 'src/service/lightning-node/lightning-node.module';
+import { LightningNodeModule } from 'service/lightning-node/lightning-node.module';
 import { CurrencyModule } from '../currency/currency.module';
 import { LnUrlHandlerModule } from '../lightning/lnurl/lnurl-handler/lnurl-handler.module';
 import { SharedModule } from '../shared.module';

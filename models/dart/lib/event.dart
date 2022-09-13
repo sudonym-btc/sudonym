@@ -6,7 +6,7 @@ class Event {
     return new Event(json["name"], json["data"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {"name": this.name, "data": this.data};
   }
 }

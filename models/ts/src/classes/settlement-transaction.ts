@@ -8,7 +8,7 @@ export class SettlementTransaction {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			transactionId: this.transactionId,
 			settlementId: this.settlementId,

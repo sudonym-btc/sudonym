@@ -18,7 +18,7 @@ class Receiver extends BaseClass {
         json["amountCurrency"], json["data"], DateTime.parse(json["createdAt"]));
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "id": this.id,
       "potId": this.potId,

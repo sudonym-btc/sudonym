@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SharedModule } from 'src/module/shared.module';
+import { SharedModule } from 'module/shared.module';
 import { LightningAddressController } from './lightning-address.controller';
 import { LnUrlController } from './lnurl.controller';
 import { LnUrl } from './lnurl.model';

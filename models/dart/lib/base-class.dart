@@ -1,5 +1,5 @@
 class BaseClass {
-  toJson() {
+  dynamic toJson() {
     return {};
   }
 

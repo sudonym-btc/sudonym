@@ -1,6 +1,6 @@
 import faker from '@faker-js/faker';
 import * as Factory from 'factory.ts';
-import { RecursivePartial } from 'index';
+import { RecursivePartial } from '../recursive-partial';
 import { Transaction } from '../classes/transaction';
 
 const addresses = [

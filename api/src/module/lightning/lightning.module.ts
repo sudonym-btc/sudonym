@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LightningNodeModule } from 'src/service/lightning-node/lightning-node.module';
+import { LightningNodeModule } from 'service/lightning-node/lightning-node.module';
 
 @Module({
 	imports: [LightningNodeModule],

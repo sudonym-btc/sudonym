@@ -1,8 +1,9 @@
 import { Table, Column, Model, HasMany, CreatedAt } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
+import { BaseModel } from 'module/base.model';
 
 @Table
-export class Offer extends Model implements Models.Offer {
+export class Offer extends BaseModel implements Models.Offer {
 	@Column
 	id: string;
 

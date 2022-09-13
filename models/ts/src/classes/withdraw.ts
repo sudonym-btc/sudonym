@@ -27,7 +27,7 @@ export class Withdraw extends ActionType {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			potId: this.potId,
 			originalAddress: this.originalAddress,

@@ -12,7 +12,7 @@ class ActionRemoteResponse<T> {
         json["success"], json["message"], json["data"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "success": this.success,
       "message": this.message,

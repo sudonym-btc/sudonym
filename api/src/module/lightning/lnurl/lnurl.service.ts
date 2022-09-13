@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { getConfig } from 'src/config/config';
-import { BaseService } from 'src/module/base.service';
+import { getConfig } from 'config/config';
+import { BaseService } from 'module/base.service';
 import { LnUrl } from './lnurl.model';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { RequestType } from 'src/helper/parse-request.decorator';
+import { RequestType } from 'helper/parse-request.decorator';
 import * as crypto from 'crypto';
 
 @Injectable()

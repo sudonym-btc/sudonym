@@ -15,7 +15,7 @@ class PaymentRequest {
         json["maxSendable"], json["minSendable"], json["metadata"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "tag": this.tag,
       "callback": this.callback,

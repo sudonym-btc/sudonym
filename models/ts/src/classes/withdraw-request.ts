@@ -19,7 +19,7 @@ export class WithdrawRequest {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			tag: this.tag,
 			callback: this.callback,

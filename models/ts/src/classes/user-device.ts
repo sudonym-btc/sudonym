@@ -9,7 +9,7 @@ export class UserDevice extends BaseClass {
 		return new UserDevice(json['uid'], json['token']);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			uid: this.uid,
 			token: this.token,

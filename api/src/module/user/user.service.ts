@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { RequestType } from 'src/helper/parse-request.decorator';
+import { RequestType } from 'helper/parse-request.decorator';
 import { BaseService } from '../base.service';
 import { User } from './user.model';
 

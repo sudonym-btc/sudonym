@@ -40,7 +40,7 @@ export class Action extends ActionType {
 		return Withdraw.fromJson(json);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			type: this.type,
 			originalAddress: this.originalAddress,

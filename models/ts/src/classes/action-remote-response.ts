@@ -19,7 +19,7 @@ export class ActionRemoteResponse<T> {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			success: this.success,
 			message: this.message,

@@ -1,9 +1,8 @@
-import { options } from '../../command-line-args';
 import * as bitcoin from 'bitcoinjs-lib';
 import * as zmq from 'zeromq';
 import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
-import { getConfig } from 'src/config/config';
+import { getConfig } from 'config/config';
 const sock = zmq.socket('sub');
 import { Logger } from '@nestjs/common';
 

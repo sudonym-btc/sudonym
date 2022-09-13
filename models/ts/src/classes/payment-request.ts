@@ -16,7 +16,7 @@ export class PaymentRequest {
 			json['metadata']
 		);
 	}
-	toJson() {
+	toJson(): any {
 		return {
 			tag: this.tag,
 			callback: this.callback,

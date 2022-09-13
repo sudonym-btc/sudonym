@@ -22,7 +22,7 @@ export class Offer extends BaseClass {
 			json['bolt12Unsigned']
 		);
 	}
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			potId: this.potId,

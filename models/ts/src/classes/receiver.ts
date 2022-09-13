@@ -25,7 +25,7 @@ export class Receiver extends BaseClass {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			potId: this.potId,

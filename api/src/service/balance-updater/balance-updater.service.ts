@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PotService } from 'src/module/pot/pot.service';
-import { Transaction } from 'src/module/transaction/transaction.model';
-import { TransactionService } from 'src/module/transaction/transaction.service';
+import { PotService } from 'module/pot/pot.service';
+import { Transaction } from 'module/transaction/transaction.model';
+import { TransactionService } from 'module/transaction/transaction.service';
 import * as admin from 'firebase-admin';
-import { CurrencyService } from 'src/module/currency/currency.service';
+import { CurrencyService } from 'module/currency/currency.service';
 
 @Injectable()
 export class BalanceUpdaterService {

@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { getConfig } from 'src/config/config';
+import { getConfig } from 'config/config';
 import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import { Subject } from 'rxjs';

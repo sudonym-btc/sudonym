@@ -40,7 +40,7 @@ export class Bolt11 {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			millisatoshis: this.millisatoshis,
 			network: this.network,

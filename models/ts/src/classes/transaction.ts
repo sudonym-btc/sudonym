@@ -37,7 +37,7 @@ export class Transaction extends BaseClass {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			txid: this.txid,

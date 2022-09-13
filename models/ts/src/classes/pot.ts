@@ -21,7 +21,7 @@ export class Pot extends BaseClass {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			name: this.name,

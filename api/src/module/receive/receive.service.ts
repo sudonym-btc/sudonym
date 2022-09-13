@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Receiver } from './receiver.model';
 import { LnUrlService } from '../lightning/lnurl/lnurl.service';
-import { LightningNodeService } from 'src/service/lightning-node/lightning-node.service';
+import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { BaseService } from '../base.service';
 import * as lnurl from 'lnurl';
-import { getConfig } from 'src/config/config';
+import { getConfig } from 'config/config';
 import { CurrencyCode, MSATOSHIS, TAddressType } from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
 

@@ -7,7 +7,7 @@ class SettlementTransaction {
         json["transactionId"], json["settlementId"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "transactionId": this.transactionId,
       "settlementId": this.settlementId

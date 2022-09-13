@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { TransactionService } from 'src/module/transaction/transaction.service';
+import { TransactionService } from 'module/transaction/transaction.service';
 import { TransactionListener } from './transaction-listener.interface';
 import { BitcoinEvents } from './bitcoin-events';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';

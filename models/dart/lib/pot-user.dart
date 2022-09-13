@@ -11,7 +11,7 @@ class PotUser extends BaseClass {
     return new PotUser(json["id"], json["potId"], json["userId"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {"id": this.id, "potId": this.potId, "userId": this.userId};
   }
 }

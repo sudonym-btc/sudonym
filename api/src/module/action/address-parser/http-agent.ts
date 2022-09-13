@@ -1,4 +1,4 @@
-import { getConfig } from 'src/config/config';
+import { getConfig } from 'config/config';
 
 const https = require('https');
 

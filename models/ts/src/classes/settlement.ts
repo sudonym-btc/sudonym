@@ -19,7 +19,7 @@ export class Settlement {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			fromCurrency: this.fromCurrency,

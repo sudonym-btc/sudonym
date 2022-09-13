@@ -12,7 +12,7 @@ class Settlement {
         json["exchangeId"], json["orderId"], json["status"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "id": this.id,
       "fromCurrency": this.fromCurrency,

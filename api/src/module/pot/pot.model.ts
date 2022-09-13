@@ -12,9 +12,9 @@ import {
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
 import { PotUser } from '../pot-user/pot-user.model';
-import { RequestType } from 'src/helper/parse-request.decorator';
+import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from '../base.model';
-import { requestContextCls } from 'src/helper/context-request';
+import { requestContextCls } from 'helper/context-request';
 
 @Table({
 	scopes: Pot.scopes,

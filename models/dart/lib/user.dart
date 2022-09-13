@@ -11,7 +11,7 @@ class User extends BaseClass {
     return new User(json["id"], json["firebaseId"], json["lightningAddress"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "id": this.id,
       "firebaseId": this.firebaseId,

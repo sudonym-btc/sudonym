@@ -1,6 +1,6 @@
 import * as cls from 'cls-hooked';
 import { Request, Response, NextFunction } from 'express';
-import { AuthService } from 'src/module/auth/auth.service';
+import { AuthService } from 'module/auth/auth.service';
 
 export const requestContextCls = cls.createNamespace('context');
 export function contextRequest(

@@ -19,7 +19,7 @@ export class Contact extends BaseClass {
 		return new Contact(json['id'], json['userId'], json['name'], addresses);
 	}
 
-	toJson() {
+	toJson(): any {
 		const addresses: Object[] = [];
 		this.ContactAddresses.forEach((e) => {
 			addresses.push(e.toJson());

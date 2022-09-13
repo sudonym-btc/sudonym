@@ -19,7 +19,7 @@ class Pot extends BaseClass {
         json["spendableBalance"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "id": this.id,
       "name": this.name,

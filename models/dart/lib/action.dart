@@ -36,7 +36,7 @@ class Action extends ActionType {
     return Withdraw.fromJson(json);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "type": this.type,
       "originalAddress": this.originalAddress,

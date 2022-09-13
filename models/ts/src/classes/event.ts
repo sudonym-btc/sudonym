@@ -5,7 +5,7 @@ export class Event {
 		return new Event(json['name'], json['data']);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			name: this.name,
 			data: this.data,

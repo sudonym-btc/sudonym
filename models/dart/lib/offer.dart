@@ -17,7 +17,7 @@ class Offer extends BaseClass {
         json["bolt12"], json["bolt12Unsigned"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "id": this.id,
       "potId": this.potId,

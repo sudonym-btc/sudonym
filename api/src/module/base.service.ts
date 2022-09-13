@@ -7,7 +7,7 @@ import { EventsService } from './events/events.service';
 import { Event } from '@sudonym/models';
 import { Callback } from '../helper/callback';
 import { FindOptions, Op } from 'sequelize';
-import { RequestType } from 'src/helper/parse-request.decorator';
+import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from './base.model';
 
 type ModelType<T> = Constructor<T> & typeof BaseModel;

@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { AuthService } from 'src/module/auth/auth.service';
+import { AuthService } from 'module/auth/auth.service';
 import { requestContextCls } from './context-request';
 
 export const ParseRequest = createParamDecorator(

@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { ReceiveService } from 'src/module/receive/receive.service';
+import { ReceiveService } from 'module/receive/receive.service';
 import { LnUrlService } from '../lnurl.service';
 import { MSATOSHIS } from '@sudonym/models';
 

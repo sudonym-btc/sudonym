@@ -48,7 +48,7 @@ class Transaction extends BaseClass {
         DateTime.parse(json["createdAt"]));
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "id": this.id,
       "txid": this.txid,

@@ -10,7 +10,7 @@ class UserDevice extends BaseClass {
     return new UserDevice(json["uid"], json["token"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {"uid": this.uid, "token": this.token};
   }
 }

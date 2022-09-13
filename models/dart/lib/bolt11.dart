@@ -46,7 +46,7 @@ class Bolt11 {
         json["wordsTemp"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "millisatoshis": this.millisatoshis,
       "network": this.network,

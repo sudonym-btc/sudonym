@@ -19,7 +19,7 @@ export class ContactAddress extends BaseClass {
 		);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			contactId: this.contactId,
 			addressType: this.addressType,

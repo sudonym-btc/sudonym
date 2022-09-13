@@ -1,6 +1,6 @@
 import { Body, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { Constructor } from 'sequelize-typescript/dist/shared/types';
-import { ParseRequest } from 'src/helper/parse-request.decorator';
+import { ParseRequest } from 'helper/parse-request.decorator';
 import { TBaseService, TControllerAndService } from './base.service';
 
 export interface TBaseController<TService, TModel>

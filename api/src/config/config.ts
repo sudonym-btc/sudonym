@@ -1,4 +1,4 @@
-import { options as cmdargs } from './../command-line-args';
+import { options as cmdargs } from '../cmd-line-args';
 import { configDevelopment } from './config-development';
 import { configProduction } from './config-production';
 import { configStaging } from './config-staging';

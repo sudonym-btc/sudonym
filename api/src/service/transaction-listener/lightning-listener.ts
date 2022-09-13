@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { LightningEvents } from './lightning-events';
 import { MSATOSHIS } from '@sudonym/models';
-import { TransactionService } from 'src/module/transaction/transaction.service';
+import { TransactionService } from 'module/transaction/transaction.service';
 import { TransactionListener } from './transaction-listener.interface';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
 

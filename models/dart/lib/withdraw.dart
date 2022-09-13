@@ -26,7 +26,7 @@ class Withdraw extends ActionType {
         ActionRemoteResponse.fromJson(json["remoteResponse"]));
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "potId": this.potId,
       "originalAddress": this.originalAddress,

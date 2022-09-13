@@ -22,7 +22,7 @@ class WithdrawRequest {
         json["maxWithdrawable"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "tag": this.tag,
       "callback": this.callback,

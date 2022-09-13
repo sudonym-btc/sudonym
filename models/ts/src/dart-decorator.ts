@@ -18,6 +18,7 @@ function searchDir(prefix, dir) {
 				'json["createdAt"]',
 				'DateTime.parse(json["createdAt"])'
 			);
+			str = str.replaceAll('toJson():  {', 'toJson() {');
 
 			fs.writeFileSync(filePath, str);
 		} else if (fs.lstatSync(fullPath).isDirectory()) {

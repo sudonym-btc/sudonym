@@ -3,7 +3,7 @@ import { factory as contactAddressFactory } from './contact-address.mock';
 
 import * as Factory from 'factory.ts';
 import faker from '@faker-js/faker';
-import { RecursivePartial } from 'index';
+import { RecursivePartial } from '../recursive-partial';
 
 export const factory = Factory.Sync.makeFactory<RecursivePartial<Contact>>({
 	id: Factory.each((i) => i),

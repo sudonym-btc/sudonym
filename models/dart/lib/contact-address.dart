@@ -14,7 +14,7 @@ class ContactAddress extends BaseClass {
         json["contactId"], json["addressType"], json["address"], json["name"]);
   }
 
-  toJson() {
+  dynamic toJson() {
     return {
       "contactId": this.contactId,
       "addressType": this.addressType,

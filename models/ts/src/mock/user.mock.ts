@@ -1,5 +1,5 @@
 import * as Factory from 'factory.ts';
-import { RecursivePartial } from 'index';
+import { RecursivePartial } from '../recursive-partial';
 import { User } from '../classes/user';
 
 export const factory = Factory.Sync.makeFactory<RecursivePartial<User>>({

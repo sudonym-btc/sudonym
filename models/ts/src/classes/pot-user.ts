@@ -13,7 +13,7 @@ export class PotUser extends BaseClass {
 		return new PotUser(json['id'], json['potId'], json['userId']);
 	}
 
-	toJson() {
+	toJson(): any {
 		return {
 			id: this.id,
 			potId: this.potId,
