@@ -55,4 +55,4 @@ project=$(gcloud config get project)
 export GCLOUD_PROJECT=$project
 (cd api && npm run getConfig)
 
-(cd ops/infrastructure/minikube && pip3 install -r requirements.txt)
+(cd infrastructure/minikube && pip3 install -r requirements.txt)

@@ -8,6 +8,14 @@ def bitcoin(config, cluster_types):
     return {
         "resources": [
             {
+                "type": "storage.v1.bucket",
+                "name": "sudonym-" + base_name + "-backup",
+                "properties": {
+                    "project": "sudonym-lightning-test",
+                    "name": "sudonym-" + base_name
+                }
+            },
+            {
                 "name": base_name + "-secret",
                 "type": cluster_types["Secret"],
                 "metadata": {"dependsOn": [kube_type_name]},
@@ -30,7 +38,7 @@ def bitcoin(config, cluster_types):
                     "namespace": "default",
                     "metadata": {"name": base_name + "-volume-claim"},
                     "spec": {
-                        "accessModes": ["ReadWriteMany"],
+                        "accessModes": ["ReadWriteOnce"],
                         "resources": {"requests": {"storage": "500Gi"}},
                     },
                 },
@@ -93,12 +101,30 @@ def bitcoin(config, cluster_types):
                         "template": {
                             "metadata": {"labels": {"app": base_name}},
                             "spec": {
+                                "securityContext": {
+                                    "privileged": True,
+                                    "capabilities": {
+                                        "add": ["SYS_ADMIN"]
+                                    }
+                                },
+                                "lifecycle": {
+                                    "postStart": {
+                                        "exec": {
+                                        "command": ["gcsfuse", "-o", "nonempty", "sudonym-development-bitcoin-backup", "/etc/bla"]
+                                        }
+                                    },
+                                    "preStop": {
+                                        "exec": {
+                                        "command": ["fusermount", "-u", "/etc/bla"],
+                                        }
+                                    },
+                                },
                                 "containers": [
                                     {
                                         "name": base_name,
                                         "image": "ruimarinho/bitcoin-core:23.0",
                                         "resources": {"requests": {"cpu": "40m"}},
-                                        "command": ["bitcoind"],
+                                        "command": ["bitcoind"], # gcsfuse -o nonempty sudonym-development-bitcoin-backup /etc/bla
                                         "args": [
                                             "-server",
                                             "-rest",

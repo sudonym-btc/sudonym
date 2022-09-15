@@ -2,9 +2,12 @@ import os
 import sys
 import inspect
 
+
+# Add the spec folder to path, as py will only find files in same folder
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir) 
+sys.path.insert(0, parentdir + "/spec") 
 
 from spec.kubernetes import GenerateConfig
 from yaml import dump_all, dump

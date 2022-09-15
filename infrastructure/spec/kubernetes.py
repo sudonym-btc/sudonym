@@ -2,13 +2,6 @@
 # This is modified version of code provided by Google at:
 # https://github.com/GoogleCloudPlatform/deploymentmanager-samples
 #
-import os
-import sys
-import inspect
-
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, currentdir) 
 
 from common import getConfig
 from dns import dns
@@ -231,5 +224,5 @@ def GenerateConfig(context):
         + api(config, cluster_types)["resources"]
         + dns(config, cluster_types)["resources"]
     )
-
+    print(resources)
     return {"resources": resources, "cluster_types_root": cluster_types_root}

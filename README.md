@@ -8,7 +8,7 @@ and lightning wallet. The folder structure is outlined below:
  ┣ 📂 api    // Contains code that runs on the backend
  ┣ 📂 app    // Contains code for the mobile app
  ┣ 📂 models // Contains any shared data structures
- ┗ 📂 ops    // Contains infrastructure as code
+ ┗ 📂 infrastructure    // Contains infrastructure as code
 ```
 
 <details>
@@ -86,14 +86,17 @@ you should have logged into your Google Cloud account.
 If you are the admin of an empty Google Cloud project, you can run
 
 ```bash
-ops/infrastructure/setup.sh
+infrastructure/setup.sh
 ```
 
 The above command enables the necessary APIs in the cloud project
 and sets up triggers to your repo, so that deploys happen via Git commits.
 
 Creating and merging PRs for the production and staging banches
-will cause deployment manager to read the specs found in the "ops" folder
+will cause deployment manager to read the specs found in the "infrastrcuture" folder
 and roll out the changes.
+
+The first deployment of each environment can take multiple executions
+as the clusters start up and there may be race conditions.
 
 </details>

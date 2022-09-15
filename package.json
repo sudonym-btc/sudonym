@@ -5,21 +5,21 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "init:gcloud": "bash ops/infrastructure/setup.sh",
-    "init:lightning": "(cd ops/infrastructure/minikube && ./init-lightning.sh)",
-    "deploy:production": "bash ops/infrastructure/deploy.sh production",
-    "deploy:staging": "bash ops/infrastructure/deploy.sh staging",
-    "deploy:test": "bash ops/infrastructure/deploy.sh test",
-    "deploy:development": "npm run minikube:start && echo $(ksync init) && npm run minikube:dns && (minikube dashboard >/dev/null &) && npm run minikube:deploy && sudo echo && (minikube tunnel >/dev/null &)",
-    "deploy:development:hard": "minikube delete --all && npm run minikube:removeApi && npm run deploy:development && npm run init:lightning",
+    "init:gcloud": "bash infrastructure/setup.sh",
+    "deploy:production": "bash infrastructure/deploy.sh production",
+    "deploy:staging": "bash infrastructure/deploy.sh staging",
+    "deploy:test": "bash infrastructure/deploy.sh test",
+    "deploy:development": "sudo echo && npm run minikube:start && parallelshell 'echo $(ksync init)' 'npm run minikube:loadApi' 'npm run minikube:dns' && npm run minikube:deploy",
+    "deploy:development:hard": "minikube delete --all && npm run deploy:development && npm run minikube:lightning",
     "prewatch:api": "echo $(killall ksync) && echo $(killall syncthing)",
     "watch:api": "(ksync watch &) && sleep 5 && ksync delete --all && ksync create --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
     "watch:models": " && ksync create --selector=app=development-api $(pwd)/models /usr/src/app/models ",
-    "minikube:start": "python3 ops/infrastructure/minikube/minikube.py && minikube start --driver=docker",
-    "minikube:dns": "minikube addons enable ingress && minikube addons enable ingress-dns && npx ts-node ops/infrastructure/minikube/minikube-dns.ts",
-    "minikube:deploy": "npm run minikube:loadApi && minikube kubectl -- apply -f ops/infrastructure/minikube/minikube.yaml --validate=false",
+    "minikube:start": "minikube start --driver=docker",
+    "minikube:dns": "sudo echo && (minikube tunnel >/dev/null &) && (minikube dashboard >/dev/null &) && parallelshell 'minikube addons enable gcp-auth' 'minikube addons enable ingress' 'minikube addons enable ingress-dns' 'npx ts-node infrastructure/minikube/minikube-dns.ts'",
+    "minikube:deploy": "python3 infrastructure/minikube/minikube.py && minikube kubectl -- apply -f infrastructure/minikube/minikube.yaml --validate=false",
     "minikube:loadApi": "eval $(minikube docker-env) && (docker image inspect api:latest >/dev/null 2>&1 && echo no || docker build --target development -t api:latest -f api/Dockerfile .)",
-    "minikube:removeApi": "minikube image rm api:latest || true ",
+    "minikube:removeApi": "minikube image rm api || true",
+    "minikube:lightning": "(cd infrastructure/minikube && ./init-lightning.sh)",
     "prepare": "husky install",
     "lint:fix": "eslint \"**/{src,apps,libs,test}/**/*.ts\" --fix",
     "lint": "eslint \"**/{src,apps,libs,test}/**/*.ts\"",
@@ -41,12 +41,16 @@
     "models/ts"
   ],
   "lint-staged": {
-    "*.ts": ["prettier --write", "eslint --fix"]
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "ts-node": "^10.8.2"
   },
   "devDependencies": {
+    "@clarencep/parallelshell": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
     "eslint": "^7.32.0",

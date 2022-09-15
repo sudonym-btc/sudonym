@@ -10,6 +10,14 @@ def lightning(config, cluster_types):
     return {
         "resources": [
             {
+                "type": "storage.v1.bucket",
+                "name": "sudonym-" + base_name + "-backup",
+                "properties": {
+                    "project": "sudonym-lightning-test",
+                    "name": "sudonym-" + base_name
+                }
+            },
+            {
                 "name": base_name + "-volume-claim",
                 "type": cluster_types["PersistentVolumeClaim"],
                 "metadata": {"dependsOn": [kube_type_name]},
@@ -88,7 +96,7 @@ def lightning(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "elementsproject/lightningd:latest",
+                                        "image": "gcr.io/sudonym-lightning-test/lightning-fuse:latest",
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "args": [
                                             "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
@@ -170,7 +178,7 @@ def lightning(config, cluster_types):
             },
         ] 
         
-        + [
+        + ([
             {
                 "name": base_name + "-1-service",
                 "type": cluster_types["Service"],
@@ -345,7 +353,7 @@ def lightning(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name + "-2",
-                                        "image": "elementsproject/lightningd:latest",
+                                        "image": "gcr.io/sudonym-lightning-test/lightning-fuse",
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "args": [
                                             "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
@@ -400,6 +408,6 @@ def lightning(config, cluster_types):
                 },
             },
             
-        ] if config["env"] == "development" else [],
+        ] if config["env"] == "development" else []),
         "base_name": base_name,
     }
