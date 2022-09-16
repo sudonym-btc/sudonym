@@ -6,4 +6,5 @@ def getServiceName(base, num = 1): return addNum(base + "-service", num)
 def getConfigName(base, num = 1): return addNum(base + "-config", num)
 def getIngressName(base, num = 1): return addNum(base + "-ingress", num)
 def getVolumeClaimName(base, num = 1): return addNum(base + "-volume-claim", num)
+def getBackupName(base, num = 1): return addNum(base + "-backup", num)
 

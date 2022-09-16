@@ -1,4 +1,4 @@
-from helper import getConfigName, getServiceName
+from helper import getConfigName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -6,7 +6,7 @@ from kubernetes_lightning_rest import lightning_rest
 def ride_the_lightning(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-ride-the-lightning"
-    lightning_rest_basename = lightning_rest(config, cluster_types)["base_name"]
+    lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
 
     return {
         "resources": [
@@ -45,7 +45,7 @@ def ride_the_lightning(config, cluster_types):
         "themeColor": "PURPLE",
         "logLevel": "ERROR",
         "lnServerUrl": "http://"""
-                        + getServiceName(lightning_rest_basename)
+                        + getServiceName(lightning_rest_base_name)
                         + """:3001",
         "fiatConversion": false,
         "enableOffers": true
@@ -86,7 +86,7 @@ def ride_the_lightning(config, cluster_types):
                 "metadata": {
                     "dependsOn": [
                         kube_type_name,
-                        "macaroon-volume-claim",
+                        getVolumeClaimName(lightning_rest_base_name + "-macaroon"),
                     ]
                 },
                 "properties": {
@@ -119,7 +119,7 @@ def ride_the_lightning(config, cluster_types):
                                                 "name": "json-config",
                                             },
                                             {
-                                                "name": "macaroon-data",
+                                                "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon"),
                                                 "mountPath": "RTL/certs",
                                             },
                                         ],
@@ -131,9 +131,9 @@ def ride_the_lightning(config, cluster_types):
                                         "configMap": {"name": "rtl-config.json"},
                                     },
                                     {
-                                        "name": "macaroon-data",
+                                        "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon"),
                                         "persistentVolumeClaim": {
-                                            "claimName": "macaroon-volume-claim"
+                                            "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon")
                                         },
                                     },
                                 ],

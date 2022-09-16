@@ -1,4 +1,4 @@
-from helper import getDeploymentName, getSecretName, getServiceName, getVolumeClaimName
+from helper import getBackupName, getDeploymentName, getSecretName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 
 
@@ -10,7 +10,7 @@ def bitcoin(config, cluster_types):
         "resources": [
             {
                 "type": "storage.v1.bucket",
-                "name": "sudonym-" + base_name + "-backup",
+                "name": "sudonym-" + getBackupName(base_name),
                 "properties": {
                     "project": config["project"]
                 },
@@ -99,7 +99,7 @@ def bitcoin(config, cluster_types):
                     "apiVersion": "apps/v1",
                     "kind": "Deployment",
                     "namespace": "default",
-                    "metadata": {"name": base_name, "labels": {"app": base_name}},
+                    "metadata": {"name": getDeploymentName(base_name), "labels": {"app": base_name}},
                     "spec": {
                         "strategy": {"type": "Recreate"},
                         "replicas": 1,
@@ -123,7 +123,7 @@ def bitcoin(config, cluster_types):
                                             },
                                         },
                                         "name": base_name,
-                                        "image": "gcr.io/sudonym-lightning-test/fuse-bitcoin",
+                                        "image": "gcr.io/" + config["project"] + "/fuse-bitcoin",
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "command": [
                                             "sh",
@@ -191,7 +191,7 @@ def bitcoin(config, cluster_types):
                                         ],
                                         "volumeMounts": [
                                             {
-                                                "name": base_name + "-data",
+                                                "name": getVolumeClaimName(base_name),
                                                 "mountPath": "/bitcoin/.bitcoin",
                                             }
                                         ],
@@ -199,9 +199,9 @@ def bitcoin(config, cluster_types):
                                 ],
                                 "volumes": [
                                     {
-                                        "name": base_name + "-data",
+                                        "name": getVolumeClaimName(base_name),
                                         "persistentVolumeClaim": {
-                                            "claimName": base_name + "-volume-claim"
+                                            "claimName": getVolumeClaimName(base_name)
                                         },
                                     }
                                 ],

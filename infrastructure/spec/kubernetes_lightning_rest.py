@@ -1,4 +1,4 @@
-from helper import getServiceName, getVolumeClaimName
+from helper import getConfigName, getDeploymentName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 from kubernetes_lightning import lightning
 
@@ -10,14 +10,14 @@ def lightning_rest(config, cluster_types):
     return {
         "resources": [
             {
-                "name": "macaroon-volume-claim",
+                "name": getVolumeClaimName(base_name + "-macaroon"),
                 "type": cluster_types["PersistentVolumeClaim"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
                     "apiVersion": "v1",
                     "kind": "PersistentVolumeClaim",
                     "namespace": "default",
-                    "metadata": {"name": "macaroon-volume-claim"},
+                    "metadata": {"name": getVolumeClaimName(base_name + "-macaroon")},
                     "spec": {
                         "accessModes": ["ReadWriteOnce"],
                         "resources": {"requests": {"storage": "1Gi"}},
@@ -25,7 +25,7 @@ def lightning_rest(config, cluster_types):
                 },
             },
             {
-                "name": base_name + "-config",
+                "name": getConfigName(base_name),
                 "type": cluster_types["ConfigMap"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -94,12 +94,12 @@ def lightning_rest(config, cluster_types):
                 },
             },
             {
-                "name": base_name,
+                "name": getDeploymentName(base_name),
                 "type": cluster_types["Deployment"],
                 "metadata": {
                     "dependsOn": [
                         kube_type_name,
-                        getVolumeClaimName(lightning_base_name),
+                        getVolumeClaimName(lightning_base_name + "-rpc"),
                     ]
                 },
                 "properties": {
@@ -107,7 +107,7 @@ def lightning_rest(config, cluster_types):
                     "kind": "Deployment",
                     "namespace": "default",
                     "metadata": {
-                        "name": base_name + "-deployment",
+                        "name": getDeploymentName(base_name),
                         "labels": {"app": base_name},
                     },
                     "spec": {
@@ -138,11 +138,11 @@ def lightning_rest(config, cluster_types):
                                                 "name": "json-config",
                                             },
                                             {
-                                                "name": lightning_base_name + "-data",
+                                                "name": getVolumeClaimName(lightning_base_name + "-rpc"),
                                                 "mountPath": "/rpc",
                                             },
                                             {
-                                                "name": "macaroon-data",
+                                                "name": getVolumeClaimName(base_name + "-macaroon"),
                                                 "mountPath": "/usr/src/app/certs",
                                             },
                                         ],
@@ -154,16 +154,15 @@ def lightning_rest(config, cluster_types):
                                         "configMap": {"name": "cl-rest-config.json"},
                                     },
                                     {
-                                        "name": lightning_base_name + "-data",
+                                        "name": getVolumeClaimName(lightning_base_name + "-rpc"),
                                         "persistentVolumeClaim": {
-                                            "claimName": lightning_base_name
-                                            + "-volume-claim"
+                                            "claimName": getVolumeClaimName(lightning_base_name + "-rpc")
                                         },
                                     },
                                     {
-                                        "name": "macaroon-data",
+                                        "name": getVolumeClaimName(base_name + "-macaroon"),
                                         "persistentVolumeClaim": {
-                                            "claimName": "macaroon-volume-claim"
+                                            "claimName": getVolumeClaimName(base_name + "-macaroon")
                                         },
                                     },
                                 ],

@@ -3,6 +3,24 @@ config = {
         "project": "sudonym-lightning-test",
         "zone": "us-central1-c",
         "domain": "sudonym.app",
+        "bitcoin": {
+            "rpcPort": 8332,
+            "port": 8333
+        },
+        "lightning": {
+            "port": 9735
+        },
+        "lightningRest": {
+            "docPort": 4001,
+            "port": 3001
+        },
+        "rtl": {
+            "port": 3000
+        },
+        "api": {
+            "port": 3000,
+            "websocketPort": 3001
+        }
     },
     "production": {
         "project": "sudonym-lightning-test",
@@ -21,7 +39,7 @@ config = {
     "test": {
         "project": "sudonym-lightning-test",
         "env": "test",
-        "domain": "staging.sudonym.app",
+        "domain": "test.sudonym.app",
         "network": "regtest",
 
     },
@@ -30,20 +48,6 @@ config = {
         "env": "development",
         "domain": "local.development",
         "network": "regtest",
-        "bitcoin": {
-            "rpcPort": 8332,
-            "port": 8333
-        },
-        "lightning": {
-            "port": 9735
-        },
-        "lightningRest": {
-            "docPort": 4001,
-            "port": 3001
-        },
-        "rtl": {
-            "port": 3000
-        }
     }
 }
 

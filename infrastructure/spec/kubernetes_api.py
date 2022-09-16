@@ -1,3 +1,4 @@
+from helper import getDeploymentName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -9,7 +10,7 @@ def api(config, cluster_types):
     return {
         "resources": [
             {
-                "name": base_name + "-service",
+                "name": getServiceName(base_name),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -17,26 +18,26 @@ def api(config, cluster_types):
                     "kind": "Service",
                     "namespace": "default",
                     "metadata": {
-                        "name": base_name + "-service",
+                        "name": getServiceName(base_name),
                         "labels": {"app": base_name},
                     },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 3000, "name": "api"},
-                            {"port": 3001, "name": "api-ws"},
+                            {"port": config["api"]["port"], "name": "api"},
+                            {"port": config["api"]["websocketPort"], "name": "api-ws"},
                         ],
                         "selector": {"app": base_name},
                     },
                 },
             },
             {
-                "name": base_name + "-deployment",
+                "name": getDeploymentName(base_name),
                 "type": cluster_types["Deployment"],
                 "metadata": {
                     "dependsOn": [
                         kube_type_name,
-                        "macaroon-volume-claim",
+                        getVolumeClaimName(lightning_rest_basename + "-macaroon"),
                     ]
                 },
                 "properties": {
@@ -44,7 +45,7 @@ def api(config, cluster_types):
                     "kind": "Deployment",
                     "namespace": "default",
                     "metadata": {
-                        "name": base_name + "-deployment",
+                        "name": getDeploymentName(base_name),
                         "labels": {"app": base_name},
                     },
                     "spec": {
@@ -68,7 +69,7 @@ def api(config, cluster_types):
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "volumeMounts": [
                                             {
-                                                "name": "macaroon-data",
+                                                "name": getVolumeClaimName(lightning_rest_basename + "-macaroon"),
                                                 "mountPath": "usr/src/app/api/certs",
                                             },
                                         ],
@@ -76,9 +77,9 @@ def api(config, cluster_types):
                                 ],
                                 "volumes": [
                                     {
-                                        "name": "macaroon-data",
+                                        "name": getVolumeClaimName(lightning_rest_basename + "-macaroon"),
                                         "persistentVolumeClaim": {
-                                            "claimName": "macaroon-volume-claim"
+                                            "claimName": getVolumeClaimName(lightning_rest_basename + "-macaroon")
                                         },
                                     },
                                 ],
