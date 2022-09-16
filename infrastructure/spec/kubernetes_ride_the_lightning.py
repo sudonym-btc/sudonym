@@ -1,3 +1,4 @@
+from helper import getConfigName, getServiceName
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -10,7 +11,7 @@ def ride_the_lightning(config, cluster_types):
     return {
         "resources": [
             {
-                "name": base_name + "-config",
+                "name": getConfigName(base_name),
                 "type": cluster_types["ConfigMap"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -21,7 +22,9 @@ def ride_the_lightning(config, cluster_types):
                     "data": {
                         "rtl-config.json": """
 {
-  "port": "3000",
+  "port": """
+   + str(config["rtl"]["port"]) 
+   + """,
   "defaultNodeIndex": 1,
   "SSO": {
     "rtlSSO": 0,
@@ -42,8 +45,8 @@ def ride_the_lightning(config, cluster_types):
         "themeColor": "PURPLE",
         "logLevel": "ERROR",
         "lnServerUrl": "http://"""
-                        + lightning_rest_basename
-                        + """-service:3001",
+                        + getServiceName(lightning_rest_basename)
+                        + """:3001",
         "fiatConversion": false,
         "enableOffers": true
       },
@@ -57,7 +60,7 @@ def ride_the_lightning(config, cluster_types):
                 },
             },
             {
-                "name": base_name + "-service",
+                "name": getServiceName(base_name),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -65,13 +68,13 @@ def ride_the_lightning(config, cluster_types):
                     "kind": "Service",
                     "namespace": "default",
                     "metadata": {
-                        "name": base_name + "-service",
+                        "name": getServiceName(base_name),
                         "labels": {"app": base_name},
                     },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 3000, "name": "rtl"},
+                            {"port": config["rtl"]["port"], "name": "rtl"},
                         ],
                         "selector": {"app": base_name},
                     },

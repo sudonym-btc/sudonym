@@ -1,3 +1,4 @@
+from helper import getDeploymentName, getSecretName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 
 
@@ -11,12 +12,11 @@ def bitcoin(config, cluster_types):
                 "type": "storage.v1.bucket",
                 "name": "sudonym-" + base_name + "-backup",
                 "properties": {
-                    "project": "sudonym-lightning-test",
-                    "name": "sudonym-" + base_name
-                }
+                    "project": config["project"]
+                },
             },
             {
-                "name": base_name + "-secret",
+                "name": getSecretName(base_name),
                 "type": cluster_types["Secret"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -29,14 +29,14 @@ def bitcoin(config, cluster_types):
                 },
             },
             {
-                "name": base_name + "-volume-claim",
+                "name": getVolumeClaimName(base_name),
                 "type": cluster_types["PersistentVolumeClaim"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
                     "apiVersion": "v1",
                     "kind": "PersistentVolumeClaim",
                     "namespace": "default",
-                    "metadata": {"name": base_name + "-volume-claim"},
+                    "metadata": {"name": getVolumeClaimName(base_name)},
                     "spec": {
                         "accessModes": ["ReadWriteOnce"],
                         "resources": {"requests": {"storage": "500Gi"}},
@@ -44,33 +44,39 @@ def bitcoin(config, cluster_types):
                 },
             },
             {
-                "name": base_name + "-service",
+                "name": getServiceName(base_name),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
                     "apiVersion": "v1",
                     "kind": "Service",
                     "namespace": "default",
-                    "metadata": {"name": base_name + "-service", "labels": {"app": base_name}},
+                    "metadata": {
+                        "name": getServiceName(base_name),
+                        "labels": {"app": base_name},
+                    },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 8332, "name": "rpc"},
-                            {"port": 8333, "name": base_name},
+                            {"port": config["bitcoin"]["rpcPort"], "name": "rpc"},
+                            {"port": config["bitcoin"]["port"], "name": base_name},
                         ],
                         "selector": {"app": base_name},
                     },
                 },
             },
             {
-                "name": base_name + "-zeromq-service",
+                "name": getServiceName(base_name + "-zeromq"),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
                     "apiVersion": "v1",
                     "kind": "Service",
                     "namespace": "default",
-                    "metadata": {"name": base_name + "-zeromq-service", "labels": {"app": base_name}},
+                    "metadata": {
+                        "name": getServiceName(base_name + "-zeromq"),
+                        "labels": {"app": base_name},
+                    },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
@@ -81,12 +87,12 @@ def bitcoin(config, cluster_types):
                 },
             },
             {
-                "name": base_name + "-deployment",
+                "name": getDeploymentName(base_name),
                 "type": cluster_types["Deployment"],
                 "metadata": {
                     "dependsOn": [
                         kube_type_name,
-                        base_name + "-volume-claim",
+                        getVolumeClaimName(base_name),
                     ]
                 },
                 "properties": {
@@ -101,59 +107,60 @@ def bitcoin(config, cluster_types):
                         "template": {
                             "metadata": {"labels": {"app": base_name}},
                             "spec": {
-                                "securityContext": {
-                                    "privileged": True,
-                                    "capabilities": {
-                                        "add": ["SYS_ADMIN"]
-                                    }
-                                },
-                                "lifecycle": {
-                                    "postStart": {
-                                        "exec": {
-                                        "command": ["gcsfuse", "-o", "nonempty", "sudonym-development-bitcoin-backup", "/etc/bla"]
-                                        }
-                                    },
-                                    "preStop": {
-                                        "exec": {
-                                        "command": ["fusermount", "-u", "/etc/bla"],
-                                        }
-                                    },
-                                },
                                 "containers": [
                                     {
+                                        "securityContext": {
+                                            "privileged": True,
+                                            "capabilities": {"add": ["SYS_ADMIN"]},
+                                        },
+                                        "lifecycle": {
+                                            "preStop": {
+                                                "exec": {
+                                                    "command": [
+                                                        "cp -a /bitcoin/.bitcoin/. /bitcoin/backup",
+                                                    ]
+                                                }
+                                            },
+                                        },
                                         "name": base_name,
-                                        "image": "ruimarinho/bitcoin-core:23.0",
+                                        "image": "gcr.io/sudonym-lightning-test/fuse-bitcoin",
                                         "resources": {"requests": {"cpu": "40m"}},
-                                        "command": ["bitcoind"], # gcsfuse -o nonempty sudonym-development-bitcoin-backup /etc/bla
-                                        "args": [
-                                            "-server",
-                                            "-rest",
-                                            "-txindex",
-                                            "-datadir=/bitcoin/.bitcoin",
-                                            "-port=8333",
-                                            "-rpcuser=$(BITCOIN_RPC_USER)",
-                                            "-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
-                                            "-rpcallowip=0.0.0.0/0",
-                                            "-rpcallowip=::/0",
-                                            "-rpcport=8332",
-                                            "-rpcbind=0.0.0.0",
-                                            "-rpcbind=" + base_name,
-                                            "-zmqpubrawtx=tcp://*:5555",
-                                            "-zmqpubhashblock=tcp://*:5555",
-                                            "-zmqpubhashtx=tcp://*:5555",
-                                            "-zmqpubrawblock=tcp://*:5555",
-                                            "-debug=1",
-                                        ]
-                                        + (
-                                            ["-regtest=1"]
-                                            if config["env"] == "development"
-                                            else []
-                                        )
-                                        + (
-                                            ["-testnet=1"]
-                                            if config["env"] == "testing"
-                                            else []
-                                        ),
+                                        "command": [
+                                            "sh",
+                                            "-c",
+                                            "mkdir /bitcoin/backup >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-bitcoin-backup /bitcoin/backup) && cp -a /bitcoin/backup/. /bitcoin/.bitcoin && bitcoind "
+                                            + " ".join(
+                                                [
+                                                    "-server",
+                                                    "-rest",
+                                                    "-txindex",
+                                                    "-datadir=/bitcoin/.bitcoin",
+                                                    "-port=" + str(config["bitcoin"]["port"]),
+                                                    "-rpcuser=$(BITCOIN_RPC_USER)",
+                                                    "-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
+                                                    "-rpcallowip=0.0.0.0/0",
+                                                    "-rpcallowip=::/0",
+                                                    "-rpcport=" + str(config["bitcoin"]["rpcPort"]),
+                                                    "-rpcbind=0.0.0.0",
+                                                    "-rpcbind=" + base_name,
+                                                    "-zmqpubrawtx=tcp://*:5555",
+                                                    "-zmqpubhashblock=tcp://*:5555",
+                                                    "-zmqpubhashtx=tcp://*:5555",
+                                                    "-zmqpubrawblock=tcp://*:5555",
+                                                    "-debug=1",
+                                                ]
+                                                + (
+                                                    ["-regtest=1"]
+                                                    if config["network"] == "regtest"
+                                                    else []
+                                                )
+                                                + (
+                                                    ["-testnet=1"]
+                                                    if config["network"] == "testnet"
+                                                    else []
+                                                ),
+                                            ),
+                                        ],  #
                                         "env": [
                                             {
                                                 "name": "BITCOIN_RPC_USER",
@@ -175,8 +182,8 @@ def bitcoin(config, cluster_types):
                                             },
                                         ],
                                         "ports": [
-                                            {"containerPort": 8332, "name": "rpc"},
-                                            {"containerPort": 8333, "name": "bitcoin"},
+                                            {"containerPort": config["bitcoin"]["rpcPort"], "name": "rpc"},
+                                            {"containerPort": config["bitcoin"]["port"], "name": "bitcoin"},
                                             {
                                                 "containerPort": 5555,
                                                 "name": "zeromq",

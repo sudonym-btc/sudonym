@@ -21,7 +21,10 @@ if [ "$(uname)" = "Darwin" ] || [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; 
         sudo snap install flutter --classic
         sudo snap install android-studio --classic
         brew install gcc
-        
+
+        # sudo apt-get install libcanberra-gtk3-module
+        # sudo apt-get install libcanberra-gtk-module:i386
+        # sudo apt-get install libcanberra-gtk-module
         sudo apt update
         sudo apt-get install \
             apt-transport-https \

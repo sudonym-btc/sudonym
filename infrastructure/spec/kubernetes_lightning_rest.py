@@ -1,3 +1,4 @@
+from helper import getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 from kubernetes_lightning import lightning
 
@@ -35,8 +36,12 @@ def lightning_rest(config, cluster_types):
                     "data": {
                         "cl-rest-config.json": """
 {
-    "PORT": 3001,
-    "DOCPORT": 4001,
+    "PORT": """
+    + str(config["lightningRest"]["port"])
+    + """,
+    "DOCPORT": """
+    + str(config["lightningRest"]["docPort"])
+    + """,
     "PROTOCOL": "http",
     "EXECMODE": "test",
     "LNRPCPATH": "/rpc/lightning-rpc",
@@ -47,7 +52,7 @@ def lightning_rest(config, cluster_types):
                 },
             },
             {
-                "name": base_name + "-service",
+                "name": getServiceName(base_name),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -55,20 +60,20 @@ def lightning_rest(config, cluster_types):
                     "kind": "Service",
                     "namespace": "default",
                     "metadata": {
-                        "name": base_name + "-service",
+                        "name": getServiceName(base_name),
                         "labels": {"app": base_name},
                     },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 3001, "name": "ln-rest"},
+                            {"port": config["lightningRest"]["port"], "name": "ln-rest"},
                         ],
                         "selector": {"app": base_name},
                     },
                 },
             },
             {
-                "name": base_name + "-doc-service",
+                "name": getServiceName(base_name + "-doc"),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
@@ -76,13 +81,13 @@ def lightning_rest(config, cluster_types):
                     "kind": "Service",
                     "namespace": "default",
                     "metadata": {
-                        "name": base_name + "-doc-service",
+                        "name": getServiceName(base_name + "-doc"),
                         "labels": {"app": base_name},
                     },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 4001, "name": "ln-rest-doc"},
+                            {"port": config["lightningRest"]["docPort"], "name": "ln-rest-doc"},
                         ],
                         "selector": {"app": base_name},
                     },
@@ -94,7 +99,7 @@ def lightning_rest(config, cluster_types):
                 "metadata": {
                     "dependsOn": [
                         kube_type_name,
-                        lightning_base_name + "-volume-claim",
+                        getVolumeClaimName(lightning_base_name),
                     ]
                 },
                 "properties": {
@@ -125,7 +130,7 @@ def lightning_rest(config, cluster_types):
                                             "./cl-rest.js",
                                         ],
                                         "resources": {"requests": {"cpu": "40m"}},
-                                        "ports": [{"containerPort": 3001}, {"containerPort": 4001}],
+                                        "ports": [{"containerPort": config["lightningRest"]["port"]}, {"containerPort": 4001}],
                                         "volumeMounts": [
                                             {
                                                 "mountPath": "/usr/src/app/cl-rest-config.json",
