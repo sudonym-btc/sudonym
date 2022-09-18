@@ -5,6 +5,7 @@
 
 from common import getConfig
 from dns import dns
+from helper import getServiceName
 from kubernetes_ride_the_lightning import ride_the_lightning
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_cluster import cluster
@@ -73,7 +74,7 @@ def GenerateConfig(context):
             {
                 "name": config["env"] + "-ingress",
                 "type": cluster_types["Ingress"],
-                "metadata": {"dependsOn": [kube_type_name]},
+                "metadata": {"dependsOn": [kube_type_name, config["env"] + "-ip"]},
                 "properties": {
                     "apiVersion": "networking.k8s.io/v1",
                     "kind": "Ingress",
@@ -82,14 +83,13 @@ def GenerateConfig(context):
                         "name": config["env"] + "-ingress",
                         "annotations": {
                             # "kubernetes.io/ingress.class": "nginx",
-#                             "nginx.org/websocket-services": api_base_name + "-service",
-#                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
-#                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
-#                             "nginx.ingress.kubernetes.io/configuration-snippet": """
-#    proxy_http_version 1.1;
-#    proxy_set_header Upgrade "websocket";
-#    proxy_set_header Connection "Upgrade";""",
-   
+                            #                             "nginx.org/websocket-services": api_base_name + "-service",
+                            #                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
+                            #                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
+                            #                             "nginx.ingress.kubernetes.io/configuration-snippet": """
+                            #    proxy_http_version 1.1;
+                            #    proxy_set_header Upgrade "websocket";
+                            #    proxy_set_header Connection "Upgrade";""",
                             "kubernetes.io/ingress.global-static-ip-name": config["env"]
                             + "-ip"
                         },
@@ -97,8 +97,8 @@ def GenerateConfig(context):
                     "spec": {
                         "defaultBackend": {
                             "service": {
-                                "name": ride_the_lightning_base_name + "-service",
-                                "port": {"number": 3000},
+                                "name": getServiceName(ride_the_lightning_base_name),
+                                "port": {"number": config["rtl"]["port"]},
                             }
                         },
                         "tls": [
@@ -122,9 +122,10 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": ride_the_lightning_base_name
-                                                    + "-service",
-                                                    "port": {"number": 3000},
+                                                    "name": getServiceName(ride_the_lightning_base_name),
+                                                    "port": {
+                                                        "number": config["rtl"]["port"]
+                                                    },
                                                 }
                                             },
                                         }
@@ -140,7 +141,7 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": bitcoin_base_name + "-zeromq-service",
+                                                    "name":getServiceName(bitcoin_base_name + "-zeromq"),
                                                     "port": {"number": 5555},
                                                 }
                                             },
@@ -157,9 +158,14 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": lightning_rest_base_name
-                                                    + "-service",
-                                                    "port": {"number": 3001},
+                                                    "name": getServiceName(
+                                                        lightning_rest_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": config[
+                                                            "lightningRest"
+                                                        ]["port"]
+                                                    },
                                                 }
                                             },
                                         }
@@ -176,8 +182,12 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": api_base_name + "-service",
-                                                    "port": {"number": 3000},
+                                                    "name": getServiceName(
+                                                        api_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": config["api"]["port"]
+                                                    },
                                                 }
                                             },
                                         }
@@ -193,8 +203,12 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": api_base_name + "-service",
-                                                    "port": {"number": 3000},
+                                                    "name": getServiceName(
+                                                        api_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": config["api"]["port"]
+                                                    },
                                                 }
                                             },
                                         },
@@ -203,11 +217,17 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": api_base_name + "-service",
-                                                    "port": {"number": 3001},
+                                                    "name": getServiceName(
+                                                        api_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": config["api"][
+                                                            "websocketPort"
+                                                        ]
+                                                    },
                                                 }
                                             },
-                                        }
+                                        },
                                     ]
                                 },
                             },

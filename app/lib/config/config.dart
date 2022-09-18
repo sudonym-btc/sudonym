@@ -23,6 +23,17 @@ class DevConfig implements Config {
   num websocketPort = 443;
 }
 
+@test
+@Injectable(as: Config, env: [Env.test])
+class TestConfig implements Config {
+  @override
+  String apiUrl = 'https://test.sudonym.app';
+  @override
+  num apiPort = 443;
+  @override
+  num websocketPort = 443;
+}
+
 @prod
 @Injectable(as: Config, env: [Env.prod])
 class ProdConfig implements Config {

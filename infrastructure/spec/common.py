@@ -5,7 +5,7 @@ config = {
         "domain": "sudonym.app",
         "bitcoin": {
             "rpcPort": 8332,
-            "port": 8333
+            "port": 8333,
         },
         "lightning": {
             "port": 9735
@@ -20,7 +20,8 @@ config = {
         "api": {
             "port": 3000,
             "websocketPort": 3001
-        }
+        },
+        "backup": True,
     },
     "production": {
         "project": "sudonym-lightning-test",
@@ -48,6 +49,7 @@ config = {
         "env": "development",
         "domain": "local.development",
         "network": "regtest",
+        "backup": False,
     }
 }
 

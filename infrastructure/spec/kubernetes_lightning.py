@@ -91,7 +91,7 @@ def lightning(config, cluster_types):
                     "kind": "Deployment",
                     "namespace": "default",
                     "metadata": {
-                        "name": getDeploymentName(base_name),
+                        "name": getDeploymentName(base_name, num),
                         "labels": {"app": base_name},
                     },
                     "spec": {
@@ -108,29 +108,26 @@ def lightning(config, cluster_types):
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
                                         "lifecycle": {
-                                            "postStart": {
-                                                "exec": {
-                                                    "command": [
-                                                        "sh",
-                                                        "-c",
-                                                        "mkdir -p /lightning/"
-                                                        + config["network"]
-                                                        + " >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-lightning-backup /lightning/"
-                                                        + config["network"]
-                                                        + ")",
-                                                    ]  # --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs
-                                                }
-                                            },
+                                            # "postStart": {
+                                            #     "exec": {
+                                            #         "command": [
+                                            #             "sh",
+                                            #             "-c",
+                                            #         ]  # --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs
+                                            #     }
+                                            # },
                                             "preStop": {
                                                 "exec": {
                                                     "command": [
                                                         "fusermount",
                                                         "-u",
-                                                        "/home/backup",
+                                                        "/lightning",
                                                     ],
                                                 }
                                             },
-                                        },
+                                        }
+                                        if config["backup"]
+                                        else {},
                                         "name": base_name,
                                         "image": "gcr.io/"
                                         + config["project"]
@@ -139,7 +136,16 @@ def lightning(config, cluster_types):
                                         "command": [
                                             "/bin/sh",
                                             "-ec",
-                                            "sleep 20; ./entrypoint.sh "
+                                            (
+                                                "mkdir -p /lightning/"
+                                                + config["network"]
+                                                + " >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-lightning-backup /lightning/"
+                                                + config["network"]
+                                                + ") &&"
+                                                if config["backup"]
+                                                else ""
+                                            )
+                                            + " ./entrypoint.sh "
                                             + " ".join(
                                                 [
                                                     "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",

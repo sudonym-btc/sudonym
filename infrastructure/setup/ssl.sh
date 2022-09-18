@@ -8,4 +8,6 @@ helm install \
   --namespace cert-manager \
   --create-namespace \
   --version v1.7.1 
-kubectl apply -f infrastructure/ssl/certs.yaml --cluster gke_$sudonym-lightning-test_us-central1-c_staging-cluster
+gcloud container clusters get-credentials test-cluster --zone us-central1-c --project sudonym-lightning-test
+
+kubectl apply -f infrastructure/ssl/certs.yaml

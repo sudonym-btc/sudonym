@@ -1,11 +1,4 @@
-from zlib import crc32
-
-
 def dns(config, cluster_types):
-
-    # We are going to use this type provider all over the place, so get it into a
-    # local variable for easy use.
-    dnsTypeProvider = "gcp-types/dns-v1"
 
     # Create the zone.
     zoneName = config["env"] + "-zone"
@@ -13,143 +6,147 @@ def dns(config, cluster_types):
     domain = ("" if config["env"] != "production" else config["env"] + ".") + config[
         "domain"
     ]
-    
-    records = [
-        {
-            "name": "api." + domain + ".",
-            "type": "A",
-            "ttl": 3600,
-            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
-        },
-        {
-            "name": "rtl." + domain + ".",
-            "type": "A",
-            "ttl": 3600,
-            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
-        },
-        {
-            "name": "app." + domain + ".",
-            "type": "A",
-            "ttl": 3600,
-            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
-        },
-        {
-            "name": domain + ".",
-            "type": "A",
-            "ttl": 3600,
-            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
-        },
-        # GOOGLE DOMAIN EMAIL ETC
-        {
-            "name": domain + ".",
-            "type": "MX",
-            "ttl": 300,
-            "rrdatas": [
-                "1 aspmx.l.google.com.",
-                "5 alt1.aspmx.l.google.com.",
-                "5 alt2.aspmx.l.google.com.",
-                "10 alt3.aspmx.l.google.com.",
-                "10 alt4.aspmx.l.google.com.",
-            ],
-        },
-        {
-            "name": domain + ".",
-            "type": "SPF",
-            "ttl": 3600,
-            "rrdatas": [
-                '"v=spf1 include:_spf.google.com ~all"',
-            ],
-        },
-        {
-            "name": domain + ".",
-            "type": "TXT",
-            "ttl": 3600,
-            "rrdatas": [
-                '"v=spf1 include:_spf.google.com ~all"',
-            ],
-        },
-        {
-            "name": "google._domainkey." + domain + ".",
-            "type": "TXT",
-            "ttl": 3600,
-            "rrdatas": [
-                '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5fSri/lTTkAQi31waZIucur+3n6ldkOVkqpzIWqIha9cdNICtX2u+fzbqUuSMdWluUtYZ10G4tuo00FFdekSQQbOBTjLYFY3GPgtiktzO+96OJMu7OBf3FwIHoufR0AU3txd3ALrr2l6TBjyR2uvviG+S1QXn39XDDgeiLzGzRMij2GLDO2MRzDxdA5DT2alC" "qIrzC2SI3HWaN5Y3JNyYTE68QhFviGITm+5z1Mhj4lO5Su+mGcGhjjjEAzxcel7jE4hXc1Bget2Km223WKD+ahc7hRe/bsDMfL2S1sTVQFv+PICirZf/jEtyyRjgJa72vaRMmD23lZLC1nvR/bJwQIDAQAB"',
-            ],
-        },
-    ]
 
-    resourceSets = []
+    mainZone = "production-zone"
+    mainDomain = ".".join(domain.split(".")[-2:])
 
-    for record in records:
-
-        resourceSets += [
+    resources = (
+        [
             {
-                "name": "%(stableName)s-create"
-                % {"stableName": GenerateStableResourceRecordSetName(record)},
-                "action": "%(dnsTypeProvider)s:dns.changes.create"
-                % {"dnsTypeProvider": dnsTypeProvider},
-                "metadata": {
-                    "dependsOn": [zoneName],
-                    "runtimePolicy": [
-                        "CREATE",
-                    ],
-                },
+                "name": config["env"] + "-ip",
+                "type": "compute.v1.globalAddress",
                 "properties": {
-                    "managedZone": "$(ref.%(zoneName)s.name)" % {"zoneName": zoneName},
-                    "additions": [record],
+                    "name": config["env"] + "-ip",
+                    "description": config["env"] + "-ip description",
+                    "networkTier": "PREMIUM",
+                    "ipVersion": "IPV4",
                 },
             },
-            # Change to delete it.
+            #  Create a zone for the root url
             {
-                "name": "%(stableName)s-delete"
-                % {"stableName": GenerateStableResourceRecordSetName(record)},
-                "action": "%(dnsTypeProvider)s:dns.changes.create"
-                % {"dnsTypeProvider": dnsTypeProvider},
-                "metadata": {
-                    "dependsOn": [zoneName],
-                    "runtimePolicy": [
-                        "DELETE",
-                    ],
-                },
+                "name": mainZone,
+                "type": "gcp-types/dns-v1:managedZones",
                 "properties": {
-                    "managedZone": "$(ref.%(zoneName)s.name)" % {"zoneName": zoneName},
-                    "deletions": [record],
+                    "description": "A managed zone",
+                    "dnsName": mainDomain + ".",
                 },
             },
         ]
-
-    resources = [
-        {
-            "name": zoneName,
-            "type": "dns.v1.managedZone",
-            "properties": {
-                "cloudLoggingConfig": {"enableLogging": False},
-                "description": "Main Zone for " + config["env"],
-                "dnsName": config["domain"] + ".",
-                "name": zoneName,
-                "visibility": "public",
+        # Create a separate zone for the subdomain if we are not in production
+        + (
+            [
+                {
+                    "name": zoneName,
+                    "type": "gcp-types/dns-v1:managedZones",
+                    "properties": {
+                        "description": "A managed zone",
+                        "dnsName": domain + ".",
+                    },
+                },
+            ]
+            if mainZone != zoneName
+            else []
+        )
+        + [
+            {
+                "name": domain + ".",
+                "metadata": {"dependsOn": [zoneName]},
+                "type": "gcp-types/dns-v1:resourceRecordSets",
+                "properties": {
+                    "managedZone": "$(ref." + zoneName + ".name)",
+                    "records": [
+                        {
+                            "name": "rtl." + domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                        },
+                        {
+                            "name": "api." + domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                        },
+                        {
+                            "name": "app." + domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                        },
+                        {
+                            "name": domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                        },
+                    ],
+                },
             },
-        },
-        {
-            "name": config["env"] + "-ip",
-            "type": "compute.v1.globalAddress",
-            "properties": {
-                "name": config["env"] + "-ip",
-                "description": config["env"] + "-ip description",
-                "networkTier": "PREMIUM",
-                "ipVersion": "IPV4",
+            {
+                "name": mainDomain + ".",
+                "metadata": {"dependsOn": [mainZone]},
+                "type": "gcp-types/dns-v1:resourceRecordSets",
+                "properties": {
+                    "managedZone": "$(ref." + mainZone + ".name)",
+                    "records": [
+                        # {
+                        #     "name": "test." + mainDomain + ".",
+                        #     "rrdatas": [
+                        #         "ns-cloud-d1.googledomains.com.",
+                        #         "ns-cloud-d2.googledomains.com..",
+                        #         "ns-cloud-d3.googledomains.com.",
+                        #         "ns-cloud-d4.googledomains.com."
+                        #     ],
+                        #     "ttl": 60,
+                        #     "type": "NS",
+                        # },
+                        # {
+                        #     "name": "staging." + mainDomain + ".",
+                        #     "rrdatas": [
+                        #         "ns-cloud-d1.googledomains.com.",
+                        #         "ns-cloud-d2.googledomains.com..",
+                        #         "ns-cloud-d3.googledomains.com.",
+                        #         "ns-cloud-d4.googledomains.com."
+                        #     ],
+                        #     "ttl": 60,
+                        #     "type": "NS",
+                        # },
+                        {
+                            "name": mainDomain + ".",
+                            "rrdatas": [
+                                "1 aspmx.l.google.com.",
+                                "5 alt1.aspmx.l.google.com.",
+                                "5 alt2.aspmx.l.google.com.",
+                                "10 alt3.aspmx.l.google.com.",
+                                "10 alt4.aspmx.l.google.com.",
+                            ],
+                            "ttl": 3600,
+                            "type": "MX",
+                        },
+                        {
+                            "name": mainDomain + ".",
+                            "rrdatas": ['"v=spf1 include:_spf.google.com ~all"'],
+                            "ttl": 3600,
+                            "type": "SPF",
+                        },
+                        {
+                            "name": mainDomain + ".",
+                            "rrdatas": ['"v=spf1 include:_spf.google.com ~all"'],
+                            "ttl": 3600,
+                            "type": "TXT",
+                        },
+                        {
+                            "name": "google._domainkey.sudonym.app.",
+                            "rrdatas": [
+                                '"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5fSri/lTTkAQi31waZIucur+3n6ldkOVkqpzIWqIha9cdNICtX2u+fzbqUuSMdWluUtYZ10G4tuo00FFdekSQQbOBTjLYFY3GPgtiktzO+96OJMu7OBf3FwIHoufR0AU3txd3ALrr2l6TBjyR2uvviG+S1QXn39XDDgeiLzGzRMij2GLDO2MRzDxdA5DT2alC" "qIrzC2SI3HWaN5Y3JNyYTE68QhFviGITm+5z1Mhj4lO5Su+mGcGhjjjEAzxcel7jE4hXc1Bget2Km223WKD+ahc7hRe/bsDMfL2S1sTVQFv+PICirZf/jEtyyRjgJa72vaRMmD23lZLC1nvR/bJwQIDAQAB"'
+                            ],
+                            "ttl": 3600,
+                            "type": "TXT",
+                        },
+                    ],
+                },
             },
-        }
-        
-    ] + resourceSets
+        ]
+    )
 
     return {"resources": resources}
-
-
-def GenerateStableResourceRecordSetName(resourceRecordSet):
-    return "%(name)s-%(type)s-%(ttl)s-%(rrdataHash)s" % {
-        "name": resourceRecordSet["name"],
-        "type": resourceRecordSet["type"].lower(),
-        "ttl": resourceRecordSet["ttl"],
-        "rrdataHash": crc32('\0'.join(resourceRecordSet["rrdatas"]).encode()),
-    }

@@ -3,7 +3,7 @@ if [ "$(uname)" = "Darwin" ] || [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; 
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     brew tap homebrew/core
-    brew install nvm minikube gh ksync python jq
+    brew install nvm minikube gh ksync python jq helm
 
     if [ "$(uname)" = "Darwin" ]; then
 

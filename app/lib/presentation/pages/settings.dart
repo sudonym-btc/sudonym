@@ -24,41 +24,44 @@ class SettingsPage extends StatelessWidget {
                     AppBar(title: Text(AppLocalizations.of(context)!.settings)),
                 body: Container(
                   padding: const EdgeInsets.all(padding),
-                  child: CustomForm(
-                    cubit: getIt<UserCubit>(),
-                    entity: getIt<AuthCubit>().user!,
-                    children: [
-                      FormBuilderTextField(
-                        name: 'lightningAddress',
-                        initialValue: getIt<AuthCubit>().user!.lightningAddress,
-                        decoration: InputDecoration(
-                            hintText: 'e.g. satoshi',
-                            labelText:
-                                AppLocalizations.of(context)!.lightningAddress,
-                            suffixText: '@sudonym.app'),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                      Button(
-                          text: 'Add Pot',
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditPot(
-                                            entity: Pot.fromJson({
-                                          'name': '',
-                                          'currency': 'BTC',
-                                          'spendableBalance': 0,
-                                          'balance': 0
-                                        }))));
-                          }),
-                    ],
-                  ),
+                  child: Column(children: [
+                    CustomForm(
+                      cubit: getIt<UserCubit>(),
+                      entity: getIt<AuthCubit>().user!,
+                      children: [
+                        FormBuilderTextField(
+                          name: 'lightningAddress',
+                          initialValue:
+                              getIt<AuthCubit>().user!.lightningAddress,
+                          decoration: InputDecoration(
+                              hintText: 'e.g. satoshi',
+                              labelText: AppLocalizations.of(context)!
+                                  .lightningAddress,
+                              suffixText: '@sudonym.app'),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                    Button(
+                        text: 'Add Pot',
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditPot(
+                                          entity: Pot.fromJson({
+                                        'name': '',
+                                        'currency': 'BTC',
+                                        'spendableBalance': 0,
+                                        'balance': 0
+                                      }))));
+                        }),
+                  ]),
                 ))));
   }
 }

@@ -1,7 +1,7 @@
 name: "tests"
 on:
   pull_request:
-    branches: [production, staging]
+    branches: [production, staging, test]
 jobs:
   test_flutter:
     runs-on: ubuntu-latest

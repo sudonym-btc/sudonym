@@ -1,4 +1,10 @@
-from helper import getBackupName, getDeploymentName, getSecretName, getServiceName, getVolumeClaimName
+from helper import (
+    getBackupName,
+    getDeploymentName,
+    getSecretName,
+    getServiceName,
+    getVolumeClaimName,
+)
 from kubernetes_cluster import cluster
 
 
@@ -11,9 +17,7 @@ def bitcoin(config, cluster_types):
             {
                 "type": "storage.v1.bucket",
                 "name": "sudonym-" + getBackupName(base_name),
-                "properties": {
-                    "project": config["project"]
-                },
+                "properties": {"project": config["project"]},
             },
             {
                 "name": getSecretName(base_name),
@@ -99,7 +103,10 @@ def bitcoin(config, cluster_types):
                     "apiVersion": "apps/v1",
                     "kind": "Deployment",
                     "namespace": "default",
-                    "metadata": {"name": getDeploymentName(base_name), "labels": {"app": base_name}},
+                    "metadata": {
+                        "name": getDeploymentName(base_name),
+                        "labels": {"app": base_name},
+                    },
                     "spec": {
                         "strategy": {"type": "Recreate"},
                         "replicas": 1,
@@ -121,26 +128,37 @@ def bitcoin(config, cluster_types):
                                                     ]
                                                 }
                                             },
-                                        },
+                                        }
+                                        if config["backup"]
+                                        else {},
                                         "name": base_name,
-                                        "image": "gcr.io/" + config["project"] + "/fuse-bitcoin",
+                                        "image": "gcr.io/"
+                                        + config["project"]
+                                        + "/fuse-bitcoin",
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "command": [
                                             "sh",
                                             "-c",
-                                            "mkdir /bitcoin/backup >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-bitcoin-backup /bitcoin/backup) && cp -a /bitcoin/backup/. /bitcoin/.bitcoin && bitcoind "
+                                            (
+                                                "mkdir /bitcoin/backup >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-bitcoin-backup /bitcoin/backup) && cp -a /bitcoin/backup/. /bitcoin/.bitcoin && "
+                                                if config["backup"]
+                                                else ""
+                                            )
+                                            + "bitcoind "
                                             + " ".join(
                                                 [
                                                     "-server",
                                                     "-rest",
                                                     "-txindex",
                                                     "-datadir=/bitcoin/.bitcoin",
-                                                    "-port=" + str(config["bitcoin"]["port"]),
+                                                    "-port="
+                                                    + str(config["bitcoin"]["port"]),
                                                     "-rpcuser=$(BITCOIN_RPC_USER)",
                                                     "-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
                                                     "-rpcallowip=0.0.0.0/0",
                                                     "-rpcallowip=::/0",
-                                                    "-rpcport=" + str(config["bitcoin"]["rpcPort"]),
+                                                    "-rpcport="
+                                                    + str(config["bitcoin"]["rpcPort"]),
                                                     "-rpcbind=0.0.0.0",
                                                     "-rpcbind=" + base_name,
                                                     "-zmqpubrawtx=tcp://*:5555",
@@ -160,7 +178,7 @@ def bitcoin(config, cluster_types):
                                                     else []
                                                 ),
                                             ),
-                                        ],  #
+                                        ],
                                         "env": [
                                             {
                                                 "name": "BITCOIN_RPC_USER",
@@ -182,8 +200,18 @@ def bitcoin(config, cluster_types):
                                             },
                                         ],
                                         "ports": [
-                                            {"containerPort": config["bitcoin"]["rpcPort"], "name": "rpc"},
-                                            {"containerPort": config["bitcoin"]["port"], "name": "bitcoin"},
+                                            {
+                                                "containerPort": config["bitcoin"][
+                                                    "rpcPort"
+                                                ],
+                                                "name": "rpc",
+                                            },
+                                            {
+                                                "containerPort": config["bitcoin"][
+                                                    "port"
+                                                ],
+                                                "name": "bitcoin",
+                                            },
                                             {
                                                 "containerPort": 5555,
                                                 "name": "zeromq",
