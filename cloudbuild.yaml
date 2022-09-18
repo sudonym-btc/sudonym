@@ -1,6 +1,6 @@
 steps:
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '--target', 'development', '-f', 'api/Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
 - id: 'Setting API image tag'
   name: ubuntu
