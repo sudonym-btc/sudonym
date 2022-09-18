@@ -2,11 +2,13 @@ steps:
 # - name: 'gcr.io/cloud-builders/docker'
 #   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
+- id: 'Setting API image tag'
+  name: ubuntu
+  args: ['bash','-c','sed -i "s,api:latest,api:$SHORT_SHA," infrastrucure/spec/kubernetes_api.py']
+
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
   args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
-  env:
-    - "API_VERSION=$SHORT_SHA"
 
 images:
   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
