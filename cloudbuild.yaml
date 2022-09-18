@@ -4,7 +4,7 @@ steps:
 
 - id: 'Setting API image tag'
   name: ubuntu
-  args: ['bash','-c','sed -i "s,api:latest,api:$SHORT_SHA," infrastrucure/spec/kubernetes_api.py']
+  args: ['bash','-c','sed -i "s,api:latest,api:$SHORT_SHA," infrastructure/spec/kubernetes_api.py']
 
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
