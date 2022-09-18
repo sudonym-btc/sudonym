@@ -4,7 +4,7 @@ steps:
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'sh'
-  args: ['-c /bin/ls && sh -c "infrastructure/deploy.sh $BRANCH_NAME"']
+  args: ['/bin/ls && sh infrastructure/deploy.sh $BRANCH_NAME']
 
 images:
   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
