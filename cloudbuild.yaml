@@ -4,7 +4,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
-  args: ['-c "ls"']
+  args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
 
 images:
   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
