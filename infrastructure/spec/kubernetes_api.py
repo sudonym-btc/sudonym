@@ -1,3 +1,4 @@
+import os
 from helper import getDeploymentName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
@@ -65,7 +66,7 @@ def api(config, cluster_types):
                                "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "gcr.io/" + config["project"] + "/api:latest",
+                                        "image": "gcr.io/" + config["project"] + "/api:" + (os.environ['API_VERSION'] if os.environ['API_VERSION'] else "latest"),
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "volumeMounts": [
                                             {
