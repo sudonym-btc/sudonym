@@ -3,8 +3,8 @@ steps:
 #   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'sh'
-  args: ['/bin/ls && sh infrastructure/deploy.sh $BRANCH_NAME']
+  entrypoint: 'ls'
+  args: ['&& sh infrastructure/deploy.sh $BRANCH_NAME']
 
 images:
   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
