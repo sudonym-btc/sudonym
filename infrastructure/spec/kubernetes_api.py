@@ -66,6 +66,9 @@ def api(config, cluster_types):
                                     {
                                         "name": base_name,
                                         "image": "gcr.io/" + config["project"] + "/api:latest",
+                                        "env": {
+                                            "NODE_ENV": "development"
+                                        },
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "volumeMounts": [
                                             {
