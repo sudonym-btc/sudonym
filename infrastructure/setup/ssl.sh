@@ -11,3 +11,4 @@ helm install \
 gcloud container clusters get-credentials test-cluster --zone us-central1-c --project sudonym-lightning-test
 
 kubectl apply -f infrastructure/ssl/certs.yaml
+# TODO: add to cloud build
