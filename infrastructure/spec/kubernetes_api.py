@@ -65,7 +65,7 @@ def api(config, cluster_types):
                                "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "gcr.io/" + config["project"] + "/api:$SHORT_SHA",
+                                        "image": "gcr.io/" + config["project"] + "/api:latest",
                                         "resources": {"requests": {"cpu": "40m"}},
                                         "volumeMounts": [
                                             {
