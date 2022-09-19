@@ -43,6 +43,13 @@ steps:
   - 'pipefail'
   - '-c'
   - |-
+    helm install 
+      cert-manager jetstack/cert-manager 
+      --namespace cert-manager 
+      --create-namespace 
+      --version v1.7.1 
+      --set installCRDs=true &&
+    kubectl apply -f infrastructure/ssl/certs.yaml
     
   env:
   # Set region for regional GKE clusters or Zone for Zonal clusters
