@@ -17,7 +17,7 @@ steps:
   - 'pipefail'
   - '-c'
   - |-
-    if [[ -z `gcloud artifacts docker images describe location-docker.pkg.dev/$PROJECT_ID/repository/image:latest --verbosity=none --format=text` ]]
+    if [[ -z `gcloud artifacts docker images describe gcr.io/$PROJECT_ID/helm:latest --verbosity=none --format=text` ]]
     then
       gcloud builds submit infrastructure/cloud-builders-community/helm --config=infrastructure/cloud-builders-community/helm/cloudbuild.yaml
     else
@@ -43,11 +43,11 @@ steps:
   - 'pipefail'
   - '-c'
   - |-
-    helm install 
-      cert-manager jetstack/cert-manager 
-      --namespace cert-manager 
-      --create-namespace 
-      --version v1.7.1 
+    helm install \
+      cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --create-namespace \
+      --version v1.7.1 \
       --set installCRDs=true &&
     kubectl apply -f infrastructure/ssl/certs.yaml
     
