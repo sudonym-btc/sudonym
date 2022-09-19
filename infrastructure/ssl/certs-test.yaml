@@ -24,9 +24,8 @@ kind: Certificate
 metadata:
   name: dns-tls
 spec:
-  secretName: self-signed-tls
+  secretName: test-tls
   dnsNames:
   - "*.test.sudonym.app"
-  - "*.staging.sudonym.app"
   issuerRef:
     name: dns-issuer
