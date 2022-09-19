@@ -62,10 +62,6 @@ steps:
       - "TILLERLESS=true"
       - "TILLER_NAMESPACE=test"
 
-  - id: 'Changing certificate on ingress'
-    name: ubuntu
-    args: ['bash','-c','sed "s/self-signed-tls/$BRANCH_NAME-tls/g" -i infrastructure/spec/kubernetes.py']
-
 substitutions:
     _CLOUDSDK_COMPUTE_REGION: us-central1-c
     _CLOUDSDK_CONTAINER_CLUSTER: $BRANCH_NAME

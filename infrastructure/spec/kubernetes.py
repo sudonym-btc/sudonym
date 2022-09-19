@@ -109,7 +109,7 @@ def GenerateConfig(context):
                                     "lightning-rest." + config["domain"],
                                     # "bitcoin-mq." + config["domain"],
                                 ],
-                                "secretName": "self-signed-tls",
+                                "secretName": config["env"] + "-tls",
                             }
                         ],
                         "rules": [
