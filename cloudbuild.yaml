@@ -43,7 +43,7 @@ steps:
   - 'pipefail'
   - '-c'
   - |-
-    gcloud container clusters get-credentials --zone "$$CLOUDSDK_COMPUTE_ZONE" "$$CLOUDSDK_CONTAINER_CLUSTER" &&
+    gcloud container clusters get-credentials --zone "$(CLOUDSDK_COMPUTE_ZONE)" "$(CLOUDSDK_CONTAINER_CLUSTER)" &&
 
     helm install \
       cert-manager jetstack/cert-manager \
@@ -69,3 +69,4 @@ steps:
 
 images:
   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/api:latest'
