@@ -1,5 +1,5 @@
 steps:
-  - id: 'API'
+  - id: 'api'
     name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
@@ -9,7 +9,7 @@ steps:
     name: ubuntu
     args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
 
-  - id: 'Deploy'
+  - id: 'deploy'
     name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
