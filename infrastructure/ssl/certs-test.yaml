@@ -26,6 +26,9 @@ metadata:
 spec:
   secretName: test-tls
   dnsNames:
-  - "*.test.sudonym.app"
+  - "rtl.test.sudonym.app"
+  - "api.test.sudonym.app"
+  - "test.sudonym.app"
+  - "btc.sudonym.app"
   issuerRef:
     name: dns-issuer
