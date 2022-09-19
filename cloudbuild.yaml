@@ -42,10 +42,10 @@ steps:
           --version v1.7.1 \
           --set installCRDs=true &&
         (kubectl get secret clouddns-dns01-solver-svc-acct >/dev/null 2>&1 && echo no || 
-        gcloud iam service-accounts keys create key.json \
+        (gcloud iam service-accounts keys create key.json \
         --iam-account dns01-solver@$PROJECT_ID.iam.gserviceaccount.com &&
         kubectl create secret generic clouddns-dns01-solver-svc-acct \
-        --from-file=key.json) &&
+        --from-file=key.json)) &&
         kubectl apply -f infrastructure/ssl/certs-$BRANCH_NAME.yaml
 
     env:
