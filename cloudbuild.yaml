@@ -46,9 +46,9 @@ steps:
     
   env:
   # Set region for regional GKE clusters or Zone for Zonal clusters
-  - 'CLOUDSDK_COMPUTE_REGION=<>'
+  - 'CLOUDSDK_COMPUTE_REGION=us-central1-c'
     # Name of GKE cluster
-  - 'CLOUDSDK_CONTAINER_CLUSTER=$(BRANCH_NAME)-cluster'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$BRANCH_NAME-cluster'
     # (Optional) Project of GKE Cluster, only if you want helm to authenticate
     # to a GKE cluster in another project (requires IAM Service Accounts are properly setup)
   - GCLOUD_PROJECT=$PROJECT_ID
