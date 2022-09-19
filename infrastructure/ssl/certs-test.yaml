@@ -15,7 +15,7 @@ spec:
           project: sudonym-lightning-test
           # This is the secret used to access the service account
           serviceAccountSecretRef:
-            name: clouddns-dns01-solver-svc-acct1
+            name: clouddns-dns01-solver-svcs-acct1
             key: key.json
 
 ---
