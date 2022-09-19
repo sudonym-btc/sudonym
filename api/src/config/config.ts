@@ -11,29 +11,31 @@ const configs = {
 	production: configProduction,
 };
 
-// console.log(process.env);
+const env = process.env.NODE_ENV || 'development';
+
+console.log(process.env, env);
 // process.exit();
 export const getConfig = () => {
 	return {
 		...config,
-		...configs[process.env.NODE_ENV || 'development'],
+		...configs[env],
 	};
 };
 
 export const config = {
-	env: process.env.NODE_ENV || 'development',
+	env,
 	selfUrl: cmdargs.selfUrl
 		? cmdargs.selfUrl
 		: 'https://api.' + getConfig().domain,
 	lightningREST: cmdargs.lightning
 		? cmdargs.lightning
 		: 'http://' +
-		  getConfig().env +
+		  env +
 		  '-c-lightning-rest-service.default.svc.cluster.local:3001',
 	bitcoinMQ: cmdargs.bitcoinMQ
 		? cmdargs.bitcoinMQ.replace('https', 'tcp')
 		: 'tcp://' +
-		  getConfig().env +
+		  env +
 		  '-bitcoin-zeromq-service.default.svc.cluster.local:5555',
 	macaroonFile: './certs/access.macaroon',
 	database: {
@@ -44,3 +46,5 @@ export const config = {
 		dialect: 'mysql',
 	},
 };
+
+console.log(getConfig());
