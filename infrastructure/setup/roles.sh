@@ -13,3 +13,9 @@ project_num=$(gcloud projects describe $(gcloud config get project) --format="va
 gcloud projects add-iam-policy-binding $project \
     --member="serviceAccount:$project_num@cloudbuild.gserviceaccount.com" \
     --role="roles/deploymentmanager.editor"
+
+gcloud projects add-iam-policy-binding $project \
+    --member="serviceAccount:$project_num@cloudbuild.gserviceaccount.com" \
+    --role="roles/container.developer"
+
+    
