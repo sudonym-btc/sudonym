@@ -42,7 +42,7 @@ steps:
       - "pipefail"
       - "-c"
       - |-
-        gcloud container clusters get-credentials --zone "${_CLOUDSDK_COMPUTE_REGION}" "${_CLOUDSDK_CONTAINER_CLUSTER}" &&
+        gcloud container clusters get-credentials --zone "${_CLOUDSDK_COMPUTE_REGION}" "${_CLOUDSDK_CONTAINER_CLUSTER}-cluster" &&
 
         helm install \
           cert-manager jetstack/cert-manager \
@@ -56,7 +56,7 @@ steps:
       # Set region for regional GKE clusters or Zone for Zonal clusters
       - "CLOUDSDK_COMPUTE_REGION=${_CLOUDSDK_COMPUTE_REGION}"
         # Name of GKE cluster
-      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}-cluster"
         # (Optional) Project of GKE Cluster, only if you want helm to authenticate
         # to a GKE cluster in another project (requires IAM Service Accounts are properly setup)
       - GCLOUD_PROJECT=$PROJECT_ID
@@ -68,7 +68,7 @@ steps:
 
 substitutions:
     _CLOUDSDK_COMPUTE_REGION: us-central1-c
-    _CLOUDSDK_CONTAINER_CLUSTER: '$BRANCH_NAME-cluster'
+    _CLOUDSDK_CONTAINER_CLUSTER: $BRANCH_NAME
 
 options:
     dynamic_substitutions: true
