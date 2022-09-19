@@ -43,7 +43,7 @@ steps:
   - 'pipefail'
   - '-c'
   - |-
-    gcloud container clusters get-credentials --zone "$CLOUDSDK_COMPUTE_ZONE" "$CLOUDSDK_CONTAINER_CLUSTER" &&
+    gcloud container clusters get-credentials --zone "$$CLOUDSDK_COMPUTE_ZONE" "$$CLOUDSDK_CONTAINER_CLUSTER" &&
 
     helm install \
       cert-manager jetstack/cert-manager \
