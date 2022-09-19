@@ -10,5 +10,28 @@ steps:
   entrypoint: 'bash'
   args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
 
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-eEuo'
+  - 'pipefail'
+  - '-c'
+  - |-
+    if [[ -z `gcloud artifacts docker images describe location-docker.pkg.dev/$PROJECT_ID/repository/image:latest --verbosity=none --format=text` ]]
+    then
+      gcloud builds submit infrastructure/cloud-builders-community/helm --config=infrastructure/cloud-builders-community/helm/cloudbuild.yaml
+    else
+      echo "Image existed"
+    fi
+
+- name: 'gcr.io/$PROJECT_ID/cloud-builders-helm'
+  args: ['upgrade', '--install', 'filebeat', '--namespace', 'filebeat', 'stable/filebeat']
+  env:
+  - 'KUBECONFIG=/workspace/.kube/config'
+  - 'HELM_REPO_NAME=example'
+  - 'HELM_REPO_URL=http://charts.example.com'
+  - 'TILLERLESS=true'
+  - 'TILLER_NAMESPACE=test'
+
 images:
   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
