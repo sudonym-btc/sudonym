@@ -2,13 +2,13 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
-- id: 'Setting API image tag'
-  name: ubuntu
-  args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
+# - id: 'Setting API image tag'
+#   name: ubuntu
+#   args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
 
-- name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: 'bash'
-  args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
+# - name: 'gcr.io/cloud-builders/gcloud'
+#   entrypoint: 'bash'
+#   args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
 
 # - name: 'gcr.io/cloud-builders/gcloud'
 #   entrypoint: 'bash'
@@ -25,48 +25,48 @@ steps:
 #     fi
 
 
-# # helm repo add jetstack https://charts.jetstack.io
-# # helm repo update
-# # kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/cert-manager.crds.yaml
-# # helm install \
-# #   cert-manager jetstack/cert-manager \
-# #   --namespace cert-manager \
-# #   --create-namespace \
-# #   --version v1.7.1 
-# # gcloud container clusters get-credentials test-cluster --zone us-central1-c --project sudonym-lightning-test
+# helm repo add jetstack https://charts.jetstack.io
+# helm repo update
+# kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/cert-manager.crds.yaml
+# helm install \
+#   cert-manager jetstack/cert-manager \
+#   --namespace cert-manager \
+#   --create-namespace \
+#   --version v1.7.1 
+# gcloud container clusters get-credentials test-cluster --zone us-central1-c --project sudonym-lightning-test
 
-# # kubectl apply -f infrastructure/ssl/certs.yaml
-# - name: 'gcr.io/$PROJECT_ID/helm'
-#   entrypoint: 'bash'
-#   args:
-#   - '-eEuo'
-#   - 'pipefail'
-#   - '-c'
-#   - |-
-#     gcloud container clusters get-credentials --zone "$(CLOUDSDK_COMPUTE_ZONE)" "$(CLOUDSDK_CONTAINER_CLUSTER)" &&
+# kubectl apply -f infrastructure/ssl/certs.yaml
+- name: 'gcr.io/$PROJECT_ID/helm'
+  entrypoint: 'bash'
+  args:
+  - '-eEuo'
+  - 'pipefail'
+  - '-c'
+  - |-
+    gcloud container clusters get-credentials --zone "$$CLOUDSDK_COMPUTE_ZONE" "$$CLOUDSDK_CONTAINER_CLUSTER" &&
 
-#     helm install \
-#       cert-manager jetstack/cert-manager \
-#       --namespace cert-manager \
-#       --create-namespace \
-#       --version v1.7.1 \
-#       --set installCRDs=true &&
-#     kubectl apply -f infrastructure/ssl/certs.yaml
+    helm install \
+      cert-manager jetstack/cert-manager \
+      --namespace cert-manager \
+      --create-namespace \
+      --version v1.7.1 \
+      --set installCRDs=true &&
+    kubectl apply -f infrastructure/ssl/certs.yaml
     
-#   env:
-#   # Set region for regional GKE clusters or Zone for Zonal clusters
-#   - 'CLOUDSDK_COMPUTE_REGION=us-central1-c'
-#     # Name of GKE cluster
-#   - 'CLOUDSDK_CONTAINER_CLUSTER=$BRANCH_NAME-cluster'
-#     # (Optional) Project of GKE Cluster, only if you want helm to authenticate
-#     # to a GKE cluster in another project (requires IAM Service Accounts are properly setup)
-#   - GCLOUD_PROJECT=$PROJECT_ID
-#   - 'KUBECONFIG=/workspace/.kube/config'
-#   - 'HELM_REPO_NAME=example'
-#   - 'HELM_REPO_URL=https://charts.jetstack.io'
-#   - 'TILLERLESS=true'
-#   - 'TILLER_NAMESPACE=test'
+  env:
+  # Set region for regional GKE clusters or Zone for Zonal clusters
+  - 'CLOUDSDK_COMPUTE_REGION=us-central1-c'
+    # Name of GKE cluster
+  - 'CLOUDSDK_CONTAINER_CLUSTER=$BRANCH_NAME-cluster'
+    # (Optional) Project of GKE Cluster, only if you want helm to authenticate
+    # to a GKE cluster in another project (requires IAM Service Accounts are properly setup)
+  - GCLOUD_PROJECT=$PROJECT_ID
+  # - 'KUBECONFIG=/workspace/.kube/config'
+  - 'HELM_REPO_NAME=jetstack'
+  - 'HELM_REPO_URL=https://charts.jetstack.io'
+  - 'TILLERLESS=true'
+  - 'TILLER_NAMESPACE=test'
 
-# images:
-#   - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
-#   - 'gcr.io/$PROJECT_ID/api:latest'
+images:
+  - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/api:latest'
