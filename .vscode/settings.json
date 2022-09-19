@@ -14,5 +14,8 @@
             "database": "${workspaceFolder:sudonym}/api/database.sqlite"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }

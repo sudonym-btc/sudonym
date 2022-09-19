@@ -21,7 +21,7 @@ abstract class MockCrudRepository<T extends BaseClass>
   }
 
   @override
-  Future<T> create(T entity) async {
+  Future<T> create(dynamic entity) async {
     var sorted = availableData.map((dynamic e) => e.id).toList();
     sorted.sort();
     (entity as dynamic).id =
@@ -68,7 +68,7 @@ abstract class MockCrudRepository<T extends BaseClass>
   }
 
   @override
-  Future<T> update(T entity) async {
+  Future<T> update(dynamic entity) async {
     await Future.delayed(requestDelay);
     return availableData
         .firstWhere((e) => (e as dynamic).id == (entity as dynamic).id);

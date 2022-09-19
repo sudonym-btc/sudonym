@@ -104,6 +104,7 @@ def GenerateConfig(context):
                         "tls": [
                             {
                                 "hosts": [
+                                    config["domain"],
                                     "api." + config["domain"],
                                     "rtl." + config["domain"],
                                     "lightning-rest." + config["domain"],

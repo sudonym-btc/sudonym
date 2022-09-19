@@ -14,7 +14,9 @@ class LinkService with ActionLogger {
 
   trigger(String link, BuildContext context, [int? potId]) async {
     ActionParseResponse response = await _actionRepository.parse(link);
-
+    print(response);
+    print(response.payment);
+    print(response.withdraw);
     if (response.payment != null) {
       handlePayment(response.payment!, context, potId);
     }

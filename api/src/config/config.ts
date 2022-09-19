@@ -13,8 +13,6 @@ const configs = {
 
 const env = process.env.NODE_ENV || 'development';
 
-console.log(process.env, env);
-// process.exit();
 export const getConfig = () => {
 	return {
 		...config,

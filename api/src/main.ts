@@ -5,10 +5,12 @@ import { WsAdapter } from './module/events/websocket-adapter';
 import { requestLogger } from './helper/logger';
 import { contextRequest } from './helper/context-request';
 import { downloadFiles } from './helper/config-loader';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule);
+	app.useGlobalPipes(new ValidationPipe({ whitelist: false, transform: true }));
 	app.useWebSocketAdapter(new WsAdapter(app));
 	app.use(requestLogger);
 	app.use(contextRequest);

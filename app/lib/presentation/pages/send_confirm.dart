@@ -80,7 +80,7 @@ class SendConfirmPage extends StatelessWidget {
             state.infoData?.fold((l) {
               color = Colors.red;
               title = 'Error';
-              subtitle = l.toString();
+              content = Text(l.toString());
               actions = ButtonBar(
                 children: [
                   ElevatedButton(

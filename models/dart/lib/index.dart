@@ -1,6 +1,7 @@
 export "event.dart";
 export "types/address-parser.dart";
 export "action.dart";
+export "action-parse-response.dart";
 export "action-type.dart";
 export "payment.dart";
 export "payment-request.dart";

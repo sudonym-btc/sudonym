@@ -61,13 +61,13 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
     });
   }
 
-  Future<T> create(T entity) async {
+  Future<T> create(dynamic entity) async {
     return dio.post('/$endpoint', data: entity).then((value) {
       return converter(value.data);
     });
   }
 
-  Future<T> update(T entity) async {
+  Future<T> update(dynamic entity) async {
     return dio
         .put('/$endpoint/${(entity as dynamic).id}', data: entity)
         .then((value) {

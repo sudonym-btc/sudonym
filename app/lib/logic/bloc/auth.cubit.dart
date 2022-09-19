@@ -21,6 +21,14 @@ class AuthCubit extends Cubit<AuthState> {
         websocket.connect();
       }
     });
+
+    _userRepository.updated.stream.listen((event) {
+      if (state.user != null) {
+        if (event.id == state.user!.id) {
+          setUser(event);
+        }
+      }
+    });
   }
 
   User? get user => state.user;
@@ -28,15 +36,19 @@ class AuthCubit extends Cubit<AuthState> {
   loginWithGoogle() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithGoogle();
-    emit(LoadedState(await _userRepository.create(
-        User.fromJson({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
+    emit(LoadedState(await _userRepository
+        .create({'id': user.user!.uid, 'firebaseId': user.user!.uid})));
   }
 
   loginWithFacebook() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithFacebook();
-    emit(LoadedState(await _userRepository.create(
-        User.fromJson({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
+    emit(LoadedState(await _userRepository
+        .create({'id': user.user!.uid, 'firebaseId': user.user!.uid})));
+  }
+
+  setUser(User u) {
+    emit(LoadedState(u));
   }
 
   logout() async {

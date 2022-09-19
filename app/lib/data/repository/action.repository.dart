@@ -13,7 +13,7 @@ class ActionRepositoryImpl extends ActionRepository {
   @override
   Future<ActionParseResponse> parse(String address) {
     return dio.get('/action/parse?address=$address').then((value) {
-      return ActionParseResponse(Action.from(value.data));
+      return ActionParseResponse.fromJson(value.data) as ActionParseResponse;
     });
   }
 
@@ -31,13 +31,13 @@ class ActionRepositoryImpl extends ActionRepository {
 
   @override
   Future<Transaction> pay(Payment p) {
-    return dio.post('/pay',
+    return dio.post('/action',
         data: {'action': p}).then((value) => Transaction.fromJson(value.data));
   }
 
   @override
   Future<Withdraw> withdraw(Withdraw w) {
-    return dio.post('/withdraw',
+    return dio.post('/action',
         data: {'action': w}).then((value) => Withdraw.fromJson(value.data));
   }
 }
@@ -52,14 +52,14 @@ abstract class ActionRepository {
   ActionRepository(this.dio);
 }
 
-class ActionParseResponse {
-  Payment? payment;
-  Withdraw? withdraw;
-  ActionParseResponse(dynamic e) {
-    if (e is Payment) {
-      payment = e;
-    } else if (e is Withdraw) {
-      withdraw = e;
-    }
-  }
-}
+// class ActionParseResponse {
+//   Payment? payment;
+//   Withdraw? withdraw;
+//   ActionParseResponse(dynamic e) {
+//     if (e.payment != null) {
+//       payment = Payment.fromJson(e);
+//     } else if (e.withdraw != null) {
+//       withdraw = Withdraw.fromJson(e);
+//     }
+//   }
+// }

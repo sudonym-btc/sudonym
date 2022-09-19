@@ -16,6 +16,7 @@ import { CurrencyModule } from './module/currency/currency.module';
 import { UserDeviceModule } from './module/user-device/user-device.module';
 import { BalanceUpdaterModule } from './service/balance-updater/balance-updater.module';
 import { ExchangeSettlerModule } from './service/transaction-listener/exchange-settler.module';
+import { ContactModule } from 'module/contact/contact.module';
 
 @Module({
 	imports: [
@@ -28,6 +29,7 @@ import { ExchangeSettlerModule } from './service/transaction-listener/exchange-s
 		EventsModule,
 		AuthModule,
 		UserModule,
+		ContactModule,
 		UserDeviceModule,
 		PotModule,
 		ActionModule,

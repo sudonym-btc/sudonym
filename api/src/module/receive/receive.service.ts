@@ -7,6 +7,7 @@ import * as lnurl from 'lnurl';
 import { getConfig } from 'config/config';
 import { CurrencyCode, MSATOSHIS, TAddressType } from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
+import { ReceiveQuery } from './receive.controller';
 
 @Injectable()
 export class ReceiveService extends BaseService(Receiver) {
@@ -15,32 +16,29 @@ export class ReceiveService extends BaseService(Receiver) {
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 
 	async getInvoice(
-		potId,
-		type: TAddressType,
-		amount = 0,
-		currency: CurrencyCode = 'BTC'
+		query: ReceiveQuery
 	) {
 		const amountInBTC =
-			currency == 'BTC'
-				? amount
-				: (await this.currencyService.convert(currency, 'BTC', amount))
+			query.amountCurrency == 'BTC'
+				? query.amount
+				: (await this.currencyService.convert(query.amountCurrency, 'BTC', query.amount))
 						.amount;
 		const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
-		if (type != 'bolt11' && type != 'lnurl') {
+		if (query.type != 'bolt11' && query.type != 'lnurl') {
 			const exists = await Receiver.findOne({
 				where: {
-					potId,
-					type,
-					amount,
-					currency,
+					potId: query.potId,
+					type: query.type,
+					amount: query.amount,
+					amountCurrency: query.amountCurrency,
 				},
 			});
 			if (exists) return exists;
 		}
 		let data;
 
-		switch (type) {
+		switch (query.type) {
 			case 'bolt11':
 				data = (
 					await this.lightningNodeService.createInvoice(
@@ -55,7 +53,7 @@ export class ReceiveService extends BaseService(Receiver) {
 				break;
 			case 'lnurl':
 				const tag = await this.lnUrlService.createPayRequest(
-					potId,
+					query.potId,
 					mSatoshiAmount
 				);
 				data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);
@@ -66,12 +64,15 @@ export class ReceiveService extends BaseService(Receiver) {
 				).address;
 				break;
 		}
-		return Receiver.create({
-			potId,
+
+		const receiver = await Receiver.create({
+			potId: query.potId,
 			amount: Number(amountInBTC),
 			currency: 'BTC',
-			type,
+			type: query.type,
 			data,
 		});
+
+		return receiver;
 	}
 }

@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
 	MSATOSHIS,
 	Action,
+	ActionParseResponse,
 	Payment,
 	Withdraw,
 	TAddressType,
@@ -26,11 +27,12 @@ export class ActionService {
 	@Inject(AddressParser) addressParser: AddressParser;
 	private readonly logger = new Logger(ActionService.name);
 
-	async parse(invoice): Promise<Action> {
-		return await this.addressParser.parse(invoice);
+	async parse(invoice): Promise<ActionParseResponse> {
+		return ActionParseResponse.from(await this.addressParser.parse(invoice));
 	}
 
 	async getInfo(action: Payment | Withdraw): Promise<Action> {
+		console.log(action);
 		if (action instanceof Payment) {
 			const t = getAddressType(action.originalAddress);
 

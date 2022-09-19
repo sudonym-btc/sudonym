@@ -12,6 +12,8 @@ import { Settlement } from '../module/settlement/settlement.model';
 import { SettlementTransaction } from '../module/settlement-transaction/settlement-transaction.model';
 
 import * as cls from 'cls-hooked';
+import { ContactAddress } from 'module/contact-address/contact-address.model';
+import { Contact } from 'module/contact/contact.model';
 
 const logger = new Logger('DB');
 logger.log('Initializing db:', getConfig().database);
@@ -25,6 +27,8 @@ export const sequelize = new Sequelize({
 	models: [
 		Pot,
 		PotUser,
+		Contact,
+		ContactAddress,
 		Receiver,
 		User,
 		UserDevice,

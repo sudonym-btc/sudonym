@@ -1,6 +1,7 @@
 export * from './event';
 export * from './types/address-parser';
 export * from './action';
+export * from './action-parse-response';
 export * from './action-type';
 export * from './payment';
 export * from './payment-request';

@@ -13,11 +13,12 @@ export class AddressParser implements IAddressParser {
 
 	async parse(address): Promise<Action> {
 		const [type, trimmedAddress] = this.getType(address);
-
 		switch (type) {
 			case 'lightningaddress':
+				console.log("nlnaddress");
 				return Action.from({
-					type: 'pay',
+					originalAddress: trimmedAddress,
+					type: 'payment',
 					remoteResponse: await this.fetchRemoteLightningAddress(
 						trimmedAddress
 					),
@@ -29,13 +30,15 @@ export class AddressParser implements IAddressParser {
 					trimmedAddress
 				);
 				return Action.from({
+					originalAddress: trimmedAddress,
 					type: remoteResponse.data.tag.replace('Request', ''),
 					remoteResponse,
 					isLnUrl: true,
 				});
 			case 'bolt11':
 				return Action.from({
-					type: 'pay',
+					originalAddress: trimmedAddress,
+					type: 'payment',
 					isBolt11: true,
 					remoteResponse: await this.fetchBolt11(trimmedAddress),
 				});
@@ -76,8 +79,11 @@ export class AddressParser implements IAddressParser {
 		}
 
 		const url = `https://${domain}/.well-known/lnurlp/${username}`;
+		console.log(url);
 		const data = await fetch(url, fetchHttpOpts)
-			.then((r) => r.json())
+			.then((r) => {
+				return r.json()
+			})
 			.then((data) => {
 				return {
 					success: true,
@@ -89,6 +95,7 @@ export class AddressParser implements IAddressParser {
 				};
 			})
 			.catch((e) => {
+				console.error(e);
 				return {
 					success: false,
 					message:

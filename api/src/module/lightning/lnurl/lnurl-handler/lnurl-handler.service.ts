@@ -10,9 +10,12 @@ export class LnUrlHandlerService {
 	async handle(id, amount) {
 		const tag = await this.lnUrlService.findOne(id);
 		const receiver = await this.receiveService.getInvoice(
-			tag.potId,
-			'bolt11',
-			amount / MSATOSHIS
+			{
+				potId: tag.potId,
+				type: 'bolt11',
+				amount: amount / MSATOSHIS,
+				amountCurrency: "BTC"
+			}
 		);
 		return {
 			pr: receiver.data,

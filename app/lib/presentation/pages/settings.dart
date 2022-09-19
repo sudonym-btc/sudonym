@@ -9,6 +9,7 @@ import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/components/form/form.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../config/config.dart';
 import '../widgets/pot/edit_pot.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -22,45 +23,47 @@ class SettingsPage extends StatelessWidget {
             child: Scaffold(
                 appBar:
                     AppBar(title: Text(AppLocalizations.of(context)!.settings)),
-                body: Container(
+                body: Padding(
                   padding: const EdgeInsets.all(padding),
                   child: Column(children: [
-                    CustomForm(
-                      cubit: getIt<UserCubit>(),
-                      entity: getIt<AuthCubit>().user!,
-                      children: [
-                        FormBuilderTextField(
-                          name: 'lightningAddress',
-                          initialValue:
-                              getIt<AuthCubit>().user!.lightningAddress,
-                          decoration: InputDecoration(
-                              hintText: 'e.g. satoshi',
-                              labelText: AppLocalizations.of(context)!
-                                  .lightningAddress,
-                              suffixText: '@sudonym.app'),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
+                    Expanded(
+                      child: CustomForm(
+                        cubit: getIt<UserCubit>(),
+                        entity: getIt<AuthCubit>().user!,
+                        children: [
+                          FormBuilderTextField(
+                            name: 'lightningAddress',
+                            initialValue:
+                                getIt<AuthCubit>().user!.lightningAddress,
+                            decoration: InputDecoration(
+                                hintText: 'satoshi',
+                                labelText: AppLocalizations.of(context)!
+                                    .lightningAddress,
+                                suffixText: '@${getIt<Config>().domain}'),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    Button(
-                        text: 'Add Pot',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditPot(
-                                          entity: Pot.fromJson({
-                                        'name': '',
-                                        'currency': 'BTC',
-                                        'spendableBalance': 0,
-                                        'balance': 0
-                                      }))));
-                        }),
+                    // Button(
+                    //     text: 'Add Pot',
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => EditPot(
+                    //                       entity: Pot.fromJson({
+                    //                     'name': '',
+                    //                     'currency': 'BTC',
+                    //                     'spendableBalance': 0,
+                    //                     'balance': 0
+                    //                   }))));
+                    //     }),
                   ]),
                 ))));
   }

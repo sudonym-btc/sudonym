@@ -16,6 +16,7 @@ export class MockCurrencyService extends CurrencyService {
 	];
 
 	async convert(from, to, amount, time?) {
+		console.log(from, to, amount);
 		if (from == to) return new CurrencyResponse(amount);
 		const rate = this.rates.find((r) => {
 			return (r[0] == from && r[1] == to) || (r[1] == from && r[0] == to);

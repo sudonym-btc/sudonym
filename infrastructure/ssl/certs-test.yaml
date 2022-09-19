@@ -26,6 +26,8 @@ metadata:
   name: test-tls
 spec:
   secretName: test-tls
+  privateKey:
+    rotationPolicy: Always
   dnsNames:
   - "rtl.test.sudonym.app"
   - "api.test.sudonym.app"

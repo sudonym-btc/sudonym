@@ -74,7 +74,7 @@ class _SendPageState extends State<SendPage> {
                           child: ListWidget(
                         emptyText: 'No contacts',
                         list: ListCubit(getIt<ContactRepository>(), where: {
-                          'name': {'like': invoiceInput.controller!.value}
+                          'name': {'like': invoiceInput.controller!.value.text}
                         }),
                         builder: (el) {
                           return ContactListItem(contact: el);
