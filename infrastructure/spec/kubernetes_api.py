@@ -60,7 +60,7 @@ def api(config, cluster_types):
                                 "initContainers":[{
                                     "name": "wait",
                                     "image": "busybox",
-                                    "command":  ["sh", "-c", "until nc -z " + lightning_rest_basename + "-service.svc.cluster.local 3001 > /dev/null; do echo Waiting for master.; sleep 2; done;"]
+                                    "command":  ["sh", "-c", "until nc -z " + getServiceName(lightning_rest_basename) + " 3001 > /dev/null; do echo Waiting for master.; sleep 2; done;"]
                                 }],
                                "containers": [
                                     {
