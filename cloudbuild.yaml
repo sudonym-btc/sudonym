@@ -69,7 +69,7 @@ steps:
 
 substitutions:
     _CLOUDSDK_COMPUTE_REGION: us-central1-c
-    _CLOUDSDK_CONTAINER_CLUSTER: $BRANCH_NAME-cluster
+    _CLOUDSDK_CONTAINER_CLUSTER: $BRANCH_NAME
 
 options:
     dynamic_substitutions: true
