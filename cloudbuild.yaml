@@ -6,9 +6,9 @@ steps:
     name: ubuntu
     args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
 
-  # - name: 'gcr.io/cloud-builders/gcloud'
-  #   entrypoint: 'bash'
-  #   args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
 
   # - name: 'gcr.io/cloud-builders/gcloud'
   #   entrypoint: 'bash'
@@ -61,7 +61,7 @@ steps:
       - "HELM_REPO_URL=https://charts.jetstack.io"
       - "TILLERLESS=true"
       - "TILLER_NAMESPACE=test"
-      
+
   - id: 'Changing certificate on ingress'
     name: ubuntu
     args: ['bash','-c','sed "s/self-signed-tls/$BRANCH_NAME-tls/g" -i infrastructure/spec/kubernetes.py']
