@@ -1,40 +1,29 @@
 steps:
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
-  # - id: 'Setting API image tag'
-  #   name: ubuntu
-  #   args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
+  - id: 'Setting API image tag'
+    name: ubuntu
+    args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
 
-  # - name: 'gcr.io/cloud-builders/gcloud'
-  #   entrypoint: 'bash'
-  #   args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
 
-  # - name: 'gcr.io/cloud-builders/gcloud'
-  #   entrypoint: 'bash'
-  #   args:
-  #   - '-eEuo'
-  #   - 'pipefail'
-  #   - '-c'
-  #   - |-
-  #     if [[ -z `gcloud container images list-tags --format='get(tags)' gcr.io/$PROJECT_ID/helm | grep latest` ]]
-  #     then
-  #       gcloud builds submit infrastructure/cloud-builders-community/helm --config=infrastructure/cloud-builders-community/helm/cloudbuild.yaml
-  #     else
-  #       echo "Image existed"
-  #     fi
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      if [[ -z `gcloud container images list-tags --format='get(tags)' gcr.io/$PROJECT_ID/helm | grep latest` ]]
+      then
+        gcloud builds submit infrastructure/cloud-builders-community/helm --config=infrastructure/cloud-builders-community/helm/cloudbuild.yaml
+      else
+        echo "Image existed"
+      fi
 
-  # helm repo add jetstack https://charts.jetstack.io
-  # helm repo update
-  # kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/cert-manager.crds.yaml
-  # helm install \
-  #   cert-manager jetstack/cert-manager \
-  #   --namespace cert-manager \
-  #   --create-namespace \
-  #   --version v1.7.1
-  # gcloud container clusters get-credentials test-cluster --zone us-central1-c --project sudonym-lightning-test
-
-  # kubectl apply -f infrastructure/ssl/certs.yaml
   - name: "gcr.io/$PROJECT_ID/helm"
     entrypoint: "bash"
     args:
