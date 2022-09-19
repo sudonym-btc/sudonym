@@ -22,7 +22,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dns-tls
+  name: test-tls
 spec:
   secretName: test-tls
   dnsNames:
