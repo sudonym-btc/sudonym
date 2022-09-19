@@ -16,6 +16,6 @@ gcloud projects add-iam-policy-binding $project \
 
 gcloud projects add-iam-policy-binding $project \
     --member="serviceAccount:$project_num@cloudbuild.gserviceaccount.com" \
-    --role="roles/container.developer"
+    --role="roles/container.admin"
 
     
