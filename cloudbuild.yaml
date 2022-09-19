@@ -1,6 +1,6 @@
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
 
 # - id: 'Setting API image tag'
 #   name: ubuntu
@@ -43,6 +43,7 @@ steps:
   - 'pipefail'
   - '-c'
   - |-
+    echo $CLOUDSDK_COMPUTE_REGION &&
     gcloud container clusters get-credentials --zone "$$CLOUDSDK_COMPUTE_ZONE" "$$CLOUDSDK_CONTAINER_CLUSTER" &&
 
     helm install \
