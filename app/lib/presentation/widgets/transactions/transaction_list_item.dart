@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym.models/transaction.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/logic/bloc/transaction.cubit.dart';
-import 'package:sudonym/logic/currency/format-currency.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/components/typography/info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

@@ -1,4 +1,4 @@
-import { Table, Column, ForeignKey, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, ForeignKey, PrimaryKey, HasOne, BelongsTo } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { User } from 'module/user/user.model';
@@ -21,11 +21,14 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 	@Column
 	senderId: number;
 
+	@BelongsTo(() => Sender)
+	sender: Sender;
+
 	@Column
 	name: string;
 
 	@Column
-	data: string;
+	written: number;
 
 	static scopes = {};
 }

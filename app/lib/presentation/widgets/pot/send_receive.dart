@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/logic/bloc/receive.cubit.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
 import 'package:sudonym/presentation/pages/send.dart';
@@ -18,8 +18,8 @@ class SendReceive extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => getIt<ReceiveCubit>())],
-        child: BlocBuilder<ReceiveCubit, ReceiveCubitState>(
+        providers: [BlocProvider(create: (_) => getIt<ReceiverCubit>())],
+        child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
           return LayoutBuilder(builder: (context, constraints) {
             // Widget image = state.loading

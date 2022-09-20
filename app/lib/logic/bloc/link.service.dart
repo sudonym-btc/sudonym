@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
-import 'package:sudonym/data/repository/action.repository.dart';
+import 'package:sudonym/data/repository/entity/action.repository.dart';
 import 'package:sudonym/presentation/pages/send/amount.dart';
 
 @lazySingleton

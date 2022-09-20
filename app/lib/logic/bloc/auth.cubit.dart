@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/user.dart';
-import 'package:sudonym/data/repository/auth.repository.dart';
-import 'package:sudonym/data/repository/user.repository.dart';
-import 'package:sudonym/data/repository/websocket.dart';
+import 'package:sudonym/data/index.dart';
 
 @singleton
 class AuthCubit extends Cubit<AuthState> {

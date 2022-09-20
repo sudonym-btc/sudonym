@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 class FormatCurrency {
   String format(String currency, num amount) {
-    if (currency == "BTC") return formatBTC(amount);
+    if (currency == 'BTC') return formatBTC(amount);
     var format = NumberFormat.simpleCurrency(
         locale: Platform.localeName, name: currency);
 

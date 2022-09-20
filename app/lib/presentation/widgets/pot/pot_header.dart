@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/logic/bloc/pot.cubit.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/components/typography/subtitle.dart';
 import 'package:sudonym/presentation/components/typography/header.dart';
 

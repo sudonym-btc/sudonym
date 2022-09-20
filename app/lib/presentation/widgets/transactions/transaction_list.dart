@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/data/repository/transaction.repository.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/presentation/components/typography/header.dart';
 import 'package:sudonym/presentation/widgets/list/list.dart';

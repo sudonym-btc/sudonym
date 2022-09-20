@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/transaction.dart';
-import 'package:sudonym/data/repository/transaction.repository.dart';
-import 'package:sudonym/logic/bloc/transaction.cubit.dart';
+import 'package:sudonym/data/repository/index.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../injection.dart';
 
 class TransactionPage extends StatelessWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -18,7 +16,7 @@ class TransactionPage extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) => TransactionCubit(getIt<TransactionRepository>())
+              create: (_) => TransactionCubit()
                 ..fetch(
                     (ModalRoute.of(context)?.settings.arguments as Transaction)
                         .id))

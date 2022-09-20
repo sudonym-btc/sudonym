@@ -3,16 +3,14 @@ import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/data/helper/address-parser.dart';
-import 'package:sudonym/data/repository/receive.repository.dart';
-import 'package:sudonym/data/repository/transaction.repository.dart';
+import 'package:sudonym/data/mock/repository/entity/crud_repository.dart';
+import 'package:sudonym/data/repository/index.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/data/mock/repository/crud_repository.dart';
-import 'package:sudonym/data/repository/action.repository.dart';
 // import 'package:collection/collection.dart'; // You have to add this manually, for some reason it cannot be added automatically
 
 @LazySingleton(as: ActionRepository, env: [Env.mock])
 class MockActionRepository implements ActionRepository {
-  final ReceiveRepository _receiveRepository;
+  final ReceiverRepository _receiveRepository;
   final TransactionRepository _transactionRepository;
 
   MockActionRepository(

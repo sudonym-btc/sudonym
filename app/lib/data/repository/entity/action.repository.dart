@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 
-import '../../injection.dart';
+import '../../../injection.dart';
 
 @LazySingleton(as: ActionRepository, env: Env.allButMock)
 class ActionRepositoryImpl extends ActionRepository {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/data/repository/bolt_card.repository.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/bloc/list/list.cubit.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/components/typography/header.dart';

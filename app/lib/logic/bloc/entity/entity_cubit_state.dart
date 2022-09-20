@@ -1,25 +1,35 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym.models/base-class.dart';
-import 'package:sudonym/data/repository/crud_repository.dart';
+import 'package:sudonym/data/repository/index.dart';
+import 'package:sudonym/injection.dart';
 
 class EntityCubitState<T> {
   T? entity;
-  bool loading = false;
+  bool loading;
 
   EntityCubitState({this.entity, this.loading = false});
 }
 
-abstract class EntityCubit<StateType extends EntityCubitState,
+abstract class EntityCubit<
+    EntityRepo extends CrudRepository,
+    StateType extends EntityCubitState,
     EntityType extends BaseClass> extends Cubit<StateType> {
-  late CrudRepository repository;
+  EntityRepo repository = getIt<EntityRepo>();
   late Function stateClass;
   StreamSubscription? updater;
+  bool shouldListen;
 
-  EntityCubit(StateType initialState, this.stateClass) : super(initialState);
+  EntityCubit(
+      {required StateType initialState,
+      required this.stateClass,
+      this.shouldListen = true})
+      : super(initialState);
 
   listenChanges() {
-    updater = repository.updated.stream.listen((event) {
+    // Subscribe if not currently listening
+    if (!shouldListen) return;
+    updater ??= repository.updated.stream.listen((event) {
       if ((event as dynamic).id == (state.entity as dynamic).id) {
         if (!isClosed) {
           emit(stateClass(entity: event, loading: false));

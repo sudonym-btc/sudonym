@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
-import 'package:sudonym/data/repository/user-device.repository.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/bloc/auth.cubit.dart';
 

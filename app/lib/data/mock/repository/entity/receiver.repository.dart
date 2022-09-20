@@ -1,15 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/data/mock/repository/crud_repository.dart';
-import 'package:sudonym/data/repository/receive.repository.dart';
+import 'package:sudonym/config/config.dart';
+import 'package:sudonym/data/repository/index.dart';
 import 'package:sudonym/injection.dart';
+import 'crud_repository.dart';
 
-@LazySingleton(as: ReceiveRepository, env: [Env.mock])
-class MockReceiveRepository implements ReceiveRepository {
+@LazySingleton(as: ReceiverRepository, env: [Env.mock])
+class MockReceiveRepository extends MockCrudRepository<Receiver>
+    with ReceiverRepositoryProps
+    implements ReceiverRepository {
   @override
   List<Receiver> receivers = [];
-  MockReceiveRepository(this.dio);
+  MockReceiveRepository(Config config, Dio dio, Websocket websocket)
+      : super(config, dio, websocket);
 
   @override
   getInvoice(potId, type, amount, currency) async {
@@ -39,7 +43,4 @@ class MockReceiveRepository implements ReceiveRepository {
     receivers.add(r);
     return r;
   }
-
-  @override
-  Dio dio;
 }

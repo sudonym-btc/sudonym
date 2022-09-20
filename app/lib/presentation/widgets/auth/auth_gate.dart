@@ -41,6 +41,6 @@ class _LoggedInWidget extends StatelessWidget {
             getIt<LinkService>().trigger(state.address.toString(), context);
           }
         },
-        child: MessageHandler(child: const HomePage()));
+        child: const MessageHandler(child: HomePage()));
   }
 }

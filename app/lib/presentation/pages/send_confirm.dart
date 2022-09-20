@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/logic/bloc/send.cubit.dart';
+import 'package:sudonym/logic/bloc/pages/send.cubit.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

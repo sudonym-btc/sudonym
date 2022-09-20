@@ -2,12 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/logic/bloc/entity_cubit_state.dart';
+import 'package:sudonym/data/index.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 
-class CustomForm<T extends BaseClass> extends StatefulWidget {
+class CustomForm<Repo extends CrudRepository, T extends BaseClass>
+    extends StatefulWidget {
   final T entity;
-  final EntityCubit<EntityCubitState<T>, T> cubit;
+  final EntityCubit<Repo, EntityCubitState<T>, T> cubit;
   final List<Widget> children;
   final Function? onSave;
 
@@ -39,7 +41,6 @@ class _CustomFormState extends State<CustomForm> {
         autovalidateMode: AutovalidateMode.disabled,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               ...widget.children.map((e) => Column(
                     children: [

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/data/repository/contact.repository.dart';
+import 'package:sudonym/data/repository/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/qr/qr.dart';

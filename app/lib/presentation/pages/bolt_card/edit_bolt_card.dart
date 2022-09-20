@@ -3,7 +3,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/logic/bloc/bolt_card.cubit.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/components/form/form.dart';
 
 class EditBoltCard extends StatelessWidget {
@@ -21,11 +22,20 @@ class EditBoltCard extends StatelessWidget {
                   title: Text(
                       "${entity?.id == null ? "Create" : "Edit"} Bolt Card"),
                 ),
-                body: Padding(
+                body: Column(children: [
+                  Padding(
                     padding: const EdgeInsets.all(padding),
                     child: EditBoltCardForm(
-                        onSave: () => Navigator.pop(context),
-                        entity: entity)))));
+                        onSave: () => Navigator.pop(context), entity: entity),
+                  ),
+                  Expanded(
+                      child: Button(
+                    text: 'Write NFC',
+                    onPressed: () {
+                      getIt<NFCCubit>().write(Uri.parse('lnurlw://test.app'));
+                    },
+                  ))
+                ]))));
   }
 }
 

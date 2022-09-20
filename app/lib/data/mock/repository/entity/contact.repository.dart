@@ -2,10 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/contact.dart';
 import 'package:sudonym/config/config.dart';
-import 'package:sudonym/data/repository/contact.repository.dart';
+import 'package:sudonym/data/repository/index.dart';
+import 'package:sudonym/injection.dart';
 
-import '../../../injection.dart';
-import '../../repository/websocket.dart';
 import 'crud_repository.dart';
 
 @LazySingleton(as: ContactRepository, env: [Env.mock])

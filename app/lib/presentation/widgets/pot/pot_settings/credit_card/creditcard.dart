@@ -13,52 +13,44 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('Card Details'), actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/settings');
-            },
-            icon: const FaIcon(FontAwesomeIcons.cog, size: 14),
-          )
-        ]),
-        body: GestureDetector(
-          onHorizontalDragUpdate: (horizontal) {
-            setState(() {
-              horizontalDrag += horizontal.delta.dx;
-              horizontalDrag %= 360;
-            });
-          },
-          child: Transform(
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateY(pi / 180 * horizontalDrag),
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 150),
-              child: Center(
-                child: Container(
-                  width: 300,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColorDark
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: horizontalDrag <= 90 || horizontalDrag >= 270
-                      ? cardFront()
-                      : cardBack(),
+    return Container(
+        child: GestureDetector(
+      onHorizontalDragUpdate: (horizontal) {
+        setState(() {
+          horizontalDrag += horizontal.delta.dx;
+          horizontalDrag %= 360;
+        });
+      },
+      child: Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001)
+          ..rotateY(pi / 180 * horizontalDrag),
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 150),
+          child: Center(
+            child: Container(
+              width: 300,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).primaryColorDark
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
+              child: horizontalDrag <= 90 || horizontalDrag >= 270
+                  ? cardFront()
+                  : cardBack(),
             ),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 
   Widget cardFront() {

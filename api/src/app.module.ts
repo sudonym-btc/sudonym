@@ -18,6 +18,7 @@ import { BalanceUpdaterModule } from './service/balance-updater/balance-updater.
 import { ExchangeSettlerModule } from './service/transaction-listener/exchange-settler.module';
 import { ContactModule } from 'module/contact/contact.module';
 import { SenderModule } from 'module/sender/sender.module';
+import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 
 @Module({
 	imports: [
@@ -37,6 +38,7 @@ import { SenderModule } from 'module/sender/sender.module';
 		BalanceUpdaterModule,
 		ReceiverModule,
 		SenderModule,
+		BoltCardModule,
 		TransactionModule,
 	],
 	controllers: [AppController],

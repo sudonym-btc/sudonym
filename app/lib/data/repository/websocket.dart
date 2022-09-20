@@ -25,7 +25,7 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
     Uri url = Uri.parse(
         '${config.apiUrl.replaceAll('http', 'ws')}:${config.websocketPort}/socket.io');
 
-    loggy.info("Connecting websocket to $url");
+    loggy.info('Connecting websocket to $url');
 
     channel = IOWebSocketChannel.connect(url);
 
