@@ -10,24 +10,30 @@ class EntityCubitState<T> {
   EntityCubitState({this.entity, this.loading = false});
 }
 
-abstract class EntityCubit<StateType, EntityType extends BaseClass>
-    extends Cubit<StateType> {
+abstract class EntityCubit<StateType extends EntityCubitState,
+    EntityType extends BaseClass> extends Cubit<StateType> {
   late CrudRepository repository;
   late Function stateClass;
   StreamSubscription? updater;
 
   EntityCubit(StateType initialState, this.stateClass) : super(initialState);
 
+  listenChanges() {
+    updater = repository.updated.stream.listen((event) {
+      if ((event as dynamic).id == (state.entity as dynamic).id) {
+        if (!isClosed) {
+          emit(stateClass(entity: event, loading: false));
+        }
+      }
+    });
+  }
+
   fetch(dynamic id) async {
     emit(stateClass(entity: null, loading: true));
     dynamic x = stateClass(entity: await repository.fetch(id), loading: false);
     if (!isClosed) {
       emit(x);
-      updater = repository.updated.stream.listen((event) {
-        if ((event as dynamic).id == id) {
-          emit(stateClass(entity: event, loading: false));
-        }
-      });
+      listenChanges();
     }
   }
 
@@ -40,8 +46,8 @@ abstract class EntityCubit<StateType, EntityType extends BaseClass>
 
   create(EntityType params) async {
     emit(stateClass(entity: null, loading: true));
-    dynamic x =
-        stateClass(entity: await repository.create(params), loading: false);
+    dynamic x = stateClass(
+        entity: await repository.create(params.toJson()), loading: false);
     if (!isClosed) {
       emit(x);
     }
@@ -49,8 +55,8 @@ abstract class EntityCubit<StateType, EntityType extends BaseClass>
 
   update(EntityType params) async {
     emit(stateClass(entity: null, loading: true));
-    dynamic x =
-        stateClass(entity: await repository.update(params), loading: false);
+    dynamic x = stateClass(
+        entity: await repository.update(params.toJson()), loading: false);
     if (!isClosed) {
       emit(x);
     }
@@ -58,6 +64,7 @@ abstract class EntityCubit<StateType, EntityType extends BaseClass>
 
   set(EntityType entity) {
     emit(stateClass(entity: entity, loading: false));
+    listenChanges();
   }
 
   @override

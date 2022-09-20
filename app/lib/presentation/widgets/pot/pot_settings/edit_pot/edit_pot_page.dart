@@ -13,7 +13,7 @@ class EditPot extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(context, '/settings');
           },
-          icon: const FaIcon(FontAwesomeIcons.cog, size: 14),
+          icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
         )
       ]),
       body: Padding(

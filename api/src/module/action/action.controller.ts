@@ -13,7 +13,6 @@ export class ActionController {
 
 	@Post('info')
 	async getInfo(@Body('action') action: Action) {
-		console.log(action);
 		return this.actionService.getInfo(Action.from(action));
 	}
 

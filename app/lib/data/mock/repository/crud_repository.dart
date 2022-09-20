@@ -22,13 +22,14 @@ abstract class MockCrudRepository<T extends BaseClass>
 
   @override
   Future<T> create(dynamic entity) async {
+    T newEntity = converter(entity);
     var sorted = availableData.map((dynamic e) => e.id).toList();
     sorted.sort();
-    (entity as dynamic).id =
+    (newEntity as dynamic).id =
         isNumType(sorted.last.runtimeType) ? sorted.last + 1 : 'random';
-    availableData.add(entity);
-    created.add(entity);
-    return entity;
+    availableData.add(newEntity);
+    created.add(newEntity);
+    return newEntity;
   }
 
   isNumType(dynamic t) {

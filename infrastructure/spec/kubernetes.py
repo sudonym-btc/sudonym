@@ -82,7 +82,7 @@ def GenerateConfig(context):
                     "metadata": {
                         "name": config["env"] + "-ingress",
                         "annotations": {
-                            # "kubernetes.io/ingress.class": "nginx",
+                            "kubernetes.io/ingress.class": "nginx",
                             #                             "nginx.org/websocket-services": api_base_name + "-service",
                             #                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
                             #                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",

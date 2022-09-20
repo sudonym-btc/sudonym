@@ -72,13 +72,15 @@ export class ExchangeSettler {
 	}
 
 	async createSettlement(transactions, from, to, amount, side) {
+
+		this.logger.debug("Finding market for", from, to, amount);
 		const markets = await this.exchanges[0].fetchMarkets();
 		const market = markets.find(
 			(m) =>
 				(m.baseId == from && m.quoteId == to) ||
 				(m.baseId == to && m.quoteId == from)
 		);
-		// console.log(market);
+		this.logger.debug("Found market", market);
 		await this.exchanges[0]
 			.createMarketOrder(
 				market.symbol,

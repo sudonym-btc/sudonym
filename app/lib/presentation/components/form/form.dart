@@ -39,6 +39,7 @@ class _CustomFormState extends State<CustomForm> {
         autovalidateMode: AutovalidateMode.disabled,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               ...widget.children.map((e) => Column(
                     children: [

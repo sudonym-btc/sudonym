@@ -7,10 +7,10 @@ import * as lnurl from 'lnurl';
 import { getConfig } from 'config/config';
 import { CurrencyCode, MSATOSHIS, TAddressType } from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
-import { ReceiveQuery } from './receive.controller';
+import { ReceiveQuery } from './receiver.controller';
 
 @Injectable()
-export class ReceiveService extends BaseService(Receiver) {
+export class ReceiverService extends BaseService(Receiver) {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;

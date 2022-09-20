@@ -71,9 +71,9 @@ export class LightningListener extends TransactionListener {
 				});
 				this.lightningNodeService.pay(bolt11);
 
-				// console.log("SENDPAY");
+				console.error("SENDPAY");
 				// try {
-				// this.lightningNodeService.rpc("waitsendpay", [bolt11]).then(console.log);
+				// this.lightningNodeService.rpc("waitsendpay", [bolt11]).then(console.error);
 				// } catch(e) {
 				//     console.error(e);
 				// }
@@ -87,7 +87,6 @@ export class LightningListener extends TransactionListener {
 						txid: e.data.bolt11,
 					},
 				});
-
 				if (transactions.metadata.count) {
 					await this.transactionService.update(
 						transactions.data[0].id,

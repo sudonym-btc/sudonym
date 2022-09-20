@@ -15,7 +15,6 @@ export class AddressParser implements IAddressParser {
 		const [type, trimmedAddress] = this.getType(address);
 		switch (type) {
 			case 'lightningaddress':
-				console.log("nlnaddress");
 				return Action.from({
 					originalAddress: trimmedAddress,
 					type: 'payment',
@@ -79,9 +78,10 @@ export class AddressParser implements IAddressParser {
 		}
 
 		const url = `https://${domain}/.well-known/lnurlp/${username}`;
-		console.log(url);
+		this.logger.debug('Fetching lnurl address', url);
 		const data = await fetch(url, fetchHttpOpts)
 			.then((r) => {
+				this.logger.debug('Fetched lnurl address', r);
 				return r.json()
 			})
 			.then((data) => {

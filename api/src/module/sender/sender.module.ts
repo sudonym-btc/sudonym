@@ -3,20 +3,20 @@ import { LightningNodeModule } from 'service/lightning-node/lightning-node.modul
 import { CurrencyModule } from '../currency/currency.module';
 import { LnUrlModule } from '../lightning/lnurl/lnurl.module';
 import { SharedModule } from '../shared.module';
-import { ReceiveController } from './receive.controller';
-import { ReceiveService } from './receive.service';
-import { Receiver } from './receiver.model';
+import { SenderController } from './sender.controller';
+import { Sender } from './sender.model';
+import { SenderService } from './sender.service';
 
 @Module({
 	imports: [SharedModule, CurrencyModule, LightningNodeModule, LnUrlModule],
-	controllers: [ReceiveController],
+	controllers: [SenderController],
 	providers: [
-		ReceiveService,
+		SenderService,
 		{
-			provide: Receiver,
-			useValue: Receiver,
+			provide: Sender,
+			useValue: Sender,
 		},
 	],
-	exports: [ReceiveService],
+	exports: [SenderService],
 })
-export class ReceiveModule {}
+export class SenderModule {}

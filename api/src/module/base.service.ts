@@ -80,8 +80,6 @@ export const BaseService = <TModel extends BaseModel>(
 				repository.scopes.edit ? repository.scopes.edit(req) : null,
 				repository.scopes.find ? repository.scopes.find(req) : null,
 			].filter((i) => !!i);
-			console.log(id, params, scopes, req);
-			console.log(await this.repo.findAll());
 			const record = await this.repo.scope(scopes as any).findByPk(id);
 			const obj = await record.set(params).save();
 

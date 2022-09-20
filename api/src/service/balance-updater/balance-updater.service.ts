@@ -91,7 +91,6 @@ export class BalanceUpdaterService {
 			},
 			token: registrationToken,
 		};
-		console.log('sending ', message);
 		// Send a message to the device corresponding to the provided
 		// registration token.
 		admin

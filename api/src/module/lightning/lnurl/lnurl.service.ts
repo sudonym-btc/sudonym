@@ -43,10 +43,10 @@ export class LnUrlService extends BaseService(LnUrl) {
 			params: {
 				tag: 'withdrawRequest',
 				domain: getConfig().selfUrl,
-				minSendable: mSatoshiAmount || 0,
-				maxSendable: 10000000,
+				minWithdrawable: mSatoshiAmount || 0,
+				maxWithdrawable: 10000000,
 				metadata: '',
-				commentAllowed: 500,
+				defaultDescription: 'Withdrawn desciption',
 			},
 		});
 

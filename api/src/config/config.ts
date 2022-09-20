@@ -22,6 +22,7 @@ export const getConfig = () => {
 
 export const config = {
 	env,
+	network: "regtest",
 	selfUrl: cmdargs.selfUrl
 		? cmdargs.selfUrl
 		: 'https://api.' + getConfig().domain,
@@ -44,5 +45,3 @@ export const config = {
 		dialect: 'mysql',
 	},
 };
-
-console.log(getConfig());

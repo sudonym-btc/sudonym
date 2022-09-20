@@ -32,7 +32,6 @@ export class ActionService {
 	}
 
 	async getInfo(action: Payment | Withdraw): Promise<Action> {
-		console.log(action);
 		if (action instanceof Payment) {
 			const t = getAddressType(action.originalAddress);
 

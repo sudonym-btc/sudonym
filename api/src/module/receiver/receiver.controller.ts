@@ -2,7 +2,7 @@ import { Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { CurrencyCode, TAddressType } from '@sudonym/models';
 import { Type } from 'class-transformer';
 import { IsInt, IsNumber, IsString } from 'class-validator';
-import { ReceiveService } from './receive.service';
+import { ReceiverService } from './receiver.service';
 
 export class ReceiveQuery {
 	@IsInt()
@@ -17,8 +17,8 @@ export class ReceiveQuery {
 	amountCurrency: CurrencyCode = "BTC";
 }
 @Controller('receive')
-export class ReceiveController {
-	@Inject(ReceiveService) receiveService: ReceiveService;
+export class ReceiverController {
+	@Inject(ReceiverService) receiveService: ReceiverService;
 
 	@Get('invoice')
 	getInvoice(

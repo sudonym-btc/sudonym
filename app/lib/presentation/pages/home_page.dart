@@ -90,18 +90,10 @@ class AddPotSlide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Button(
-            text: "Add Pot",
+            text: 'Add Pot',
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EditPot(
-                              entity: models.Pot.fromJson({
-                            "name": "",
-                            "currency": "BTC",
-                            "spendableBalance": 0,
-                            "balance": 0
-                          }))));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const EditPot()));
             }));
   }
 }
