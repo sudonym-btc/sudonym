@@ -4,7 +4,7 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/data/helper/address-parser.dart';
 import 'package:sudonym/data/mock/repository/entity/crud_repository.dart';
-import 'package:sudonym/data/repository/index.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 // import 'package:collection/collection.dart'; // You have to add this manually, for some reason it cannot be added automatically
 

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym/data/repository/auth.repository.dart';
+import 'package:sudonym/data/index.dart';
 
 import '../../../injection.dart';
 

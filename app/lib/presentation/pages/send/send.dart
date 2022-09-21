@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/data/repository/index.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/qr/qr.dart';
@@ -11,9 +11,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sudonym/presentation/widgets/contacts/contact_list_item.dart';
 import 'package:sudonym/presentation/widgets/list/list.dart';
 
-import '../../constants.dart';
-import '../../logic/bloc/link.service.dart';
-import '../../logic/bloc/list/list.cubit.dart';
+import '../../../constants.dart';
+import '../../../logic/bloc/link.service.dart';
+import '../../../logic/bloc/list/list.cubit.dart';
 
 class SendPage extends StatefulWidget {
   final dynamic potId;

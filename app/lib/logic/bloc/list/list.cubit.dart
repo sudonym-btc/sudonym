@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym.models/types/list.dart';
-import 'package:sudonym/data/repository/index.dart';
+import 'package:sudonym/data/index.dart';
 
 class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   final CrudRepository _repository;

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/types/currency.dart';
-import 'package:sudonym/data/repository/currency.repository.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 
 @Injectable(as: CurrencyRepository, env: [Env.mock])

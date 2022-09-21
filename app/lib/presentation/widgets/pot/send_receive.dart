@@ -5,7 +5,7 @@ import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/components/button/button.dart';
 import 'package:sudonym/presentation/pages/receive.dart';
-import 'package:sudonym/presentation/pages/send.dart';
+import 'package:sudonym/presentation/pages/send/send.dart';
 import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

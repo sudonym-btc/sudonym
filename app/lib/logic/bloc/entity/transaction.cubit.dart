@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/transaction.dart';
-import 'package:sudonym/data/repository/index.dart';
+import 'package:sudonym/data/index.dart';
 
 import 'entity_cubit_state.dart';
 

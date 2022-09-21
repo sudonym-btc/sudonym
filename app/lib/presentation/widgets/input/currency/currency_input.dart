@@ -4,7 +4,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/data/repository/currency.repository.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/currency/format-currency.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

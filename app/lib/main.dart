@@ -12,7 +12,7 @@ import 'package:sudonym/presentation/pages/settings.dart';
 import 'package:sudonym/presentation/pages/transaction.dart';
 import 'package:sudonym/presentation/theme.dart';
 import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
-import 'data/repository/websocket.dart';
+import 'package:sudonym/data/repository/websocket.dart';
 import 'firebase_options.dart';
 import 'presentation/widgets/auth/auth_gate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
