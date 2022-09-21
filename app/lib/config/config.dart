@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../injection.dart';
+import 'package:sudonym/injection.dart';
 
 @Injectable(as: Config, env: [Env.mock])
 class MockConfig implements Config {

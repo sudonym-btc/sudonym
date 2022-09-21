@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
+import 'package:sudonym/logic/index.dart';
 
 class ListWidget extends StatefulWidget {
   final String? emptyText;

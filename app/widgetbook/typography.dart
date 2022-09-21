@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/components/typography/header.dart';
-import 'package:sudonym/presentation/components/typography/subtitle.dart';
-import 'package:sudonym/presentation/components/typography/emphasized.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 WidgetbookCategory typography = WidgetbookCategory(

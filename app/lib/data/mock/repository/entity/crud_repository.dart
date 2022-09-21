@@ -3,7 +3,8 @@ import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym.models/mock/parsed_data.dart';
 import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym/config/config.dart';
-import 'package:sudonym/data/index.dart';
+import 'package:sudonym/data/repository/entity/crud_repository.dart';
+import 'package:sudonym/data/repository/websocket.dart';
 
 const requestDelay = Duration(seconds: 1);
 

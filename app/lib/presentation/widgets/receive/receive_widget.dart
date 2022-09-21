@@ -7,9 +7,7 @@ import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
-import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
+import 'package:sudonym/presentation/index.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

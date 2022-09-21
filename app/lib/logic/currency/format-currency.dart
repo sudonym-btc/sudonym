@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:money_formatter/money_formatter.dart';
-import 'package:sudonym/logic/currency/btc_formatter.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:intl/intl.dart';
 
 class FormatCurrency {

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym.models/transaction.dart';
-import 'package:sudonym/data/index.dart';
-import 'package:sudonym/logic/currency/format-currency.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TransactionPage extends StatelessWidget {

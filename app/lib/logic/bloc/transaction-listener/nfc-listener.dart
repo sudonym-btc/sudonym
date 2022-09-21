@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:nfc_manager/nfc_manager.dart';
-import 'package:sudonym/logic/bloc/transaction-listener/ndef-record.dart';
+import 'package:sudonym/logic/index.dart';
 
 import 'clipboard-listener.dart';
 

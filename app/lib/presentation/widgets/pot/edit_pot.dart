@@ -4,7 +4,7 @@ import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/components/form/form.dart';
+import 'package:sudonym/presentation/index.dart' hide Pot;
 
 class EditPot extends StatelessWidget {
   final Pot? entity;

@@ -6,7 +6,7 @@ import 'package:sudonym/config/logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:sudonym/config/config.dart';
 
-import '../../injection.dart';
+import 'package:sudonym/injection.dart';
 
 @Singleton(as: Websocket, env: Env.allButMock)
 class WebsocketImpl extends Websocket with WebsocketLogger {

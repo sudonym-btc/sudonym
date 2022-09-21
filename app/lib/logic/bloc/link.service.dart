@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/index.dart';
-import 'package:sudonym/presentation/pages/send/amount.dart';
+import 'package:sudonym/presentation/index.dart';
 
 @lazySingleton
 @injectable

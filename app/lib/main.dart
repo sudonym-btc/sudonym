@@ -4,17 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loggy/loggy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/presentation/pages/contact.dart';
-import 'package:sudonym/presentation/pages/receive.dart';
-import 'package:sudonym/presentation/pages/send_confirm.dart';
-import 'package:sudonym/presentation/pages/settings.dart';
-import 'package:sudonym/presentation/pages/transaction.dart';
-import 'package:sudonym/presentation/theme.dart';
-import 'package:sudonym/presentation/widgets/status_page/status_page.dart';
-import 'package:sudonym/data/repository/websocket.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'firebase_options.dart';
-import 'presentation/widgets/auth/auth_gate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main(List<String> args) {

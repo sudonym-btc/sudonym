@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/presentation/widgets/pot/pot_settings/edit_pot/edit_pot.dart';
 
 class EditPot extends StatelessWidget {
   const EditPot({Key? key}) : super(key: key);
@@ -20,15 +19,15 @@ class EditPot extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
         child: Column(
           children: const [
-            EditPotName(),
-            SizedBox(
-              height: 50,
-            ),
-            DropDownCurrencyMenu(),
-            SizedBox(
-              height: 50,
-            ),
-            SaveChanges()
+            // EditPotName(),
+            // SizedBox(
+            //   height: 50,
+            // ),
+            // DropDownCurrencyMenu(),
+            // SizedBox(
+            //   height: 50,
+            // ),
+            // SaveChanges()
           ],
         ),
       ),

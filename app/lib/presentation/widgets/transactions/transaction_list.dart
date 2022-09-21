@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/index.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
-import 'package:sudonym/presentation/components/typography/header.dart';
-import 'package:sudonym/presentation/widgets/list/list.dart';
-import 'package:sudonym/presentation/widgets/transactions/transaction_list_item.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart' hide Pot;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../injection.dart';
+import 'package:sudonym/injection.dart';
 
 class TransactionList extends StatelessWidget {
   final Pot pot;

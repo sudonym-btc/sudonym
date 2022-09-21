@@ -4,7 +4,7 @@ import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class CustomForm<Repo extends CrudRepository, T extends BaseClass>
     extends StatefulWidget {
@@ -41,6 +41,7 @@ class _CustomFormState extends State<CustomForm> {
         autovalidateMode: AutovalidateMode.disabled,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               ...widget.children.map((e) => Column(
                     children: [
@@ -49,7 +50,7 @@ class _CustomFormState extends State<CustomForm> {
                       const SizedBox(height: padding)
                     ],
                   )),
-              Expanded(child: Container()),
+              // Expanded(child: Container()),
               Button(
                 onPressed: () async {
                   _formKey.currentState?.save();

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/presentation/widgets/receive/lnurl.dart';
-import 'package:sudonym/presentation/widgets/receive/onchain.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../widgets/receive/bolt11.dart';
-import '../widgets/receive/bolt12.dart';
 
 class ReceivePageArgs {
   num potId;

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../injection.dart';
+import 'package:sudonym/injection.dart';
 import '../../repository/websocket.dart';
 
 @Singleton(as: Websocket, env: [Env.mock])

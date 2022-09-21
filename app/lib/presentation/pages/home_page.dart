@@ -4,11 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/index.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/widgets/pot/edit_pot.dart';
-import '../../injection.dart';
-import '../widgets/pot/pot.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym/injection.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

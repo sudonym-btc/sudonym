@@ -2,9 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/transaction.dart';
 import 'package:sudonym/config/config.dart';
-import 'package:sudonym/data/repository/websocket.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
-import 'crud_repository.dart';
 
 @LazySingleton(as: TransactionRepository, env: Env.allButMock)
 class TransactionRepositoryImpl extends TransactionRepository {

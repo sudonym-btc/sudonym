@@ -1,6 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/components/nfc/nfc.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 WidgetbookCategory buttons = WidgetbookCategory(

@@ -6,7 +6,7 @@ import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/data/index.dart';
 
-import '../../../injection.dart';
+import 'package:sudonym/injection.dart';
 
 @Injectable(as: AuthRepository, env: [Env.mock])
 class MockAuthRepository implements AuthRepository {

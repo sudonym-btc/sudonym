@@ -77,7 +77,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              '4729  8363  9583  8348',
+              '',
               style: TextStyle(
                 color: Color.fromARGB(255, 19, 19, 19),
                 fontSize: 18,
@@ -104,7 +104,7 @@ class _CreditCardState extends State<CreditCard> {
               0,
             ),
             child: Text(
-              'EXP 09 / 26',
+              '',
               style: TextStyle(
                 color: Color.fromARGB(255, 19, 19, 19),
               ),
@@ -114,7 +114,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              'MIKE HUNT',
+              '',
               style: TextStyle(
                   color: Color.fromARGB(255, 19, 19, 19), fontSize: 15),
             ),
@@ -123,7 +123,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              '26-48-28',
+              '',
               style: TextStyle(
                   color: Color.fromARGB(255, 19, 19, 19), fontSize: 20),
             ),
@@ -132,7 +132,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              '58906447',
+              '',
               style: TextStyle(
                 color: Color.fromARGB(255, 19, 19, 19),
                 fontSize: 20,

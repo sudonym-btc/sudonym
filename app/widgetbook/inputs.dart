@@ -1,4 +1,4 @@
-import 'package:sudonym/presentation/components/input/username.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 WidgetbookCategory inputs = WidgetbookCategory(

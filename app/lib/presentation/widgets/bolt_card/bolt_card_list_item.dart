@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/constants.dart';
-import 'package:sudonym/presentation/pages/bolt_card/edit_bolt_card.dart';
-import 'package:sudonym/presentation/widgets/pot/pot_settings/credit_card/creditcard.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class BoltCardListItem extends StatelessWidget {
-  BoltCard entity;
-
-  BoltCardListItem({required this.entity, Key? key}) : super(key: key);
+  final BoltCard entity;
+  const BoltCardListItem({required this.entity, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +17,6 @@ class BoltCardListItem extends StatelessWidget {
                         entity: entity,
                       )));
         },
-        child: Container(
-            padding: const EdgeInsets.all(padding), child: CreditCard()));
+        child: Container(child: CreditCard()));
   }
 }

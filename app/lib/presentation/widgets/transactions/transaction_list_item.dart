@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym.models/transaction.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/components/typography/info.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import '../../../injection.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction entity;
@@ -29,13 +26,10 @@ class TransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (_) => getIt.get<TransactionCubit>()..fetch(entity.id))
-        ],
-        child: BlocBuilder<TransactionCubit, TransactionCubitState>(
-            builder: (BuildContext context, state) {
+    return CubitWrapper<TransactionCubit, Transaction>(
+        entity: entity,
+        fetch: false,
+        builder: (context, TransactionCubitState state) {
           if (state.loading) {
             return Container();
           }
@@ -45,7 +39,7 @@ class TransactionListItem extends StatelessWidget {
                     .pushNamed('/transaction', arguments: entity);
               },
               child: Opacity(
-                  opacity: entity.status == true ? 1 : 0.6,
+                  opacity: state.entity!.status == true ? 1 : 0.6,
                   child: Container(
                       padding: const EdgeInsets.all(padding),
                       child: Row(
@@ -53,12 +47,13 @@ class TransactionListItem extends StatelessWidget {
                           SizedBox(
                               width: 75,
                               child: Text(
-                                (entity.outgoing ? '- ' : '') +
-                                    FormatCurrency().format(entity.currencyCode,
-                                        entity.amount.toDouble()),
+                                (state.entity!.outgoing ? '- ' : '') +
+                                    FormatCurrency().format(
+                                        state.entity!.currencyCode,
+                                        state.entity!.amount.toDouble()),
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color: entity.outgoing
+                                    color: state.entity!.outgoing
                                         ? Theme.of(context).errorColor
                                         : Theme.of(context).primaryColor),
                               )),
@@ -81,6 +76,6 @@ class TransactionListItem extends StatelessWidget {
                                       locale: 'en_short')))),
                         ],
                       ))));
-        }));
+        });
   }
 }

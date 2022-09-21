@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/index.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
-import 'package:sudonym/presentation/components/typography/header.dart';
-import 'package:sudonym/presentation/widgets/list/list.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../injection.dart';
-import 'contact_list_item.dart';
+import 'package:sudonym/injection.dart';
 
 class ContactList extends StatelessWidget {
   const ContactList({Key? key}) : super(key: key);
@@ -25,7 +24,12 @@ class ContactList extends StatelessWidget {
           Expanded(
               child: ListWidget(
             builder: (el) {
-              return ContactListItem(contact: el);
+              return CubitWrapper<ContactCubit, Contact>(
+                  entity: el,
+                  fetch: false,
+                  builder: (context, state) {
+                    return ContactListItem(contact: state.entity);
+                  });
             },
             list: ListCubit(getIt<ContactRepository>()),
             emptyText: (AppLocalizations.of(context)!.noContactsFound),

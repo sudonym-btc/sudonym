@@ -4,8 +4,7 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/components/form/form.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class EditBoltCard extends StatelessWidget {
   final BoltCard? entity;
@@ -18,24 +17,16 @@ class EditBoltCard extends StatelessWidget {
         child: SafeArea(
             bottom: false,
             child: Scaffold(
-                appBar: AppBar(
-                  title: Text(
-                      "${entity?.id == null ? "Create" : "Edit"} Bolt Card"),
-                ),
-                body: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(padding),
-                    child: EditBoltCardForm(
-                        onSave: () => Navigator.pop(context), entity: entity),
-                  ),
-                  Expanded(
-                      child: Button(
-                    text: 'Write NFC',
-                    onPressed: () {
-                      getIt<NFCCubit>().write(Uri.parse('lnurlw://test.app'));
-                    },
-                  ))
-                ]))));
+              appBar: AppBar(
+                title:
+                    Text("${entity?.id == null ? "Create" : "Edit"} Bolt Card"),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(padding),
+                child: EditBoltCardForm(
+                    onSave: () => Navigator.pop(context), entity: entity),
+              ),
+            )));
   }
 }
 
@@ -57,18 +48,29 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
 
   @override
   Widget build(BuildContext context) {
+    var children = <Widget>[
+      FormBuilderTextField(
+        name: 'name',
+        decoration: const InputDecoration(
+          labelText: 'Card name',
+        ),
+        initialValue: widget.entity!.name,
+      ),
+    ];
+    children.addAll(widget.entity!.sender != null
+        ? [
+            Button(
+              text: 'Write NFC',
+              onPressed: () {
+                getIt<NFCCubit>().write(Uri.parse('lnurlw://test.app'));
+              },
+            )
+          ]
+        : []);
     return CustomForm(
         entity: widget.entity ?? BoltCard.fromJson({'name': ''}),
         onSave: widget.onSave,
         cubit: getIt<BoltCardCubit>(),
-        children: [
-          FormBuilderTextField(
-            name: 'name',
-            decoration: const InputDecoration(
-              labelText: 'Card name',
-            ),
-            initialValue: widget.entity!.name,
-          ),
-        ]);
+        children: children);
   }
 }
