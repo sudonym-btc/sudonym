@@ -9,6 +9,7 @@ import {
 	AutoIncrement,
 	AllowNull,
 	NotNull,
+	DataType,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
@@ -23,7 +24,7 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	id: number;
 
-	@Column
+	@Column(DataType.STRING(1024))
 	txid: string;
 
 	@Column
@@ -32,10 +33,10 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	description: string;
 
-	@Column
+	@Column(DataType.STRING(1024))
 	address: string;
 
-	@Column
+	@Column(DataType.STRING(1024))
 	originalAddress: string;
 
 	@Default(null)

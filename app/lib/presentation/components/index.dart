@@ -11,6 +11,7 @@ export 'notifications/recieved_notification.dart';
 export 'notifications/sent_notification.dart';
 export 'typography/emphasized.dart';
 export 'typography/header.dart';
+export 'typography/subheader.dart';
 export 'typography/info.dart';
 export 'typography/subtitle.dart';
 

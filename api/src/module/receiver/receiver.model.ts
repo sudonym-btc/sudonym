@@ -30,7 +30,7 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column
 	potId: number;
 
-	@Column
+	@Column(DataType.STRING(1024))
 	data: string;
 
 	@Column

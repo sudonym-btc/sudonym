@@ -27,8 +27,7 @@ class _MessageHandlerState extends State<MessageHandler>
     //   print(event);
     //   event.user;
     // }));
-    _userDeviceRepo.create(UserDevice.fromJson(
-        {'uid': _authCubit.state.user!.id, 'token': token}));
+    _userDeviceRepo.create({'uid': _authCubit.state.user!.id, 'token': token});
     loggy.debug('Got new notification token $token');
   }
 

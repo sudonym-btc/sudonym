@@ -21,27 +21,36 @@ class SettingsPage extends StatelessWidget {
           body: Column(mainAxisSize: MainAxisSize.min, children: [
             Padding(
                 padding: EdgeInsets.all(padding),
-                child: CustomForm(
-                  cubit: getIt<UserCubit>(),
-                  entity: getIt<AuthCubit>().user!,
-                  children: [
-                    FormBuilderTextField(
-                      name: 'lightningAddress',
-                      initialValue: getIt<AuthCubit>().user!.lightningAddress,
-                      decoration: InputDecoration(
-                          hintText: 'satoshi',
-                          labelText:
-                              AppLocalizations.of(context)!.lightningAddress,
-                          suffixText: '@${getIt<Config>().domain}'),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                )),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Subheader("Lightning"),
+                      // const SizedBox(
+                      //   height: padding,
+                      // ),
+                      CustomForm(
+                        cubit: getIt<UserCubit>(),
+                        entity: getIt<AuthCubit>().user!,
+                        children: [
+                          FormBuilderTextField(
+                            name: 'lightningAddress',
+                            initialValue:
+                                getIt<AuthCubit>().user!.lightningAddress,
+                            decoration: InputDecoration(
+                                hintText: 'satoshi',
+                                labelText: AppLocalizations.of(context)!
+                                    .lightningAddress,
+                                suffixText: '@${getIt<Config>().domain}'),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      )
+                    ])),
             const Expanded(
                 child: const Padding(
                     padding: EdgeInsets.all(padding), child: BoltCardList())),

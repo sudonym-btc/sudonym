@@ -81,7 +81,8 @@ export class AddressParser implements IAddressParser {
 		this.logger.debug('Fetching lnurl address', url);
 		const data = await fetch(url, fetchHttpOpts)
 			.then((r) => {
-				this.logger.debug('Fetched lnurl address', r);
+				this.logger.debug('Fetched lnurl address');
+				this.logger.debug(r);
 				return r.json()
 			})
 			.then((data) => {

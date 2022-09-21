@@ -4,8 +4,8 @@ class Pot extends BaseClass {
   dynamic /* num | null */ id;
   String name;
   String currency;
-  num balance;
-  num spendableBalance;
+  dynamic /* num | null */ balance;
+  dynamic /* num | null */ spendableBalance;
   Pot(this.id,
       [this.name = "",
       this.currency = "BTC",

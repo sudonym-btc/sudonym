@@ -44,6 +44,7 @@
     "jsonrpc-ts": "^0.2.1",
     "lnurl": "^0.21.0",
     "madge": "^5.0.1",
+    "mysql2": "^2.3.3",
     "node-fetch": "^2.6.6",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.4",

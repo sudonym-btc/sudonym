@@ -17,7 +17,7 @@ class BoltCardList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Header(AppLocalizations.of(context)!.boltCards),
+          Subheader(AppLocalizations.of(context)!.boltCards),
           const SizedBox(
             height: padding,
           ),

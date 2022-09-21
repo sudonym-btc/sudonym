@@ -48,31 +48,35 @@ class EditPotFormState extends State<EditPotForm> {
   @override
   Widget build(BuildContext context) {
     return CustomForm(
-        entity: widget.entity ?? Pot.fromJson({}),
+        entity: widget.entity ?? Pot.fromJson({'name': '', 'currency': 'BTC'}),
         onSave: widget.onSave,
         cubit: getIt<PotCubit>(),
         children: [
-          FormBuilderTextField(
-            name: 'name',
-            decoration: const InputDecoration(
-              labelText: 'Pot name',
-            ),
-            initialValue: widget.entity!.name,
-          ),
-          FormBuilderDropdown(
-            name: 'currency',
-            decoration: const InputDecoration(
-              labelText: 'Currency',
-            ),
-            // initialValue: 'Male',
-            allowClear: true,
-            hint: const Text('Select Currency'),
-            items: listOfValue
-                .map((currency) => DropdownMenuItem(
-                      value: currency,
-                      child: Text('$currency'),
-                    ))
-                .toList(),
+          Column(
+            children: [
+              FormBuilderTextField(
+                name: 'name',
+                decoration: const InputDecoration(
+                  labelText: 'Pot name',
+                ),
+                initialValue: widget.entity?.name ?? '',
+              ),
+              FormBuilderDropdown(
+                name: 'currency',
+                decoration: const InputDecoration(
+                  labelText: 'Currency',
+                ),
+                // initialValue: 'Male',
+                allowClear: true,
+                hint: const Text('Select Currency'),
+                items: listOfValue
+                    .map((currency) => DropdownMenuItem(
+                          value: currency,
+                          child: Text(currency),
+                        ))
+                    .toList(),
+              )
+            ],
           )
         ]);
   }

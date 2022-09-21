@@ -15,8 +15,9 @@ export class LnUrlHandlerService {
 
 	async handle(id, query) {
 		const tag = await this.lnUrlService.findOne(id);
+		console.log(tag);
 		switch (tag.tag) {
-			case 'paymentRequest':
+			case 'payRequest':
 
 				// Create a new receiver, this time bolt11 not lnurl
 				const receiver = await this.receiveService.getInvoice(
@@ -48,7 +49,7 @@ export class LnUrlHandlerService {
 
 		}
 
-		throw new HttpException("invalid request", 400);
+		throw new HttpException("Unhandleable lnurl request", 400);
 
 	}
 }

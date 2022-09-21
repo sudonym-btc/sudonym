@@ -10,7 +10,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule);
-	app.useGlobalPipes(new ValidationPipe({ whitelist: false, transform: true }));
+	app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 	app.useWebSocketAdapter(new WsAdapter(app));
 	app.use(requestLogger);
 	app.use(contextRequest);

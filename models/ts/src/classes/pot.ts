@@ -5,8 +5,8 @@ export class Pot extends BaseClass {
 		public id: number | null,
 		public name: string = '',
 		public currency: string = 'BTC',
-		public balance: number = 0,
-		public spendableBalance: number = 0
+		public balance: number | null = 0,
+		public spendableBalance: number | null = 0
 	) {
 		super();
 	}

@@ -46,6 +46,8 @@ ThemeData themeData = ThemeData(
               BorderSide(style: BorderStyle.solid, width: 2, color: primary),
         )),
     textTheme: const TextTheme(
-        subtitle1: TextStyle(),
-        headlineLarge: TextStyle(
+        // labelLarge: TextStyle(),
+        displayMedium: TextStyle(
+            color: Colors.black, fontSize: 20, fontWeight: FontWeight.w900),
+        displayLarge: TextStyle(
             color: Colors.black, fontSize: 30, fontWeight: FontWeight.w900)));

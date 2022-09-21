@@ -69,6 +69,9 @@ export class LightningNodeService {
 			this.logger.verbose(
 				`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`
 			);
+			if(this.connectedChannels.length == 0) {
+				this.logger.warn('0 connected channels. Payments not possible');
+			}
 		} catch (e) {
 			this.logger.error(e);
 		}
