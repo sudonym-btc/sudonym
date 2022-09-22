@@ -17,7 +17,7 @@ export class AddressParser implements IAddressParser {
 			case 'lightningaddress':
 				return Action.from({
 					originalAddress: trimmedAddress,
-					type: 'payment',
+					type: 'pay',
 					remoteResponse: await this.fetchRemoteLightningAddress(
 						trimmedAddress
 					),
@@ -28,6 +28,7 @@ export class AddressParser implements IAddressParser {
 				const remoteResponse = await this.fetchRemoteLnUrl(
 					trimmedAddress
 				);
+				console.log(remoteResponse)
 				return Action.from({
 					originalAddress: trimmedAddress,
 					type: remoteResponse.data.tag.replace('Request', ''),
@@ -37,7 +38,7 @@ export class AddressParser implements IAddressParser {
 			case 'bolt11':
 				return Action.from({
 					originalAddress: trimmedAddress,
-					type: 'payment',
+					type: 'pay',
 					isBolt11: true,
 					remoteResponse: await this.fetchBolt11(trimmedAddress),
 				});
@@ -52,7 +53,24 @@ export class AddressParser implements IAddressParser {
 		).toString();
 
 		this.logger.debug('Fetching LnUrl from ' + url);
-		const data = await fetch(url, fetchHttpOpts);
+		const data = await fetch(url, fetchHttpOpts).then((r) => {
+			this.logger.debug('Fetched lnurl');
+			this.logger.debug(r);
+			return r.json()
+		})
+			.then((data) => {
+				return {
+					success: true,
+					data
+				};
+			})
+			.catch((e) => {
+				console.error(e);
+				return {
+					success: false,
+					message: e,
+				};
+			});
 		return data;
 	};
 

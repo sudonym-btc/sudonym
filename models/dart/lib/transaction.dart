@@ -4,6 +4,8 @@ class Transaction extends BaseClass {
   num id;
   dynamic /* String | null */ txid;
   num potId;
+  dynamic /* num | null */ receiverId;
+  dynamic /* num | null */ senderId;
   bool outgoing;
   dynamic /* String | null */ type;
   dynamic /* String | null */ originalAddress;
@@ -18,6 +20,8 @@ class Transaction extends BaseClass {
       this.id,
       this.txid,
       this.potId,
+      this.receiverId,
+      this.senderId,
       this.outgoing,
       this.type,
       this.originalAddress,
@@ -36,6 +40,8 @@ class Transaction extends BaseClass {
         json["id"],
         json["txid"],
         json["potId"],
+        json["receiverId"],
+        json["senderId"],
         json["outgoing"],
         json["type"],
         json["originalAddress"],
@@ -53,6 +59,8 @@ class Transaction extends BaseClass {
       "id": this.id,
       "txid": this.txid,
       "potId": this.potId,
+      "receiverId": this.receiverId,
+      "senderId": this.senderId,
       "outgoing": this.outgoing,
       "type": this.type,
       "originalAddress": this.originalAddress,

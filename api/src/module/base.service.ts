@@ -67,6 +67,8 @@ export const BaseService = <TModel extends BaseModel>(
 			const data = await this.repo
 				.scope(scopes as any)
 				.findAndCountAll(parseFindParams(params));
+
+			console.log(data.rows);
 			return {
 				data: data.rows,
 				metadata: {

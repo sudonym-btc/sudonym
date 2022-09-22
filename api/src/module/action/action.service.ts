@@ -116,6 +116,7 @@ export class ActionService {
 	}
 
 	async getCallback(callback, params) {
+		console.log(callback);
 		const u = new URL(callback);
 		for (const key in params) {
 			u.searchParams.append(key, params[key]);

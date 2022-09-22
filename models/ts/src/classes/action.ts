@@ -4,7 +4,7 @@ import { Withdraw } from './withdraw';
 
 export class Action extends ActionType {
 	constructor(
-		public type: 'payment' | 'withdraw',
+		public type: 'pay' | 'withdraw',
 		public originalAddress: string,
 		public isLnUrl: boolean | null = false,
 		public isLnAddress: boolean | null = false,
@@ -36,7 +36,7 @@ export class Action extends ActionType {
 	}
 
 	static from(json): Payment | Withdraw {		
-		if (json['type'] == 'payment') return Payment.fromJson(json);
+		if (json['type'] == 'pay') return Payment.fromJson(json);
 		return Withdraw.fromJson(json);
 	}
 

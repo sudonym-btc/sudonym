@@ -26,6 +26,7 @@ export class BitcoinListener extends TransactionListener {
 						originalAddress: receivers.data[0].data,
 						address: receivers.data[0].data,
 						potId: receivers.data[0].potId,
+						receiverId: receivers.data[0].id,
 						outgoing: false,
 						amount: out.value / SATOSHIS,
 						status: true,

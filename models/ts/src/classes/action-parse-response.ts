@@ -10,7 +10,7 @@ export class ActionParseResponse {
 
   static from(a: any) {
     switch (a["type"]) {
-      case 'payment':
+      case 'pay':
         return new ActionParseResponse(Payment.fromJson(a), null)
       case 'withdraw':
         return new ActionParseResponse(null, Withdraw.fromJson(a));

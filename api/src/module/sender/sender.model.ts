@@ -34,7 +34,7 @@ export class Sender extends BaseModel implements Models.Sender {
 	@Column
 	data: string;
 
-	@Column
+	@Column(DataType.DOUBLE(18, 8))
 	amount: number;
 
 	@Default("BTC")

@@ -29,3 +29,4 @@ function searchDir(prefix, dir) {
 
 const dir = __dirname + '/../../dart/lib/';
 searchDir('', dir);
+console.log('converted');

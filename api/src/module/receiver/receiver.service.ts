@@ -22,7 +22,7 @@ export class ReceiverService extends BaseService(Receiver) {
 			query.amountCurrency == 'BTC'
 				? query.amount
 				: (await this.currencyService.convert(query.amountCurrency, 'BTC', query.amount))
-						.amount;
+					.amount;
 		const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
 		if (query.type != 'bolt11' && query.type != 'lnurl') {
@@ -36,18 +36,18 @@ export class ReceiverService extends BaseService(Receiver) {
 			});
 			if (exists) return exists;
 		}
-		let data;
+		let params: any = {};
 
 		switch (query.type) {
 			case 'bolt11':
-				data = (
+				params.data = (
 					await this.lightningNodeService.createInvoice(
 						mSatoshiAmount
 					)
 				).bolt11;
 				break;
 			case 'bolt12':
-				data = (
+				params.data = (
 					await this.lightningNodeService.createOffer(mSatoshiAmount)
 				).bolt12;
 				break;
@@ -56,10 +56,11 @@ export class ReceiverService extends BaseService(Receiver) {
 					query.potId,
 					mSatoshiAmount
 				);
-				data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);
+				params.data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);
+				params.lnurlId = tag.id;
 				break;
 			case 'onchain':
-				data = (
+				params.data = (
 					await this.lightningNodeService.generateOnChainAddress()
 				).address;
 				break;
@@ -70,7 +71,7 @@ export class ReceiverService extends BaseService(Receiver) {
 			amount: Number(amountInBTC),
 			currency: 'BTC',
 			type: query.type,
-			data,
+			...params,
 		});
 
 		return receiver;

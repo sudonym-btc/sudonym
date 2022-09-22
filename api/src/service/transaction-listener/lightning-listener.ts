@@ -27,6 +27,7 @@ export class LightningListener extends TransactionListener {
 						originalAddress: receivers.data[0].data,
 						address: receivers.data[0].data,
 						potId: receivers.data[0].potId,
+						receiverId: receivers.data[0].id,
 						outgoing: false,
 						amount: e.data.msatoshi / MSATOSHIS,
 						status: true,

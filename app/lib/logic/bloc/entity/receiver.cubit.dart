@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
@@ -6,16 +9,30 @@ import 'package:sudonym/logic/index.dart';
 @injectable
 class ReceiverCubit
     extends EntityCubit<ReceiverRepository, ReceiverCubitState, Receiver> {
+  StreamSubscription? receiveSubscription;
+
   ReceiverCubit()
       : super(
             initialState: ReceiverCubitState(),
             stateClass: ReceiverCubitState.init);
 
+  @override
+  listenChanges() {
+    updater ??= repository.events.stream.listen((dynamic event) {
+      if (state.entity != null) {
+        if (event['data']['id'] == state.entity!.id) {
+          FlutterRingtonePlayer.playNotification();
+        }
+      }
+    });
+    super.listenChanges();
+  }
+
   getInvoice(num potId, String type,
       [num? amount, String? currency = 'BTC']) async {
     emit(ReceiverCubitState(loading: true));
     var data = await repository.getInvoice(potId, type, amount, currency);
-    if (!isClosed) emit(ReceiverCubitState(loading: false, entity: data));
+    set(data);
   }
 }
 
