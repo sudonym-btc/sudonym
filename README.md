@@ -103,4 +103,10 @@ Might have to run
 `gcloud beta deployment-manager type-providers delete test-cluster-type`
 if you abandon a deployment
 
+Get kubectl credentials for cluster
+`gcloud container clusters get-credentials test-cluster`
+
+If cannot validate ingress
+`kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission`
+
 </details>
