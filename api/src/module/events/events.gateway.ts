@@ -5,9 +5,10 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Event } from '@sudonym/models';
+import { getConfig } from 'config/config';
 import { EventsService } from './events.service';
 
-@WebSocketGateway(3001, {
+@WebSocketGateway(getConfig().wsPort, {
 	cors: {
 		origin: '*',
 	},

@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [production, staging, test]
 jobs:
-  test_flutter:
+  test_app:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

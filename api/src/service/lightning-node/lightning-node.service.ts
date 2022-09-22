@@ -10,9 +10,7 @@ import * as bolt11 from 'bolt11';
 export class LightningNodeService {
 	private readonly logger = new Logger(LightningNodeService.name);
 
-	private macaroon = Buffer.from(
-		fs.readFileSync(getConfig().macaroonFile)
-	).toString('base64');
+	private macaroon;
 	private url = getConfig().lightningREST;
 	private info;
 	private peers;
@@ -60,6 +58,10 @@ export class LightningNodeService {
 
 	async onModuleInit() {
 		try {
+			this.macaroon = Buffer.from(
+				fs.readFileSync(getConfig().macaroonFile)
+			).toString('base64');
+
 			this.logger.verbose('Loading lightning node information.');
 
 			this.info = await this.getInfo();
