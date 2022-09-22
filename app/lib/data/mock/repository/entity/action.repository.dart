@@ -28,7 +28,7 @@ class MockActionRepository implements ActionRepository {
     switch (type) {
       case 'lightningaddress':
         return Action.from({
-          'type': 'payment',
+          'type': 'pay',
           'originalAddress': trimmedAddress,
           'isLnUrl': true,
           'isLightningAddress': true,
@@ -44,7 +44,7 @@ class MockActionRepository implements ActionRepository {
         });
       default:
         return Action.from({
-          'type': 'payment',
+          'type': 'pay',
           'originalAddress': trimmedAddress,
           'isBolt11': true,
           'remoteResponse': await fetchBolt11(trimmedAddress)

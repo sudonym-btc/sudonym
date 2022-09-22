@@ -10,9 +10,12 @@ import {
 	AllowNull,
 	NotNull,
 	DataType,
+	ForeignKey,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
+import { Receiver } from 'module/receiver/receiver.model';
+import { Sender } from 'module/sender/sender.model';
 
 @Table({
 	scopes: Transaction.scopes,
@@ -49,8 +52,16 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	potId: number;
 
-	@AllowNull(false)
+	@ForeignKey(() => Sender)
 	@Column
+	senderId: number;
+
+	@ForeignKey(() => Receiver)
+	@Column
+	receiverId: number;
+
+	@AllowNull(false)
+	@Column(DataType.DOUBLE(18, 8))
 	amount: number;
 
 	@AllowNull(false)

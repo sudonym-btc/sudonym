@@ -50,7 +50,7 @@ class TransactionListItem extends StatelessWidget {
                                 (state.entity!.outgoing ? '- ' : '') +
                                     FormatCurrency().format(
                                         state.entity!.currencyCode,
-                                        state.entity!.amount.toDouble()),
+                                        state.entity!.amount),
                                 style: TextStyle(
                                     fontSize: 12,
                                     color: state.entity!.outgoing

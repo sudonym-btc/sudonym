@@ -5,7 +5,7 @@ import { Action } from '../classes/action';
 export const factory = Factory.Sync.each<Action>(
 	(i) =>
 		({
-			type: 'payment',
+			type: 'pay',
 			originalAddress: 'shalom',
 			isBolt11: false,
 			isLnUrl: false,

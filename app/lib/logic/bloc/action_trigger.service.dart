@@ -14,6 +14,8 @@ class ActionTriggerService with ActionLogger {
 
   trigger(String link, BuildContext context, [int? potId]) async {
     ActionParseResponse response = await _actionRepository.parse(link);
+    loggy.info(response.payment);
+    loggy.info(response.withdraw);
     if (response.payment != null) {
       handlePayment(response.payment!, context, potId);
     }

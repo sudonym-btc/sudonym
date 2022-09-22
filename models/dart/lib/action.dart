@@ -32,7 +32,7 @@ class Action extends ActionType {
   }
 
   static dynamic /* Payment | Withdraw */ from(json) {
-    if (json["type"] == "payment") return Payment.fromJson(json);
+    if (json["type"] == "pay") return Payment.fromJson(json);
     return Withdraw.fromJson(json);
   }
 

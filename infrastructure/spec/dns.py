@@ -74,6 +74,12 @@ def dns(config, cluster_types):
                             "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
                         },
                         {
+                            "name": "db." + domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                        },
+                        {
                             "name": domain + ".",
                             "type": "A",
                             "ttl": 50,

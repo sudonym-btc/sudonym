@@ -97,7 +97,7 @@ class SendConfirmPage extends StatelessWidget {
                     TableRow(children: [
                       const Text('address'),
                       Text(
-                        r.address,
+                        r.address ?? '',
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),

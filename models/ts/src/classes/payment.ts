@@ -20,7 +20,7 @@ export class Payment extends ActionType {
 		public isBolt12: boolean | null = false,
 		public isOnChain: boolean | null = false
 	) {
-		super('payment', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain);
+		super('pay', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain);
 	}
 
 	static fromJson(json: Object): Payment {

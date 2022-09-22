@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "convert": "sh convert.sh",
-    "postconvert": "cd ts && ts-node src/dart-decorator.ts",
+    "convert": "sh convert.sh && (cd ts && ts-node src/dart-decorator.ts)",
     "genMocks": "ts-node ./ts/src/mock/exporter.ts"
   },
   "devDependencies": {

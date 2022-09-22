@@ -34,8 +34,8 @@ class Payment extends ActionType {
       this.isBolt11 = false,
       this.isBolt12 = false,
       this.isOnChain = false])
-      : super("payment", originalAddress, isLnUrl, isLnAddress, isBolt11,
-            isBolt12, isOnChain) {
+      : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
+            isOnChain) {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {

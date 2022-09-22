@@ -1,10 +1,14 @@
 import { Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { CurrencyCode, TAddressType } from '@sudonym/models';
 import { Type } from 'class-transformer';
-import { IsInt, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ReceiverService } from './receiver.service';
 
 export class ReceiveQuery {
+	@IsInt()
+	@IsOptional()
+	@Type(() => Number)
+	parentId: number;
 	@IsInt()
 	@Type(() => Number)
 	potId: number;

@@ -19,9 +19,24 @@ export class LnUrlHandlerService {
 		switch (tag.tag) {
 			case 'payRequest':
 
+				let parentId;
+
+				try {
+					parentId = (await this.receiveService.findOne(
+						{
+							where: {
+								lnurlId: tag.id
+							}
+						}
+					)).id;
+				} catch (e) {
+
+				}
+
 				// Create a new receiver, this time bolt11 not lnurl
 				const receiver = await this.receiveService.getInvoice(
 					{
+						parentId,
 						potId: tag.potId,
 						type: 'bolt11',
 						amount: query.amount / MSATOSHIS,
@@ -39,6 +54,7 @@ export class LnUrlHandlerService {
 				await this.transactionService.create({
 					outgoing: true,
 					potId: sender.potId,
+					senderId: sender.id,
 					address: query.pr,
 					originalAddress: query.pr,
 					txid: query.pr,
