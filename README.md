@@ -99,4 +99,8 @@ and roll out the changes.
 The first deployment of each environment can take multiple executions
 as the clusters start up and there may be race conditions.
 
+Might have to run
+`gcloud beta deployment-manager type-providers delete test-cluster-type`
+if you abandon a deployment
+
 </details>
