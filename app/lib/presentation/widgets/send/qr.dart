@@ -14,7 +14,7 @@ class QRView extends StatelessWidget {
         allowDuplicates: false,
         onDetect: (barcode, args) {
           final String? code = barcode.rawValue;
-          getIt<LinkService>().trigger(code!, context, potId);
+          getIt<ActionTriggerService>().trigger(code!, context, potId);
         });
   }
 }

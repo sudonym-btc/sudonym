@@ -32,7 +32,7 @@ class _SendPageState extends State<SendPage> {
     _InvoiceInput invoiceInput = _InvoiceInput(
       controller: controller,
       onPressed: () {
-        getIt<LinkService>()
+        getIt<ActionTriggerService>()
             .trigger(controller.value.text, context, widget.potId);
       },
     );

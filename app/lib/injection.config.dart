@@ -40,7 +40,7 @@ import 'logic/bloc/entity/pot.cubit.dart' as _i14;
 import 'logic/bloc/entity/receiver.cubit.dart' as _i16;
 import 'logic/bloc/entity/transaction.cubit.dart' as _i19;
 import 'logic/bloc/entity/user.cubit.dart' as _i23;
-import 'logic/bloc/link.service.dart' as _i39;
+import 'logic/bloc/action_trigger.service.dart' as _i39;
 import 'logic/bloc/pages/send.cubit.dart' as _i41;
 import 'logic/bloc/transaction-listener/clipboard-listener.dart' as _i7;
 import 'logic/bloc/transaction-listener/link-listener.dart' as _i11;
@@ -153,8 +153,8 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   gh.lazySingleton<_i38.CurrencyRepository>(
       () => _i38.CurrencyRepositoryImpl(get<_i10.Dio>()),
       registerFor: {_dev, _test, _staging, _prod});
-  gh.lazySingleton<_i39.LinkService>(
-      () => _i39.LinkService(get<_i3.ActionRepository>()));
+  gh.lazySingleton<_i39.ActionTriggerService>(
+      () => _i39.ActionTriggerService(get<_i3.ActionRepository>()));
   gh.lazySingleton<_i40.PotRepository>(
       () => _i40.PotRepositoryImpl(
           get<_i8.Config>(), get<_i10.Dio>(), get<_i28.Websocket>()),
