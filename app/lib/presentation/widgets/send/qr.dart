@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/logic/bloc/link.service.dart';
+import 'package:sudonym/logic/index.dart';
 
 class QRView extends StatelessWidget {
   final int? potId;

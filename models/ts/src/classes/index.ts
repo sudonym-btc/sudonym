@@ -1,7 +1,9 @@
 export * from './event';
 export * from './types/address-parser';
 export * from './action';
+export * from './action-parse-response';
 export * from './action-type';
+export * from './bolt-card';
 export * from './payment';
 export * from './payment-request';
 export * from './withdraw-request';
@@ -13,6 +15,7 @@ export * from './contact';
 export * from './contact-address';
 export * from './transaction';
 export * from './receiver';
+export * from './sender';
 export * from './transaction/lightning-transaction';
 export * from './offer';
 export * from './user';

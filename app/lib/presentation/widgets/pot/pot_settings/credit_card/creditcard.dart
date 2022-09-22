@@ -13,52 +13,44 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('Card Details'), actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/settings');
-            },
-            icon: const FaIcon(FontAwesomeIcons.cog, size: 14),
-          )
-        ]),
-        body: GestureDetector(
-          onHorizontalDragUpdate: (horizontal) {
-            setState(() {
-              horizontalDrag += horizontal.delta.dx;
-              horizontalDrag %= 360;
-            });
-          },
-          child: Transform(
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateY(pi / 180 * horizontalDrag),
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 150),
-              child: Center(
-                child: Container(
-                  width: 300,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColorDark
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: horizontalDrag <= 90 || horizontalDrag >= 270
-                      ? cardFront()
-                      : cardBack(),
+    return Container(
+        child: GestureDetector(
+      onHorizontalDragUpdate: (horizontal) {
+        setState(() {
+          horizontalDrag += horizontal.delta.dx;
+          horizontalDrag %= 360;
+        });
+      },
+      child: Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001)
+          ..rotateY(pi / 180 * horizontalDrag),
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 150),
+          child: Center(
+            child: Container(
+              width: 300,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).primaryColorDark
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
+              child: horizontalDrag <= 90 || horizontalDrag >= 270
+                  ? cardFront()
+                  : cardBack(),
             ),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 
   Widget cardFront() {
@@ -85,7 +77,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              '4729  8363  9583  8348',
+              '',
               style: TextStyle(
                 color: Color.fromARGB(255, 19, 19, 19),
                 fontSize: 18,
@@ -112,7 +104,7 @@ class _CreditCardState extends State<CreditCard> {
               0,
             ),
             child: Text(
-              'EXP 09 / 26',
+              '',
               style: TextStyle(
                 color: Color.fromARGB(255, 19, 19, 19),
               ),
@@ -122,7 +114,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              'MIKE HUNT',
+              '',
               style: TextStyle(
                   color: Color.fromARGB(255, 19, 19, 19), fontSize: 15),
             ),
@@ -131,7 +123,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              '26-48-28',
+              '',
               style: TextStyle(
                   color: Color.fromARGB(255, 19, 19, 19), fontSize: 20),
             ),
@@ -140,7 +132,7 @@ class _CreditCardState extends State<CreditCard> {
           const Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Text(
-              '58906447',
+              '',
               style: TextStyle(
                 color: Color.fromARGB(255, 19, 19, 19),
                 fontSize: 20,

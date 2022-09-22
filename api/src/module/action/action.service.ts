@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
 	MSATOSHIS,
 	Action,
+	ActionParseResponse,
 	Payment,
 	Withdraw,
 	TAddressType,
@@ -26,8 +27,8 @@ export class ActionService {
 	@Inject(AddressParser) addressParser: AddressParser;
 	private readonly logger = new Logger(ActionService.name);
 
-	async parse(invoice): Promise<Action> {
-		return await this.addressParser.parse(invoice);
+	async parse(invoice): Promise<ActionParseResponse> {
+		return ActionParseResponse.from(await this.addressParser.parse(invoice));
 	}
 
 	async getInfo(action: Payment | Withdraw): Promise<Action> {
@@ -39,12 +40,12 @@ export class ActionService {
 				action.currency == 'BTC'
 					? action.amount
 					: (
-							await this.currencyService.convert(
-								action.currency,
-								'BTC',
-								action.amount
-							)
-					  ).amount;
+						await this.currencyService.convert(
+							action.currency,
+							'BTC',
+							action.amount
+						)
+					).amount;
 			const mSatoshiAmount = Math.round(btcAmount * MSATOSHIS);
 
 			switch (t) {
@@ -76,6 +77,11 @@ export class ActionService {
 					});
 				case 'lightningaddress':
 				case 'lnurl':
+					console.log(action.remoteResponse);
+					console.log(await this.getCallback(
+						action.remoteResponse.data.callback,
+						{ amount: mSatoshiAmount }
+					));
 					return Action.from({
 						...action,
 						address: (
@@ -110,8 +116,13 @@ export class ActionService {
 	}
 
 	async getCallback(callback, params) {
+		const u = new URL(callback);
+		for (const key in params) {
+			u.searchParams.append(key, params[key]);
+		}
+		this.logger.debug("Getting callback ", u.toString());
 		return fetch(
-			callback + '?' + new URLSearchParams(params),
+			u,
 			fetchHttpOpts
 		).then((r) => r.json());
 	}

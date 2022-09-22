@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { options as cmdargs } from '../cmd-line-args';
 import { configDevelopment } from './config-development';
 import { configProduction } from './config-production';
@@ -13,8 +14,6 @@ const configs = {
 
 const env = process.env.NODE_ENV || 'development';
 
-console.log(process.env, env);
-// process.exit();
 export const getConfig = () => {
 	return {
 		...config,
@@ -24,6 +23,7 @@ export const getConfig = () => {
 
 export const config = {
 	env,
+	network: "regtest",
 	selfUrl: cmdargs.selfUrl
 		? cmdargs.selfUrl
 		: 'https://api.' + getConfig().domain,
@@ -39,12 +39,11 @@ export const config = {
 		  '-bitcoin-zeromq-service.default.svc.cluster.local:5555',
 	macaroonFile: './certs/access.macaroon',
 	database: {
-		name: 'app',
+		name: 'app_' + randomUUID().substring(0, 8),
 		user: 'user',
 		password: 'password',
 		host: cmdargs.dbHost || 'localhost',
 		dialect: 'mysql',
 	},
+	wsPort: 3001
 };
-
-console.log(getConfig());

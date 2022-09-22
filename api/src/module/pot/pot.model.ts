@@ -8,6 +8,9 @@ import {
 	Sequelize,
 	BeforeCreate,
 	AfterCreate,
+	Default,
+	NotNull,
+	AllowNull,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
@@ -28,9 +31,13 @@ export class Pot extends BaseModel implements Models.Pot {
 	@Column
 	name: string;
 
+	@AllowNull(false)
+	@Default(0)
 	@Column
 	balance: number;
 
+	@AllowNull(false)
+	@Default(0)
 	@Column
 	spendableBalance: number;
 
@@ -58,7 +65,7 @@ export class Pot extends BaseModel implements Models.Pot {
 								as: 'PotUsers',
 								required: true,
 								where: {
-									UserId: request.auth.uid,
+									userId: request.auth.uid,
 								},
 							},
 						],

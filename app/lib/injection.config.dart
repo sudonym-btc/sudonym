@@ -4,49 +4,54 @@
 // InjectableConfigGenerator
 // **************************************************************************
 
-import 'package:dio/dio.dart' as _i7;
+import 'package:dio/dio.dart' as _i10;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-import 'config/config.dart' as _i6;
-import 'data/dio/dio.client.dart' as _i38;
+import 'config/config.dart' as _i8;
+import 'data/dio/dio.client.dart' as _i42;
+import 'data/index.dart' as _i3;
 import 'data/mock/repository/auth.repository.dart' as _i4;
-import 'data/mock/repository/contact.repository.dart' as _i18;
-import 'data/mock/repository/currency.repository.dart' as _i20;
-import 'data/mock/repository/action.repository.dart' as _i34;
-import 'data/mock/repository/pot.repository.dart' as _i23;
-import 'data/mock/repository/receive.repository.dart' as _i12;
-import 'data/mock/repository/transaction.repository.dart' as _i26;
-import 'data/mock/repository/user-device.repository.dart' as _i29;
-import 'data/mock/repository/user.repository.dart' as _i31;
-import 'data/mock/repository/websocket.dart' as _i16;
-import 'data/repository/auth.repository.dart' as _i3;
-import 'data/repository/contact.repository.dart' as _i17;
-import 'data/repository/currency.repository.dart' as _i19;
-import 'data/repository/action.repository.dart' as _i9;
-import 'data/repository/pot.repository.dart' as _i22;
-import 'data/repository/receive.repository.dart' as _i11;
-import 'data/repository/transaction.repository.dart' as _i25;
-import 'data/repository/user-device.repository.dart' as _i28;
-import 'data/repository/user.repository.dart' as _i30;
-import 'data/repository/websocket.dart' as _i15;
+import 'data/mock/repository/currency.repository.dart' as _i37;
+import 'data/mock/repository/entity/action.repository.dart' as _i31;
+import 'data/mock/repository/entity/bolt_card.repository.dart' as _i33;
+import 'data/mock/repository/entity/contact.repository.dart' as _i35;
+import 'data/mock/repository/entity/pot.repository.dart' as _i15;
+import 'data/mock/repository/entity/receiver.repository.dart' as _i17;
+import 'data/mock/repository/entity/transaction.repository.dart' as _i22;
+import 'data/mock/repository/entity/user-device.repository.dart' as _i25;
+import 'data/mock/repository/entity/user.repository.dart' as _i26;
+import 'data/mock/repository/websocket.dart' as _i29;
+import 'data/repository/auth.repository.dart' as _i5;
+import 'data/repository/currency.repository.dart' as _i38;
+import 'data/repository/entity/action.repository.dart' as _i30;
+import 'data/repository/entity/bolt_card.repository.dart' as _i34;
+import 'data/repository/entity/contact.repository.dart' as _i36;
+import 'data/repository/entity/pot.repository.dart' as _i40;
+import 'data/repository/entity/receiver.repository.dart' as _i18;
+import 'data/repository/entity/transaction.repository.dart' as _i21;
+import 'data/repository/entity/user-device.repository.dart' as _i24;
+import 'data/repository/entity/user.repository.dart' as _i27;
+import 'data/repository/websocket.dart' as _i28;
 import 'logic/bloc/auth.cubit.dart' as _i32;
-import 'logic/bloc/contact.cubit.dart' as _i33;
-import 'logic/bloc/link.service.dart' as _i21;
-import 'logic/bloc/pages/home/pot_slider.cubit.dart' as _i10;
-import 'logic/bloc/pot.cubit.dart' as _i35;
-import 'logic/bloc/receive.cubit.dart' as _i24;
-import 'logic/bloc/send.cubit.dart' as _i13;
-import 'logic/bloc/transaction-listener/clipboard-listener.dart' as _i5;
-import 'logic/bloc/transaction-listener/link-listener.dart' as _i8;
+import 'logic/bloc/entity/bolt_card.cubit.dart' as _i6;
+import 'logic/bloc/entity/contact.cubit.dart' as _i9;
+import 'logic/bloc/entity/pot.cubit.dart' as _i14;
+import 'logic/bloc/entity/receiver.cubit.dart' as _i16;
+import 'logic/bloc/entity/transaction.cubit.dart' as _i19;
+import 'logic/bloc/entity/user.cubit.dart' as _i23;
+import 'logic/bloc/link.service.dart' as _i39;
+import 'logic/bloc/pages/send.cubit.dart' as _i41;
+import 'logic/bloc/transaction-listener/clipboard-listener.dart' as _i7;
+import 'logic/bloc/transaction-listener/link-listener.dart' as _i11;
+import 'logic/bloc/transaction-listener/nfc-listener.dart' as _i13;
 import 'logic/bloc/transaction-listener/transaction-listener.cubit.dart'
-    as _i14;
-import 'logic/bloc/transaction.cubit.dart' as _i36;
-import 'logic/bloc/transactions.cubit.dart' as _i27;
-import 'logic/bloc/user.cubit.dart' as _i37;
+    as _i20;
+import 'logic/nfc.cubit.dart' as _i12;
 
 const String _mock = 'mock';
 const String _dev = 'dev';
+const String _test = 'test';
 const String _staging = 'staging';
 const String _prod = 'prod';
 // ignore_for_file: unnecessary_lambdas
@@ -58,95 +63,104 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   final registerModule = _$RegisterModule();
   gh.factory<_i3.AuthRepository>(() => _i4.MockAuthRepository(),
       registerFor: {_mock});
-  gh.factory<_i3.AuthRepository>(() => _i3.AuthRepositoryImpl(),
-      registerFor: {_dev, _staging, _prod});
-  gh.factory<_i5.ClipboardListener>(() => _i5.ClipboardListener());
-  gh.factory<_i6.Config>(() => _i6.DevConfig(), registerFor: {_dev});
-  gh.factory<_i6.Config>(() => _i6.ProdConfig(), registerFor: {_prod});
-  gh.factory<_i6.Config>(() => _i6.MockConfig(), registerFor: {_mock});
-  gh.lazySingleton<_i7.Dio>(() => registerModule.dio(get<_i6.Config>()));
-  gh.factory<_i8.LinkListener>(() => _i8.LinkListener());
-  gh.lazySingleton<_i9.ActionRepository>(
-      () => _i9.ActionRepositoryImpl(get<_i7.Dio>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.factory<_i10.PotSliderCubit>(() => _i10.PotSliderCubit(get<int>()));
-  gh.lazySingleton<_i11.ReceiveRepository>(
-      () => _i12.MockReceiveRepository(get<_i7.Dio>()),
+  gh.factory<_i5.AuthRepository>(() => _i5.AuthRepositoryImpl(),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.factory<_i6.BoltCardCubit>(() => _i6.BoltCardCubit());
+  gh.factory<_i7.ClipboardListener>(() => _i7.ClipboardListener());
+  gh.factory<_i8.Config>(() => _i8.DevConfig(), registerFor: {_dev});
+  gh.factory<_i8.Config>(() => _i8.TestConfig(), registerFor: {_test});
+  gh.factory<_i8.Config>(() => _i8.StagingConfig(), registerFor: {_staging});
+  gh.factory<_i8.Config>(() => _i8.ProdConfig(), registerFor: {_prod});
+  gh.factory<_i8.Config>(() => _i8.MockConfig(), registerFor: {_mock});
+  gh.factory<_i9.ContactCubit>(() => _i9.ContactCubit());
+  gh.lazySingleton<_i10.Dio>(() => registerModule.dio(get<_i8.Config>()));
+  gh.factory<_i11.LinkListener>(() => _i11.LinkListener());
+  gh.factory<_i12.NFCCubit>(() => _i12.NFCCubit());
+  gh.factory<_i13.NFCListener>(() => _i13.NFCListener());
+  gh.factory<_i14.PotCubit>(() => _i14.PotCubit());
+  gh.lazySingleton<_i3.PotRepository>(
+      () => _i15.MockPotRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
       registerFor: {_mock});
-  gh.lazySingleton<_i11.ReceiveRepository>(
-      () => _i11.ReceiveRepositoryImpl(get<_i7.Dio>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.factory<_i13.SendCubit>(() => _i13.SendCubit(get<_i9.ActionRepository>()));
-  gh.factory<_i14.TransactionListenerCubit>(
-      () => _i14.TransactionListenerCubit());
-  gh.singleton<_i15.Websocket>(_i15.WebsocketImpl(get<_i6.Config>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.singleton<_i15.Websocket>(_i16.MockWebsocket(), registerFor: {_mock});
-  gh.lazySingleton<_i17.ContactRepository>(
-      () => _i18.MockContactRepository(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
+  gh.factory<_i16.ReceiverCubit>(() => _i16.ReceiverCubit());
+  gh.lazySingleton<_i3.ReceiverRepository>(
+      () => _i17.MockReceiveRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
       registerFor: {_mock});
-  gh.factory<_i17.ContactRepository>(
-      () => _i17.ContactRepositoryImpl(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.factory<_i19.CurrencyRepository>(
-      () => _i20.MockCurrencyRepository(get<_i7.Dio>()),
+  gh.lazySingleton<_i18.ReceiverRepository>(
+      () => _i18.ReceiverRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.factory<_i19.TransactionCubit>(() => _i19.TransactionCubit());
+  gh.factory<_i20.TransactionListenerCubit>(
+      () => _i20.TransactionListenerCubit());
+  gh.lazySingleton<_i21.TransactionRepository>(
+      () => _i21.TransactionRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.lazySingleton<_i3.TransactionRepository>(
+      () => _i22.MockTransactionRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
       registerFor: {_mock});
-  gh.lazySingleton<_i19.CurrencyRepository>(
-      () => _i19.CurrencyRepositoryImpl(get<_i7.Dio>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.lazySingleton<_i21.LinkService>(
-      () => _i21.LinkService(get<_i9.ActionRepository>()));
-  gh.lazySingleton<_i22.PotRepository>(
-      () => _i23.MockPotRepository(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
+  gh.factory<_i23.UserCubit>(() => _i23.UserCubit());
+  gh.lazySingleton<_i24.UserDeviceRepository>(
+      () => _i24.UserDeviceRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.lazySingleton<_i3.UserDeviceRepository>(
+      () => _i25.MockUserDeviceRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
       registerFor: {_mock});
-  gh.lazySingleton<_i22.PotRepository>(
-      () => _i22.PotRepositoryImpl(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.factory<_i24.ReceiveCubit>(
-      () => _i24.ReceiveCubit(get<_i11.ReceiveRepository>()));
-  gh.lazySingleton<_i25.TransactionRepository>(
-      () => _i25.TransactionRepositoryImpl(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.lazySingleton<_i25.TransactionRepository>(
-      () => _i26.MockTransactionRepository(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
+  gh.lazySingleton<_i3.UserRepository>(
+      () => _i26.MockUserRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
       registerFor: {_mock});
-  gh.factory<_i27.TransactionsCubit>(
-      () => _i27.TransactionsCubit(get<_i25.TransactionRepository>()));
-  gh.lazySingleton<_i28.UserDeviceRepository>(
-      () => _i29.MockUserDeviceRepository(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
-      registerFor: {_mock});
-  gh.lazySingleton<_i28.UserDeviceRepository>(
-      () => _i28.UserDeviceRepositoryImpl(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.lazySingleton<_i30.UserRepository>(
-      () => _i30.UserRepositoryImpl(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
-      registerFor: {_dev, _staging, _prod});
-  gh.lazySingleton<_i30.UserRepository>(
-      () => _i31.MockUserRepository(
-          get<_i6.Config>(), get<_i7.Dio>(), get<_i15.Websocket>()),
+  gh.lazySingleton<_i27.UserRepository>(
+      () => _i27.UserRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.singleton<_i28.Websocket>(_i28.WebsocketImpl(get<_i8.Config>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.singleton<_i28.Websocket>(_i29.MockWebsocket(), registerFor: {_mock});
+  gh.lazySingleton<_i30.ActionRepository>(
+      () => _i30.ActionRepositoryImpl(get<_i10.Dio>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.lazySingleton<_i3.ActionRepository>(
+      () => _i31.MockActionRepository(get<_i3.ReceiverRepository>(),
+          get<_i3.TransactionRepository>(), get<_i10.Dio>()),
       registerFor: {_mock});
   gh.singleton<_i32.AuthCubit>(_i32.AuthCubit(get<_i3.AuthRepository>(),
-      get<_i30.UserRepository>(), get<_i15.Websocket>()));
-  gh.factory<_i33.ContactCubit>(
-      () => _i33.ContactCubit(get<_i17.ContactRepository>()));
-  gh.lazySingleton<_i9.ActionRepository>(
-      () => _i34.MockActionRepository(get<_i11.ReceiveRepository>(),
-          get<_i25.TransactionRepository>(), get<_i7.Dio>()),
+      get<_i3.UserRepository>(), get<_i3.Websocket>()));
+  gh.lazySingleton<_i3.BoltCardRepository>(
+      () => _i33.MockBoltCardRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
       registerFor: {_mock});
-  gh.factory<_i35.PotCubit>(() => _i35.PotCubit(get<_i22.PotRepository>()));
-  gh.factory<_i36.TransactionCubit>(
-      () => _i36.TransactionCubit(get<_i25.TransactionRepository>()));
-  gh.factory<_i37.UserCubit>(() => _i37.UserCubit(get<_i30.UserRepository>()));
+  gh.factory<_i34.BoltCardRepository>(
+      () => _i34.BoltCardRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.lazySingleton<_i3.ContactRepository>(
+      () => _i35.MockContactRepository(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_mock});
+  gh.factory<_i36.ContactRepository>(
+      () => _i36.ContactRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i3.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.factory<_i3.CurrencyRepository>(
+      () => _i37.MockCurrencyRepository(get<_i10.Dio>()),
+      registerFor: {_mock});
+  gh.lazySingleton<_i38.CurrencyRepository>(
+      () => _i38.CurrencyRepositoryImpl(get<_i10.Dio>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.lazySingleton<_i39.LinkService>(
+      () => _i39.LinkService(get<_i3.ActionRepository>()));
+  gh.lazySingleton<_i40.PotRepository>(
+      () => _i40.PotRepositoryImpl(
+          get<_i8.Config>(), get<_i10.Dio>(), get<_i28.Websocket>()),
+      registerFor: {_dev, _test, _staging, _prod});
+  gh.factory<_i41.SendCubit>(() => _i41.SendCubit(get<_i3.ActionRepository>()));
   return get;
 }
 
-class _$RegisterModule extends _i38.RegisterModule {}
+class _$RegisterModule extends _i42.RegisterModule {}

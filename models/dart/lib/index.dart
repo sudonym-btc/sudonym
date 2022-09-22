@@ -1,7 +1,9 @@
 export "event.dart";
 export "types/address-parser.dart";
 export "action.dart";
+export "action-parse-response.dart";
 export "action-type.dart";
+export "bolt-card.dart";
 export "payment.dart";
 export "payment-request.dart";
 export "withdraw-request.dart";
@@ -12,6 +14,7 @@ export "contact.dart";
 export "contact-address.dart";
 export "transaction.dart";
 export "receiver.dart";
+export "sender.dart";
 export "transaction/lightning-transaction.dart";
 export "offer.dart";
 export "user.dart";

@@ -6,6 +6,7 @@
 from common import getConfig
 from dns import dns
 from helper import getServiceName
+from kubernetes_db import db
 from kubernetes_ride_the_lightning import ride_the_lightning
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_cluster import cluster
@@ -68,6 +69,7 @@ def GenerateConfig(context):
     lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
     api_base_name = api(config, cluster_types)["base_name"]
     bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
+    db_base_name = db(config, cluster_types)["base_name"]
 
     resources = (
         [
@@ -82,7 +84,7 @@ def GenerateConfig(context):
                     "metadata": {
                         "name": config["env"] + "-ingress",
                         "annotations": {
-                            # "kubernetes.io/ingress.class": "nginx",
+                            "kubernetes.io/ingress.class": "nginx",
                             #                             "nginx.org/websocket-services": api_base_name + "-service",
                             #                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
                             #                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
@@ -91,7 +93,7 @@ def GenerateConfig(context):
                             #    proxy_set_header Upgrade "websocket";
                             #    proxy_set_header Connection "Upgrade";""",
                             "kubernetes.io/ingress.global-static-ip-name": config["env"]
-                            + "-ip"
+                            + "-ip",
                         },
                     },
                     "spec": {
@@ -104,6 +106,7 @@ def GenerateConfig(context):
                         "tls": [
                             {
                                 "hosts": [
+                                    config["domain"],
                                     "api." + config["domain"],
                                     "rtl." + config["domain"],
                                     "lightning-rest." + config["domain"],
@@ -122,7 +125,9 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name": getServiceName(ride_the_lightning_base_name),
+                                                    "name": getServiceName(
+                                                        ride_the_lightning_base_name
+                                                    ),
                                                     "port": {
                                                         "number": config["rtl"]["port"]
                                                     },
@@ -141,7 +146,9 @@ def GenerateConfig(context):
                                             "pathType": "Prefix",
                                             "backend": {
                                                 "service": {
-                                                    "name":getServiceName(bitcoin_base_name + "-zeromq"),
+                                                    "name": getServiceName(
+                                                        bitcoin_base_name + "-zeromq"
+                                                    ),
                                                     "port": {"number": 5555},
                                                 }
                                             },
@@ -231,7 +238,27 @@ def GenerateConfig(context):
                                     ]
                                 },
                             },
-                        ],
+                        ] + ([{
+                                "host": "db." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        db_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": 3306
+                                                    },
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },] if config["env"] == "development" else []),
                     },
                 },
             },
@@ -243,6 +270,8 @@ def GenerateConfig(context):
         + ride_the_lightning(config, cluster_types)["resources"]
         + api(config, cluster_types)["resources"]
         + dns(config, cluster_types)["resources"]
+    ) + (
+        db(config, cluster_types)["resources"] if config["env"] == "development" else []
     )
     print(resources)
     return {"resources": resources, "cluster_types_root": cluster_types_root}

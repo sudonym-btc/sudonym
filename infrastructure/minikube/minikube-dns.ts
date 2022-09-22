@@ -18,8 +18,10 @@ const confDnsLinux = () => {
 			.split('#MINIKUBE')[0]
 	}
 #MINIKUBE
+${minikubeIp.trim()} local.development
 ${minikubeIp.trim()} api.local.development
 ${minikubeIp.trim()} rtl.local.development
+${minikubeIp.trim()} db.local.development
 EOF`);
 };
 const confDnsDarwin = confDnsLinux;

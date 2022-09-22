@@ -10,9 +10,14 @@ export class Withdraw extends ActionType {
 		public amount: number | null,
 		public minAmount: number | null,
 		public maxAmount: number | null,
-		public remoteResponse: ActionRemoteResponse<any> // can't add withdrawrequest type here
+		public remoteResponse: ActionRemoteResponse<any>, // can't add withdrawrequest type here
+		public isLnUrl: boolean | null = false,
+		public isLnAddress: boolean | null = false,
+		public isBolt11: boolean | null = false,
+		public isBolt12: boolean | null = false,
+		public isOnChain: boolean | null = false
 	) {
-		super('withdraw', originalAddress);
+		super('withdraw', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain);
 	}
 
 	static fromJson(json: Object): Withdraw {
@@ -23,12 +28,18 @@ export class Withdraw extends ActionType {
 			json['amount'],
 			json['minAmount'],
 			json['maxAmount'],
-			ActionRemoteResponse.fromJson(json['remoteResponse'])
+			ActionRemoteResponse.fromJson(json['remoteResponse']),
+			json['isLnUrl'],
+			json['isLnAddress'],
+			json['isBolt11'],
+			json['isBolt12'],
+			json['isOnChain']
 		);
 	}
 
 	toJson(): any {
 		return {
+			type: this.type,
 			potId: this.potId,
 			originalAddress: this.originalAddress,
 			currency: this.currency,

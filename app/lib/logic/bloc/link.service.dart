@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
-import 'package:sudonym/data/repository/action.repository.dart';
-import 'package:sudonym/presentation/pages/send/amount.dart';
+import 'package:sudonym/data/index.dart';
+import 'package:sudonym/presentation/index.dart';
 
 @lazySingleton
 @injectable
@@ -14,7 +14,9 @@ class LinkService with ActionLogger {
 
   trigger(String link, BuildContext context, [int? potId]) async {
     ActionParseResponse response = await _actionRepository.parse(link);
-
+    print(response);
+    print(response.payment);
+    print(response.withdraw);
     if (response.payment != null) {
       handlePayment(response.payment!, context, potId);
     }

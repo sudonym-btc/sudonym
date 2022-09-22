@@ -1,4 +1,5 @@
 from helper import (
+    addNum,
     getBackupName,
     getDeploymentName,
     getSecretName,
@@ -65,14 +66,14 @@ def lightning(config, cluster_types):
                     "namespace": "default",
                     "metadata": {
                         "name": getServiceName(base_name, num),
-                        "labels": {"app": base_name},
+                        "labels": {"app": addNum(base_name, num)},
                     },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": config["lightning"]["port"], "name": base_name},
+                            {"port": config["lightning"]["port"], "name": addNum(base_name, num)},
                         ],
-                        "selector": {"app": base_name},
+                        "selector": {"app": addNum(base_name, num)},
                     },
                 },
             },
@@ -92,14 +93,14 @@ def lightning(config, cluster_types):
                     "namespace": "default",
                     "metadata": {
                         "name": getDeploymentName(base_name, num),
-                        "labels": {"app": base_name},
+                        "labels": {"app": addNum(base_name, num)},
                     },
                     "spec": {
                         "strategy": {"type": "Recreate"},
                         "replicas": 1,
-                        "selector": {"matchLabels": {"app": base_name}},
+                        "selector": {"matchLabels": {"app": addNum(base_name, num)}},
                         "template": {
-                            "metadata": {"labels": {"app": base_name}},
+                            "metadata": {"labels": {"app": addNum(base_name, num)}},
                             "spec": {
                                 "containers": [
                                     {
@@ -128,7 +129,7 @@ def lightning(config, cluster_types):
                                         }
                                         if config["backup"]
                                         else {},
-                                        "name": base_name,
+                                        "name": addNum(base_name, num),
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-lightning",
@@ -139,7 +140,7 @@ def lightning(config, cluster_types):
                                             (
                                                 "mkdir -p /lightning/"
                                                 + config["network"]
-                                                + " >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-lightning-backup /lightning/"
+                                                + " >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs " + "sudonym-" + getBackupName(base_name, num) + " /lightning/"
                                                 + config["network"]
                                                 + ") &&"
                                                 if config["backup"]

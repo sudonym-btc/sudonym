@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym/presentation/components/typography/header.dart';
-import 'package:sudonym/presentation/components/typography/subtitle.dart';
-import 'package:sudonym/presentation/theme.dart';
+import 'package:sudonym/presentation/index.dart';
 
 import '../../../constants.dart';
 

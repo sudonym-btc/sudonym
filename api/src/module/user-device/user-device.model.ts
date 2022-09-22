@@ -11,9 +11,6 @@ import { BaseModel } from '../base.model';
 
 @Table
 export class UserDevice extends BaseModel implements Models.UserDevice {
-	@PrimaryKey
-	@Column
-	id: string;
 
 	@Column
 	uid: string;

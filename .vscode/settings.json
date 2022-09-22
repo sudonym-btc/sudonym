@@ -12,7 +12,23 @@
             "driver": "SQLite",
             "name": "local",
             "database": "${workspaceFolder:sudonym}/api/database.sqlite"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "db.local.development",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "development",
+            "database": "test",
+            "username": "root",
+            "password": "testing"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }

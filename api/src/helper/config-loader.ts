@@ -21,8 +21,6 @@ export async function downloadFiles(
 
 		const files = (await bucket.getFiles())[0];
 
-		// console.log(files);
-
 		for (const file of files) {
 			// Ignore folders
 			if (file.name.split('.').length == 1) continue;
