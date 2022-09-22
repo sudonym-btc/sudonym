@@ -26,9 +26,22 @@ def ingress(config, cluster_types):
     return {
         "resources": [
             {
+                "name": config["env"] + "-tls",
+                "type": cluster_types["Secret"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Secret",
+                    "namespace": "default",
+                    "metadata": {"name": config["env"] + "-tls"},
+                    "type": "Opaque",
+                    "data": {},
+                },
+            },
+            {
                 "name": config["env"] + "-ingress",
                 "type": cluster_types["Ingress"],
-                "metadata": {"dependsOn": [kube_type_name, config["env"] + "-ip"]},
+                "metadata": {"dependsOn": [kube_type_name, config["env"] + "-tls", config["env"] + "-ip"]},
                 "properties": {
                     "apiVersion": "networking.k8s.io/v1",
                     "kind": "Ingress",
@@ -36,7 +49,7 @@ def ingress(config, cluster_types):
                     "metadata": {
                         "name": config["env"] + "-ingress",
                         "annotations": {
-                            "kubernetes.io/ingress.class": "nginx",
+                            # "kubernetes.io/ingress.class": "nginx",
                             #                             "nginx.org/websocket-services": api_base_name + "-service",
                             #                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
                             #                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
