@@ -50,7 +50,7 @@ def dns(config, cluster_types):
         + [
             {
                 "name": domain + ".",
-                "metadata": {"dependsOn": [zoneName]},
+                "metadata": {"dependsOn": [zoneName, config["env"] + "-ip"]},
                 "type": "gcp-types/dns-v1:resourceRecordSets",
                 "properties": {
                     "managedZone": "$(ref." + zoneName + ".name)",
@@ -84,7 +84,7 @@ def dns(config, cluster_types):
             },
             {
                 "name": mainDomain + ".",
-                "metadata": {"dependsOn": [mainZone]},
+                "metadata": {"dependsOn": [mainZone, config["env"] + "-ip"]},
                 "type": "gcp-types/dns-v1:resourceRecordSets",
                 "properties": {
                     "managedZone": "$(ref." + mainZone + ".name)",
