@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpException, Inject, Param, Query } from '@nestjs/common';
 import { Op, Sequelize } from 'sequelize';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { Pot } from 'module/pot/pot.model';
@@ -24,6 +24,10 @@ export class LightningAddressController {
 			},
 		});
 
+		if (!user) {
+			throw new HttpException({ "status": "ERROR", "reason": "User does not exist" }, 400);
+		}
+
 		let potName = null;
 		if (indexOfLastStop != lightningAddress.length) {
 			potName = lightningAddress.substring(
@@ -45,12 +49,12 @@ export class LightningAddressController {
 			},
 			order: potName
 				? [
-						[
-							Sequelize.literal(`
+					[
+						Sequelize.literal(`
                 name="${potName}"`),
-							'DESC',
-						],
-				  ]
+						'DESC',
+					],
+				]
 				: [],
 		});
 

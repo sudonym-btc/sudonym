@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/logic/bloc/receive.cubit.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/pages/receive.dart';
-import 'package:sudonym/presentation/pages/send.dart';
-import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart' hide Pot;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../injection.dart';
+import 'package:sudonym/injection.dart';
 
 class SendReceive extends StatelessWidget {
   final Pot entity;
@@ -18,8 +15,8 @@ class SendReceive extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => getIt<ReceiveCubit>())],
-        child: BlocBuilder<ReceiveCubit, ReceiveCubitState>(
+        providers: [BlocProvider(create: (_) => getIt<ReceiverCubit>())],
+        child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
           return LayoutBuilder(builder: (context, constraints) {
             // Widget image = state.loading

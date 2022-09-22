@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
-import { Action } from '@sudonym/models';
+import { Action, Payment, Withdraw } from '@sudonym/models';
 import { ActionService } from './action.service';
 
 @Controller('action')
@@ -12,12 +12,12 @@ export class ActionController {
 	}
 
 	@Post('info')
-	async getInfo(@Body('action') action: Action) {
+	async getPaymentInfo(@Body('action') action: any) {
 		return this.actionService.getInfo(Action.from(action));
 	}
 
 	@Post('')
-	execute(@Body('action') action: Action) {
+	execute(@Body('action') action: any) {
 		return this.actionService.execute(Action.from(action));
 	}
 }

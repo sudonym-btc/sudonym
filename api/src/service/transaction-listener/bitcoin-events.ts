@@ -6,9 +6,18 @@ import { getConfig } from 'config/config';
 const sock = zmq.socket('sub');
 import { Logger } from '@nestjs/common';
 
+type TxOutput = bitcoin.TxOutput & {
+	address: string;
+}
+export class BitcoinEvent extends bitcoin.Transaction {
+	outs: TxOutput[];
+}
+
+const network = getConfig().network == "regtest" ? bitcoin.networks.regtest : (getConfig().network == "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin);
+
 @Injectable()
 export class BitcoinEvents {
-	onTransaction = new Subject();
+	onTransaction = new Subject<BitcoinEvent>();
 	private readonly logger = new Logger(BitcoinEvents.name);
 
 	onModuleInit() {
@@ -31,23 +40,23 @@ export class BitcoinEvents {
 					try {
 						(inn as any).address = bitcoin.address.fromOutputScript(
 							inn.script,
-							bitcoin.networks.bitcoin
+							network
 						);
-					} catch (e) {}
+					} catch (e) { }
 					return inn;
 				});
 				tx.outs = tx.outs.map(function (out) {
 					try {
 						(out as any).address = bitcoin.address.fromOutputScript(
 							out.script,
-							bitcoin.networks.bitcoin
+							network
 						);
-					} catch (e) {}
+					} catch (e) { }
 					return out;
 				});
 
 				this.logger.debug('Received onchain transaction', txid, tx);
-				this.onTransaction.next(tx);
+				this.onTransaction.next(tx as any);
 			}
 		});
 

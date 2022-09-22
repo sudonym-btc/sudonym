@@ -1,13 +1,17 @@
 export class Callback<T> {
 	callbacks = [];
 	async execute(data: T) {
-		for (const cb of this.callbacks) {
-			await cb(data);
+		try {
+			for (const cb of this.callbacks) {
+				await cb(data);
+			}
+		} catch (e) {
+
 		}
 	}
 	listen(cb: (x: T) => void) {
 		this.hook((x) => {
-			cb(x);
+			try { cb(x) } catch (e) { console.error(e); };
 		});
 	}
 	hook(cb: (x: T) => void) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' hide ButtonBar;
-import 'package:sudonym/presentation/widgets/send/qr.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class QRPage extends StatefulWidget {
   final int? potId;

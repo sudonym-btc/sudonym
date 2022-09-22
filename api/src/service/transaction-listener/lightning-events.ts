@@ -10,9 +10,7 @@ export class LightningEvents {
 	private readonly logger = new Logger(LightningEvents.name);
 
 	@Inject() LightningNodeService: LightningNodeService;
-	private macaroon = Buffer.from(
-		fs.readFileSync(getConfig().macaroonFile)
-	).toString('base64');
+	private macaroon;
 	private url = getConfig().lightningREST.replace('http', 'ws');
 	public onEvent = new Subject();
 
@@ -51,6 +49,9 @@ export class LightningEvents {
 	}
 
 	onModuleInit() {
+		this.macaroon = Buffer.from(
+			fs.readFileSync(getConfig().macaroonFile)
+		).toString('base64');
 		// const ws = new WebSocket(this.url + "/v1/ws", [this.macaroon, 'json'], {
 		this.reconnect();
 

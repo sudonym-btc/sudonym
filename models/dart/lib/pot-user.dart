@@ -3,7 +3,7 @@ import "base-class.dart" show BaseClass;
 class PotUser extends BaseClass {
   num id;
   num potId;
-  num userId;
+  String userId;
   PotUser(this.id, this.potId, this.userId) : super() {
     /* super call moved to initializer */;
   }

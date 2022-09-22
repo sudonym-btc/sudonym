@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ReceiveModule } from 'module/receive/receive.module';
+import { ReceiverModule } from 'module/receiver/receiver.module';
 import { TransactionModule } from 'module/transaction/transaction.module';
 import { LightningNodeModule } from '../lightning-node/lightning-node.module';
 import { BitcoinEvents } from './bitcoin-events';
@@ -8,7 +8,7 @@ import { LightningEvents } from './lightning-events';
 import { LightningListener } from './lightning-listener';
 
 @Module({
-	imports: [LightningNodeModule, TransactionModule, ReceiveModule],
+	imports: [LightningNodeModule, TransactionModule, ReceiverModule],
 	controllers: [],
 	providers: [
 		LightningListener,

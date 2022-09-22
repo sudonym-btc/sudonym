@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/user.dart';
-import 'package:sudonym/data/repository/auth.repository.dart';
-import 'package:sudonym/data/repository/user.repository.dart';
-import 'package:sudonym/data/repository/websocket.dart';
+import 'package:sudonym/data/index.dart';
 
 @singleton
 class AuthCubit extends Cubit<AuthState> {
@@ -21,6 +18,14 @@ class AuthCubit extends Cubit<AuthState> {
         websocket.connect();
       }
     });
+
+    _userRepository.updated.stream.listen((event) {
+      if (state.user != null) {
+        if (event.id == state.user!.id) {
+          setUser(event);
+        }
+      }
+    });
   }
 
   User? get user => state.user;
@@ -28,15 +33,19 @@ class AuthCubit extends Cubit<AuthState> {
   loginWithGoogle() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithGoogle();
-    emit(LoadedState(await _userRepository.create(
-        User.fromJson({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
+    emit(LoadedState(await _userRepository
+        .create({'id': user.user!.uid, 'firebaseId': user.user!.uid})));
   }
 
   loginWithFacebook() async {
     emit(LoadingState());
     var user = await _authRepository.loginWithFacebook();
-    emit(LoadedState(await _userRepository.create(
-        User.fromJson({"id": user.user!.uid, "firebaseId": user.user!.uid}))));
+    emit(LoadedState(await _userRepository
+        .create({'id': user.user!.uid, 'firebaseId': user.user!.uid})));
+  }
+
+  setUser(User u) {
+    emit(LoadedState(u));
   }
 
   logout() async {

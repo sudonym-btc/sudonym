@@ -4,7 +4,7 @@ export class PotUser extends BaseClass {
 	constructor(
 		public id: number,
 		public potId: number,
-		public userId: number
+		public userId: string
 	) {
 		super();
 	}

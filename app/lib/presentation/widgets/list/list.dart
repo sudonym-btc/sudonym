@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
+import 'package:sudonym/logic/index.dart';
 
 class ListWidget extends StatefulWidget {
-  final String emptyText;
+  final String? emptyText;
   final ListCubit list;
   final Widget Function(dynamic el) builder;
+  final Widget? appendItem;
 
   const ListWidget(
-      {required this.emptyText,
+      {this.emptyText,
       required this.list,
       required this.builder,
+      this.appendItem,
       Key? key})
       : super(key: key);
 
@@ -57,8 +59,11 @@ class _ListWidgetState extends State<ListWidget> {
                     width: 20, height: 20, child: CircularProgressIndicator())
               ])));
             } else {
-              if (state.data.isEmpty) {
-                children.add(Text(widget.emptyText));
+              if (state.data.isEmpty && widget.emptyText != null) {
+                children.add(Text(widget.emptyText!));
+              }
+              if (widget.appendItem != null) {
+                children.add(widget.appendItem!);
               }
             }
 

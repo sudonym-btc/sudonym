@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/widgets/screen_slideable/measurable.dart';
 
 import '../../../constants.dart';
+import 'measurable.dart';
 
 class ScreenSlideable extends StatefulWidget {
   final Widget top;

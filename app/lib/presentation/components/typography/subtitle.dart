@@ -10,6 +10,6 @@ class Subtitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(text!,
         textAlign: TextAlign.start,
-        style: Theme.of(context).textTheme.subtitle1);
+        style: Theme.of(context).textTheme.labelLarge);
   }
 }

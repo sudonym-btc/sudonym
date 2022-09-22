@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
-import { ReceiveService } from 'module/receive/receive.service';
+import { ReceiverService } from 'module/receiver/receiver.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 
 export abstract class TransactionListener {
-	@Inject() receiveService: ReceiveService;
+	@Inject() receiveService: ReceiverService;
 	@Inject() transactionService: TransactionService;
 
 	onModuleInit() {

@@ -1,6 +1,6 @@
 export class ActionType {
 	constructor(
-		public type: 'pay' | 'withdraw',
+		public type: 'payment' | 'withdraw',
 		public originalAddress: string,
 		public isLnUrl: boolean | null = false,
 		public isLnAddress: boolean | null = false,

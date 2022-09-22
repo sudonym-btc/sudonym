@@ -1,7 +1,4 @@
-import 'package:sudonym/presentation/components/notifications/error_notification.dart';
-import 'package:sudonym/presentation/components/notifications/sent_notification.dart';
-import 'package:sudonym/presentation/components/notifications/recieved_notification.dart';
-import 'package:sudonym/presentation/components/notifications/paste_notification.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 //cd app

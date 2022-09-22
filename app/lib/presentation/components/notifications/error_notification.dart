@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/presentation/components/notifications/base_notification.dart';
+import 'package:sudonym/presentation/index.dart';
 
 //Error notification
 

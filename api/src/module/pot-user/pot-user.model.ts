@@ -11,6 +11,7 @@ import {
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from '../pot/pot.model';
+import { User } from 'module/user/user.model';
 
 @Table({
 	scopes: PotUser.scopes,
@@ -28,6 +29,7 @@ export class PotUser extends BaseModel implements Models.PotUser {
 	@Column
 	potId: number;
 
+	@ForeignKey(() => User)
 	@Column
-	userId: number;
+	userId: string;
 }

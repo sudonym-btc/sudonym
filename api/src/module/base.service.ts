@@ -80,9 +80,7 @@ export const BaseService = <TModel extends BaseModel>(
 				repository.scopes.edit ? repository.scopes.edit(req) : null,
 				repository.scopes.find ? repository.scopes.find(req) : null,
 			].filter((i) => !!i);
-
 			const record = await this.repo.scope(scopes as any).findByPk(id);
-
 			const obj = await record.set(params).save();
 
 			await this.eventsService.trigger(
@@ -109,7 +107,7 @@ export const BaseService = <TModel extends BaseModel>(
 
 const parseFindParams = (params) => {
 	Object.keys(params).forEach((key) => {
-		if (['lt', 'gt', 'eq'].includes(key)) {
+		if (['lt', 'gt', 'eq', 'like'].includes(key)) {
 			params[Op[key]] = params[key];
 			delete params[key];
 			key = Op[key];

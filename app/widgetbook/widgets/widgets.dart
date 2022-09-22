@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/components/typography/header.dart';
-import 'package:sudonym/presentation/widgets/pot/pot_header.dart';
-import 'package:sudonym/presentation/widgets/screen_slideable/screen_slideable.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 WidgetbookCategory widgets = WidgetbookCategory(
@@ -31,10 +29,10 @@ WidgetbookCategory widgets = WidgetbookCategory(
     WidgetbookComponent(
       name: 'Pot',
       useCases: [
-        WidgetbookUseCase(
-          name: 'elevated',
-          builder: (context) => const PotHeader(),
-        ),
+        // WidgetbookUseCase(
+        //   name: 'elevated',
+        //   builder: (context) => const PotHeader(),
+        // ),
       ],
     ),
   ],

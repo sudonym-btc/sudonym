@@ -6,7 +6,7 @@ import { LightningModule } from './module/lightning/lightning.module';
 import { AuthModule } from './module/auth/auth.module';
 import { ActionModule } from './module/action/action.module';
 import { PotModule } from './module/pot/pot.module';
-import { ReceiveModule } from './module/receive/receive.module';
+import { ReceiverModule } from './module/receiver/receiver.module';
 import { UserModule } from './module/user/user.module';
 import { EventsModule } from './module/events/events.module';
 import { TransactionModule } from './module/transaction/transaction.module';
@@ -16,11 +16,14 @@ import { CurrencyModule } from './module/currency/currency.module';
 import { UserDeviceModule } from './module/user-device/user-device.module';
 import { BalanceUpdaterModule } from './service/balance-updater/balance-updater.module';
 import { ExchangeSettlerModule } from './service/transaction-listener/exchange-settler.module';
+import { ContactModule } from 'module/contact/contact.module';
+import { SenderModule } from 'module/sender/sender.module';
+import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 
 @Module({
 	imports: [
 		TransactionListenerModule,
-		ExchangeSettlerModule,
+		// ExchangeSettlerModule,
 		DatabaseModule,
 		CurrencyModule,
 		LightningModule,
@@ -28,11 +31,14 @@ import { ExchangeSettlerModule } from './service/transaction-listener/exchange-s
 		EventsModule,
 		AuthModule,
 		UserModule,
+		ContactModule,
 		UserDeviceModule,
 		PotModule,
 		ActionModule,
 		BalanceUpdaterModule,
-		ReceiveModule,
+		ReceiverModule,
+		SenderModule,
+		BoltCardModule,
 		TransactionModule,
 	],
 	controllers: [AppController],

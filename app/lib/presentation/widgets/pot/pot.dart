@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:sudonym.models/index.dart' as Model;
-import 'package:sudonym/logic/bloc/pot.cubit.dart';
-import 'package:sudonym/presentation/widgets/pot/pot_header.dart';
-import 'package:sudonym/presentation/widgets/pot/send_receive.dart';
-import 'package:sudonym/presentation/widgets/transactions/transaction_list.dart';
+import 'package:sudonym.models/index.dart' as model;
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 
-import '../../../injection.dart';
+import 'package:sudonym/injection.dart';
+import 'pot_header.dart';
+import 'send_receive.dart';
 
 class Pot extends StatelessWidget {
-  final Model.Pot entity;
+  final model.Pot entity;
 
   const Pot({required this.entity, Key? key}) : super(key: key);
 

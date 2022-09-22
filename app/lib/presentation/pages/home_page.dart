@@ -3,13 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sudonym/constants.dart';
-import 'package:sudonym/data/repository/pot.repository.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/widgets/pot/edit_pot.dart';
-import 'package:sudonym.models/index.dart' as models;
-import '../../injection.dart';
-import '../widgets/pot/pot.dart';
+import 'package:sudonym/data/index.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym/injection.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -90,18 +87,10 @@ class AddPotSlide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Button(
-            text: "Add Pot",
+            text: 'Add Pot',
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EditPot(
-                              entity: models.Pot.fromJson({
-                            "name": "",
-                            "currency": "BTC",
-                            "spendableBalance": 0,
-                            "balance": 0
-                          }))));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const EditPot()));
             }));
   }
 }

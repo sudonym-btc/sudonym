@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/theme.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../buttons.dart';
