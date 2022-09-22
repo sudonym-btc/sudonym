@@ -42,6 +42,7 @@ config = {
         "env": "test",
         "domain": "test.sudonym.app",
         "network": "regtest",
+        "backup": False,
 
     },
     "development": {
