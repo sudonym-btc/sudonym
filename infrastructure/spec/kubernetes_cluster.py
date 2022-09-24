@@ -15,19 +15,37 @@ def cluster(
                 "zone": config["zone"],
                 "cluster": {
                     "name": base_name,
-                    "initialNodeCount": 1,
-                    "nodeConfig": {
-                        "oauthScopes": [
-                            "https://www.googleapis.com/auth/" + s
-                            for s in [
-                                "compute",
-                                "cloud-platform",
-                                "devstorage.full_control",
-                                "logging.write",
-                                "monitoring",
-                            ]
-                        ]
-                    },
+                    # "autoscaling": {
+                    #     "enableNodeAutoprovisioning": True,
+                    #     "resourceLimits": [
+                    #         {"resourceType": "memory", "minimum": 1, "maximum": 64},
+                    #         {"resourceType": "cpu", "minimum": 1, "maximum": 10},
+                    #     ],
+                    # },
+                    "nodePools": [
+                        {
+                            "name": "default-pool",
+                            "initialNodeCount": 1,
+                            "config": {
+                                "machineType": config["cluster"]["machineType"],
+                                "diskSizeGb": config["cluster"]["diskSizeGb"],
+                                "oauthScopes": [
+                                    "https://www.googleapis.com/auth/" + s
+                                    for s in [
+                                        "compute",
+                                        "cloud-platform",
+                                        "devstorage.full_control",
+                                        "logging.write",
+                                        "monitoring",
+                                    ]
+                                ],
+                            },
+                            # "autoscaling": {
+                            #     "enabled": False,
+                            #     "autoprovisioned": False,
+                            # },
+                        }
+                    ],
                 },
             },
         },

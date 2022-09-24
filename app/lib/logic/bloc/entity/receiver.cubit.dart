@@ -21,7 +21,11 @@ class ReceiverCubit
     updater ??= repository.events.stream.listen((dynamic event) {
       if (state.entity != null) {
         if (event['data']['id'] == state.entity!.id) {
-          FlutterRingtonePlayer.playNotification();
+          try {
+            FlutterRingtonePlayer.playNotification();
+          } catch (e) {
+            print("Could not play sound");
+          }
         }
       }
     });

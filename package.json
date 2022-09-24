@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "init:gcloud": "bash infrastructure/setup.sh",
+    "init:gcloud": "cd infrastructure/setup && bash ./setup.sh",
     "deploy:production": "bash infrastructure/deploy.sh production",
     "deploy:staging": "bash infrastructure/deploy.sh staging",
     "deploy:test": "bash infrastructure/deploy.sh test",
