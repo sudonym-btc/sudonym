@@ -135,7 +135,7 @@ def bitcoin(config, cluster_types):
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-bitcoin",
-                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "resources": {"requests": {"cpu": "30m"}},
                                         "command": [
                                             "sh",
                                             "-c",
@@ -221,7 +221,7 @@ def bitcoin(config, cluster_types):
                                             {
                                                 "name": getVolumeClaimName(base_name),
                                                 "mountPath": "/bitcoin/.bitcoin",
-                                            }
+                                            },
                                         ],
                                     }
                                 ],
@@ -231,7 +231,7 @@ def bitcoin(config, cluster_types):
                                         "persistentVolumeClaim": {
                                             "claimName": getVolumeClaimName(base_name)
                                         },
-                                    }
+                                    },
                                 ],
                             },
                         },

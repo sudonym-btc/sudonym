@@ -101,10 +101,11 @@ as the clusters start up and there may be race conditions.
 
 Might have to run
 `gcloud beta deployment-manager type-providers delete test-cluster-type`
-if you abandon a deployment
+if you abandon a deployment, otherwise the next deployment will use the old
+typeprovider with outdates IP address for spec.
 
 Get kubectl credentials for cluster
-`gcloud container clusters get-credentials test-cluster`
+`gcloud container clusters get-credentials test-cluster --zone us-central1-c`
 
 If cannot validate ingress
 `kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission`

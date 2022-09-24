@@ -2,6 +2,7 @@ from helper import getConfigName, getDeploymentName, getServiceName, getVolumeCl
 from kubernetes_cluster import cluster
 from kubernetes_lightning import lightning
 
+
 def lightning_rest(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     lightning_base_name = lightning(config, cluster_types)["base_name"]
@@ -37,11 +38,11 @@ def lightning_rest(config, cluster_types):
                         "cl-rest-config.json": """
 {
     "PORT": """
-    + str(config["lightningRest"]["port"])
-    + """,
+                        + str(config["lightningRest"]["port"])
+                        + """,
     "DOCPORT": """
-    + str(config["lightningRest"]["docPort"])
-    + """,
+                        + str(config["lightningRest"]["docPort"])
+                        + """,
     "PROTOCOL": "http",
     "EXECMODE": "test",
     "LNRPCPATH": "/rpc/lightning-rpc",
@@ -66,7 +67,10 @@ def lightning_rest(config, cluster_types):
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": config["lightningRest"]["port"], "name": "ln-rest"},
+                            {
+                                "port": config["lightningRest"]["port"],
+                                "name": "ln-rest",
+                            },
                         ],
                         "selector": {"app": base_name},
                     },
@@ -87,7 +91,10 @@ def lightning_rest(config, cluster_types):
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": config["lightningRest"]["docPort"], "name": "ln-rest-doc"},
+                            {
+                                "port": config["lightningRest"]["docPort"],
+                                "name": "ln-rest-doc",
+                            },
                         ],
                         "selector": {"app": base_name},
                     },
@@ -129,8 +136,15 @@ def lightning_rest(config, cluster_types):
                                             "node",
                                             "./cl-rest.js",
                                         ],
-                                        "resources": {"requests": {"cpu": "40m"}},
-                                        "ports": [{"containerPort": config["lightningRest"]["port"]}, {"containerPort": 4001}],
+                                        "resources": {"requests": {"cpu": "30m"}},
+                                        "ports": [
+                                            {
+                                                "containerPort": config[
+                                                    "lightningRest"
+                                                ]["port"]
+                                            },
+                                            {"containerPort": 4001},
+                                        ],
                                         "volumeMounts": [
                                             {
                                                 "mountPath": "/usr/src/app/cl-rest-config.json",
@@ -138,11 +152,15 @@ def lightning_rest(config, cluster_types):
                                                 "name": "json-config",
                                             },
                                             {
-                                                "name": getVolumeClaimName(lightning_base_name + "-rpc"),
+                                                "name": getVolumeClaimName(
+                                                    lightning_base_name + "-rpc"
+                                                ),
                                                 "mountPath": "/rpc",
                                             },
                                             {
-                                                "name": getVolumeClaimName(base_name + "-macaroon"),
+                                                "name": getVolumeClaimName(
+                                                    base_name + "-macaroon"
+                                                ),
                                                 "mountPath": "/usr/src/app/certs",
                                             },
                                         ],
@@ -154,15 +172,23 @@ def lightning_rest(config, cluster_types):
                                         "configMap": {"name": "cl-rest-config.json"},
                                     },
                                     {
-                                        "name": getVolumeClaimName(lightning_base_name + "-rpc"),
+                                        "name": getVolumeClaimName(
+                                            lightning_base_name + "-rpc"
+                                        ),
                                         "persistentVolumeClaim": {
-                                            "claimName": getVolumeClaimName(lightning_base_name + "-rpc")
+                                            "claimName": getVolumeClaimName(
+                                                lightning_base_name + "-rpc"
+                                            )
                                         },
                                     },
                                     {
-                                        "name": getVolumeClaimName(base_name + "-macaroon"),
+                                        "name": getVolumeClaimName(
+                                            base_name + "-macaroon"
+                                        ),
                                         "persistentVolumeClaim": {
-                                            "claimName": getVolumeClaimName(base_name + "-macaroon")
+                                            "claimName": getVolumeClaimName(
+                                                base_name + "-macaroon"
+                                            )
                                         },
                                     },
                                 ],

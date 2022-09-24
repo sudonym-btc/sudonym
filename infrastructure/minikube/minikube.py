@@ -19,7 +19,7 @@ seed(1)
 
 class context:
     properties = {
-        "env": "development"
+        "env": sys.argv[1] if len(sys.argv) > 1 else "development"
     }
 config = GenerateConfig(context())
 

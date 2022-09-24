@@ -25,6 +25,19 @@
             "database": "test",
             "username": "root",
             "password": "testing"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "db.test.sudonym.app",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "test",
+            "database": "test",
+            "username": "root",
+            "password": "testing"
         }
     ],
     "sqltools.useNodeRuntime": true,

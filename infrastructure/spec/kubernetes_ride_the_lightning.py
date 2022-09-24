@@ -111,7 +111,7 @@ def ride_the_lightning(config, cluster_types):
                                         "name": base_name,
                                         "image": "shahanafarooqui/rtl:0.13.1",
                                         "command": ["/sbin/tini", "-g", "--", "sh", "-c", "ls && cp RTL-Config-Read-Only.json RTL-Config.json && node rtl"],
-                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "resources": {"requests": {"cpu": "30m"}},
                                         "volumeMounts": [
                                             {
                                                 "mountPath": "RTL/RTL-Config-Read-Only.json",

@@ -2,6 +2,7 @@ from helper import getDeploymentName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
+
 def api(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-api"
@@ -57,23 +58,35 @@ def api(config, cluster_types):
                                 "labels": {"app": base_name},
                             },
                             "spec": {
-                                "initContainers":[{
-                                    "name": "wait",
-                                    "image": "busybox",
-                                    "command":  ["sh", "-c", "until nc -z " + getServiceName(lightning_rest_basename) + " 3001 > /dev/null; do echo Waiting for master.; sleep 2; done;"]
-                                }],
-                               "containers": [
+                                "initContainers": [
+                                    {
+                                        "name": "wait",
+                                        "image": "busybox",
+                                        "command": [
+                                            "sh",
+                                            "-c",
+                                            "until nc -z "
+                                            + getServiceName(lightning_rest_basename)
+                                            + " 3001 > /dev/null; do echo Waiting for master.; sleep 2; done;",
+                                        ],
+                                    }
+                                ],
+                                "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "gcr.io/" + config["project"] + "/api:latest",
-                                        "env": [{
-                                            "name": "NODE_ENV",
-                                            "value": config["env"]
-                                        }],
-                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "image": "gcr.io/"
+                                        + config["project"]
+                                        + "/api:latest",
+                                        "env": [
+                                            {"name": "NODE_ENV", "value": config["env"]}
+                                        ],
+                                        "resources": {"requests": {"cpu": "30m"}},
                                         "volumeMounts": [
                                             {
-                                                "name": getVolumeClaimName(lightning_rest_basename + "-macaroon"),
+                                                "name": getVolumeClaimName(
+                                                    lightning_rest_basename
+                                                    + "-macaroon"
+                                                ),
                                                 "mountPath": "usr/src/app/api/certs",
                                             },
                                         ],
@@ -81,9 +94,13 @@ def api(config, cluster_types):
                                 ],
                                 "volumes": [
                                     {
-                                        "name": getVolumeClaimName(lightning_rest_basename + "-macaroon"),
+                                        "name": getVolumeClaimName(
+                                            lightning_rest_basename + "-macaroon"
+                                        ),
                                         "persistentVolumeClaim": {
-                                            "claimName": getVolumeClaimName(lightning_rest_basename + "-macaroon")
+                                            "claimName": getVolumeClaimName(
+                                                lightning_rest_basename + "-macaroon"
+                                            )
                                         },
                                     },
                                 ],

@@ -19,7 +19,7 @@ void mainCommon(String? env) async {
   env = env == "" ? Env.mock : env;
 
   // Allow self signed certificates for development
-  if ([Env.mock, Env.dev].contains(env)) {
+  if ([Env.mock, Env.dev, Env.test].contains(env)) {
     HttpOverrides.global = MyHttpOverrides();
   }
 

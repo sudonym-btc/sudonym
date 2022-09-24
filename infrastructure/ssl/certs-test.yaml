@@ -16,7 +16,7 @@ spec:
           project: sudonym-lightning-test
           # This is the secret used to access the service account
           serviceAccountSecretRef:
-            name: clouddns-dns01-solver-svc-acct
+            name: test-cert-resolver
             key: key.json
 
 ---
@@ -32,6 +32,9 @@ spec:
   - "rtl.test.sudonym.app"
   - "api.test.sudonym.app"
   - "test.sudonym.app"
+  - "lightning-rest.test.sudonym.app"
+  - "bitcoin-mq.test.sudonym.app"
   - "btc.sudonym.app"
+  - "test.sudonym.app"
   issuerRef:
     name: dns-issuer
