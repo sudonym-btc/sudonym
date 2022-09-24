@@ -6,6 +6,6 @@ export PROJECT_NUM=$(gcloud projects describe $PROJECT_ID --format="value(projec
 # bash ./apis.sh
 bash ./dns.sh
 # bash ./images.sh
-# bash ./roles.sh
+bash ./roles.sh
 # bash ./secrets.sh
 # bash ./triggers.sh
