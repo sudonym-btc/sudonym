@@ -9,9 +9,6 @@ then
     kubectl create secret generic $1-cert-resolver --from-file=key.json
     rm key.json 
 
-    echo "helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP=$(gcloud compute addresses describe $1-ip --region=us-central1 --format='get(address)')"
-    # exit 0
-
     helm repo add jetstack https://charts.jetstack.io
     help repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update

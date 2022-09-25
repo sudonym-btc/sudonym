@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class NFC extends StatelessWidget {
   const NFC({Key? key}) : super(key: key);
@@ -22,13 +22,11 @@ class NFC extends StatelessWidget {
               children: const [
                 Icon(
                   Icons.wifi,
-                  color: textColor,
                   size: 40,
                 ),
                 Text(
                   'Tap to receiver device (NFC)',
                   style: TextStyle(
-                    color: textColor,
                     fontSize: 17,
                   ),
                 ),

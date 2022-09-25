@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class ContactListItem extends StatelessWidget {
   final Contact contact;

@@ -41,16 +41,8 @@ def ingress(config, cluster_types):
                     "metadata": {
                         "name": config["env"] + "-ingress",
                         "annotations": {
-                            # "kubernetes.io/ingress.class": "nginx",
-                            #                             "nginx.org/websocket-services": api_base_name + "-service",
                             "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
                             "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
-                            #                             "nginx.ingress.kubernetes.io/configuration-snippet": """
-                            #    proxy_http_version 1.1;
-                            #    proxy_set_header Upgrade "websocket";
-                            #    proxy_set_header Connection "Upgrade";""",
-                            # "kubernetes.io/ingress.global-static-ip-name": config["env"]
-                            # + "-ip",
                         },
                     },
                     "spec": {
@@ -68,7 +60,6 @@ def ingress(config, cluster_types):
                                     "api." + config["domain"],
                                     "rtl." + config["domain"],
                                     "lightning-rest." + config["domain"],
-                                    # "bitcoin-mq." + config["domain"],
                                 ],
                                 "secretName": config["env"] + "-tls",
                             }

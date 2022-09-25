@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 //Paste Notification
 
@@ -26,10 +26,6 @@ class PasteNotification extends StatelessWidget {
               ),
               child: const Text(
                 'Tap here to paste address!',
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 17,
-                ),
               ),
               onPressed: () {},
             ),

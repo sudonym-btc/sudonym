@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/presentation/index.dart';
-import '../../../constants.dart';
 
 class AmountPage extends StatefulWidget with AmountLogger {
   final dynamic payment;

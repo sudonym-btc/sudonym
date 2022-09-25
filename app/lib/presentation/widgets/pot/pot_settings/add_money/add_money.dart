@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class AddMoney extends StatelessWidget {
   final String str1;

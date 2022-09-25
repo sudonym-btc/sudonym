@@ -1,4 +1,3 @@
-import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 WidgetbookCategory inputs = WidgetbookCategory(
@@ -7,12 +6,7 @@ WidgetbookCategory inputs = WidgetbookCategory(
     WidgetbookComponent(name: 'Drop Down Menu', useCases: []),
     WidgetbookComponent(
       name: 'Text with button',
-      useCases: [
-        WidgetbookUseCase(
-          name: 'Username Input',
-          builder: (context) => const UsernameInput(),
-        ),
-      ],
+      useCases: [],
     ),
   ],
 );

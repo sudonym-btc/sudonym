@@ -1,6 +1,5 @@
 export 'button/button.dart';
 export 'form/form.dart';
-export 'input/username.dart';
 export 'input/button/button_bar.dart';
 export 'input/currency/currency_input.dart';
 export 'nfc/nfc.dart';
