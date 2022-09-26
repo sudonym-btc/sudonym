@@ -2,6 +2,7 @@ export PROJECT_ID=$(gcloud config get project)
 ENV=$1
 export ENV=${ENV:="development"}
 export PROJECT_NUM=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+echo "Setting up..."
 
 bash ./apis.sh
 bash ./dns.sh
