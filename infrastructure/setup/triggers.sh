@@ -1,4 +1,5 @@
 gcloud beta builds triggers create github \
+    --name="$ENV-trigger" \
     --repo-name=sudonym \
     --repo-owner=sudonym-btc \
     --branch-pattern=$ENV \

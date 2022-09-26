@@ -10,7 +10,7 @@ gcloud dns managed-zones create main-zone \
     --dns-name=sudonym.app \
     --visibility=public
 
-ns=$(gcloud dns managed-zones describe test-zone --format json | jq --raw-output '.nameServers  | join(" ")')
+ns=$(gcloud dns managed-zones describe $ENV-zone --format json | jq --raw-output '.nameServers  | join(" ")')
 
 gcloud dns record-sets transaction start \
    --zone=main-zone

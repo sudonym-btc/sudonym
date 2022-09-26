@@ -22,7 +22,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role roles/iam.serviceAccountKeyAdmin
 
 # cert-manager account for generating certificates
-gcloud iam service-accounts create $ENV-solver --display-name "$ENV-solver"
+gcloud iam service-accounts create $ENV-cert-resolver --display-name "$ENV-cert-resolver"
 gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$ENV-solver@$PROJECT_ID.iam.gserviceaccount.com \
+    --member serviceAccount:$ENV-cert-resolver@$PROJECT_ID.iam.gserviceaccount.com \
     --role roles/dns.admin
