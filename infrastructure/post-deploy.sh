@@ -19,7 +19,7 @@ then
             --version v1.7.1 \
             --set installCRDs=true
 
-    python3 -m ensurepip --upgrade
+    python3 infrastructure/get-pip.py
     pip3 install -r infrastructure/minikube/requirements.txt
     python3 infrastructure/spec/certificates.py $1 | kubectl apply -f -
 fi
