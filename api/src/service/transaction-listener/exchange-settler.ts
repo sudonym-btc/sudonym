@@ -38,49 +38,56 @@ export class ExchangeSettler {
 	}
 
 	listenIncoming() {
-		this.transactionService.onAfterCreated.listen(async (transaction) => {
-			if (!transaction.outgoing) {
-				const pot = await this.potService.findOne(transaction.potId);
-				if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
-					this.createSettlement(
-						[transaction],
-						'BTC',
-						pot.currency,
-						transaction.amount,
-						'sell'
+		this.transactionService.onAfterCreated.subscribe(
+			async (transaction) => {
+				if (!transaction.outgoing) {
+					const pot = await this.potService.findOne(
+						transaction.potId
 					);
+					if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
+						this.createSettlement(
+							[transaction],
+							'BTC',
+							pot.currency,
+							transaction.amount,
+							'sell'
+						);
+					}
 				}
 			}
-		});
+		);
 	}
 
 	listenOutgoing() {
-		this.transactionService.onAfterCreated.listen(async (transaction) => {
-			if (transaction.outgoing) {
-				const pot = await this.potService.findOne(transaction.potId);
-				if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
-					this.createSettlement(
-						[transaction],
-						'BTC',
-						pot.currency,
-						transaction.amount,
-						'buy'
+		this.transactionService.onAfterCreated.subscribe(
+			async (transaction) => {
+				if (transaction.outgoing) {
+					const pot = await this.potService.findOne(
+						transaction.potId
 					);
+					if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
+						this.createSettlement(
+							[transaction],
+							'BTC',
+							pot.currency,
+							transaction.amount,
+							'buy'
+						);
+					}
 				}
 			}
-		});
+		);
 	}
 
 	async createSettlement(transactions, from, to, amount, side) {
-
-		this.logger.debug("Finding market for", from, to, amount);
+		this.logger.debug('Finding market for', from, to, amount);
 		const markets = await this.exchanges[0].fetchMarkets();
 		const market = markets.find(
 			(m) =>
 				(m.baseId == from && m.quoteId == to) ||
 				(m.baseId == to && m.quoteId == from)
 		);
-		this.logger.debug("Found market", market);
+		this.logger.debug('Found market', market);
 		await this.exchanges[0]
 			.createMarketOrder(
 				market.symbol,

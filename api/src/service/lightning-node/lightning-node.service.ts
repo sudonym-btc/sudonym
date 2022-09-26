@@ -71,7 +71,7 @@ export class LightningNodeService {
 			this.logger.verbose(
 				`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`
 			);
-			if(this.connectedChannels.length == 0) {
+			if (this.connectedChannels.length == 0) {
 				this.logger.warn('0 connected channels. Payments not possible');
 			}
 		} catch (e) {
@@ -210,11 +210,11 @@ export class LightningNodeService {
 		});
 	}
 
-	async withdrawOnChain() {
+	async withdrawOnChain(data: { satoshis: number; address: string }) {
 		return this.makeRequest({
 			path: '/v1/withdraw',
 			method: 'POST',
-			data: {},
+			data,
 		});
 	}
 

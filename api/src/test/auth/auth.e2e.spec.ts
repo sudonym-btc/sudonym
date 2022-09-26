@@ -1,6 +1,5 @@
 import * as request from 'supertest';
 import { scaffoldGroup } from '../mock/scaffold-group';
-import { USER_PASSWORD } from '../mock/user';
 
 scaffoldGroup('AuthController (e2e)', (scaffold) => {
 	it('/auth (POST) should fail without password', () => {

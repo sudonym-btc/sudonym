@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart' hide Pot;

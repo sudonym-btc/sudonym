@@ -54,7 +54,8 @@ class _AppState extends State<App> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sudonym',
-      theme: themeData,
+      theme: getTheme(),
+      darkTheme: getTheme(light: false),
       home: const AuthGate(),
       builder: (BuildContext context, Widget? widget) {
         ErrorWidget.builder = (FlutterErrorDetails errorDetails) {

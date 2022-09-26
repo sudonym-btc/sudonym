@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/presentation/index.dart';
 
-import '../../../constants.dart';
-
 class StatusPage extends StatelessWidget {
   final String pageTitle;
   final String title;
@@ -28,25 +26,26 @@ class StatusPage extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData currTheme = Theme.of(context);
     ThemeData newTheme = currTheme.copyWith(
-      backgroundColor: color,
-      appBarTheme: themeData.appBarTheme.copyWith(
-          foregroundColor: Colors.white,
-          toolbarTextStyle: const TextStyle(color: Colors.white),
-          titleTextStyle: const TextStyle(color: Colors.white),
-          iconTheme: const IconThemeData(color: Colors.white),
-          actionsIconTheme: const IconThemeData(color: textColor),
-          backgroundColor: color,
-          elevation: 0),
-      scaffoldBackgroundColor: color,
-      textTheme: currTheme.textTheme.apply(
-        bodyColor: Colors.white.withAlpha(240),
-        displayColor: Colors.white.withAlpha(150),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
-              foregroundColor: MaterialStateProperty.all(textColor))),
-    );
+        backgroundColor: color,
+        appBarTheme: currTheme.appBarTheme.copyWith(
+            foregroundColor: Colors.white,
+            toolbarTextStyle: const TextStyle(color: Colors.white),
+            titleTextStyle: const TextStyle(color: Colors.white),
+            iconTheme: const IconThemeData(color: Colors.white),
+            // actionsIconTheme: const IconThemeData(color: textColor),
+            backgroundColor: color,
+            elevation: 0),
+        scaffoldBackgroundColor: color,
+        textTheme: currTheme.textTheme.apply(
+          bodyColor: Colors.white.withAlpha(240),
+          displayColor: Colors.white.withAlpha(150),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+        ))
+        // foregroundColor: MaterialStateProperty.all(textColor))),
+        );
 
     var children = [
       Header(title),

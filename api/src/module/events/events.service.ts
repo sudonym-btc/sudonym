@@ -6,7 +6,7 @@ import { Callback } from '../../helper/callback';
 export class EventsService {
 	onEvent = new Callback();
 	trigger(e: Event) {
-		console.log("Triggering ", e.name)
+		console.log('Triggering', e.name);
 		this.onEvent.execute(e);
 	}
 }

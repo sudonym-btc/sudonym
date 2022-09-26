@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import { Subject } from 'rxjs';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
+import { Bolt11 } from '@sudonym/models';
+import { Bolt11Received } from '@sudonym/models/src/classes/bolt11';
 
 @Injectable()
 export class LightningEvents {
@@ -12,7 +14,7 @@ export class LightningEvents {
 	@Inject() LightningNodeService: LightningNodeService;
 	private macaroon;
 	private url = getConfig().lightningREST.replace('http', 'ws');
-	public onEvent = new Subject();
+	public onEvent = new Subject<LightningEvent>();
 
 	reconnect() {
 		this.logger.verbose(
@@ -59,4 +61,9 @@ export class LightningEvents {
 			this.logger.verbose('EVENT', e);
 		});
 	}
+}
+
+export class LightningEvent {
+	event: 'invoice' | 'channel';
+	data: Bolt11Received;
 }

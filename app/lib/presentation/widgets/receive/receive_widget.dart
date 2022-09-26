@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sudonym.models/types/currency.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -31,6 +31,8 @@ class ReceiveWidget extends StatelessWidget {
           if (!state.loading) {
             image = QrImage(
               data: state.entity!.data,
+              foregroundColor:
+                  Theme.of(context).appBarTheme.titleTextStyle!.color,
               version: QrVersions.auto,
               // embeddedImage: AssetImage('assets/images/my_embedded_image.png'),
               // embeddedImageStyle: QrEmbeddedImageStyle(

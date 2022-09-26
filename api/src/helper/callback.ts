@@ -1,17 +1,20 @@
-export class Callback<T> {
+import { Subject } from 'rxjs';
+
+export class Callback<T> extends Subject<T> {
 	callbacks = [];
 	async execute(data: T) {
-		try {
-			for (const cb of this.callbacks) {
-				await cb(data);
-			}
-		} catch (e) {
-
+		for (const cb of this.callbacks) {
+			await cb(data);
 		}
+		this.next(data);
 	}
 	listen(cb: (x: T) => void) {
 		this.hook((x) => {
-			try { cb(x) } catch (e) { console.error(e); };
+			try {
+				cb(x);
+			} catch (e) {
+				console.error(e);
+			}
 		});
 	}
 	hook(cb: (x: T) => void) {

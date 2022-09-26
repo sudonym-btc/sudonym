@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/constants.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart' hide Pot;
@@ -15,6 +14,7 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
         constraints: const BoxConstraints.expand(),
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

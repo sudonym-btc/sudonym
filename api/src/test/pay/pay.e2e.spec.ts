@@ -1,6 +1,5 @@
 import * as request from 'supertest';
 import { scaffoldGroup } from '../mock/scaffold-group';
-import { USER_PASSWORD } from '../mock/user';
 
 scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 	describe('Invoice', () => {
@@ -30,19 +29,16 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 
 	describe('Invoice Info', () => {
 		// const endpoint = '/payment/getInfo';
-
 		// it(endpoint + ' (GET) should fail without login', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.expect(401);
 		// });
-
 		// it(endpoint + ' (GET) should fail without login', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.expect(401);
 		// });
-
 		// it(endpoint + ' (GET) should succeed for bolt11', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
@@ -51,7 +47,6 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 		// 		})
 		// 		.expect(200);
 		// });
-
 		// it(endpoint + ' (GET) should succeed for bolt12', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
@@ -60,7 +55,6 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 		// 		})
 		// 		.expect(200);
 		// });
-
 		// it(endpoint + ' (GET) should succeed for lnurl', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)

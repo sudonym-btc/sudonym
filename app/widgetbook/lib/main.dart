@@ -22,11 +22,11 @@ class HotreloadWidgetbook extends StatelessWidget {
       themes: [
         WidgetbookTheme(
           name: 'Light',
-          data: themeData,
+          data: getTheme(),
         ),
         WidgetbookTheme(
           name: 'Dark',
-          data: themeData,
+          data: getTheme(light: false),
         ),
       ],
       appInfo: AppInfo(name: 'Example'),

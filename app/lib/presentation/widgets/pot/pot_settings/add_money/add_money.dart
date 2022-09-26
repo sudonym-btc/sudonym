@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class AddMoney extends StatelessWidget {
   final String str1;
@@ -20,7 +20,7 @@ class AddMoney extends StatelessWidget {
     );
     Text text2 = Text(
       str2,
-      style: const TextStyle(fontSize: 17, color: textColor),
+      style: const TextStyle(fontSize: 17),
     );
     return Center(
       child: Container(

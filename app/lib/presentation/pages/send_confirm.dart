@@ -6,7 +6,6 @@ import 'package:sudonym/logic/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sudonym/presentation/index.dart';
 
-import '../../constants.dart';
 import 'package:sudonym/injection.dart';
 
 final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
