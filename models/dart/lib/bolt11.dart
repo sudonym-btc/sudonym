@@ -67,19 +67,3 @@ class Bolt11 {
     };
   }
 }
-
-class Bolt11Received {
-  String label;
-  String bolt11;
-  String payment_hash;
-  num msatoshi;
-  String amount_msat;
-  dynamic /* | | */ status;
-  num pay_index;
-  num msatoshi_received;
-  String amount_received_msat;
-  num paid_at;
-  String payment_preimage;
-  String description;
-  num expires_at;
-}
