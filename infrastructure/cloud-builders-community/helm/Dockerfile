@@ -3,6 +3,12 @@ FROM gcr.io/cloud-builders/gcloud
 ARG HELM_VERSION=v3.7.0
 ENV HELM_VERSION=$HELM_VERSION
 
+RUN apt install python3.8
+RUN apt install python3.8-distutils
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+RUN python3.8 get-pip.py
+
 COPY helm.bash /builder/helm.bash
 
 RUN chmod +x /builder/helm.bash && \

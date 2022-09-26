@@ -67,4 +67,4 @@ workflows:
     when:
         changeset:
           includes:
-            - 'app'
+            - 'app/'
