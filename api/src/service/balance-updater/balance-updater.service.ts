@@ -4,15 +4,20 @@ import { Transaction } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
 import * as admin from 'firebase-admin';
 import { CurrencyService } from 'module/currency/currency.service';
+import {
+	FIREBASE_ADMIN,
+	T_FIREBASE_ADMIN,
+} from 'service/firebase-admin/firebase-admin';
 
 @Injectable()
 export class BalanceUpdaterService {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(PotService) potService: PotService;
 	@Inject(TransactionService) transactionService: TransactionService;
+	@Inject(FIREBASE_ADMIN) firebaseAdmin: T_FIREBASE_ADMIN;
 
 	onModuleInit() {
-		this.transactionService.onAfterCreated.hook(async (t) => {
+		this.transactionService.afterCreate.hook(async (t) => {
 			const pot = await this.potService.findOne(t.potId);
 			let newBalance = pot.balance;
 			let newSpendableBalance = pot.spendableBalance;
@@ -41,7 +46,7 @@ export class BalanceUpdaterService {
 			this.triggerNotification(t);
 		});
 
-		this.transactionService.onAfterUpdated.hook(async (t) => {
+		this.transactionService.afterUpdate.hook(async (t) => {
 			const pot = await this.potService.findOne(t.potId);
 
 			let newBalance = pot.balance;
@@ -93,7 +98,7 @@ export class BalanceUpdaterService {
 		};
 		// Send a message to the device corresponding to the provided
 		// registration token.
-		admin
+		this.firebaseAdmin
 			.messaging()
 			.send(message)
 			.then((response) => {

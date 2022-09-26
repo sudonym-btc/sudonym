@@ -3,6 +3,8 @@ import { BaseClass } from './base-class';
 export class Transaction extends BaseClass {
 	constructor(
 		public id: number,
+		public onchainId: string | null,
+		public invoiceId: string | null,
 		public txid: string | null,
 		public potId: number,
 		public receiverId: number | null,
@@ -24,6 +26,8 @@ export class Transaction extends BaseClass {
 	static fromJson(json: Object): Transaction {
 		return new Transaction(
 			json['id'],
+			json['onchainId'],
+			json['invoiceId'],
 			json['txid'],
 			json['potId'],
 			json['receiverId'],
@@ -44,6 +48,8 @@ export class Transaction extends BaseClass {
 	toJson(): any {
 		return {
 			id: this.id,
+			onchainId: this.onchainId,
+			invoiceId: this.invoiceId,
 			txid: this.txid,
 			potId: this.potId,
 			receiverId: this.receiverId,

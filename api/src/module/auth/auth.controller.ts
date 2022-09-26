@@ -8,6 +8,6 @@ export class AuthController {
 	@HttpCode(200)
 	@Post('')
 	auth(@Body('pass') pass) {
-		return this.authService.auth(pass);
+		return this.authService.auth({ token: pass });
 	}
 }

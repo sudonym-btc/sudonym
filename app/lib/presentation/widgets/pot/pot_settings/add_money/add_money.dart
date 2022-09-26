@@ -20,7 +20,7 @@ class AddMoney extends StatelessWidget {
     );
     Text text2 = Text(
       str2,
-      style: const TextStyle(fontSize: 17, color: textColor),
+      style: const TextStyle(fontSize: 17),
     );
     return Center(
       child: Container(

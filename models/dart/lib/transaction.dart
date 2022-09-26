@@ -2,6 +2,8 @@ import "base-class.dart" show BaseClass;
 
 class Transaction extends BaseClass {
   num id;
+  dynamic /* String | null */ onchainId;
+  dynamic /* String | null */ invoiceId;
   dynamic /* String | null */ txid;
   num potId;
   dynamic /* num | null */ receiverId;
@@ -18,6 +20,8 @@ class Transaction extends BaseClass {
   DateTime createdAt;
   Transaction(
       this.id,
+      this.onchainId,
+      this.invoiceId,
       this.txid,
       this.potId,
       this.receiverId,
@@ -38,6 +42,8 @@ class Transaction extends BaseClass {
   static Transaction fromJson(Map<String, dynamic> json) {
     return new Transaction(
         json["id"],
+        json["onchainId"],
+        json["invoiceId"],
         json["txid"],
         json["potId"],
         json["receiverId"],
@@ -57,6 +63,8 @@ class Transaction extends BaseClass {
   dynamic toJson() {
     return {
       "id": this.id,
+      "onchainId": this.onchainId,
+      "invoiceId": this.invoiceId,
       "txid": this.txid,
       "potId": this.potId,
       "receiverId": this.receiverId,

@@ -32,10 +32,10 @@ export class EventsGateway implements OnGatewayConnection {
 			'Emitting ' +
 				e.name +
 				' to ' +
-				((this.server as any).clients as Set<any>).size +
+				(this.server.clients || new Set()).size +
 				' clients'
 		);
-		this.server.clients.forEach((client) => {
+		(this.server.clients || new Set()).forEach((client) => {
 			client.send(JSON.stringify(e));
 		});
 	}

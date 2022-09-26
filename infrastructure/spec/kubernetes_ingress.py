@@ -1,4 +1,5 @@
 from helper import getDeploymentName, getServiceName, getVolumeClaimName
+from kubernetes_lightning import lightning
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -18,6 +19,7 @@ def ingress(config, cluster_types):
     ride_the_lightning_base_name = ride_the_lightning(config, cluster_types)[
         "base_name"
     ]
+    lightning_base_name = lightning(config, cluster_types)["base_name"]
     lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
     api_base_name = api(config, cluster_types)["base_name"]
     bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
@@ -106,6 +108,25 @@ def ingress(config, cluster_types):
                                 },
                             },
                             {
+                                "host": "btc." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        bitcoin_base_name
+                                                    ),
+                                                    "port": {"number": config["bitcoin"]["port"]},
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },
+                            {
                                 "host": "lightning-rest." + config["domain"],
                                 "http": {
                                     "paths": [
@@ -121,6 +142,52 @@ def ingress(config, cluster_types):
                                                         "number": config[
                                                             "lightningRest"
                                                         ]["port"]
+                                                    },
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },
+                             {
+                                "host": "ln." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        lightning_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": config[
+                                                            "lightning"
+                                                        ]["port"]
+                                                    },
+                                                }
+                                            },
+                                        }
+                                    ]
+                                },
+                            },
+                            {
+                                "host": "ln-doc." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        lightning_rest_base_name + "-doc"
+                                                    ),
+                                                    "port": {
+                                                        "number": config[
+                                                            "lightningRest"
+                                                        ]["docPort"]
                                                     },
                                                 }
                                             },

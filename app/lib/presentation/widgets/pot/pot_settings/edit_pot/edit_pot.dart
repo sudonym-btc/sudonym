@@ -16,7 +16,7 @@ class _EditPotNameState extends State<EditPotName> {
         children: [
           const Text(
             'Pot Name:',
-            style: TextStyle(fontSize: 17, color: textColor),
+            style: TextStyle(fontSize: 17),
           ),
           Container(
             height: 75,
@@ -60,7 +60,7 @@ class _DropDownCurrencyMenuState extends State<DropDownCurrencyMenu> {
         children: [
           const Text(
             'Currency:',
-            style: TextStyle(fontSize: 17, color: textColor),
+            style: TextStyle(fontSize: 17),
           ),
           Container(
             height: 75,
@@ -78,7 +78,7 @@ class _DropDownCurrencyMenuState extends State<DropDownCurrencyMenu> {
                       dropdownValue = newValue!;
                     });
                   },
-                  style: const TextStyle(fontSize: 17, color: textColor),
+                  style: const TextStyle(fontSize: 17),
                   underline: null,
                   items: <String>['Bitcoin', 'Satoshis', 'USD']
                       .map<DropdownMenuItem<String>>((String value) {
@@ -115,7 +115,7 @@ class SaveChanges extends StatelessWidget {
             children: const [
               Text(
                 'Save Changes',
-                style: TextStyle(fontSize: 17, color: textColor),
+                style: TextStyle(fontSize: 17),
               )
             ],
           ),

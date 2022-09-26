@@ -1,4 +1,6 @@
 export * as action from './action.mock';
+export * as bolt11 from './bolt11.mock';
+export * as onchain from './onchain.mock';
 export * as pot from './pot.mock';
 export * as transaction from './transaction.mock';
 export * as user from './user.mock';

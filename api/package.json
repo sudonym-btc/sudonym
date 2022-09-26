@@ -13,10 +13,10 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "seed": "ts-node src/database/seeder.ts",
-    "test": "jest --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test": "NODE_ENV=mock jest --detectOpenHandles --forceExit",
+    "test:watch": "NODE_ENV=mock jest --watch",
+    "test:cov": "NODE_ENV=mock jest --coverage",
+    "test:debug": "NODE_ENV=mock node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "author": "",
   "license": "ISC",
@@ -73,7 +73,8 @@
     "ts-loader": "^9.2.6",
     "ts-node": "^10.3.0",
     "tsconfig-paths": "^3.11.0",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "wait-for-expect": "^3.0.2"
   },
   "jest": {
     "moduleDirectories": [
