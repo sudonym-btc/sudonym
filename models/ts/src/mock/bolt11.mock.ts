@@ -1,4 +1,4 @@
-import { Bolt11Received } from '../classes';
+import { Bolt11Received } from "../api";
 
 export const transaction: Bolt11Received = {
 	label: '133d8c0a-1325-44ac-9b5a-a10788d3178f',
