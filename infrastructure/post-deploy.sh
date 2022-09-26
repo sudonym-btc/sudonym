@@ -4,7 +4,8 @@ if [ "$1" != "development" ];
 then
     echo "$1"
     gcloud container clusters get-credentials --zone "us-central1-c" "$1-cluster"
-
+    pip install -r infrastructure/minikube/requirements.txt
+    echo "HIHIHI"
     gcloud secrets versions access latest --secret="$1-cert-resolver" --out-file="key.json"  
     kubectl create secret generic $1-cert-resolver --from-file=key.json
     rm key.json 
