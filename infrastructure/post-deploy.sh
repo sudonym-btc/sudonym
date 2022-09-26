@@ -19,6 +19,8 @@ then
             --version v1.7.1 \
             --set installCRDs=true
 
+    sudo apt-get install python3-distutils
+    sudo apt-get install python3-apt
     python3 infrastructure/get-pip.py
     pip3 install -r infrastructure/minikube/requirements.txt
     python3 infrastructure/spec/certificates.py $1 | kubectl apply -f -
