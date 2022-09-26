@@ -86,7 +86,7 @@ you should have logged into your Google Cloud account.
 If you are the admin of an empty Google Cloud project, you can run
 
 ```bash
-infrastructure/setup.sh
+infrastructure/setup.sh ["test" | "staging" | "production"]
 ```
 
 The above command enables the necessary APIs in the cloud project
