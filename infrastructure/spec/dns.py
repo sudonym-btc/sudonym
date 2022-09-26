@@ -59,4 +59,4 @@ def dns(config, cluster_types):
             }
     ]
 
-    return {"resources": resources}
+    return {"resources": resources, "domain": domain}

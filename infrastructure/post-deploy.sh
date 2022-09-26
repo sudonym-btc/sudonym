@@ -19,5 +19,6 @@ then
             --create-namespace \
             --version v1.7.1 \
             --set installCRDs=true
-    kubectl apply -f infrastructure/ssl/certs-$1.yaml
+
+    python3 infrastructure/spec/certificates.py $1 | kubectl apply -f -
 fi
