@@ -122,15 +122,15 @@ def bitcoin(config, cluster_types):
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
                                         "lifecycle": {
-                                            "preStop": {
-                                                "exec": {
-                                                    "command": [
-                                                        "/bin/sh",
-                                                        "-c",
-                                                        "cp -ar /bitcoin/.bitcoin/. /bitcoin/backup/$POD_ID >> /proc/1/fd/1 && find /bitcoin/backup/$POD_ID -name '.lock' -delete"
-                                                    ]
-                                                }
-                                            },
+                                            # "preStop": {
+                                            #     "exec": {
+                                            #         "command": [
+                                            #             "/bin/sh",
+                                            #             "-c",
+                                            #             "cp -ar /bitcoin/.bitcoin/. /bitcoin/backup/$POD_ID >> /proc/1/fd/1 && find /bitcoin/backup/$POD_ID -name '.lock' -delete"
+                                            #         ]
+                                            #     }
+                                            # },
                                         }
                                         if config["backup"]
                                         else {},
@@ -143,7 +143,7 @@ def bitcoin(config, cluster_types):
                                             "sh",
                                             "-c",
                                             (
-                                                "mkdir -p /bitcoin/backup/$POD_ID >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-" + getBackupName(base_name) + " /bitcoin/backup/$POD_ID) && cp -ar /bitcoin/backup/$POD_ID/. /bitcoin/.bitcoin && "
+                                                "" # backup gsutil copy
                                                 if config["backup"]
                                                 else ""
                                             )
