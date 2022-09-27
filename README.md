@@ -85,18 +85,37 @@ you should have logged into your Google Cloud account.
 
 If you are the admin of an empty Google Cloud project, you can run
 
-```bash
-infrastructure/setup.sh
+```npm run init:gcloud ["test" | "staging" | "production"]
 ```
+
+You might have to run this multiple times as it takes a
+few minutes for APIs to be enabled.
 
 The above command enables the necessary APIs in the cloud project
 and sets up triggers to your repo, so that deploys happen via Git commits.
 
 Creating and merging PRs for the production and staging banches
-will cause deployment manager to read the specs found in the "infrastrcuture" folder
+will cause deployment manager to read the specs found in the "infrastructure" folder
 and roll out the changes.
 
 The first deployment of each environment can take multiple executions
 as the clusters start up and there may be race conditions.
+
+To publish your app to play store etc you will have to follow codemagic
+instructions here <https://docs.codemagic.io/yaml-publishing/google-play/>
+
+Might have to run
+`gcloud beta deployment-manager type-providers delete test-cluster-type`
+if you abandon a deployment, otherwise the next deployment will use the old
+typeprovider with outdates IP address for spec.
+
+Get kubectl credentials for cluster
+`gcloud container clusters get-credentials test-cluster --zone us-central1-c`
+
+If cannot validate ingress
+`kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission`
+
+Backups will be sent to cloud storage. Can become corrupted if a new pod starts
+up while another syncing.
 
 </details>

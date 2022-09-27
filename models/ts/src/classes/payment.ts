@@ -13,9 +13,14 @@ export class Payment extends ActionType {
 		public maxAmount: number | null,
 		public fee: number | null,
 		public feeCurrency: string | null,
-		public remoteResponse: ActionRemoteResponse<any> // can't add paymentrequest type here
+		public remoteResponse: ActionRemoteResponse<any>, // can't add paymentrequest type here
+		public isLnUrl: boolean | null = false,
+		public isLnAddress: boolean | null = false,
+		public isBolt11: boolean | null = false,
+		public isBolt12: boolean | null = false,
+		public isOnChain: boolean | null = false
 	) {
-		super('pay', originalAddress);
+		super('pay', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain);
 	}
 
 	static fromJson(json: Object): Payment {
@@ -29,12 +34,18 @@ export class Payment extends ActionType {
 			json['maxAmount'],
 			json['fee'],
 			json['feeCurrency'],
-			ActionRemoteResponse.fromJson(json['remoteResponse'])
+			ActionRemoteResponse.fromJson(json['remoteResponse']),
+			json['isLnUrl'],
+			json['isLnAddress'],
+			json['isBolt11'],
+			json['isBolt12'],
+			json['isOnChain']
 		);
 	}
 
 	toJson(): any {
 		return {
+			type: this.type,
 			potId: this.potId,
 			originalAddress: this.originalAddress,
 			address: this.address,

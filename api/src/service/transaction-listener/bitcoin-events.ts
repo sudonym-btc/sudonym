@@ -5,10 +5,28 @@ import { Subject } from 'rxjs';
 import { getConfig } from 'config/config';
 const sock = zmq.socket('sub');
 import { Logger } from '@nestjs/common';
+import { RecursivePartial } from '@sudonym/models/src/recursive-partial';
+
+type TxOutput = bitcoin.TxOutput & {
+	txid: string;
+	address: string;
+	fromAddress: string;
+};
+export class BitcoinEvent extends bitcoin.Transaction {
+	ins: (bitcoin.TxInput & { address: string })[];
+	outs: TxOutput[];
+}
+
+const network =
+	getConfig().network == 'regtest'
+		? bitcoin.networks.regtest
+		: getConfig().network == 'testnet'
+		? bitcoin.networks.testnet
+		: bitcoin.networks.bitcoin;
 
 @Injectable()
 export class BitcoinEvents {
-	onTransaction = new Subject();
+	onTransaction = new Subject<RecursivePartial<BitcoinEvent>>();
 	private readonly logger = new Logger(BitcoinEvents.name);
 
 	onModuleInit() {
@@ -25,23 +43,29 @@ export class BitcoinEvents {
 		sock.on('message', (topic, message) => {
 			if (topic.toString() === 'rawtx') {
 				const rawTx = message.toString('hex');
-				const tx = bitcoin.Transaction.fromHex(rawTx);
+				const tx = bitcoin.Transaction.fromHex(rawTx) as BitcoinEvent;
 				const txid = tx.getId();
 				tx.ins = tx.ins.map(function (inn) {
 					try {
-						(inn as any).address = bitcoin.address.fromOutputScript(
+						inn.address = bitcoin.address.fromOutputScript(
 							inn.script,
-							bitcoin.networks.bitcoin
+							network
 						);
 					} catch (e) {}
 					return inn;
 				});
 				tx.outs = tx.outs.map(function (out) {
 					try {
-						(out as any).address = bitcoin.address.fromOutputScript(
+						out.fromAddress =
+							tx.ins.length > 0
+								? (tx.ins[0] as any).address
+								: null;
+
+						out.address = bitcoin.address.fromOutputScript(
 							out.script,
-							bitcoin.networks.bitcoin
+							network
 						);
+						out.txid = txid;
 					} catch (e) {}
 					return out;
 				});

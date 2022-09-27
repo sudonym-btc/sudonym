@@ -13,6 +13,11 @@ class Payment extends ActionType {
   dynamic /* num | null */ fee;
   dynamic /* String | null */ feeCurrency;
   ActionRemoteResponse<dynamic> remoteResponse;
+  dynamic /* bool | null */ isLnUrl;
+  dynamic /* bool | null */ isLnAddress;
+  dynamic /* bool | null */ isBolt11;
+  dynamic /* bool | null */ isBolt12;
+  dynamic /* bool | null */ isOnChain;
   Payment(
       this.potId,
       this.originalAddress,
@@ -23,8 +28,14 @@ class Payment extends ActionType {
       this.maxAmount,
       this.fee,
       this.feeCurrency,
-      this.remoteResponse)
-      : super("pay", originalAddress) {
+      this.remoteResponse,
+      [this.isLnUrl = false,
+      this.isLnAddress = false,
+      this.isBolt11 = false,
+      this.isBolt12 = false,
+      this.isOnChain = false])
+      : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
+            isOnChain) {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {
@@ -38,11 +49,17 @@ class Payment extends ActionType {
         json["maxAmount"],
         json["fee"],
         json["feeCurrency"],
-        ActionRemoteResponse.fromJson(json["remoteResponse"]));
+        ActionRemoteResponse.fromJson(json["remoteResponse"]),
+        json["isLnUrl"],
+        json["isLnAddress"],
+        json["isBolt11"],
+        json["isBolt12"],
+        json["isOnChain"]);
   }
 
   dynamic toJson() {
     return {
+      "type": this.type,
       "potId": this.potId,
       "originalAddress": this.originalAddress,
       "address": this.address,

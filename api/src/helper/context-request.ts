@@ -10,9 +10,9 @@ export function contextRequest(
 ) {
 	requestContextCls.run(async () => {
 		const req = {
-			auth: await new AuthService().auth(
-				request.headers['x-access-token'] as string
-			),
+			auth: await new AuthService().auth({
+				token: request.headers['x-access-token'] as string,
+			}),
 		};
 
 		requestContextCls.set('request', req);

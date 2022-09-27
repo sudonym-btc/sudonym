@@ -5,6 +5,7 @@ import {
 	HasMany,
 	PrimaryKey,
 	AutoIncrement,
+	DataType,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
@@ -21,7 +22,7 @@ export class Settlement extends BaseModel implements Models.Settlement {
 	@Column
 	toCurrency: string;
 
-	@Column
+	@Column(DataType.DOUBLE(18, 8))
 	amount: number;
 
 	@Column

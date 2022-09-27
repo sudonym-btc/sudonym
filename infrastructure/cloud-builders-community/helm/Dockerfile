@@ -1,0 +1,27 @@
+FROM gcr.io/cloud-builders/gcloud
+
+ARG HELM_VERSION=v3.7.0
+ENV HELM_VERSION=$HELM_VERSION
+
+RUN apt install python3.8
+RUN apt install python3.8-distutils
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+RUN python3.8 get-pip.py
+
+COPY helm.bash /builder/helm.bash
+
+RUN chmod +x /builder/helm.bash && \
+  mkdir -p /builder/helm && \
+  apt-get update && \
+  apt-get install -y curl && \
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz && \
+  tar zxvf helm.tar.gz --strip-components=1 -C /builder/helm linux-amd64 && \
+  rm helm.tar.gz && \
+  apt-get --purge -y autoremove && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+ENV PATH=/builder/helm/:$PATH
+
+ENTRYPOINT ["/builder/helm.bash"]

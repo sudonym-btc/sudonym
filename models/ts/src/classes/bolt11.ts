@@ -18,7 +18,8 @@ export class Bolt11 {
 		public timeExpireDateString: string,
 		public timestamp: number,
 		public timestampString: string,
-		public wordsTemp: string
+		public wordsTemp: string,
+		public label?: string | null
 	) {}
 
 	static fromJson(json: Object): Bolt11 {

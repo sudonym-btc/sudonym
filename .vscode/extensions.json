@@ -15,6 +15,7 @@
         "davidanson.vscode-markdownlint",
         "foxundermoon.shell-format",
         "eamodio.gitlens",
-        "GitHub.vscode-pull-request-github"
+        "github.vscode-pull-request-github",
+        "mtxr.sqltools-driver-mysql"
     ]
 }

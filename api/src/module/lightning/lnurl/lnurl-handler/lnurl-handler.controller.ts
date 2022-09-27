@@ -6,7 +6,7 @@ export class LnUrlHandlerController {
 	@Inject(LnUrlHandlerService) service: LnUrlHandlerService;
 
 	@Get('handle/:id')
-	async handle(@Param('id') id, @Query('amount') amount) {
-		return this.service.handle(id, amount);
+	async handle(@Param('id') id, @Query() query) {
+		return this.service.handle(id, query);
 	}
 }

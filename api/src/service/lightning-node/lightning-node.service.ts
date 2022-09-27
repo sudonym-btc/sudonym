@@ -10,9 +10,7 @@ import * as bolt11 from 'bolt11';
 export class LightningNodeService {
 	private readonly logger = new Logger(LightningNodeService.name);
 
-	private macaroon = Buffer.from(
-		fs.readFileSync(getConfig().macaroonFile)
-	).toString('base64');
+	private macaroon;
 	private url = getConfig().lightningREST;
 	private info;
 	private peers;
@@ -60,6 +58,10 @@ export class LightningNodeService {
 
 	async onModuleInit() {
 		try {
+			this.macaroon = Buffer.from(
+				fs.readFileSync(getConfig().macaroonFile)
+			).toString('base64');
+
 			this.logger.verbose('Loading lightning node information.');
 
 			this.info = await this.getInfo();
@@ -69,6 +71,9 @@ export class LightningNodeService {
 			this.logger.verbose(
 				`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`
 			);
+			if (this.connectedChannels.length == 0) {
+				this.logger.warn('0 connected channels. Payments not possible');
+			}
 		} catch (e) {
 			this.logger.error(e);
 		}
@@ -205,11 +210,11 @@ export class LightningNodeService {
 		});
 	}
 
-	async withdrawOnChain() {
+	async withdrawOnChain(data: { satoshis: number; address: string }) {
 		return this.makeRequest({
 			path: '/v1/withdraw',
 			method: 'POST',
-			data: {},
+			data,
 		});
 	}
 

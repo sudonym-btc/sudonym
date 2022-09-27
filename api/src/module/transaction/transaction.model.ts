@@ -1,17 +1,20 @@
 import {
 	Table,
 	Column,
-	Model,
-	HasMany,
 	CreatedAt,
 	PrimaryKey,
 	Default,
 	AutoIncrement,
 	AllowNull,
-	NotNull,
+	DataType,
+	ForeignKey,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
+import { Receiver } from 'module/receiver/receiver.model';
+import { Sender } from 'module/sender/sender.model';
+import { Onchain } from './onchain.model';
+import { Invoice } from './invoice.model';
 
 @Table({
 	scopes: Transaction.scopes,
@@ -23,7 +26,15 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	id: number;
 
-	@Column
+	@ForeignKey(() => Onchain)
+	@Column(DataType.STRING(1024))
+	onchainId: string;
+
+	@ForeignKey(() => Invoice)
+	@Column(DataType.STRING(1024))
+	invoiceId: string;
+
+	@Column(DataType.STRING(1024))
 	txid: string;
 
 	@Column
@@ -32,10 +43,10 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	description: string;
 
-	@Column
+	@Column(DataType.STRING(1024))
 	address: string;
 
-	@Column
+	@Column(DataType.STRING(1024))
 	originalAddress: string;
 
 	@Default(null)
@@ -48,8 +59,16 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	potId: number;
 
-	@AllowNull(false)
+	@ForeignKey(() => Sender)
 	@Column
+	senderId: number;
+
+	@ForeignKey(() => Receiver)
+	@Column
+	receiverId: number;
+
+	@AllowNull(false)
+	@Column(DataType.DOUBLE(18, 8))
 	amount: number;
 
 	@AllowNull(false)

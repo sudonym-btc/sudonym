@@ -4,15 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sudonym.models/types/currency.dart';
-import 'package:sudonym/presentation/components/button/button.dart';
-import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
-import 'package:sudonym/presentation/widgets/input/currency/currency_input.dart';
+import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../constants.dart';
-import '../../../injection.dart';
-import '../../../logic/bloc/receive.cubit.dart';
 
 class ReceiveWidget extends StatelessWidget {
   final num potId;
@@ -25,15 +22,17 @@ class ReceiveWidget extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) => getIt<ReceiveCubit>()
-                ..getInvoice(potId, type, 1 / SATOSHIS, "BTC"))
+              create: (_) => getIt<ReceiverCubit>()
+                ..getInvoice(potId, type, 1 / SATOSHIS, 'BTC'))
         ],
-        child: BlocBuilder<ReceiveCubit, ReceiveCubitState>(
+        child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
           Widget image = const Center(child: CircularProgressIndicator());
           if (!state.loading) {
             image = QrImage(
-              data: state.data!.data,
+              data: state.entity!.data,
+              foregroundColor:
+                  Theme.of(context).appBarTheme.titleTextStyle!.color,
               version: QrVersions.auto,
               // embeddedImage: AssetImage('assets/images/my_embedded_image.png'),
               // embeddedImageStyle: QrEmbeddedImageStyle(
@@ -48,7 +47,7 @@ class ReceiveWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(padding),
                 child: CurrencyInput(onChanged: (amount) {
-                  BlocProvider.of<ReceiveCubit>(context)
+                  BlocProvider.of<ReceiverCubit>(context)
                       .getInvoice(potId, type, amount.amount, amount.currency);
                 }),
               ),
@@ -60,7 +59,7 @@ class ReceiveWidget extends StatelessWidget {
                       onPressed: state.loading
                           ? null
                           : () {
-                              FlutterClipboard.copy(state.data!.data)
+                              FlutterClipboard.copy(state.entity!.data)
                                   .then((value) {
                                 const snackBar = SnackBar(
                                   content: Text('Copied to Clipboard'),

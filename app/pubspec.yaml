@@ -1,9 +1,9 @@
 name: sudonym
-description: A simple bank UI template with a little of backend. Created by Martin Gogolowicz.
+description: Sudonym bitcoin wallet.
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 0.0.1
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
@@ -52,6 +52,8 @@ dependencies:
   loggy: ^2.0.1+1
   flutter_loggy_dio: ^2.0.0+3
   nfc_manager: ^3.1.1
+  # flutter_nfc_kit: ^3.3.1
+  flutter_ringtone_player: ^3.2.0
 
 dev_dependencies:
   test: ^1.21.1
@@ -74,14 +76,14 @@ flutter:
   generate: true
   uses-material-design: true
 
-  fonts:
-    - family: Satoshi
-      fonts:
-        - asset: assets/fonts/Satoshi-Black.ttf
-        - asset: assets/fonts/Satoshi-BlackItalic.ttf
-          style: italic
-        - asset: assets/fonts/Satoshi-Bold.ttf
-          weight: 700
+  # fonts:
+  #   - family: Satoshi
+  #     fonts:
+  #       - asset: assets/fonts/Satoshi-Black.ttf
+  #       - asset: assets/fonts/Satoshi-BlackItalic.ttf
+  #         style: italic
+  #       - asset: assets/fonts/Satoshi-Bold.ttf
+  #         weight: 700
   assets:
     - assets/mastercardLogo.png
     - assets/visaLogo.png

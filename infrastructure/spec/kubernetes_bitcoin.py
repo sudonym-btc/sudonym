@@ -114,6 +114,7 @@ def bitcoin(config, cluster_types):
                         "template": {
                             "metadata": {"labels": {"app": base_name}},
                             "spec": {
+                                "terminationGracePeriodSeconds": 60,
                                 "containers": [
                                     {
                                         "securityContext": {
@@ -124,7 +125,9 @@ def bitcoin(config, cluster_types):
                                             "preStop": {
                                                 "exec": {
                                                     "command": [
-                                                        "cp -a /bitcoin/.bitcoin/. /bitcoin/backup",
+                                                        "/bin/sh",
+                                                        "-c",
+                                                        "cp -ar /bitcoin/.bitcoin/. /bitcoin/backup/$POD_ID >> /proc/1/fd/1 && find /bitcoin/backup/$POD_ID -name '.lock' -delete"
                                                     ]
                                                 }
                                             },
@@ -135,12 +138,12 @@ def bitcoin(config, cluster_types):
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-bitcoin",
-                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "resources": {"requests": {"cpu": "30m"}},
                                         "command": [
                                             "sh",
                                             "-c",
                                             (
-                                                "mkdir /bitcoin/backup >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-bitcoin-backup /bitcoin/backup) && cp -a /bitcoin/backup/. /bitcoin/.bitcoin && "
+                                                "mkdir -p /bitcoin/backup/$POD_ID >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-" + getBackupName(base_name) + " /bitcoin/backup/$POD_ID) && cp -ar /bitcoin/backup/$POD_ID/. /bitcoin/.bitcoin && "
                                                 if config["backup"]
                                                 else ""
                                             )
@@ -165,7 +168,7 @@ def bitcoin(config, cluster_types):
                                                     "-zmqpubhashblock=tcp://*:5555",
                                                     "-zmqpubhashtx=tcp://*:5555",
                                                     "-zmqpubrawblock=tcp://*:5555",
-                                                    "-debug=1",
+                                                    "-debug=" + ("1" if config["loglevel"] == "debug" else "0"),
                                                 ]
                                                 + (
                                                     ["-regtest=1"]
@@ -180,6 +183,14 @@ def bitcoin(config, cluster_types):
                                             ),
                                         ],
                                         "env": [
+                                            {
+                                                "name": "POD_ID",
+                                                "valueFrom": {
+                                                    "fieldRef": {
+                                                        "fieldPath": "metadata.name"
+                                                    }
+                                                }
+                                            },
                                             {
                                                 "name": "BITCOIN_RPC_USER",
                                                 "valueFrom": {
@@ -221,7 +232,7 @@ def bitcoin(config, cluster_types):
                                             {
                                                 "name": getVolumeClaimName(base_name),
                                                 "mountPath": "/bitcoin/.bitcoin",
-                                            }
+                                            },
                                         ],
                                     }
                                 ],
@@ -231,7 +242,7 @@ def bitcoin(config, cluster_types):
                                         "persistentVolumeClaim": {
                                             "claimName": getVolumeClaimName(base_name)
                                         },
-                                    }
+                                    },
                                 ],
                             },
                         },

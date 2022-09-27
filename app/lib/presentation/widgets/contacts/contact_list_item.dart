@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class ContactListItem extends StatelessWidget {
-  Contact contact;
+  final Contact contact;
 
-  ContactListItem({required this.contact, Key? key}) : super(key: key);
+  const ContactListItem({super.key, required this.contact});
 
   @override
   Widget build(BuildContext context) {

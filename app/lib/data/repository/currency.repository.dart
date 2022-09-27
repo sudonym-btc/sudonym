@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/types/currency.dart';
 
-import '../../injection.dart';
+import 'package:sudonym/injection.dart';
 
 @LazySingleton(as: CurrencyRepository, env: Env.allButMock)
 class CurrencyRepositoryImpl extends CurrencyRepository {

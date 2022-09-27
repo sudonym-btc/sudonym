@@ -35,7 +35,7 @@ export class Action extends ActionType {
 		);
 	}
 
-	static from(json): Payment | Withdraw {
+	static from(json): Payment | Withdraw {		
 		if (json['type'] == 'pay') return Payment.fromJson(json);
 		return Withdraw.fromJson(json);
 	}

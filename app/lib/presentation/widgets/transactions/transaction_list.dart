@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/constants.dart';
-import 'package:sudonym/data/repository/transaction.repository.dart';
-import 'package:sudonym/logic/bloc/list/list.cubit.dart';
-import 'package:sudonym/presentation/components/typography/header.dart';
-import 'package:sudonym/presentation/widgets/list/list.dart';
-import 'package:sudonym/presentation/widgets/transactions/transaction_list_item.dart';
+import 'package:sudonym/data/index.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart' hide Pot;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../injection.dart';
+import 'package:sudonym/injection.dart';
 
 class TransactionList extends StatelessWidget {
   final Pot pot;
@@ -17,6 +14,7 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
         constraints: const BoxConstraints.expand(),
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -27,7 +25,7 @@ class TransactionList extends StatelessWidget {
           Expanded(
               child: ListWidget(
             builder: (el) {
-              return TransactionListItem(transaction: el);
+              return TransactionListItem(entity: el);
             },
             list: ListCubit(getIt<TransactionRepository>(),
                 where: {"potId": pot.id}),

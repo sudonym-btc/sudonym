@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/main.dart';
-import 'package:sudonym/presentation/pages/signin.dart';
 
 void main() {
   setUpAll(() {

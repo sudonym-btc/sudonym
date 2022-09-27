@@ -1,0 +1,54 @@
+import { BaseClass } from './base-class';
+
+export class Sender extends BaseClass {
+	constructor(
+		public id: number | null,
+		public potId: number | null,
+		public type: string | null,
+		public amount: number | null,
+		public amountCurrency: string | null,
+		public limitDay: number | null,
+		public limitMonth: number | null,
+		public limitYear: number | null,
+		public limitMin: number | null,
+		public limitMax: number | null,
+		public data: string,
+		public createdAt: Date
+	) {
+		super();
+	}
+
+	static fromJson(json: Object): Sender {
+		return new Sender(
+			json['id'],
+			json['potId'],
+			json['type'],
+			json['amount'],
+			json['amountCurrency'],
+			json['limitDay'],
+			json['limitMonth'],
+			json['limitYear'],
+			json['limitMin'],
+			json['limitMax'],
+			json['data'],
+			json['createdAt']
+		);
+	}
+
+	toJson(): any {
+		return {
+			id: this.id,
+			potId: this.potId,
+			type: this.type,
+			amount: this.amount,
+			amountCurrency: this.amountCurrency,
+			limitDay: this.limitDay,
+			limitMonth: this.limitMonth,
+			limitYear: this.limitYear,
+			limitMin: this.limitMin,
+			limitMax: this.limitMax,
+			data: this.data,
+			createdAt: this.createdAt,
+		};
+	}
+}

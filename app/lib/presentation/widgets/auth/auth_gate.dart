@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym/logic/bloc/auth.cubit.dart';
-import 'package:sudonym/logic/bloc/link.service.dart';
-import 'package:sudonym/presentation/widgets/message_handler.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 
-import '../../../injection.dart';
-import '../../../logic/bloc/transaction-listener/transaction-listener.cubit.dart';
-import '../../pages/home_page.dart';
-import '../../pages/signin.dart';
+import 'package:sudonym/injection.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({Key? key}) : super(key: key);
@@ -38,9 +34,10 @@ class _LoggedInWidget extends StatelessWidget {
         bloc: BlocProvider.of<TransactionListenerCubit>(context),
         listener: (BuildContext context, state) {
           if (state.address != null) {
-            getIt<LinkService>().trigger(state.address.toString(), context);
+            getIt<ActionTriggerService>()
+                .trigger(state.address.toString(), context);
           }
         },
-        child: MessageHandler(child: const HomePage()));
+        child: const MessageHandler(child: HomePage()));
   }
 }

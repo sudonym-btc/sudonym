@@ -13,10 +13,10 @@ export class AddressParser implements IAddressParser {
 
 	async parse(address): Promise<Action> {
 		const [type, trimmedAddress] = this.getType(address);
-
 		switch (type) {
 			case 'lightningaddress':
 				return Action.from({
+					originalAddress: trimmedAddress,
 					type: 'pay',
 					remoteResponse: await this.fetchRemoteLightningAddress(
 						trimmedAddress
@@ -29,12 +29,14 @@ export class AddressParser implements IAddressParser {
 					trimmedAddress
 				);
 				return Action.from({
+					originalAddress: trimmedAddress,
 					type: remoteResponse.data.tag.replace('Request', ''),
 					remoteResponse,
 					isLnUrl: true,
 				});
 			case 'bolt11':
 				return Action.from({
+					originalAddress: trimmedAddress,
 					type: 'pay',
 					isBolt11: true,
 					remoteResponse: await this.fetchBolt11(trimmedAddress),
@@ -43,14 +45,28 @@ export class AddressParser implements IAddressParser {
 	}
 
 	fetchRemoteLnUrl = async (invoice: string) => {
-		// Decoding bech32 LNURL
-		const decodedLNURL = bech32.decode(invoice, 1500);
-		const url = Buffer.from(
-			bech32.fromWords(decodedLNURL.words)
-		).toString();
+		const url = this.parseLnUrlString(invoice);
 
 		this.logger.debug('Fetching LnUrl from ' + url);
-		const data = await fetch(url, fetchHttpOpts);
+		const data = await fetch(url, fetchHttpOpts)
+			.then((r) => {
+				this.logger.debug('Fetched lnurl');
+				this.logger.debug(r);
+				return r.json();
+			})
+			.then((data) => {
+				return {
+					success: true,
+					data,
+				};
+			})
+			.catch((e) => {
+				this.logger.error(e);
+				return {
+					success: false,
+					message: e,
+				};
+			});
 		return data;
 	};
 
@@ -76,26 +92,25 @@ export class AddressParser implements IAddressParser {
 		}
 
 		const url = `https://${domain}/.well-known/lnurlp/${username}`;
-		const data = await fetch(url, fetchHttpOpts)
-			.then((r) => r.json())
-			.then((data) => {
+		this.logger.debug('Fetching lnurl address', url);
+		return this.fetchRemoteLnUrl(url)
+			.then((d) => {
 				return {
-					success: true,
+					...d,
 					data: {
-						...data,
+						...d.data,
 						domain,
 						username,
 					},
 				};
 			})
-			.catch((e) => {
+			.catch((d) => {
 				return {
-					success: false,
+					...d,
 					message:
 						'This identifier does not support Lightning Address yet.',
 				};
 			});
-		return data;
 	};
 
 	fetchBolt11 = async (invoice: string) => {
@@ -139,6 +154,17 @@ export class AddressParser implements IAddressParser {
 		const isLnUrl = address.startsWith(LNURL_SCHEME);
 
 		return [isLnUrl ? 'lnurl' : 'bolt11', address];
+	}
+
+	parseLnUrlString(str: string) {
+		if (str.includes('.')) {
+			return str
+				.replace('lnurlw://', 'https://')
+				.replace('lnurlp://', 'https://');
+		} else {
+			const decodedLNURL = bech32.decode(str, 1500);
+			return Buffer.from(bech32.fromWords(decodedLNURL.words)).toString();
+		}
 	}
 }
 

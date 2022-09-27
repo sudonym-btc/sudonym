@@ -2,14 +2,11 @@ import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/logic/bloc/send.cubit.dart';
-import 'package:sudonym/logic/currency/format-currency.dart';
-import 'package:sudonym/presentation/widgets/input/button/button_bar.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sudonym/presentation/index.dart';
 
-import '../../constants.dart';
-import '../../injection.dart';
-import '../widgets/status_page/status_page.dart';
+import 'package:sudonym/injection.dart';
 
 final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -80,7 +77,7 @@ class SendConfirmPage extends StatelessWidget {
             state.infoData?.fold((l) {
               color = Colors.red;
               title = 'Error';
-              subtitle = l.toString();
+              content = Text(l.toString());
               actions = ButtonBar(
                 children: [
                   ElevatedButton(
@@ -99,7 +96,7 @@ class SendConfirmPage extends StatelessWidget {
                     TableRow(children: [
                       const Text('address'),
                       Text(
-                        r.address,
+                        r.address ?? '',
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),

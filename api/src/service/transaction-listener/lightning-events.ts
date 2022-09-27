@@ -4,17 +4,16 @@ import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import { Subject } from 'rxjs';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
+import { Bolt11Received } from '@sudonym/models';
 
 @Injectable()
 export class LightningEvents {
 	private readonly logger = new Logger(LightningEvents.name);
 
 	@Inject() LightningNodeService: LightningNodeService;
-	private macaroon = Buffer.from(
-		fs.readFileSync(getConfig().macaroonFile)
-	).toString('base64');
+	private macaroon;
 	private url = getConfig().lightningREST.replace('http', 'ws');
-	public onEvent = new Subject();
+	public onEvent = new Subject<LightningEvent>();
 
 	reconnect() {
 		this.logger.verbose(
@@ -51,6 +50,9 @@ export class LightningEvents {
 	}
 
 	onModuleInit() {
+		this.macaroon = Buffer.from(
+			fs.readFileSync(getConfig().macaroonFile)
+		).toString('base64');
 		// const ws = new WebSocket(this.url + "/v1/ws", [this.macaroon, 'json'], {
 		this.reconnect();
 
@@ -58,4 +60,9 @@ export class LightningEvents {
 			this.logger.verbose('EVENT', e);
 		});
 	}
+}
+
+export class LightningEvent {
+	event: 'invoice' | 'channel';
+	data: Bolt11Received;
 }

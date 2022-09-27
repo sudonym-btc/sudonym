@@ -1,15 +1,19 @@
-kubectl wait --for=condition=ready pod -l app=development-bitcoin
-kubectl wait --for=condition=ready pod -l app=development-lightning
-kubectl wait --for=condition=ready pod -l app=development-lightning-1
-kubectl wait --for=condition=ready pod -l app=development-lightning-2
-kubectl wait --for=condition=ready pod -l app=development-c-lightning-rest
-kubectl wait --for=condition=ready pod -l app=development-ride-the-lightning
-kubectl wait --for=condition=ready pod -l app=development-api
+env=$1
+env=${env:="development"}
+echo $env
 
-ln1cli="kubectl exec $(kubectl get pod -l app=development-lightning -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
-ln2cli="kubectl exec $(kubectl get pod -l app=development-lightning-1 -o name) -- lightning-cli --network=regtest"
-ln3cli="kubectl exec $(kubectl get pod -l app=development-lightning-2 -o name) -- lightning-cli --network=regtest"
-bitcoincli="kubectl exec $(kubectl get pod -l app=development-bitcoin -o name) -- bitcoin-cli -datadir=/bitcoin/.bitcoin -regtest=1 -rpcport=8332 -rpcuser=test -rpcpassword=test "
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-bitcoin
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-2
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-3
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-c-lightning-rest
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-ride-the-lightning
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-api
+
+ln1cli="kubectl exec $(kubectl get pod -l app=$env-lightning -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
+ln2cli="kubectl exec $(kubectl get pod -l app=$env-lightning-2 -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
+ln3cli="kubectl exec $(kubectl get pod -l app=$env-lightning-3 -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
+bitcoincli="kubectl exec $(kubectl get pod -l app=$env-bitcoin -o name) -- bitcoin-cli -datadir=/bitcoin/.bitcoin -regtest=1 -rpcport=8332 -rpcuser=test -rpcpassword=test "
 
 initial_block_height=$($ln1cli getinfo | jq -r '.blockheight')
 
@@ -28,12 +32,9 @@ ln3port=$($ln3cli getinfo | jq -r '.binding[0].port')
 ln3addr=$($ln3cli newaddr | jq -r '.bech32')
 $bitcoincli generatetoaddress 200 $ln3addr
 
-ln1toln2=$($ln1cli connect $ln2id development-lightning-1-service.default.svc.cluster.local $ln2port | jq -r '.id')
-ln1toln3=$($ln1cli connect $ln3id development-lightning-2-service.default.svc.cluster.local $ln3port | jq -r '.id')
-ln2toln3=$($ln2cli connect $ln3id development-lightning-2-service.default.svc.cluster.local $ln3port | jq -r '.id')
-# ln2toln1=$($ln2cli connect $ln1id development-lightning-service $ln1port | jq -r '.id')
-# ln3toln1=$($ln3cli connect $ln1id development-lightning-service $ln1port | jq -r '.id')
-# ln3toln2=$($ln3cli connect $ln2id development-lightning-1-service $ln2port | jq -r '.id')
+ln1toln2=$($ln1cli connect $ln2id $env-lightning-service-2 $ln2port | jq -r '.id')
+ln1toln3=$($ln1cli connect $ln3id $env-lightning-service-3 $ln3port | jq -r '.id')
+ln2toln3=$($ln2cli connect $ln3id $env-lightning-service-3 $ln3port | jq -r '.id')
 
 # Wait for funds to register before trying to open channel
 ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')

@@ -13,6 +13,7 @@ class Bolt11 {
   num timestamp;
   String timestampString;
   String wordsTemp;
+  dynamic /* String | null */ label;
   Bolt11(
       this.millisatoshis,
       this.network,
@@ -27,7 +28,8 @@ class Bolt11 {
       this.timeExpireDateString,
       this.timestamp,
       this.timestampString,
-      this.wordsTemp) {}
+      this.wordsTemp,
+      [this.label]) {}
   static Bolt11 fromJson(Map<String, dynamic> json) {
     return new Bolt11(
         json["millisatoshis"],

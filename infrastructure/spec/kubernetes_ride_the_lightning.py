@@ -37,7 +37,7 @@ def ride_the_lightning(config, cluster_types):
       "lnNode": "Node 1",
       "lnImplementation": "CLT",
       "Authentication": {
-        "macaroonPath": "/RTL/certs"
+        "macaroonPath": "/RTL/certs1"
       },
       "Settings": {
         "userPersona": "MERCHANT",
@@ -45,7 +45,47 @@ def ride_the_lightning(config, cluster_types):
         "themeColor": "PURPLE",
         "logLevel": "ERROR",
         "lnServerUrl": "http://"""
-                        + getServiceName(lightning_rest_base_name)
+                        + getServiceName(lightning_rest_base_name, 1)
+                        + """:3001",
+        "fiatConversion": false,
+        "enableOffers": true
+      },
+      "enableOffers": true
+    },
+    {
+      "index": 2,
+      "lnNode": "Node 2",
+      "lnImplementation": "CLT",
+      "Authentication": {
+        "macaroonPath": "/RTL/certs2"
+      },
+      "Settings": {
+        "userPersona": "MERCHANT",
+        "themeMode": "DAY",
+        "themeColor": "PURPLE",
+        "logLevel": "ERROR",
+        "lnServerUrl": "http://"""
+                        + getServiceName(lightning_rest_base_name, 2)
+                        + """:3001",
+        "fiatConversion": false,
+        "enableOffers": true
+      },
+      "enableOffers": true
+    }
+    {
+      "index": 3,
+      "lnNode": "Node 3",
+      "lnImplementation": "CLT",
+      "Authentication": {
+        "macaroonPath": "/RTL/certs3"
+      },
+      "Settings": {
+        "userPersona": "MERCHANT",
+        "themeMode": "DAY",
+        "themeColor": "PURPLE",
+        "logLevel": "ERROR",
+        "lnServerUrl": "http://"""
+                        + getServiceName(lightning_rest_base_name, 3)
                         + """:3001",
         "fiatConversion": false,
         "enableOffers": true
@@ -86,7 +126,9 @@ def ride_the_lightning(config, cluster_types):
                 "metadata": {
                     "dependsOn": [
                         kube_type_name,
-                        getVolumeClaimName(lightning_rest_base_name + "-macaroon"),
+                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
+                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
+                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
                     ]
                 },
                 "properties": {
@@ -111,7 +153,7 @@ def ride_the_lightning(config, cluster_types):
                                         "name": base_name,
                                         "image": "shahanafarooqui/rtl:0.13.1",
                                         "command": ["/sbin/tini", "-g", "--", "sh", "-c", "ls && cp RTL-Config-Read-Only.json RTL-Config.json && node rtl"],
-                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "resources": {"requests": {"cpu": "30m"}},
                                         "volumeMounts": [
                                             {
                                                 "mountPath": "RTL/RTL-Config-Read-Only.json",
@@ -119,8 +161,16 @@ def ride_the_lightning(config, cluster_types):
                                                 "name": "json-config",
                                             },
                                             {
-                                                "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon"),
-                                                "mountPath": "RTL/certs",
+                                                "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
+                                                "mountPath": "RTL/certs1",
+                                            },
+                                            {
+                                                "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
+                                                "mountPath": "RTL/certs2",
+                                            },
+                                            {
+                                                "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
+                                                "mountPath": "RTL/certs3",
                                             },
                                         ],
                                     }
@@ -131,9 +181,21 @@ def ride_the_lightning(config, cluster_types):
                                         "configMap": {"name": "rtl-config.json"},
                                     },
                                     {
-                                        "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon"),
+                                        "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
                                         "persistentVolumeClaim": {
-                                            "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon")
+                                            "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1)
+                                        },
+                                    },
+                                    {
+                                        "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
+                                        "persistentVolumeClaim": {
+                                            "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2)
+                                        },
+                                    },
+                                    {
+                                        "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
+                                        "persistentVolumeClaim": {
+                                            "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3)
                                         },
                                     },
                                 ],

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/constants.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/logic/bloc/pot.cubit.dart';
-import 'package:sudonym/presentation/components/form/form.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart' hide Pot;
 
 class EditPot extends StatelessWidget {
   final Pot? entity;
@@ -48,31 +47,35 @@ class EditPotFormState extends State<EditPotForm> {
   @override
   Widget build(BuildContext context) {
     return CustomForm(
-        entity: widget.entity ?? Pot.fromJson({}),
+        entity: widget.entity ?? Pot.fromJson({'name': '', 'currency': 'BTC'}),
         onSave: widget.onSave,
         cubit: getIt<PotCubit>(),
         children: [
-          FormBuilderTextField(
-            name: 'name',
-            decoration: const InputDecoration(
-              labelText: 'Pot name',
-            ),
-            initialValue: widget.entity!.name,
-          ),
-          FormBuilderDropdown(
-            name: 'currency',
-            decoration: const InputDecoration(
-              labelText: 'Currency',
-            ),
-            // initialValue: 'Male',
-            allowClear: true,
-            hint: const Text('Select Currency'),
-            items: listOfValue
-                .map((currency) => DropdownMenuItem(
-                      value: currency,
-                      child: Text('$currency'),
-                    ))
-                .toList(),
+          Column(
+            children: [
+              FormBuilderTextField(
+                name: 'name',
+                decoration: const InputDecoration(
+                  labelText: 'Pot name',
+                ),
+                initialValue: widget.entity?.name ?? '',
+              ),
+              FormBuilderDropdown(
+                name: 'currency',
+                decoration: const InputDecoration(
+                  labelText: 'Currency',
+                ),
+                // initialValue: 'Male',
+                allowClear: true,
+                hint: const Text('Select Currency'),
+                items: listOfValue
+                    .map((currency) => DropdownMenuItem(
+                          value: currency,
+                          child: Text(currency),
+                        ))
+                    .toList(),
+              )
+            ],
           )
         ]);
   }

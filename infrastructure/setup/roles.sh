@@ -2,14 +2,27 @@ gcloud iam service-accounts create developer \
     --description="developer" \
     --display-name="developer"
 
-project=$(gcloud config get project)
-
-gcloud projects add-iam-policy-binding $project \
-    --member="serviceAccount:developer@$project.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:developer@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/storage.admin"
 
-project_num=$(gcloud projects describe $(gcloud config get project) --format="value(projectNumber)")
 
-gcloud projects add-iam-policy-binding $project \
-    --member="serviceAccount:$project_num@cloudbuild.gserviceaccount.com" \
+# Cloud build account permissions
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
     --role="roles/deploymentmanager.editor"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
+    --role="roles/container.admin"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
+    --role="roles/compute.networkViewer"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
+    --role roles/iam.serviceAccountKeyAdmin
+
+# cert-manager account for generating certificates
+gcloud iam service-accounts create $ENV-cert-resolver --display-name "$ENV-cert-resolver"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$ENV-cert-resolver@$PROJECT_ID.iam.gserviceaccount.com \
+    --role roles/dns.admin

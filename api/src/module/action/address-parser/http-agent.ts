@@ -4,6 +4,6 @@ const https = require('https');
 
 export const fetchHttpOpts = {
 	agent: new https.Agent({
-		rejectUnauthorized: getConfig().env != 'development',
+		rejectUnauthorized: !['development', 'test'].includes(getConfig().env),
 	}),
 };

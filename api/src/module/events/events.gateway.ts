@@ -5,9 +5,10 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Event } from '@sudonym/models';
+import { getConfig } from 'config/config';
 import { EventsService } from './events.service';
 
-@WebSocketGateway(3001, {
+@WebSocketGateway(getConfig().wsPort, {
 	cors: {
 		origin: '*',
 	},
@@ -31,10 +32,10 @@ export class EventsGateway implements OnGatewayConnection {
 			'Emitting ' +
 				e.name +
 				' to ' +
-				((this.server as any).clients as Set<any>).size +
+				(this.server.clients || new Set()).size +
 				' clients'
 		);
-		this.server.clients.forEach((client) => {
+		(this.server.clients || new Set()).forEach((client) => {
 			client.send(JSON.stringify(e));
 		});
 	}

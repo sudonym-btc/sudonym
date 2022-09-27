@@ -11,3 +11,4 @@ release
 infrastructure/local-volumes/*/*
 api/src/exchanges/*
 !*.gitkeep
+key.json

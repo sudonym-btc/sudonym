@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/widgets/screen_slideable/measurable.dart';
+import 'package:sudonym/presentation/index.dart';
 
-import '../../../constants.dart';
+import 'measurable.dart';
 
 class ScreenSlideable extends StatefulWidget {
   final Widget top;
@@ -103,10 +103,8 @@ class _BottomSlideableState extends State<BottomSlideable>
             onVerticalDragEnd: _handleDragEnd,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 32),
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(32)),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
               child: widget.child,
             ),

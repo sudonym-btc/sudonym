@@ -8,9 +8,9 @@ export const ParseRequest = createParamDecorator(
 		const req = {
 			auth:
 				requestContextCls.get('request')?.auth ||
-				(await new AuthService().auth(
-					request.headers['x-access-token']
-				)),
+				(await new AuthService().auth({
+					token: request.headers['x-access-token'],
+				})),
 		};
 		return req;
 	}

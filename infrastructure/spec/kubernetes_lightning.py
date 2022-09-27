@@ -1,4 +1,5 @@
 from helper import (
+    addNum,
     getBackupName,
     getDeploymentName,
     getSecretName,
@@ -15,6 +16,15 @@ def lightning(config, cluster_types):
     base_name = config["env"] + "-lightning"
 
     def getResource(num=1):
+
+        gcs_log = " --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs " if config["loglevel"] == "debug" else ""
+        lightning_dir = "/lightning"
+        bucket = "sudonym-" + getBackupName(base_name, num)
+        
+        mount = f"""mkdir -p {lightning_dir}/{config["network"]} && 
+            echo $(gcsfuse --limit-ops-per-sec=1 {gcs_log} {bucket} {lightning_dir}/{config["network"]})"""
+        unmount = f"""fusermount -u {lightning_dir}/{config["network"]}"""            
+
         return [
             {
                 "type": "storage.v1.bucket",
@@ -65,14 +75,14 @@ def lightning(config, cluster_types):
                     "namespace": "default",
                     "metadata": {
                         "name": getServiceName(base_name, num),
-                        "labels": {"app": base_name},
+                        "labels": {"app": addNum(base_name, num)},
                     },
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": config["lightning"]["port"], "name": base_name},
+                            {"port": config["lightning"]["port"], "name": addNum(base_name, num)},
                         ],
-                        "selector": {"app": base_name},
+                        "selector": {"app": addNum(base_name, num)},
                     },
                 },
             },
@@ -92,14 +102,14 @@ def lightning(config, cluster_types):
                     "namespace": "default",
                     "metadata": {
                         "name": getDeploymentName(base_name, num),
-                        "labels": {"app": base_name},
+                        "labels": {"app": addNum(base_name, num)},
                     },
                     "spec": {
                         "strategy": {"type": "Recreate"},
                         "replicas": 1,
-                        "selector": {"matchLabels": {"app": base_name}},
+                        "selector": {"matchLabels": {"app": addNum(base_name, num)}},
                         "template": {
-                            "metadata": {"labels": {"app": base_name}},
+                            "metadata": {"labels": {"app": addNum(base_name, num)}},
                             "spec": {
                                 "containers": [
                                     {
@@ -108,60 +118,44 @@ def lightning(config, cluster_types):
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
                                         "lifecycle": {
-                                            # "postStart": {
-                                            #     "exec": {
-                                            #         "command": [
-                                            #             "sh",
-                                            #             "-c",
-                                            #         ]  # --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs
-                                            #     }
-                                            # },
                                             "preStop": {
                                                 "exec": {
                                                     "command": [
-                                                        "fusermount",
-                                                        "-u",
-                                                        "/lightning",
+                                                        unmount
                                                     ],
                                                 }
                                             },
                                         }
                                         if config["backup"]
                                         else {},
-                                        "name": base_name,
+                                        "name": addNum(base_name, num),
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-lightning",
-                                        "resources": {"requests": {"cpu": "40m"}},
+                                        "resources": {"requests": {"cpu": "30m"}},
                                         "command": [
                                             "/bin/sh",
                                             "-ec",
                                             (
-                                                "mkdir -p /lightning/"
-                                                + config["network"]
-                                                + " >/dev/null 2>&1 && echo $(gcsfuse --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs sudonym-development-lightning-backup /lightning/"
-                                                + config["network"]
-                                                + ") &&"
+                                                f"{mount} &&"
                                                 if config["backup"]
                                                 else ""
                                             )
                                             + " ./entrypoint.sh "
                                             + " ".join(
                                                 [
+                                                    "--alias=" + config["appName"] + addNum(("-" + config["env"]) if config["env"] != "production" else "", num),
                                                     "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
                                                     "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
                                                     "--bitcoin-rpcconnect="
                                                     + getServiceName(bitcoin_base_name),
-                                                    "--log-level=debug",
-                                                    "--lightning-dir=/lightning",
+                                                    "--log-level=" + config["loglevel"],
+                                                    "--lightning-dir=" + lightning_dir,
                                                     "--rpc-file=/rpc/lightning-rpc",
                                                     "--addr=0.0.0.0:"
                                                     + str(config["lightning"]["port"]),
                                                     "--experimental-offers",
                                                     "--network=" + config["network"],
-                                                    # "--wallet=sqlite3:///lightning/"
-                                                    # + config["network"]
-                                                    # + "/lightningd.sqlite3",
                                                     "--bitcoin-rpcport="
                                                     + str(config["bitcoin"]["rpcPort"]),
                                                 ]
@@ -211,7 +205,7 @@ def lightning(config, cluster_types):
                                                 "name": getVolumeClaimName(
                                                     base_name + "-backup", num
                                                 ),
-                                                "mountPath": "/lightning",
+                                                "mountPath": lightning_dir,
                                             },
                                         ],
                                     }

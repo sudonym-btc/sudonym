@@ -10,10 +10,9 @@ import { CurrencyService, MockCurrencyService } from './currency.service';
 	providers: [
 		{
 			provide: CurrencyService,
-			useClass:
-				getConfig().env == 'development'
-					? MockCurrencyService
-					: CurrencyService,
+			useClass: ['mock', 'development'].includes(getConfig().env)
+				? MockCurrencyService
+				: CurrencyService,
 		},
 	],
 	exports: [CurrencyService],

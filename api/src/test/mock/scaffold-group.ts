@@ -12,13 +12,19 @@ export const scaffoldGroup = (
 		const scaffold: mockScaffold = {} as any;
 
 		beforeAll(async () => {
-			scaffold.app = await createMockApp();
 		});
 
 		beforeEach(async () => {
+			scaffold.app = await createMockApp();
 			await scaffold.app.get('SEQUELIZE').truncate({ cascade: true });
 			scaffold.entities = await createMockEntities();
 		});
+
+		afterEach(async () => {
+			await scaffold.app.close();
+		})
+
+		
 
 		callback(scaffold);
 	});

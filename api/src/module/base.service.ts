@@ -9,6 +9,7 @@ import { Callback } from '../helper/callback';
 import { FindOptions, Op } from 'sequelize';
 import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from './base.model';
+import { Subject } from 'rxjs';
 
 type ModelType<T> = Constructor<T> & typeof BaseModel;
 
@@ -34,16 +35,20 @@ export interface TControllerAndService<TModel> {
 	}>;
 }
 export interface TBaseService<TModel> extends TControllerAndService<TModel> {
-	onAfterCreated: Callback<TModel>;
-	onAfterUpdated: Callback<TModel>;
+	afterCreate: Callback<TModel>;
+	onAfterCreated: Subject<TModel>;
+	afterUpdate: Callback<TModel>;
+	onAfterUpdated: Subject<TModel>;
 }
 
 export const BaseService = <TModel extends BaseModel>(
 	repository: ModelType<TModel>
 ): Constructor<TBaseService<TModel>> => {
 	class X {
-		onAfterCreated = new Callback<TModel>();
-		onAfterUpdated = new Callback<TModel>();
+		afterCreate = new Callback<TModel>();
+		onAfterCreated = new Subject<TModel>();
+		afterUpdate = new Callback<TModel>();
+		onAfterUpdated = new Subject<TModel>();
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
 
@@ -67,6 +72,7 @@ export const BaseService = <TModel extends BaseModel>(
 			const data = await this.repo
 				.scope(scopes as any)
 				.findAndCountAll(parseFindParams(params));
+
 			return {
 				data: data.rows,
 				metadata: {
@@ -80,16 +86,15 @@ export const BaseService = <TModel extends BaseModel>(
 				repository.scopes.edit ? repository.scopes.edit(req) : null,
 				repository.scopes.find ? repository.scopes.find(req) : null,
 			].filter((i) => !!i);
-
 			const record = await this.repo.scope(scopes as any).findByPk(id);
-
 			const obj = await record.set(params).save();
 
 			await this.eventsService.trigger(
 				new Event(this.repo.name.toLowerCase() + '.updated', obj)
 			);
 
-			await this.onAfterUpdated.execute(obj);
+			await this.afterUpdate.execute(obj);
+			await this.onAfterUpdated.next(obj);
 			return obj;
 		}
 
@@ -99,7 +104,8 @@ export const BaseService = <TModel extends BaseModel>(
 				new Event(this.repo.name.toLowerCase() + '.created', obj)
 			);
 
-			await this.onAfterCreated.execute(obj);
+			await this.afterCreate.execute(obj);
+			await this.onAfterCreated.next(obj);
 			return obj;
 		}
 	}
@@ -109,7 +115,7 @@ export const BaseService = <TModel extends BaseModel>(
 
 const parseFindParams = (params) => {
 	Object.keys(params).forEach((key) => {
-		if (['lt', 'gt', 'eq'].includes(key)) {
+		if (['lt', 'gt', 'eq', 'like'].includes(key)) {
 			params[Op[key]] = params[key];
 			delete params[key];
 			key = Op[key];

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/theme.dart';
+import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../buttons.dart';
@@ -22,11 +22,11 @@ class HotreloadWidgetbook extends StatelessWidget {
       themes: [
         WidgetbookTheme(
           name: 'Light',
-          data: themeData,
+          data: getTheme(),
         ),
         WidgetbookTheme(
           name: 'Dark',
-          data: themeData,
+          data: getTheme(light: false),
         ),
       ],
       appInfo: AppInfo(name: 'Example'),

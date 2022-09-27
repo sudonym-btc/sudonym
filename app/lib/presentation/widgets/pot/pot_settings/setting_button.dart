@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/constants.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class SettingButtons extends StatelessWidget {
   final icon1;
