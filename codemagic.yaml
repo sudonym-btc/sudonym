@@ -40,10 +40,9 @@ workflows:
           EOF    
       - |
         # set up local properties
-        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/app/android/local.properties"
-      - cat $CM_KEYSTORE_PATH
-      # - cd app && flutter packages pub get
-      # - cd app && flutter build appbundle --debug
+        echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/app/android/key.properties"
+      - cd app && flutter packages pub get
+      - cd app && flutter build appbundle --debug
     artifacts:
       - app/build/**/outputs/apk/**/*.apk
       - app/build/**/outputs/bundle/**/*.aab
