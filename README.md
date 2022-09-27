@@ -115,4 +115,7 @@ Get kubectl credentials for cluster
 If cannot validate ingress
 `kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission`
 
+Backups will be sent to cloud storage. Can become corrupted if a new pod starts
+up while another syncing.
+
 </details>

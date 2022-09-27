@@ -23,7 +23,7 @@
     "minikube:loadApi": "eval $(minikube docker-env) && (docker image inspect api:latest >/dev/null 2>&1 && echo no || docker build --target development -t api:latest -f api/Dockerfile .)",
     "minikube:removeApi": "minikube image rm api || true",
     "init:lightning": "bash infrastructure/minikube/init-lightning.sh",
-    "clearcloudcache": "gsutil rm -ra gs://sudonym-development-bitcoin-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup/** || true",
+    "clearcloudcache": "gsutil rm -ra gs://sudonym-development-bitcoin-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup-2/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup-3/** || true",
     "loadAndStart": "npm run minikube:dns && npm run minikube:deploy",
     "prepare": "husky install",
     "lint:fix": "eslint \"**/{src,apps,libs,test}/**/*.ts\" --fix",

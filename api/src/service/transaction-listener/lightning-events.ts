@@ -4,8 +4,7 @@ import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import { Subject } from 'rxjs';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
-import { Bolt11 } from '@sudonym/models';
-import { Bolt11Received } from '@sudonym/models/src/classes/bolt11';
+import { Bolt11Received } from '@sudonym/models';
 
 @Injectable()
 export class LightningEvents {
