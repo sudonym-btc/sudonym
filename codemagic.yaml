@@ -68,3 +68,4 @@ workflows:
         changeset:
           includes:
             - 'app/'
+            - 'models/'
