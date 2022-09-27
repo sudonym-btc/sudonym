@@ -41,7 +41,7 @@ workflows:
       - |
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/app/android/local.properties"
-      - echo $CM_KEY_PASSWORD
+      - cat $CM_BUILD_DIR/app/android/key.properties
       - cd app && flutter packages pub get
       - cd app && flutter build appbundle --debug
     artifacts:
