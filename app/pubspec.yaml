@@ -76,14 +76,14 @@ flutter:
   generate: true
   uses-material-design: true
 
-  fonts:
-    - family: Satoshi
-      fonts:
-        - asset: assets/fonts/Satoshi-Black.ttf
-        - asset: assets/fonts/Satoshi-BlackItalic.ttf
-          style: italic
-        - asset: assets/fonts/Satoshi-Bold.ttf
-          weight: 700
+  # fonts:
+  #   - family: Satoshi
+  #     fonts:
+  #       - asset: assets/fonts/Satoshi-Black.ttf
+  #       - asset: assets/fonts/Satoshi-BlackItalic.ttf
+  #         style: italic
+  #       - asset: assets/fonts/Satoshi-Bold.ttf
+  #         weight: 700
   assets:
     - assets/mastercardLogo.png
     - assets/visaLogo.png
