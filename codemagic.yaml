@@ -43,14 +43,13 @@ workflows:
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/app/android/key.properties"
       - cd app && flutter packages pub get
-      - cd app && flutter build appbundle --debug
+      - cd app && flutter build appbundle --release
       - name: Publish to GitHub
         script: | 
          #!/usr/bin/env zsh
-
          gh release create "${CM_BRANCH}-${CM_COMMIT}" \
            --title "sudonym ${CM_BRANCH}-${CM_COMMIT}" \
-          app/build/app/outputs/bundle/debug/app-debug.aab
+          app/build/app/outputs/bundle/release/app-release.aab
     artifacts:
       - app/build/**/outputs/apk/**/*.apk
       - app/build/**/outputs/bundle/**/*.aab
