@@ -8,6 +8,7 @@ workflows:
     environment:
       groups:
         - google_credentials
+        - github_credentials
       android_signing:
         - patrick
       flutter: stable
@@ -43,6 +44,16 @@ workflows:
         echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/app/android/key.properties"
       - cd app && flutter packages pub get
       - cd app && flutter build appbundle --debug
+      - name: Publish to GitHub
+        script: | 
+         #!/usr/bin/env zsh
+
+         gh release create "${CM_BRANCH}-${CM_COMMIT}" \
+           --title "sudonym ${CM_BRANCH}-${CM_COMMIT}" \
+          app/build/app/outputs/bundle/release/app-release.aab
+
+         # Note that you don't need to include title and changelog if you do not want to.
+         # Any number of artifacts can be included with the release.
     artifacts:
       - app/build/**/outputs/apk/**/*.apk
       - app/build/**/outputs/bundle/**/*.aab
