@@ -7,6 +7,11 @@ from helper import (
 )
 from kubernetes_cluster import cluster
 
+def getBitcoinChainName(name) :
+    if(name == "mainnet") : return "main"
+    if(name == "testnet") : return "test"
+    return name
+
 
 def bitcoin(config, cluster_types):
 
@@ -154,6 +159,7 @@ def bitcoin(config, cluster_types):
                                                     "-rest",
                                                     "-txindex",
                                                     "-datadir=/bitcoin/.bitcoin",
+                                                    "-chain=" + getBitcoinChainName(config["network"]),
                                                     "-port="
                                                     + str(config["bitcoin"]["port"]),
                                                     "-rpcuser=$(BITCOIN_RPC_USER)",
@@ -170,16 +176,6 @@ def bitcoin(config, cluster_types):
                                                     "-zmqpubrawblock=tcp://*:5555",
                                                     "-debug=" + ("1" if config["loglevel"] == "debug" else "0"),
                                                 ]
-                                                + (
-                                                    ["-regtest=1"]
-                                                    if config["network"] == "regtest"
-                                                    else []
-                                                )
-                                                + (
-                                                    ["-testnet=1"]
-                                                    if config["network"] == "testnet"
-                                                    else []
-                                                ),
                                             ),
                                         ],
                                         "env": [

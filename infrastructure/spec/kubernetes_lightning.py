@@ -9,11 +9,17 @@ from helper import (
 from kubernetes_cluster import cluster
 from kubernetes_bitcoin import bitcoin
 
+def getLightningChainName(name) :
+    if(name == "mainnet") : return "bitcoin"
+    return name
+
 
 def lightning(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
     base_name = config["env"] + "-lightning"
+
+    chain_name = getLightningChainName(config["network"])
 
     def getResource(num=1):
 
@@ -21,9 +27,9 @@ def lightning(config, cluster_types):
         lightning_dir = "/lightning"
         bucket = "sudonym-" + getBackupName(base_name, num)
         
-        mount = f"""mkdir -p {lightning_dir}/{config["network"]} && 
-            echo $(gcsfuse --limit-ops-per-sec=1 {gcs_log} {bucket} {lightning_dir}/{config["network"]})"""
-        unmount = f"""fusermount -u {lightning_dir}/{config["network"]}"""            
+        mount = f"""mkdir -p {lightning_dir}/{chain_name} && 
+            echo $(gcsfuse --limit-ops-per-sec=1 {gcs_log} {bucket} {lightning_dir}/{chain_name})"""
+        unmount = f"""fusermount -u {lightning_dir}/{chain_name}"""            
 
         return [
             {
@@ -155,7 +161,7 @@ def lightning(config, cluster_types):
                                                     "--addr=0.0.0.0:"
                                                     + str(config["lightning"]["port"]),
                                                     "--experimental-offers",
-                                                    "--network=" + config["network"],
+                                                    "--network=" + chain_name,
                                                     "--bitcoin-rpcport="
                                                     + str(config["bitcoin"]["rpcPort"]),
                                                 ]
