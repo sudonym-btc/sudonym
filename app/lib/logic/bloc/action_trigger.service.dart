@@ -19,6 +19,9 @@ class ActionTriggerService with ActionLogger {
     if (response.payment != null) {
       handlePayment(response.payment!, context, potId);
     }
+    if (response.withdraw != null) {
+      handleWithdraw(response.withdraw!, context, potId);
+    }
 
     return;
   }
@@ -33,6 +36,25 @@ class ActionTriggerService with ActionLogger {
       }
       return Navigator.pushNamed(c, '/confirmSend', arguments: p);
     }
+  }
+
+  handleWithdraw(Withdraw w, BuildContext c, [int? potId]) {
+    w.potId = potId;
+
+    if (w.remoteResponse.success) {
+      if (canChangeAmountWithdraw(w)) {
+        return Navigator.push(
+            c, MaterialPageRoute(builder: (context) => AmountPage(w)));
+      }
+      return Navigator.pushNamed(c, '/confirmWithdraw', arguments: w);
+    }
+  }
+
+  canChangeAmountWithdraw(Withdraw p) {
+    if (p.minAmount != p.maxAmount || p.amount == 0 || p.amount == null) {
+      return true;
+    }
+    return false;
   }
 
   canChangeAmount(Payment p) {

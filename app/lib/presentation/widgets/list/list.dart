@@ -5,7 +5,7 @@ import 'package:sudonym/logic/index.dart';
 
 class ListWidget extends StatefulWidget {
   final String? emptyText;
-  final ListCubit list;
+  final ListCubit Function() list;
   final Widget Function(dynamic el) builder;
   final Widget? appendItem;
 
@@ -23,15 +23,19 @@ class ListWidget extends StatefulWidget {
 
 class _ListWidgetState extends State<ListWidget> {
   final ScrollController controller = ScrollController();
+  late ListCubit c;
 
   @override
   void initState() {
+    c = widget.list();
     controller.addListener(() {
       if (controller.position.pixels >= controller.position.maxScrollExtent) {
-        widget.list.loadNext();
+        print("loading next due to scroll");
+        c.loadNext();
       }
     });
-    widget.list.loadNext();
+    print("loading next due to init");
+    c.loadNext();
     super.initState();
   }
 
@@ -44,7 +48,7 @@ class _ListWidgetState extends State<ListWidget> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => widget.list)],
+        providers: [BlocProvider(create: (_) => c)],
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {
             List<Widget> children =

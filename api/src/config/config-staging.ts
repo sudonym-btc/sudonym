@@ -1,5 +1,6 @@
 export const configStaging = {
-	network: "mainnet",
+	domain: 'staging.sudonym.app',
+	network: 'mainnet',
 	database: {
 		name: 'app',
 		dialect: 'sqlite',

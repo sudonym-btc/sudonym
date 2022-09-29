@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym.models/base-class.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 
@@ -12,9 +13,9 @@ class EntityCubitState<T> {
 }
 
 abstract class EntityCubit<
-    EntityRepo extends CrudRepository,
+    EntityRepo extends CrudRepository<EntityType>,
     StateType extends EntityCubitState,
-    EntityType extends BaseClass> extends Cubit<StateType> {
+    EntityType extends BaseClass> extends Cubit<StateType> with CubitLogger {
   EntityRepo repository = getIt<EntityRepo>();
   late Function stateClass;
   StreamSubscription? updater;
@@ -29,22 +30,25 @@ abstract class EntityCubit<
   listenChanges() {
     // Subscribe if not currently listening
     if (!shouldListen) return;
-    updater ??= repository.updated.stream.listen((event) {
-      if ((event as dynamic).id == (state.entity as dynamic).id) {
-        if (!isClosed) {
-          emit(stateClass(entity: event, loading: false));
+    // loggy.error("Listening to changes");
+    // loggy.error(state.entity);
+    if (updater == null) {
+      loggy.debug("Subscribing");
+      updater = repository.updated.stream.listen((event) {
+        if ((event as dynamic).id == (state.entity as dynamic).id) {
+          loggy.error(
+            "Current pot",
+          );
+          loggy.error(event.toJson());
+          set(event);
         }
-      }
-    });
+      });
+    }
   }
 
   fetch(dynamic id) async {
     emit(stateClass(entity: null, loading: true));
-    dynamic x = stateClass(entity: await repository.fetch(id), loading: false);
-    if (!isClosed) {
-      emit(x);
-      listenChanges();
-    }
+    set(await repository.fetch(id));
   }
 
   createOrUpdate(EntityType params) {
@@ -56,20 +60,12 @@ abstract class EntityCubit<
 
   create(EntityType params) async {
     emit(stateClass(entity: null, loading: true));
-    dynamic x = stateClass(
-        entity: await repository.create(params.toJson()), loading: false);
-    if (!isClosed) {
-      emit(x);
-    }
+    set(await repository.create(params.toJson()));
   }
 
   update(EntityType params) async {
     emit(stateClass(entity: null, loading: true));
-    dynamic x = stateClass(
-        entity: await repository.update(params.toJson()), loading: false);
-    if (!isClosed) {
-      emit(x);
-    }
+    set(await repository.update(params.toJson()));
   }
 
   set(EntityType entity) {

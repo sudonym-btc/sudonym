@@ -31,7 +31,9 @@ class ContactList extends StatelessWidget {
                     return ContactListItem(contact: state.entity);
                   });
             },
-            list: ListCubit(getIt<ContactRepository>()),
+            list: () {
+              return ListCubit(getIt<ContactRepository>());
+            },
             emptyText: (AppLocalizations.of(context)!.noContactsFound),
           ))
         ]);

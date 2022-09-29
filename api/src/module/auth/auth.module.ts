@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { firebaseAdminProviders } from 'service/firebase-admin/firebase-admin';
-import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
+@Global()
 @Module({
-	imports: [UserModule],
+	imports: [],
 	controllers: [AuthController],
 	providers: [...firebaseAdminProviders, AuthService],
-	exports: [...firebaseAdminProviders],
+	exports: [...firebaseAdminProviders, AuthService],
 })
 export class AuthModule {}

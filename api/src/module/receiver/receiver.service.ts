@@ -15,65 +15,66 @@ export class ReceiverService extends BaseService(Receiver) {
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 
-	async getInvoice(
-		query: ReceiveQuery
-	) {
-		const amountInBTC =
-			query.amountCurrency == 'BTC'
-				? query.amount
-				: (await this.currencyService.convert(query.amountCurrency, 'BTC', query.amount))
-					.amount;
-		const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
+	async getInvoice(query: ReceiveQuery) {
+		return this.create(query);
+	}
 
-		if (query.type != 'bolt11' && query.type != 'lnurl') {
-			const exists = await Receiver.findOne({
-				where: {
-					potId: query.potId,
-					type: query.type,
-					amount: query.amount,
-					amountCurrency: query.amountCurrency,
-				},
-			});
-			if (exists) return exists;
-		}
-		let params: any = {};
+	async onModuleInit() {
+		super.onModuleInit();
 
-		switch (query.type) {
-			case 'bolt11':
-				params.data = (
-					await this.lightningNodeService.createInvoice(
+		this.beforeCreate.hook(async (params) => {
+			const amountInBTC =
+				params.amountCurrency == 'BTC'
+					? params.amount
+					: (
+							await this.currencyService.convert(
+								params.amountCurrency,
+								'BTC',
+								params.amount
+							)
+					  ).amount;
+			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
+			if (params.type != 'bolt11' && params.type != 'lnurl') {
+				const exists = await Receiver.findOne({
+					where: {
+						potId: params.potId,
+						type: params.type,
+						amount: params.amount,
+						amountCurrency: params.amountCurrency,
+					},
+				});
+				if (exists) return exists;
+			}
+			switch (params.type) {
+				case 'bolt11':
+					params.data = (
+						await this.lightningNodeService.createInvoice(
+							mSatoshiAmount
+						)
+					).bolt11;
+					break;
+				case 'bolt12':
+					params.data = (
+						await this.lightningNodeService.createOffer(
+							mSatoshiAmount
+						)
+					).bolt12;
+					break;
+				case 'lnurl':
+					const tag = await this.lnUrlService.createPayRequest(
 						mSatoshiAmount
-					)
-				).bolt11;
-				break;
-			case 'bolt12':
-				params.data = (
-					await this.lightningNodeService.createOffer(mSatoshiAmount)
-				).bolt12;
-				break;
-			case 'lnurl':
-				const tag = await this.lnUrlService.createPayRequest(
-					query.potId,
-					mSatoshiAmount
-				);
-				params.data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);
-				params.lnurlId = tag.id;
-				break;
-			case 'onchain':
-				params.data = (
-					await this.lightningNodeService.generateOnChainAddress()
-				).address;
-				break;
-		}
-
-		const receiver = await Receiver.create({
-			potId: query.potId,
-			amount: Number(amountInBTC),
-			currency: 'BTC',
-			type: query.type,
-			...params,
+					);
+					params.data = lnurl.encode(
+						getConfig().selfUrl + '/lnurl/' + tag.id
+					);
+					params.lnurlId = tag.id;
+					break;
+				case 'onchain':
+					params.data = (
+						await this.lightningNodeService.generateOnChainAddress()
+					).address;
+					break;
+			}
 		});
-
-		return receiver;
 	}
 }

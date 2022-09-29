@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym.models/base-class.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 
-class CubitWrapper<C extends EntityCubit, T extends BaseClass>
-    extends StatelessWidget {
+class CubitWrapper<
+    C extends EntityCubit<CrudRepository<T>, EntityCubitState<T>, T>,
+    T extends BaseClass> extends StatelessWidget {
   final T entity;
   final bool fetch;
   final Function builder;

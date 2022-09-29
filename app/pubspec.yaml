@@ -62,6 +62,7 @@ dev_dependencies:
   firebase_auth_mocks: ^0.8.4
   google_sign_in_mocks: ^0.2.1
   widgetbook: ^2.3.0
+  icons_launcher: ^2.0.5
   injectable_generator:
   # add build runner if not already added
   build_runner:
@@ -87,4 +88,11 @@ flutter:
   assets:
     - assets/mastercardLogo.png
     - assets/visaLogo.png
-    - assets/avatar.png
+
+icons_launcher:
+  image_path: 'assets/logo.png'
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true

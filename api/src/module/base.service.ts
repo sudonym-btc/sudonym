@@ -3,7 +3,7 @@ import {
 	Constructor,
 	RecursivePartial,
 } from 'sequelize-typescript/dist/shared/types';
-import { EventsService } from './events/events.service';
+import { EventsService, TriggeredEvent } from './events/events.service';
 import { Event } from '@sudonym/models';
 import { Callback } from '../helper/callback';
 import { FindOptions, Op } from 'sequelize';
@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 type ModelType<T> = Constructor<T> & typeof BaseModel;
 
 export interface TControllerAndService<TModel> {
+	onModuleInit(): Promise<any>;
 	findOne(id, req?: RequestType): Promise<TModel>;
 	create(
 		params: RecursivePartial<TModel>,
@@ -35,31 +36,40 @@ export interface TControllerAndService<TModel> {
 	}>;
 }
 export interface TBaseService<TModel> extends TControllerAndService<TModel> {
+	beforeCreate: Callback<TModel>;
 	afterCreate: Callback<TModel>;
 	onAfterCreated: Subject<TModel>;
+	beforeUpdate: Callback<TModel>;
 	afterUpdate: Callback<TModel>;
 	onAfterUpdated: Subject<TModel>;
+	getUserIds: (id: number | string, scope?: string) => Promise<string[]>;
 }
 
 export const BaseService = <TModel extends BaseModel>(
 	repository: ModelType<TModel>
 ): Constructor<TBaseService<TModel>> => {
 	class X {
+		beforeCreate = new Callback<TModel>();
 		afterCreate = new Callback<TModel>();
 		onAfterCreated = new Subject<TModel>();
+		beforeUpdate = new Callback<TModel>();
 		afterUpdate = new Callback<TModel>();
 		onAfterUpdated = new Subject<TModel>();
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
 
-		async findOne(id: string | number, req: RequestType) {
+		async onModuleInit() {}
+
+		async findOne(id: string | number | FindOptions, req: RequestType) {
 			return (
 				await this.list(
-					{
-						where: {
-							id: id as any,
-						},
-					},
+					typeof id == 'object'
+						? id
+						: {
+								where: {
+									id: id as any,
+								},
+						  },
 					req
 				)
 			).data[0];
@@ -81,6 +91,15 @@ export const BaseService = <TModel extends BaseModel>(
 			};
 		}
 
+		async getUserIds(id: string | number, scope = 'find') {
+			if (repository.accessors.canFind) {
+				const query = await repository.accessors.canFind(id);
+				const ids = query.map((i: any) => i.id) as string[];
+				return ids;
+			}
+			return [];
+		}
+
 		async update(id, params, req: RequestType) {
 			const scopes = [
 				repository.scopes.edit ? repository.scopes.edit(req) : null,
@@ -89,23 +108,33 @@ export const BaseService = <TModel extends BaseModel>(
 			const record = await this.repo.scope(scopes as any).findByPk(id);
 			const obj = await record.set(params).save();
 
-			await this.eventsService.trigger(
-				new Event(this.repo.name.toLowerCase() + '.updated', obj)
-			);
-
 			await this.afterUpdate.execute(obj);
 			await this.onAfterUpdated.next(obj);
+
+			await this.eventsService.trigger(
+				new TriggeredEvent(
+					new Event(this.repo.name.toLowerCase() + '.updated', obj),
+					await this.getUserIds(obj.id)
+				)
+			);
+
 			return obj;
 		}
 
 		async create(params, req: RequestType) {
+			await this.beforeCreate.execute(params);
 			const obj = await this.repo.create(params);
-			await this.eventsService.trigger(
-				new Event(this.repo.name.toLowerCase() + '.created', obj)
-			);
 
 			await this.afterCreate.execute(obj);
 			await this.onAfterCreated.next(obj);
+
+			await this.eventsService.trigger(
+				new TriggeredEvent(
+					new Event(this.repo.name.toLowerCase() + '.created', obj),
+					await this.getUserIds(obj.id)
+				)
+			);
+
 			return obj;
 		}
 	}

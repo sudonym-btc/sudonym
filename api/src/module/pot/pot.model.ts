@@ -18,6 +18,9 @@ import { PotUser } from '../pot-user/pot-user.model';
 import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from '../base.model';
 import { requestContextCls } from 'helper/context-request';
+import { User } from 'module/user/user.model';
+import { Transaction } from 'module/transaction/transaction.model';
+const { Op } = require('sequelize');
 
 @Table({
 	scopes: Pot.scopes,
@@ -47,12 +50,26 @@ export class Pot extends BaseModel implements Models.Pot {
 	@HasMany(() => PotUser)
 	PotUsers: PotUser[];
 
+	@HasMany(() => Transaction)
+	Transactions: Transaction[];
+
 	@AfterCreate
 	static addPotUser = async (rec) => {
 		await PotUser.create({
 			potId: rec.id,
 			userId: requestContextCls.get('request')?.auth.uid,
 		});
+	};
+
+	static accessors = {
+		canFind: (id) =>
+			PotUser.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				where: {
+					potId: id,
+				},
+			}),
 	};
 
 	static scopes = {

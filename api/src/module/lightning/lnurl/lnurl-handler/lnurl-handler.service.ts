@@ -15,34 +15,22 @@ export class LnUrlHandlerService {
 
 	async handle(id, query) {
 		const tag = await this.lnUrlService.findOne(id);
-		console.log(tag);
-		switch (tag.tag) {
+		switch (tag.params.tag) {
 			case 'payRequest':
-
-				let parentId;
-
-				try {
-					parentId = (await this.receiveService.findOne(
-						{
-							where: {
-								lnurlId: tag.id
-							}
-						}
-					)).id;
-				} catch (e) {
-
-				}
+				let parentReceiver = await this.receiveService.findOne({
+					where: {
+						lnurlId: tag.id,
+					},
+				});
 
 				// Create a new receiver, this time bolt11 not lnurl
-				const receiver = await this.receiveService.getInvoice(
-					{
-						parentId,
-						potId: tag.potId,
-						type: 'bolt11',
-						amount: query.amount / MSATOSHIS,
-						amountCurrency: "BTC"
-					}
-				);
+				const receiver = await this.receiveService.getInvoice({
+					parentId: parentReceiver.id,
+					potId: parentReceiver.potId,
+					type: 'bolt11',
+					amount: query.amount / MSATOSHIS,
+					amountCurrency: 'BTC',
+				});
 				return {
 					pr: receiver.data,
 					routes: [],
@@ -60,12 +48,10 @@ export class LnUrlHandlerService {
 					txid: query.pr,
 					type: getAddressType(query.pr),
 					amount: parseInt(parsed.millisatoshis) / MSATOSHIS,
-					currencyCode: "BTC",
+					currencyCode: 'BTC',
 				});
-
 		}
 
-		throw new HttpException("Unhandleable lnurl request", 400);
-
+		throw new HttpException('Unhandleable lnurl request', 400);
 	}
 }

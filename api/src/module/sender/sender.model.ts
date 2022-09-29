@@ -13,12 +13,12 @@ import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from 'module/pot/pot.model';
+import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
 
 @Table({
 	scopes: Sender.scopes,
 })
 export class Sender extends BaseModel implements Models.Sender {
-
 	@PrimaryKey
 	@AutoIncrement
 	@Column
@@ -31,13 +31,17 @@ export class Sender extends BaseModel implements Models.Sender {
 	@Column
 	potId: number;
 
+	@ForeignKey(() => LnUrl)
+	@Column
+	lnurlId: string;
+
 	@Column
 	data: string;
 
 	@Column(DataType.DOUBLE(18, 8))
 	amount: number;
 
-	@Default("BTC")
+	@Default('BTC')
 	@Column
 	amountCurrency: CurrencyCode;
 

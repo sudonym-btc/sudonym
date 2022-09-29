@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:sudonym/config/config.dart';
@@ -54,6 +53,13 @@ class SettingsPage extends StatelessWidget {
             const Expanded(
                 child: const Padding(
                     padding: EdgeInsets.all(padding), child: BoltCardList())),
+            Button(
+              text: "Logout",
+              onPressed: (() async {
+                await getIt<AuthCubit>().logout();
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }),
+            )
           ]),
         )));
   }

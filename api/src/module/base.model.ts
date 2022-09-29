@@ -7,6 +7,11 @@ export class BaseModel extends Model {
 		[key: string]: (req: RequestType) => FindOptions;
 	} = {};
 
+	static accessors: {
+		canFind?: any;
+		canEdit?: any;
+	} = {};
+
 	toJson(): any {
 		return super.toJSON();
 	}

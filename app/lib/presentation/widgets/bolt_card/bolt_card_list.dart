@@ -26,7 +26,9 @@ class BoltCardList extends StatelessWidget {
                   builder: (el) {
                     return BoltCardListItem(entity: el);
                   },
-                  list: ListCubit(getIt<BoltCardRepository>()),
+                  list: () {
+                    return ListCubit(getIt<BoltCardRepository>());
+                  },
                   appendItem: Button(
                       text: 'Add Card',
                       onPressed: () => {

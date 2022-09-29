@@ -10,19 +10,22 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => getIt<AuthCubit>())],
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            // Render application if authenticated
-            if (state is LoadedState && state.user != null) {
-              return MultiBlocProvider(providers: [
-                BlocProvider(create: (_) => getIt<TransactionListenerCubit>())
-              ], child: _LoggedInWidget());
-            }
-            return const SigninPage();
-          },
-        ));
+    return BlocProvider(
+      create: (_) => getIt<AuthCubit>(),
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, state) {
+          // Render application if authenticated
+          if (state is LoadedState && state.user != null) {
+            return MultiBlocProvider(providers: [
+              BlocProvider(create: (_) => getIt<TransactionListenerCubit>())
+            ], child: _LoggedInWidget());
+          } else if (state.firebaseUser != null) {
+            return const SplashPage();
+          }
+          return const SigninPage();
+        },
+      ),
+    );
   }
 }
 

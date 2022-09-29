@@ -24,7 +24,7 @@ def lightning(config, cluster_types):
     def getResource(num=1):
 
         gcs_log = " --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs " if config["loglevel"] == "debug" else ""
-        lightning_dir = "/lightning"
+        lightning_dir = "root/.lightning"
         bucket = "sudonym-" + getBackupName(base_name, num)
         
         mount = f"""mkdir -p {lightning_dir}/{chain_name} && 
