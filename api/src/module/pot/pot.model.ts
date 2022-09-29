@@ -11,6 +11,7 @@ import {
 	Default,
 	NotNull,
 	AllowNull,
+	DataType,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
@@ -36,12 +37,12 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	@AllowNull(false)
 	@Default(0)
-	@Column
+	@Column(DataType.DOUBLE(18, 8))
 	balance: number;
 
 	@AllowNull(false)
 	@Default(0)
-	@Column
+	@Column(DataType.DOUBLE(18, 8))
 	spendableBalance: number;
 
 	@Column

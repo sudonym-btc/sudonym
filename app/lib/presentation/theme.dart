@@ -7,9 +7,6 @@ ThemeData getTheme({bool light = true}) {
   Color textColor = light ? Colors.black : Colors.white;
   Color backgroundColor = light ? Colors.white : Colors.black;
 
-  print("LIGHT");
-  print(light.toString());
-
   return theme.copyWith(
       tabBarTheme: TabBarTheme(
         labelColor: textColor,

@@ -82,13 +82,6 @@ export class ActionService {
 					});
 				case 'lightningaddress':
 				case 'lnurl':
-					console.log(action.remoteResponse);
-					console.log(
-						await this.getCallback(
-							action.remoteResponse.data.callback,
-							{ amount: mSatoshiAmount }
-						)
-					);
 					return Action.from({
 						...action,
 						address: (
@@ -119,6 +112,7 @@ export class ActionService {
 			});
 		} else if (action instanceof Withdraw) {
 			this.logger.warn('Withdrawing', action);
+
 			const receiver = await this.receiverService.create({
 				potId: action.potId,
 				amountCurrency: 'BTC',
@@ -145,7 +139,6 @@ export class ActionService {
 	}
 
 	async getCallback(callback, params) {
-		console.log(callback);
 		const u = new URL(callback);
 		for (const key in params) {
 			u.searchParams.append(key, params[key]);

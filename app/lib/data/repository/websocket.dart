@@ -37,7 +37,6 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
     loggy.info('Connecting websocket to $url');
 
     String bearer = await FirebaseAuth.instance.currentUser!.getIdToken();
-    loggy.info(bearer);
     channel =
         IOWebSocketChannel.connect(url, headers: {'x-access-token': bearer});
 

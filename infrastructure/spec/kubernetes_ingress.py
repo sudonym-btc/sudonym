@@ -267,9 +267,9 @@ def ingress(config, cluster_types):
                                                 "backend": {
                                                     "service": {
                                                         "name": getServiceName(
-                                                            db_base_name
+                                                            db_base_name + '-phpmyadmin'
                                                         ),
-                                                        "port": {"number": 3306},
+                                                        "port": {"number": 80},
                                                     }
                                                 },
                                             }

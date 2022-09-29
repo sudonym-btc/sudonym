@@ -34,7 +34,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	broadcastToClients(uids, e: Event) {
 		this.logger.log('Emitting ' + e.name + ' to ' + uids.join(', '));
-		console.log(uids, this.users);
 		for (const uid of uids) {
 			for (const sock of this.users[uid] || []) {
 				sock.send(JSON.stringify(e));

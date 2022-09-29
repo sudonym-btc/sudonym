@@ -45,16 +45,16 @@ export class BitcoinListener extends TransactionListener {
 	listenOutgoing() {
 		this.transactionService.onAfterCreated.subscribe(
 			async (transaction) => {
-				this.logger.log(
-					'Bitcoin outgoing: ',
-					transaction.get({ plain: true })
-				);
 				if (
 					transaction.outgoing &&
 					['onchain'].includes(transaction.type)
 				) {
 					// Attempt to trigger payment
 					(async () => {
+						this.logger.log(
+							'Bitcoin outgoing: ',
+							transaction.get({ plain: true })
+						);
 						try {
 							const btcAmount =
 								await this.currencyService.convert(
