@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class TransactionListItem extends StatelessWidget {

@@ -5,7 +5,7 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
-class CustomForm<Repo extends CrudRepository, T extends BaseClass>
+class CustomForm<Repo extends CrudRepository<T>, T extends BaseClass>
     extends StatefulWidget {
   final T entity;
   final EntityCubit<Repo, EntityCubitState<T>, T> cubit;

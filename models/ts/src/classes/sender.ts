@@ -4,6 +4,7 @@ export class Sender extends BaseClass {
 	constructor(
 		public id: number | null,
 		public potId: number | null,
+		public lnurlId: string | null,
 		public type: string | null,
 		public amount: number | null,
 		public amountCurrency: string | null,
@@ -22,6 +23,7 @@ export class Sender extends BaseClass {
 		return new Sender(
 			json['id'],
 			json['potId'],
+			json['lnurlId'],
 			json['type'],
 			json['amount'],
 			json['amountCurrency'],
@@ -39,6 +41,7 @@ export class Sender extends BaseClass {
 		return {
 			id: this.id,
 			potId: this.potId,
+			lnurlId: this.lnurlId,
 			type: this.type,
 			amount: this.amount,
 			amountCurrency: this.amountCurrency,

@@ -71,7 +71,7 @@ def ride_the_lightning(config, cluster_types):
         "enableOffers": true
       },
       "enableOffers": true
-    }
+    },
     {
       "index": 3,
       "lnNode": "Node 3",

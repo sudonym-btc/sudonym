@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PotService } from 'module/pot/pot.service';
 import { Transaction } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
@@ -15,6 +15,7 @@ export class BalanceUpdaterService {
 	@Inject(PotService) potService: PotService;
 	@Inject(TransactionService) transactionService: TransactionService;
 	@Inject(FIREBASE_ADMIN) firebaseAdmin: T_FIREBASE_ADMIN;
+	private readonly logger = new Logger(this.constructor.name);
 
 	onModuleInit() {
 		this.transactionService.afterCreate.hook(async (t) => {
@@ -38,6 +39,19 @@ export class BalanceUpdaterService {
 					newSpendableBalance += amountInPotCurrency;
 				}
 			}
+
+			this.logger.log(
+				`Updating balance for pot ${pot.id} ${pot.name} from `,
+				{
+					balance: pot.balance,
+					spendableBalance: pot.spendableBalance,
+				},
+				`to`,
+				{
+					balance: newBalance,
+					spendableBalance: newSpendableBalance,
+				}
+			);
 
 			await this.potService.update(pot.id, {
 				balance: newBalance,
@@ -103,10 +117,10 @@ export class BalanceUpdaterService {
 			.send(message)
 			.then((response) => {
 				// Response is a message ID string.
-				console.log('Successfully sent message:', response);
+				this.logger.debug('Successfully sent message:', response);
 			})
 			.catch((error) => {
-				console.log('Error sending message:', error);
+				this.logger.debug('Error sending message:', error);
 			});
 	}
 }

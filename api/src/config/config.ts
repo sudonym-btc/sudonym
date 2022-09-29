@@ -24,9 +24,8 @@ export const getConfig = () => {
 export const config = {
 	env,
 	network: 'regtest',
-	selfUrl: cmdargs.selfUrl
-		? cmdargs.selfUrl
-		: 'https://api.' + getConfig().domain,
+	domain: 'sudonym.app',
+	selfUrl: 'https://api.' + getConfig().domain,
 	lightningREST: cmdargs.lightning
 		? cmdargs.lightning
 		: 'http://' +

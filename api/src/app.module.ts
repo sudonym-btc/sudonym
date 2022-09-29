@@ -27,7 +27,6 @@ import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 		DatabaseModule,
 		CurrencyModule,
 		LightningModule,
-		LnUrlModule,
 		EventsModule,
 		AuthModule,
 		UserModule,

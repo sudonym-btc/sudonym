@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/payment.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym/presentation/pages/withdraw_confirm.dart';
 
 class AmountPage extends StatefulWidget with AmountLogger {
-  final dynamic payment;
+  final dynamic action;
 
-  const AmountPage(this.payment, {Key? key}) : super(key: key);
+  const AmountPage(this.action, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,8 +23,8 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
   @override
   Widget build(BuildContext context) {
     CurrencyInput currencyInput = CurrencyInput(onChanged: (val) {
-      widget.payment.amount = val.amount;
-      widget.payment.currency = val.currency;
+      widget.action.amount = val.amount;
+      widget.action.currency = val.currency;
     });
 
     return Container(
@@ -45,8 +48,17 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                           icon: const FaIcon(FontAwesomeIcons.paperPlane,
                               size: 14),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/confirmSend',
-                                arguments: widget.payment);
+                            if (widget.action is Payment) {
+                              Navigator.pushNamed(context, '/confirmSend',
+                                  arguments: widget.action);
+                            }
+                            if (widget.action is Withdraw) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          WithdrawConfirm(widget.action)));
+                            }
                           },
                         )
                       ])

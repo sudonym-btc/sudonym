@@ -55,7 +55,7 @@ config = {
         "env": "development",
         "domain": "local.development",
         "network": "regtest",
-        "backup": True,
+        "backup": False,
     }
 }
 

@@ -1,5 +1,6 @@
 export const configProduction = {
-	network: "mainnet",
+	domain: 'sudonym.app',
+	network: 'mainnet',
 	database: {
 		name: 'app',
 		dialect: 'sqlite',

@@ -1,14 +1,25 @@
-import { Controller, Get, HttpException, Inject, Param, Query } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	HttpException,
+	Inject,
+	Param,
+	Query,
+} from '@nestjs/common';
 import { Op, Sequelize } from 'sequelize';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { Pot } from 'module/pot/pot.model';
 import { User } from 'module/user/user.model';
 
-import { LnUrlService } from './lnurl.service';
+import { LnUrlService } from '../lnurl.service';
+import { ReceiverService } from 'module/receiver/receiver.service';
+import { PotService } from 'module/pot/pot.service';
 
 @Controller('')
 export class LightningAddressController {
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
+	@Inject(PotService) potService: PotService;
+	@Inject(ReceiverService) receiverService: ReceiverService;
 
 	@Get('.well-known/lnurlp/:user')
 	async lightningAddress(@Param('user') lightningAddress) {
@@ -25,7 +36,10 @@ export class LightningAddressController {
 		});
 
 		if (!user) {
-			throw new HttpException({ "status": "ERROR", "reason": "User does not exist" }, 400);
+			throw new HttpException(
+				{ status: 'ERROR', reason: 'User does not exist' },
+				400
+			);
 		}
 
 		let potName = null;
@@ -35,29 +49,13 @@ export class LightningAddressController {
 				lightningAddress.length
 			);
 		}
-		const pot = await Pot.findOne({
-			where: {
-				id: {
-					[Op.in]: (
-						await PotUser.findAll({
-							where: {
-								userId: user.id,
-							},
-						})
-					).map((i) => i.potId),
-				},
-			},
-			order: potName
-				? [
-					[
-						Sequelize.literal(`
-                name="${potName}"`),
-						'DESC',
-					],
-				]
-				: [],
+
+		const pot = await this.potService.findForUser(user.id, null, potName);
+		const receiver = await this.receiverService.create({
+			potId: pot.id,
+			type: 'lnurl',
 		});
 
-		return (await this.lnUrlService.createPayRequest(pot.id)).params;
+		return (await this.lnUrlService.findOne(receiver.lnurlId)).params;
 	}
 }

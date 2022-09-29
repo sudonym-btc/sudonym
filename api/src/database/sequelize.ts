@@ -25,7 +25,7 @@ Sequelize.useCLS(sequelizeCls);
 
 export const sequelize = new Sequelize({
 	...getConfig().database,
-	logging: (e) => logger.verbose(e),
+	// logging: (e) => logger.verbose(e),
 	models: [
 		Pot,
 		PotUser,

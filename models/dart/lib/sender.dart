@@ -3,6 +3,7 @@ import "base-class.dart" show BaseClass;
 class Sender extends BaseClass {
   dynamic /* num | null */ id;
   dynamic /* num | null */ potId;
+  dynamic /* String | null */ lnurlId;
   dynamic /* String | null */ type;
   dynamic /* num | null */ amount;
   dynamic /* String | null */ amountCurrency;
@@ -16,6 +17,7 @@ class Sender extends BaseClass {
   Sender(
       this.id,
       this.potId,
+      this.lnurlId,
       this.type,
       this.amount,
       this.amountCurrency,
@@ -33,6 +35,7 @@ class Sender extends BaseClass {
     return new Sender(
         json["id"],
         json["potId"],
+        json["lnurlId"],
         json["type"],
         json["amount"],
         json["amountCurrency"],
@@ -49,6 +52,7 @@ class Sender extends BaseClass {
     return {
       "id": this.id,
       "potId": this.potId,
+      "lnurlId": this.lnurlId,
       "type": this.type,
       "amount": this.amount,
       "amountCurrency": this.amountCurrency,

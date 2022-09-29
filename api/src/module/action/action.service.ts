@@ -18,17 +18,22 @@ import {
 } from './address-parser/address-parser';
 import { fetchHttpOpts } from './address-parser/http-agent';
 import fetch from 'node-fetch';
+import { ReceiverService } from 'module/receiver/receiver.service';
+import { Receiver } from 'module/receiver/receiver.model';
 
 @Injectable()
 export class ActionService {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(TransactionService) transactionService: TransactionService;
+	@Inject(ReceiverService) receiverService: ReceiverService;
 	@Inject(AddressParser) addressParser: AddressParser;
 	private readonly logger = new Logger(ActionService.name);
 
 	async parse(invoice): Promise<ActionParseResponse> {
-		return ActionParseResponse.from(await this.addressParser.parse(invoice));
+		return ActionParseResponse.from(
+			await this.addressParser.parse(invoice)
+		);
 	}
 
 	async getInfo(action: Payment | Withdraw): Promise<Action> {
@@ -40,12 +45,12 @@ export class ActionService {
 				action.currency == 'BTC'
 					? action.amount
 					: (
-						await this.currencyService.convert(
-							action.currency,
-							'BTC',
-							action.amount
-						)
-					).amount;
+							await this.currencyService.convert(
+								action.currency,
+								'BTC',
+								action.amount
+							)
+					  ).amount;
 			const mSatoshiAmount = Math.round(btcAmount * MSATOSHIS);
 
 			switch (t) {
@@ -77,11 +82,6 @@ export class ActionService {
 					});
 				case 'lightningaddress':
 				case 'lnurl':
-					console.log(action.remoteResponse);
-					console.log(await this.getCallback(
-						action.remoteResponse.data.callback,
-						{ amount: mSatoshiAmount }
-					));
 					return Action.from({
 						...action,
 						address: (
@@ -99,7 +99,7 @@ export class ActionService {
 		}
 	}
 
-	async execute(action: Action): Promise<Transaction> {
+	async execute(action: Action): Promise<Transaction | Receiver> {
 		if (action instanceof Payment) {
 			return this.transactionService.create({
 				originalAddress: action.originalAddress,
@@ -112,20 +112,39 @@ export class ActionService {
 			});
 		} else if (action instanceof Withdraw) {
 			this.logger.warn('Withdrawing', action);
+
+			const receiver = await this.receiverService.create({
+				potId: action.potId,
+				amountCurrency: 'BTC',
+				amount: (
+					await this.currencyService.convert(
+						action.currency,
+						'BTC',
+						action.amount
+					)
+				).amount,
+				type: 'bolt11',
+			});
+
+			const response = this.getCallback(
+				action.remoteResponse.data.callback,
+				{
+					k1: action.remoteResponse.data.k1,
+					pr: receiver.data,
+				}
+			);
+
+			return receiver;
 		}
 	}
 
 	async getCallback(callback, params) {
-		console.log(callback);
 		const u = new URL(callback);
 		for (const key in params) {
 			u.searchParams.append(key, params[key]);
 		}
-		this.logger.debug("Getting callback ", u.toString());
-		return fetch(
-			u,
-			fetchHttpOpts
-		).then((r) => r.json());
+		this.logger.debug('Getting callback ', u.toString());
+		return fetch(u, fetchHttpOpts).then((r) => r.json());
 	}
 }
 

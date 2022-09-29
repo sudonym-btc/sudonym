@@ -14,4 +14,7 @@ class MockWebsocket extends Websocket {
 
   @override
   connect() {}
+
+  @override
+  disconnect() {}
 }

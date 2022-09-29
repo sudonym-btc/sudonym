@@ -18,26 +18,30 @@ export class SenderService extends BaseService(Sender) {
 		const amountInBTC =
 			params.amountCurrency == 'BTC'
 				? params.amount
-				: (await this.currencyService.convert(params.amountCurrency, 'BTC', params.amount))
-					.amount;
+				: (
+						await this.currencyService.convert(
+							params.amountCurrency,
+							'BTC',
+							params.amount
+						)
+				  ).amount;
 		const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
-		let data;
+		params.amount = Number(amountInBTC);
+
 		switch (params.type) {
 			case 'lnurl':
 				const tag = await this.lnUrlService.createWithdrawRequest(
-					params.potId,
 					mSatoshiAmount
 				);
-				data = lnurl.encode(getConfig().selfUrl + '/lnurl/' + tag.id);
+				params.data = lnurl.encode(
+					getConfig().selfUrl + '/lnurl/' + tag.id
+				);
+				params.lnurlId = tag.id;
 				break;
 		}
 
-		const sender = await super.create({
-			...params,
-			amount: Number(amountInBTC),
-			data,
-		});
+		const sender = await super.create(params, req);
 
 		return sender;
 	}
