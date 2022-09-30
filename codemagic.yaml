@@ -77,4 +77,4 @@ workflows:
       - *localproperties
       - *getpackages
       - 'flutter build appbundle -t lib/main-test.dart --release'
-      - *ghpublish
+      - *ghrelease
