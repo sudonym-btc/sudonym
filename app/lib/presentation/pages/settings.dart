@@ -41,7 +41,7 @@ class SettingsPage extends StatelessWidget {
                                     .lightningAddress,
                                 suffixText: '@${getIt<Config>().domain}'),
                             validator: (value) {
-                              if (value!.isEmpty) {
+                              if (value != null && value!.isEmpty) {
                                 return 'Please enter some text';
                               }
                               return null;

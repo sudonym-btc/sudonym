@@ -19,8 +19,13 @@ abstract class MockCrudRepository<T extends BaseClass>
     availableData = Mockdata.getData<T>(endpoint);
   }
 
+  beforeCreate(dynamic entity) {
+    return entity;
+  }
+
   @override
   Future<T> create(dynamic entity) async {
+    beforeCreate(entity);
     T newEntity = converter(entity);
     var sorted = availableData.map((dynamic e) => e.id).toList();
     sorted.sort();

@@ -2,7 +2,6 @@ export 'button/button.dart';
 export 'form/form.dart';
 export 'input/button/button_bar.dart';
 export 'input/currency/currency_input.dart';
-export 'nfc/nfc.dart';
 export 'notifications/base_notification.dart';
 export 'notifications/error_notification.dart';
 export 'notifications/paste_notification.dart';

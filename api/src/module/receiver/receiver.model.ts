@@ -49,6 +49,10 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column
 	amountCurrency: CurrencyCode;
 
+	@Default(0)
+	@Column
+	received: number;
+
 	@CreatedAt
 	@Column
 	createdAt: Date;

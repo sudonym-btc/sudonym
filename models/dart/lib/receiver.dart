@@ -1,7 +1,7 @@
 import "base-class.dart" show BaseClass;
 
 class Receiver extends BaseClass {
-  num id;
+  dynamic /* num | null */ id;
   dynamic /* num | null */ parentId;
   num potId;
   String type;
@@ -9,9 +9,19 @@ class Receiver extends BaseClass {
   String amountCurrency;
   String data;
   dynamic /* String | null */ lnurlId;
+  dynamic /* num | null */ received;
   DateTime createdAt;
-  Receiver(this.id, this.parentId, this.potId, this.type, this.amount,
-      this.amountCurrency, this.data, this.lnurlId, this.createdAt)
+  Receiver(
+      this.id,
+      this.parentId,
+      this.potId,
+      this.type,
+      this.amount,
+      this.amountCurrency,
+      this.data,
+      this.lnurlId,
+      this.received,
+      this.createdAt)
       : super() {
     /* super call moved to initializer */;
   }
@@ -25,6 +35,7 @@ class Receiver extends BaseClass {
         json["amountCurrency"],
         json["data"],
         json["lnurlId"],
+        json["received"],
         DateTime.parse(json["createdAt"]));
   }
 
@@ -38,6 +49,7 @@ class Receiver extends BaseClass {
       "amountCurrency": this.amountCurrency,
       "data": this.data,
       "lnurlId": this.lnurlId,
+      "received": this.received,
       "createdAt": this.createdAt
     };
   }

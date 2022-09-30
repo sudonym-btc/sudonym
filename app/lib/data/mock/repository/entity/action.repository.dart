@@ -17,7 +17,7 @@ class MockActionRepository implements ActionRepository {
   @override
   Future<ActionParseResponse> parse(String address) async {
     await Future.delayed(requestDelay);
-    return ActionParseResponse(await parseHelper(address));
+    return ActionParseResponse.from((await parseHelper(address)).toJson());
   }
 
   Future<dynamic> parseHelper(String address) async {
@@ -36,6 +36,7 @@ class MockActionRepository implements ActionRepository {
         });
       case 'lnurl':
         var response = await fetchRemoteLnUrl(trimmedAddress);
+        print(response);
         return Action.from({
           'type': response['data']['tag'].replaceAll('Request', ''),
           'originalAddress': trimmedAddress,
@@ -83,10 +84,10 @@ class MockActionRepository implements ActionRepository {
   @override
   pay(Payment p) async {
     await Future.delayed(requestDelay);
-    return _transactionRepository.create(Transaction.fromJson({
+    return _transactionRepository.create({
       'id': 1,
       'txid': null,
-      'potId': p.potId,
+      'potId': p.potId ?? 1,
       'outgoing': true,
       'type': 'lnurl',
       'address': p.originalAddress,
@@ -96,24 +97,19 @@ class MockActionRepository implements ActionRepository {
       'status': null,
       'currencyCode': 'BTC',
       'createdAt': DateTime.now().toString()
-    }));
+    });
   }
 
   @override
   withdraw(Withdraw p) async {
     await Future.delayed(requestDelay);
-    return Action.from({
-      'id': 1,
-      'txid': null,
-      'potId': p.potId,
-      'outgoing': true,
-      'type': 'lnurl',
-      'address': p.originalAddress,
-      'originalAddress': p.originalAddress,
-      'description': '',
+    return _receiveRepository.create({
+      'potId': p.potId ?? 1,
+      'type': 'bolt11',
+      'data': 'lnbct1',
       'amount': p.amount ?? 100,
-      'status': null,
-      'currencyCode': 'BTC',
+      'amountCurrency': 'BTC',
+      'received': 0,
       'createdAt': DateTime.now().toString()
     });
   }
@@ -164,6 +160,22 @@ class MockActionRepository implements ActionRepository {
   }
 
   fetchRemoteLnUrl(String invoice) {
+    if (invoice.contains("lnurlw")) {
+      return ActionRemoteResponse.fromJson({
+        'success': true,
+        'data': {
+          'status': 'OK',
+          'callback': 'https://coincorner.io/lnurlw/',
+          'maxWithdrawable': 100000000,
+          'minWithdrawable': 1000,
+          'metadata': '[["text/plain", "paco@coincorner.io"]]',
+          'commentAllowed': 0,
+          'tag': 'withdrawRequest',
+          'domain': 'coincorner.io',
+          'username': 'paco'
+        }
+      }).toJson();
+    }
     return fetchRemoteLightningAddress(invoice);
   }
 

@@ -38,9 +38,9 @@ class WithdrawConfirm extends StatelessWidget {
         }, child: BlocBuilder<WithdrawCubit, WithdrawCubitState>(
                 builder: (BuildContext context, state) {
           String pageTitle = '';
-          String title = (AppLocalizations.of(context)!.paymentInfo);
+          String title = (AppLocalizations.of(context)!.withdrawInfo);
           String subtitle =
-              (AppLocalizations.of(context)!.gatheringPaymentInfomation);
+              (AppLocalizations.of(context)!.gatheringWithdrawInfomation);
           IconData? icon;
           Widget? content = const Center(
               child: CircularProgressIndicator(color: Colors.white));
@@ -90,7 +90,7 @@ class WithdrawConfirm extends StatelessWidget {
               );
             }, (r) {
               subtitle =
-                  (AppLocalizations.of(context)!.gatheredPaymentInformation);
+                  (AppLocalizations.of(context)!.gatheredWithdrawalInformation);
               content = Column(children: [
                 Table(
                   children: [],
