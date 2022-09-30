@@ -3,6 +3,7 @@ import { BaseClass } from './base-class';
 export class Sender extends BaseClass {
 	constructor(
 		public id: number | null,
+		public userId: string | null,
 		public potId: number | null,
 		public lnurlId: string | null,
 		public type: string | null,
@@ -14,7 +15,7 @@ export class Sender extends BaseClass {
 		public limitMin: number | null,
 		public limitMax: number | null,
 		public data: string,
-		public createdAt: Date
+		public createdAt: Date | null
 	) {
 		super();
 	}
@@ -22,6 +23,7 @@ export class Sender extends BaseClass {
 	static fromJson(json: Object): Sender {
 		return new Sender(
 			json['id'],
+			json['userId'],
 			json['potId'],
 			json['lnurlId'],
 			json['type'],
@@ -40,6 +42,7 @@ export class Sender extends BaseClass {
 	toJson(): any {
 		return {
 			id: this.id,
+			userId: this.userId,
 			potId: this.potId,
 			lnurlId: this.lnurlId,
 			type: this.type,

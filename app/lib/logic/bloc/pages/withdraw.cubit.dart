@@ -21,6 +21,7 @@ class WithdrawCubit extends Cubit<WithdrawCubitState> {
 
   withdraw(Withdraw w) async {
     emit(WithdrawCubitState(loadingWithdraw: true));
+    print("WITHDRAWING");
     var data = await Task(() => _actionRepository.withdraw(w)).attempt().run();
     if (!isClosed) {
       emit(WithdrawCubitState(loadingWithdraw: false, receiverData: data));

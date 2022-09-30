@@ -2,6 +2,7 @@ import "base-class.dart" show BaseClass;
 
 class Sender extends BaseClass {
   dynamic /* num | null */ id;
+  dynamic /* String | null */ userId;
   dynamic /* num | null */ potId;
   dynamic /* String | null */ lnurlId;
   dynamic /* String | null */ type;
@@ -13,9 +14,10 @@ class Sender extends BaseClass {
   dynamic /* num | null */ limitMin;
   dynamic /* num | null */ limitMax;
   String data;
-  DateTime createdAt;
+  dynamic /* DateTime | null */ createdAt;
   Sender(
       this.id,
+      this.userId,
       this.potId,
       this.lnurlId,
       this.type,
@@ -34,6 +36,7 @@ class Sender extends BaseClass {
   static Sender fromJson(Map<String, dynamic> json) {
     return new Sender(
         json["id"],
+        json["userId"],
         json["potId"],
         json["lnurlId"],
         json["type"],
@@ -51,6 +54,7 @@ class Sender extends BaseClass {
   dynamic toJson() {
     return {
       "id": this.id,
+      "userId": this.userId,
       "potId": this.potId,
       "lnurlId": this.lnurlId,
       "type": this.type,
