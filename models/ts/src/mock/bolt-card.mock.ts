@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { BoltCard, Sender } from 'classes';
+import { BoltCard, Sender } from '../classes';
 import * as Factory from 'factory.ts';
 
 export const factory = Factory.Sync.makeFactory<BoltCard>(
