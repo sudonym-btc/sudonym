@@ -137,7 +137,6 @@ def lightning_rest(config, cluster_types):
                                                 "node",
                                                 "./cl-rest.js",
                                             ],
-                                            "resources": {"requests": {"cpu": "30m"}},
                                             "ports": [
                                                 {
                                                     "containerPort": config[

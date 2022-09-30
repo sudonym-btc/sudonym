@@ -138,7 +138,6 @@ def lightning(config, cluster_types):
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-lightning",
-                                        "resources": {"requests": {"cpu": "30m"}},
                                         "command": [
                                             "/bin/sh",
                                             "-ec",
