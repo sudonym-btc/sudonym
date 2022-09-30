@@ -80,7 +80,6 @@ def api(config, cluster_types):
                                         "env": [
                                             {"name": "NODE_ENV", "value": config["env"]}
                                         ],
-                                        "resources": {"requests": {"cpu": "30m"}},
                                         "volumeMounts": [
                                             {
                                                 "name": getVolumeClaimName(
