@@ -15,9 +15,6 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-    triggering:
-      events:
-        - push
     scripts:
       - name: Set up local.properties
         script: |
@@ -64,6 +61,8 @@ workflows:
     <<: *default-workflow
     name: 'Test Workflow'
     triggering:
+      events:
+        - push
       branch_patterns:
         - pattern: test
           include: true
