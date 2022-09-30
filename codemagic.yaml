@@ -76,5 +76,5 @@ workflows:
     scripts:
       - *localproperties
       - *getpackages
-      - 'flutter build appbundle -t lib/main-test.dart --release'
+      - 'cd app && flutter build appbundle -t lib/main-test.dart --release'
       - *ghrelease
