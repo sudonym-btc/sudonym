@@ -32,17 +32,15 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - name: Set up key.properties
+      - name: Set up local.properties
         script: |
-          cat >> "$CM_BUILD_DIR/app/android/key.properties" <<EOF
+          cat >> "$CM_BUILD_DIR/app/android/local.properties" <<EOF
           storePassword=$CM_KEYSTORE_PASSWORD
           keyPassword=$CM_KEY_PASSWORD
           keyAlias=$CM_KEY_ALIAS
           storeFile=$CM_KEYSTORE_PATH
-          EOF    
-      - |
-        # set up local properties
-        echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/app/android/key.properties"
+          flutter.sdk=$HOME/programs/flutter
+          EOF
       - cd app && flutter packages pub get
       - cd app && flutter build appbundle --release
       - name: Publish to GitHub
