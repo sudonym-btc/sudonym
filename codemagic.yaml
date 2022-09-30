@@ -67,7 +67,7 @@ workflows:
         notify_on_build_start: true
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: beta
+        track: internal
         in_app_update_priority: 0
     when:
         changeset:

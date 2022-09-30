@@ -42,7 +42,7 @@ class SettingsPage extends StatelessWidget {
                                     .lightningAddress,
                                 suffixText: '@${getIt<Config>().domain}'),
                             validator: (value) {
-                              if (value != null && value!.isEmpty) {
+                              if (value != null && value.isEmpty) {
                                 return 'Please enter some text';
                               }
                               return null;
@@ -83,12 +83,14 @@ class AboutSectionState extends State<AboutSection> {
   String buildNumber = '';
 
   @override
-  initState() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    appName = packageInfo.appName;
-    packageName = packageInfo.packageName;
-    version = packageInfo.version;
-    buildNumber = packageInfo.buildNumber;
+  initState() {
+    PackageInfo.fromPlatform().then((packageInfo) {
+      appName = packageInfo.appName;
+      packageName = packageInfo.packageName;
+      version = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    });
+
     super.initState();
   }
 
