@@ -9,6 +9,5 @@ minikube.yaml
 release
 .idea
 infrastructure/local-volumes/*/*
-api/src/exchanges/*
 !*.gitkeep
 key.json

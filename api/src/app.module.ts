@@ -15,7 +15,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 import { CurrencyModule } from './module/currency/currency.module';
 import { UserDeviceModule } from './module/user-device/user-device.module';
 import { BalanceUpdaterModule } from './service/balance-updater/balance-updater.module';
-import { ExchangeSettlerModule } from './service/transaction-listener/exchange-settler.module';
+import { ExchangeSettlerModule } from './service/exchange/exchange-settler.module';
 import { ContactModule } from 'module/contact/contact.module';
 import { SenderModule } from 'module/sender/sender.module';
 import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
