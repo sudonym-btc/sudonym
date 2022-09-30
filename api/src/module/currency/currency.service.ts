@@ -1,10 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CurrencyResponse } from '@sudonym/models';
+import { ExchangeService } from 'service/exchange/exchange.service';
 
 @Injectable()
 export class CurrencyService {
-	convert(from, to, amount, time?): Promise<CurrencyResponse> {
-		throw Error('Unimplementd');
+	@Inject() exchangeService: ExchangeService;
+
+	async convert(from, to, amount, time?): Promise<CurrencyResponse> {
+		return new CurrencyResponse(
+			(await this.exchangeService.fetchPriceAtTime(from, to, time)) *
+				amount
+		);
 	}
 }
 
