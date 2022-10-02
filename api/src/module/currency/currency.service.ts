@@ -6,7 +6,7 @@ import { ExchangeService } from 'service/exchange/exchange.service';
 export class CurrencyService {
 	@Inject() exchangeService: ExchangeService;
 
-	async convert(from, to, amount, time?): Promise<CurrencyResponse> {
+	async convert(from, to, amount = 1, time?: Date): Promise<CurrencyResponse> {
 		return new CurrencyResponse(
 			(await this.exchangeService.fetchPriceAtTime(from, to, time)) *
 				amount

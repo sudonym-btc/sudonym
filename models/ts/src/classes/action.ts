@@ -10,8 +10,10 @@ export class Action extends ActionType {
 		public isLnAddress: boolean | null = false,
 		public isBolt11: boolean | null = false,
 		public isBolt12: boolean | null = false,
-		public isOnChain: boolean | null = false
-	) {
+		public isOnChain: boolean | null = false,
+		public comment: string | null = ''
+	)
+	{
 		super(
 			type,
 			originalAddress,
@@ -19,7 +21,8 @@ export class Action extends ActionType {
 			isLnAddress,
 			isBolt11,
 			isBolt12,
-			isOnChain
+			isOnChain,
+			comment
 		);
 	}
 
@@ -31,7 +34,8 @@ export class Action extends ActionType {
 			json['isLnAddress'],
 			json['isBolt11'],
 			json['isBolt12'],
-			json['isOnChain']
+			json['isOnChain'],
+			json['comment']
 		);
 	}
 
@@ -49,6 +53,7 @@ export class Action extends ActionType {
 			isBolt11: this.isBolt11,
 			isBolt12: this.isBolt12,
 			isOnChain: this.isOnChain,
+			comment: this.comment,
 		};
 	}
 }

@@ -30,13 +30,16 @@ export class ExchangeService {
 		}
 	}
 
-	async fetchPriceAtTime(fromCurrency, quoteCurrency, time = Date.now()) {
+	async fetchPriceAtTime(fromCurrency = 'BTC', quoteCurrency = 'BTC', time: Date = new Date()) {
+		if(fromCurrency == quoteCurrency) return 1;
 		const market = await this.fetchMarket(fromCurrency, quoteCurrency);
+		const timestamp = (Math.floor(Date.UTC(time.getUTCFullYear(), time.getUTCMonth(), time.getUTCDate(),
+		time.getUTCHours(), time.getUTCMinutes(), time.getUTCSeconds(), time.getUTCMilliseconds()) / 10000) * 10000) - 60000;
 		const response = await this.exchanges[0].fetchOHLCV(
 			market.symbol,
 			'1m',
-			time,
-			1
+			timestamp, // Subtract a minute so there will always be ticker 1504541580000
+		100
 		);
 		return market.quote == quoteCurrency
 			? response[0][1]

@@ -12,7 +12,7 @@ class TransactionListItem extends StatelessWidget {
   getTitle() {
     String networkName =
         ['lnurl', 'bolt11', 'bolt12', 'lightningaddress'].contains(entity.type)
-            ? 'lightning network'
+            ? 'via lightning network'
             : 'onchain';
     return entity.outgoing
         ? entity.address ?? 'Spent via $networkName'

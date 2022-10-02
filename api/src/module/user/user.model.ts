@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
+import { Sender } from '../sender/sender.model';
 
 @Table
 export class User extends BaseModel implements Models.User {
@@ -20,4 +21,7 @@ export class User extends BaseModel implements Models.User {
 
 	@Column
 	lightningAddress: string;
+
+	@HasMany(() => Sender)
+	Senders: Sender[];
 }

@@ -94,6 +94,16 @@ class SendConfirmPage extends StatelessWidget {
                 Table(
                   children: [
                     TableRow(children: [
+                      Text(AppLocalizations.of(context)!.amount),
+                      Text(FormatCurrency()
+                          .format(r.currency ?? 'BTC', r.amount ?? 0))
+                    ]),
+                    TableRow(children: [
+                      Text(AppLocalizations.of(context)!.fee),
+                      Text(FormatCurrency()
+                          .format(r.feeCurrency ?? 'BTC', r.fee ?? 0))
+                    ]),
+                    TableRow(children: [
                       const Text('address'),
                       Text(
                         r.address ?? '',
@@ -103,11 +113,6 @@ class SendConfirmPage extends StatelessWidget {
                       )
                     ]),
                     TableRow(children: [
-                      Text(AppLocalizations.of(context)!.fee),
-                      Text(FormatCurrency()
-                          .format(r.feeCurrency ?? "BTC", r.fee ?? 0))
-                    ]),
-                    TableRow(children: [
                       Text(AppLocalizations.of(context)!.name),
                       Text(
                         r.originalAddress,
@@ -115,7 +120,7 @@ class SendConfirmPage extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       )
-                    ])
+                    ]),
                   ],
                 )
               ]);

@@ -30,20 +30,12 @@ abstract class EntityCubit<
   listenChanges() {
     // Subscribe if not currently listening
     if (!shouldListen) return;
-    // loggy.error("Listening to changes");
-    // loggy.error(state.entity);
-    if (updater == null) {
-      loggy.debug("Subscribing");
-      updater = repository.updated.stream.listen((event) {
-        if ((event as dynamic).id == (state.entity as dynamic).id) {
-          loggy.error(
-            "Current pot",
-          );
-          loggy.error(event.toJson());
-          set(event);
-        }
-      });
-    }
+    updater ??= repository.updated.stream.listen((event) {
+      if ((event as dynamic).id == (state.entity as dynamic).id) {
+        loggy.error(event.toJson());
+        set(event);
+      }
+    });
   }
 
   fetch(dynamic id) async {

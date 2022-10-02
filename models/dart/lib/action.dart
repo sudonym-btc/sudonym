@@ -10,14 +10,16 @@ class Action extends ActionType {
   dynamic /* bool | null */ isBolt11;
   dynamic /* bool | null */ isBolt12;
   dynamic /* bool | null */ isOnChain;
+  dynamic /* String | null */ comment;
   Action(this.type, this.originalAddress,
       [this.isLnUrl = false,
       this.isLnAddress = false,
       this.isBolt11 = false,
       this.isBolt12 = false,
-      this.isOnChain = false])
+      this.isOnChain = false,
+      this.comment = ""])
       : super(type, originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
-            isOnChain) {
+            isOnChain, comment) {
     /* super call moved to initializer */;
   }
   static Action fromJson(Map<String, dynamic> json) {
@@ -28,7 +30,8 @@ class Action extends ActionType {
         json["isLnAddress"],
         json["isBolt11"],
         json["isBolt12"],
-        json["isOnChain"]);
+        json["isOnChain"],
+        json["comment"]);
   }
 
   static dynamic /* Payment | Withdraw */ from(json) {
@@ -44,7 +47,8 @@ class Action extends ActionType {
       "isLnAddress": this.isLnAddress,
       "isBolt11": this.isBolt11,
       "isBolt12": this.isBolt12,
-      "isOnChain": this.isOnChain
+      "isOnChain": this.isOnChain,
+      "comment": this.comment
     };
   }
 }

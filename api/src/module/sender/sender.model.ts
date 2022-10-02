@@ -9,6 +9,7 @@ import {
 	Default,
 	ForeignKey,
 	BeforeCreate,
+	BelongsTo,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
@@ -29,6 +30,9 @@ export class Sender extends BaseModel implements Models.Sender {
 
 	@Column(DataType.ENUM(...ADDRESS_TYPES))
 	type: TAddressType;
+
+	@BelongsTo(() => User)
+	User: User;
 
 	@ForeignKey(() => User)
 	@Column
