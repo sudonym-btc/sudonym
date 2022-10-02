@@ -27,7 +27,7 @@ export async function downloadFiles(
 			const destination = process.cwd() + '/src/' + file.name;
 
 			try {
-				await bucket.file(file.id).download({
+				await bucket.file(file.name).download({
 					destination,
 				});
 				console.log(
