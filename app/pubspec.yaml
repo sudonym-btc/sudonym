@@ -3,7 +3,7 @@ description: Sudonym bitcoin wallet.
 
 publish_to: "none"
 
-version: 0.0.1+5
+version: 0.0.1+6
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
