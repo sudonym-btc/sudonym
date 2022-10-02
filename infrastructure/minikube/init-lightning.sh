@@ -2,13 +2,13 @@ env=$1
 env=${env:="development"}
 echo $env
 
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-bitcoin
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-2
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-3
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-c-lightning-rest
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-ride-the-lightning
-# kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-api
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-bitcoin
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-2
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-3
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-c-lightning-rest
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-ride-the-lightning
+kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-api
 
 ln1pod=$(kubectl get pod -l app=$env-lightning -o name)
 ln2pod=$(kubectl get pod -l app=$env-lightning-2 -o name)
