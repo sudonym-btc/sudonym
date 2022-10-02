@@ -51,7 +51,7 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 				attributes: [['userId', 'id']],
 				raw: true,
 				where: {
-					id
+					id,
 				},
 			}),
 	};
@@ -62,6 +62,19 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 				{
 					model: Sender,
 					as: 'sender',
+					include: [
+						{
+							required: true,
+							model: User,
+							as: 'User',
+							where: requestContextCls.get('request')?.auth?.uid
+								? {
+										id: requestContextCls.get('request')
+											?.auth.uid,
+								  }
+								: {},
+						},
+					],
 				},
 			],
 		}),

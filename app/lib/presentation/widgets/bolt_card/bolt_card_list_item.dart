@@ -17,6 +17,6 @@ class BoltCardListItem extends StatelessWidget {
                         entity: entity,
                       )));
         },
-        child: Container(child: CreditCard()));
+        child: ListTile(title: Text(entity.name)));
   }
 }

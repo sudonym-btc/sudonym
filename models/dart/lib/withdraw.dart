@@ -1,7 +1,7 @@
 import "action-type.dart" show ActionType;
 import "action-remote-response.dart" show ActionRemoteResponse;
 import "withdraw-request.dart" show WithdrawRequest;
-import "types.dart" show MSATOSHIS;
+import "types/index.dart" show MSATOSHIS;
 
 class Withdraw extends ActionType {
   dynamic /* num | null */ potId;
@@ -36,10 +36,10 @@ class Withdraw extends ActionType {
         json["originalAddress"],
         json["currency"],
         json["amount"],
-        json["minAmount"]
+        json["minAmount"] != null
             ? json["minAmount"]
             : a.data["minWithdrawable"] / MSATOSHIS,
-        json["maxAmount"]
+        json["maxAmount"] != null
             ? json["maxAmount"]
             : a.data["maxWithdrawable"] / MSATOSHIS,
         a,

@@ -45,12 +45,12 @@ export class ActionService {
 				action.currency == 'BTC'
 					? action.amount
 					: (
-						await this.currencyService.convert(
-							action.currency,
-							'BTC',
-							action.amount
-						)
-					).amount;
+							await this.currencyService.convert(
+								action.currency,
+								'BTC',
+								action.amount
+							)
+					  ).amount;
 			const mSatoshiAmount = Math.round(btcAmount * MSATOSHIS);
 
 			switch (t) {
@@ -62,6 +62,7 @@ export class ActionService {
 							bolt11.decode(action.address).payeeNodeKey,
 							mSatoshiAmount
 						),
+						feeCurrency: 'BTC',
 					});
 				case 'bolt12':
 					const offerInvoice =
@@ -72,38 +73,48 @@ export class ActionService {
 					return Action.from({
 						...action,
 						address: offerInvoice,
-						fee: await this.lightningNodeService.getFees(
-							bolt11.decode(offerInvoice).payeeNodeKey,
-							mSatoshiAmount
-						),
+						fee:
+							(await this.lightningNodeService.getFees(
+								bolt11.decode(offerInvoice).payeeNodeKey,
+								mSatoshiAmount
+							)) / MSATOSHIS,
+						feeCurrency: 'BTC',
 						remoteResponse: await this.addressParser.parse(
 							offerInvoice
 						),
 					});
 				case 'lightningaddress':
 				case 'lnurl':
+					const address = (
+						await this.getCallback(
+							(action.remoteResponse.data as any).callback,
+							{
+								amount: mSatoshiAmount,
+								comment: action.comment,
+								payerData: {
+									// "name": string, // free form string
+									// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
+									// "auth": {
+									//   "key": string, // hex(<linkingKey>)
+									//   "k1": string, // same as received from service on section 1
+									//   "sig": string, // following LUD-04: hex(sign(hexToBytes(<k1>), <linkingPrivKey>))
+									// },
+									// "email": string,
+									// "identifier": string,
+								},
+							}
+						)
+					).pr;
+
 					return Action.from({
 						...action,
-						address: (
-							await this.getCallback(
-								(action.remoteResponse.data as any).callback,
-								{
-									amount: mSatoshiAmount,
-									comment: action.comment,
-									payerData: {
-										// "name": string, // free form string
-										// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
-										// "auth": {
-										//   "key": string, // hex(<linkingKey>)
-										//   "k1": string, // same as received from service on section 1
-										//   "sig": string, // following LUD-04: hex(sign(hexToBytes(<k1>), <linkingPrivKey>))
-										// },
-										// "email": string,
-										// "identifier": string,
-									}
-								}
-							)
-						).pr,
+						address,
+						fee:
+							(await this.lightningNodeService.getFees(
+								bolt11.decode(address).payeeNodeKey,
+								mSatoshiAmount
+							)) / MSATOSHIS,
+						feeCurrency: 'BTC',
 					});
 				case 'onchain':
 					return action;

@@ -1,7 +1,7 @@
 import { ActionType } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
 import { WithdrawRequest } from './withdraw-request';
-import { MSATOSHIS } from './types';
+import { MSATOSHIS } from './types/index';
 
 export class Withdraw extends ActionType {
 	constructor(
@@ -30,8 +30,8 @@ export class Withdraw extends ActionType {
 			json['originalAddress'],
 			json['currency'],
 			json['amount'],
-			json['minAmount'] ? json['minAmount'] : a.data['minWithdrawable'] / MSATOSHIS,
-			json['maxAmount'] ? json['maxAmount'] : a.data['maxWithdrawable'] / MSATOSHIS,
+			json['minAmount'] != null ? json['minAmount'] : a.data['minWithdrawable'] / MSATOSHIS,
+			json['maxAmount'] != null ? json['maxAmount'] : a.data['maxWithdrawable'] / MSATOSHIS,
 			a,
 			json['isLnUrl'],
 			json['isLnAddress'],

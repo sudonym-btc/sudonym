@@ -116,7 +116,12 @@ export class LightningNodeService {
 
 	async getFees(pubkey, amount = 0) {
 		const route = await this.getRoute(pubkey, amount);
-		return 1000;
+		const first = route[0];
+		const last = route.pop();
+		if (!first || !last) {
+			return 0;
+		}
+		return first.msatoshi - last.msatoshi;
 	}
 
 	async getRoute(pubkey, amount = 0) {

@@ -1,7 +1,7 @@
 import { ActionType } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
 import { PaymentRequest } from './payment-request';
-import { MSATOSHIS } from './types';
+import { MSATOSHIS } from './types/index';
 
 export class Payment extends ActionType {
 	constructor(
@@ -34,8 +34,8 @@ export class Payment extends ActionType {
 			json['address'],
 			json['currency'],
 			json['amount'],
-			json['minAmount'] ? json['minAmount'] : a.data["minSendable"]/MSATOSHIS,
-			json['maxAmount'] ? json['maxAmount'] : a.data["maxSendable"]/MSATOSHIS,
+			json['minAmount'] != null ? json['minAmount'] : a.data["minSendable"]/MSATOSHIS,
+			json['maxAmount'] != null ? json['maxAmount'] : a.data["maxSendable"]/MSATOSHIS,
 			json['fee'],
 			json['feeCurrency'],
 			a,

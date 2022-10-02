@@ -1,7 +1,7 @@
 import "action-type.dart" show ActionType;
 import "action-remote-response.dart" show ActionRemoteResponse;
 import "payment-request.dart" show PaymentRequest;
-import "types.dart" show MSATOSHIS;
+import "types/index.dart" show MSATOSHIS;
 
 class Payment extends ActionType {
   dynamic /* num | null */ potId;
@@ -49,10 +49,10 @@ class Payment extends ActionType {
         json["address"],
         json["currency"],
         json["amount"],
-        json["minAmount"]
+        json["minAmount"] != null
             ? json["minAmount"]
             : a.data["minSendable"] / MSATOSHIS,
-        json["maxAmount"]
+        json["maxAmount"] != null
             ? json["maxAmount"]
             : a.data["maxSendable"] / MSATOSHIS,
         json["fee"],
