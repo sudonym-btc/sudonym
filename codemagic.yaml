@@ -21,6 +21,7 @@ variables:
       gh release create "${CM_BRANCH}-${CM_COMMIT}" \
         --title "sudonym ${CM_BRANCH}-${CM_COMMIT}" \
        app/build/app/outputs/bundle/release/app-release.aab
+       app/build/app/outputs/apk/release/app-release.apk
 
 workflows:
   default-workflow: &default-workflow
@@ -77,4 +78,5 @@ workflows:
       - *localproperties
       - *getpackages
       - 'cd app && flutter build appbundle -t lib/main-test.dart --release'
+      - 'cd app && flutter build apk -t lib/main-test.dart --release'
       - *ghrelease
