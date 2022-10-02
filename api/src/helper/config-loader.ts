@@ -11,26 +11,31 @@ export async function downloadFiles(
 ) {
 	if (!alreadyDone() || force) {
 		const buckets = (await storage.getBuckets())[0];
-		const bucket = buckets.find((b) => b.name.includes(getConfig().env));
+		const bucket = buckets.find((b) =>
+			b.name.includes('config-' + getConfig().env)
+		);
 
 		if (!bucket) {
 			throw Error(
 				'Could not find the suitable config bucket in the cloud project'
 			);
 		}
-
 		const files = (await bucket.getFiles())[0];
-
 		for (const file of files) {
 			// Ignore folders
 			if (file.name.split('.').length == 1) continue;
 			const destination = process.cwd() + '/src/' + file.name;
-			await storage.bucket(bucket.name).file(file.name).download({
-				destination,
-			});
-			console.log(
-				`gs://${bucket.name}/${file.name} downloaded to ${destination}.`
-			);
+
+			try {
+				await bucket.file(file.id).download({
+					destination,
+				});
+				console.log(
+					`gs://${bucket.name}/${file.name} downloaded to ${destination}.`
+				);
+			} catch (e) {
+				console.error(e);
+			}
 		}
 	}
 }
