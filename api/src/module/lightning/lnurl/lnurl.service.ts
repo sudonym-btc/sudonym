@@ -31,21 +31,40 @@ export class LnUrlService extends BaseService(LnUrl) {
 				domain: getConfig().selfUrl,
 				minSendable: mSatoshiAmount || 0,
 				maxSendable: 10000000,
-				metadata: '',
+				metadata: JSON.stringify([
+					[
+						"text/plain", // mandatory,
+						'Short description sudo' // short description displayed when paying and in transaction log
+					],
+					[
+						"text/long-desc", // optional
+						'Long description sudo' // longer description of the payment, MAY contain newlines
+					],
+					// [
+					// 	"image/png;base64",
+					// 	string // base64 string, optional 512x512px PNG thumbnail which will represent this lnurl in a list or grid. Up to 136536 characters (100Kb of image data in base-64 encoding)
+					// ],
+					// [
+					// 	"image/jpeg;base64", // optional
+					// 	string // base64 string, 512x512px JPG thumbnail which will represent this lnurl in a list or grid. Up to 136536 characters (100Kb of image data in base-64 encoding)
+					// ],
+				]),
 			},
 		});
 
 		return tag;
 	}
 
-	async createWithdrawRequest(mSatoshiAmount?: number) {
+	async createWithdrawRequest(params?: RecursivePartial<WithdrawRequest>) {
 		const tag = await this.create({
 			params: {
 				tag: 'withdrawRequest',
 				domain: getConfig().selfUrl,
-				minWithdrawable: mSatoshiAmount || 0,
-				maxWithdrawable: 10000000,
-				metadata: '',
+				minWithdrawable: 0,
+				maxWithdrawable: 99999999999,
+				...params,
+				// "balanceCheck": string,
+				// "payLink": string
 				defaultDescription: 'Withdrawn desciption',
 			},
 		});

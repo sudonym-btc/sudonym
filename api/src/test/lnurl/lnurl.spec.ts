@@ -1,5 +1,6 @@
-import { PaymentRequest } from '@sudonym/models';
+import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
 import { ActionService } from 'module/action/action.service';
+import { LightningAddressController } from 'module/lightning/lnurl/lightning-address/lightning-address.controller';
 import { LnUrlHandlerService } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { LnUrlService } from 'module/lightning/lnurl/lnurl.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
@@ -20,7 +21,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 		});
 
 		describe('Pay', () => {
-			it('should limit based on pot spendable balance', () => {});
+			it('should limit based on pot spendable balance', () => { });
 		});
 	});
 
@@ -37,11 +38,12 @@ scaffoldGroup('LnUrl', (scaffold) => {
 
 				const tag = await scaffold.app
 					.get(LnUrlService)
-					.serve(sender.lnurlId);
-				// expect(tag.minWithdrawable);
-				// expect(tag.maxWithdrawable);
+					.serve(sender.lnurlId) as WithdrawRequest;
+
+				expect(tag.minWithdrawable).toBe(sender.limitMin * MSATOSHIS);
+				expect(tag.maxWithdrawable).toBe(sender.limitMax * MSATOSHIS);
 			});
-			it('should limit based on min payment', () => {});
+			it('should limit based on min payment', () => { });
 		});
 		describe('Pay', () => {
 			it('should serve info endpoint', async () => {
@@ -57,9 +59,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 				const tag = (await scaffold.app
 					.get(LnUrlService)
 					.serve(receiver.lnurlId)) as PaymentRequest;
-				expect(tag.minSendable);
-				expect(tag.maxSendable);
-				console.log(tag);
+				expect(tag.minSendable).toBe(receiver.amount * MSATOSHIS);
 			});
 			it('should serve callback endpoint with correct bolt11', async () => {
 				const receiver = await scaffold.app
@@ -81,7 +81,13 @@ scaffoldGroup('LnUrl', (scaffold) => {
 			});
 
 			describe('lightningAddress', () => {
-				it('should serve info endpoint', () => {});
+				it('should serve info endpoint', async () => {
+					const p = await scaffold.app.get(LightningAddressController)
+						.lightningAddress(scaffold.entities.user[0].lightningAddress) as PaymentRequest;
+					
+					expect(p.minSendable).toBe(0);
+					expect(p.tag).toBe('payRequest');
+				});
 			});
 		});
 	});

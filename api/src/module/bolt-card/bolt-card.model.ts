@@ -45,6 +45,17 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 	@Column
 	written: number;
 
+	static accessors = {
+		canFind: (id) =>
+			BoltCard.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				where: {
+					id
+				},
+			}),
+	};
+
 	static scopes = {
 		find: () => ({
 			include: [
