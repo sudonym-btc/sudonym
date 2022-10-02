@@ -20,8 +20,8 @@ variables:
       #!/usr/bin/env zsh
       gh release create "${CM_BRANCH}-${CM_COMMIT}" \
         --title "sudonym ${CM_BRANCH}-${CM_COMMIT}" \
-       app/build/app/outputs/bundle/release/app-release.aab
-       app/build/app/outputs/flutter-apk/app-release.apk 
+       app/build/app/outputs/bundle/release/app-release.aab \
+       app/build/app/outputs/flutter-apk/app-release.apk
 
 workflows:
   default-workflow: &default-workflow
