@@ -49,7 +49,7 @@ export class Sender extends BaseModel implements Models.Sender {
 	potId: number;
 
 	@BelongsTo(() => LnUrl)
-	Lnurl: LnUrl;
+	lnurl: LnUrl;
 
 	@ForeignKey(() => LnUrl)
 	@Column

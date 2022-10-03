@@ -53,9 +53,9 @@ def certificates(config):
                     "api." + domain,
                     "btc." + domain,
                     "ln." + domain,
-                    "ln-doc" + domain,
+                    "ln-doc." + domain,
+                    "ln-rest." + domain,
                     "db." + domain,
-                    "lightning-rest." + domain,
                     "bitcoin-mq." + domain,
                 ],
                 "issuerRef": {
