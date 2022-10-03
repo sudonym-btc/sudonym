@@ -5,7 +5,7 @@ class Sender extends BaseClass {
   dynamic /* num | null */ id;
   dynamic /* String | null */ userId;
   dynamic /* num | null */ potId;
-  dynamic /* Lnurl | null */ Lnurl;
+  dynamic /* Lnurl | null */ lnurl;
   dynamic /* String | null */ lnurlId;
   dynamic /* String | null */ type;
   dynamic /* num | null */ amount;
@@ -21,7 +21,7 @@ class Sender extends BaseClass {
       this.id,
       this.userId,
       this.potId,
-      this.Lnurl,
+      this.lnurl,
       this.lnurlId,
       this.type,
       this.amount,
@@ -41,7 +41,7 @@ class Sender extends BaseClass {
         json["id"],
         json["userId"],
         json["potId"],
-        json["Lnurl"] != null ? Lnurl.fromJson(json["Lnurl"]) : null,
+        json["lnurl"] != null ? Lnurl.fromJson(json["Lnurl"]) : null,
         json["lnurlId"],
         json["type"],
         json["amount"],
@@ -60,7 +60,7 @@ class Sender extends BaseClass {
       "id": this.id,
       "userId": this.userId,
       "potId": this.potId,
-      "Lnurl": this.Lnurl,
+      "lnurl": this.lnurl != null ? this.lnurl.toJson() : null,
       "lnurlId": this.lnurlId,
       "type": this.type,
       "amount": this.amount,

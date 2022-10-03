@@ -61,7 +61,7 @@ def ingress(config, cluster_types):
                                     config["domain"],
                                     "api." + config["domain"],
                                     "rtl." + config["domain"],
-                                    "lightning-rest." + config["domain"],
+                                    "ln-rest." + config["domain"],
                                 ],
                                 "secretName": config["env"] + "-tls",
                             }
@@ -127,7 +127,7 @@ def ingress(config, cluster_types):
                                 },
                             },
                             {
-                                "host": "lightning-rest." + config["domain"],
+                                "host": "ln-rest." + config["domain"],
                                 "http": {
                                     "paths": [
                                         {
