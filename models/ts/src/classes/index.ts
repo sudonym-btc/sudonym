@@ -7,6 +7,7 @@ export * from './bolt-card';
 export * from './payment';
 export * from './payment-request';
 export * from './withdraw-request';
+export * from './lnurl';
 export * from './bolt11';
 export * from './action-remote-response';
 export * from './withdraw';
