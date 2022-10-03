@@ -15,7 +15,4 @@ export class LnUrl extends BaseModel implements Models.Lnurl {
 
 	@Column(DataTypes.JSON) params: WithdrawRequest | PaymentRequest;
 
-	@BelongsTo(() => Sender)
-	Sender: Sender;
-
 }
