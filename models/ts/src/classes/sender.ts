@@ -1,10 +1,12 @@
 import { BaseClass } from './base-class';
+import { Lnurl } from './lnurl';
 
 export class Sender extends BaseClass {
 	constructor(
 		public id: number | null,
 		public userId: string | null,
 		public potId: number | null,
+		public Lnurl: Lnurl | null,
 		public lnurlId: string | null,
 		public type: string | null,
 		public amount: number | null,
@@ -25,6 +27,7 @@ export class Sender extends BaseClass {
 			json['id'],
 			json['userId'],
 			json['potId'],
+			json['Lnurl'] != null ? Lnurl.fromJson(json['Lnurl']) : null,
 			json['lnurlId'],
 			json['type'],
 			json['amount'],
@@ -44,6 +47,7 @@ export class Sender extends BaseClass {
 			id: this.id,
 			userId: this.userId,
 			potId: this.potId,
+			Lnurl: this.Lnurl,
 			lnurlId: this.lnurlId,
 			type: this.type,
 			amount: this.amount,

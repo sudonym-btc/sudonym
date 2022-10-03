@@ -10,6 +10,7 @@ import {
 	ForeignKey,
 	BeforeCreate,
 	BelongsTo,
+	HasOne,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
@@ -46,6 +47,9 @@ export class Sender extends BaseModel implements Models.Sender {
 	@ForeignKey(() => Pot)
 	@Column
 	potId: number;
+
+	@HasOne(() => LnUrl)
+	Lnurl: LnUrl;
 
 	@ForeignKey(() => LnUrl)
 	@Column

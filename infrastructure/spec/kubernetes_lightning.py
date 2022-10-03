@@ -28,7 +28,7 @@ def lightning(config, cluster_types):
         bucket = "sudonym-" + getBackupName(base_name, num)
         
         mount = f"""mkdir -p {lightning_dir}/{chain_name} && 
-            echo $(gcsfuse --limit-ops-per-sec=100 {gcs_log} {bucket} {lightning_dir}/{chain_name})"""
+            echo $(gcsfuse --limit-ops-per-sec=0 {gcs_log} {bucket} {lightning_dir}/{chain_name})"""
         unmount = f"""fusermount -u {lightning_dir}/{chain_name}"""            
 
         return [
@@ -37,6 +37,14 @@ def lightning(config, cluster_types):
                 "name": "sudonym-" + getBackupName(base_name, num),
                 "properties": {
                     "project": config["project"],
+                    "location": "US-CENTRAL1",
+                    "locationType": "region",
+                    "iamConfiguration": {
+                        "publicAccessPrevention": "enforced",
+                        "uniformBucketLevelAccess": {
+                            "enabled": True
+                        },
+                    },
                 },
             },
             {
@@ -163,6 +171,7 @@ def lightning(config, cluster_types):
                                                     "--network=" + chain_name,
                                                     "--bitcoin-rpcport="
                                                     + str(config["bitcoin"]["rpcPort"]),
+                                                    "--bookkeeper-dir=/rpc"
                                                 ]
                                             ),
                                         ],
