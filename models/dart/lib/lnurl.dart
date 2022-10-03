@@ -1,4 +1,5 @@
 import "withdraw-request.dart" show WithdrawRequest;
+import "payment-request.dart" show PaymentRequest;
 
 class Lnurl {
   String id;

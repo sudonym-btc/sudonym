@@ -16,8 +16,8 @@ import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from 'module/pot/pot.model';
-import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
-import { User } from 'module/user/user.model';
+import { LnUrl } from '../lightning/lnurl/lnurl.model';
+import { User } from '../user/user.model';
 import { requestContextCls } from 'helper/context-request';
 
 @Table({

@@ -1,4 +1,5 @@
 import { WithdrawRequest } from "./withdraw-request";
+import { PaymentRequest } from "./payment-request";
 
 export class Lnurl {
 	constructor(
