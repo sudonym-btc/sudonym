@@ -61,6 +61,7 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 			include: [
 				{
 					model: Sender,
+					required: true,
 					as: 'sender',
 					include: [
 						{
