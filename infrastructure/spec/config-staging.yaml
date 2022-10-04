@@ -11,6 +11,7 @@ imports:
 - path: common.py
 - path: helper.py
 - path: dns.py
+- path: db.py
 - path: config.py
 
 resources:
