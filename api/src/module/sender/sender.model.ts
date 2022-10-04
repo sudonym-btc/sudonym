@@ -22,7 +22,7 @@ import { requestContextCls } from 'helper/context-request';
 
 @Table({
 	scopes: Sender.scopes,
-	defaultScope: Sender.scopes.default
+	defaultScope: Sender.scopes.default()
 })
 export class Sender extends BaseModel implements Models.Sender {
 	@PrimaryKey
@@ -82,7 +82,7 @@ export class Sender extends BaseModel implements Models.Sender {
 	createdAt: Date;
 
 	static scopes = {
-		default: ({
+		default: () => ({
 			include: [{
 				model: LnUrl,
 				as: 'lnurl'
