@@ -37,6 +37,14 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
 
+      <intent-filter>
+        <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:scheme="lnurlw" />
+      </intent-filter>
+
       <!-- Deep linking -->
       <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
       <intent-filter android:autoVerify="true">

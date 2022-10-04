@@ -41,7 +41,7 @@ class Sender extends BaseClass {
         json["id"],
         json["userId"],
         json["potId"],
-        json["lnurl"] != null ? Lnurl.fromJson(json["Lnurl"]) : null,
+        json["lnurl"] != null ? Lnurl.fromJson(json["lnurl"]) : null,
         json["lnurlId"],
         json["type"],
         json["amount"],

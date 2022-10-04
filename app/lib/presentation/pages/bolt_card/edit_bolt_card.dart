@@ -71,8 +71,12 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
                             : 'Write to NFC Tag',
                         onPressed: !state.writing
                             ? () {
-                                context.read<NFCCubit>().write(Uri.parse(widget
-                                    .entity!.sender.lnurl.params['callback']));
+                                context.read<NFCCubit>().write(Uri.parse((widget
+                                        .entity!
+                                        .sender
+                                        .lnurl
+                                        .params['callback'] as String)
+                                    .replaceAll('https://', 'lnurlw://')));
                               }
                             : null,
                       ),
