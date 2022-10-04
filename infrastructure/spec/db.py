@@ -4,6 +4,7 @@ def db(config, cluster_types):
 
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-db"
+    
     return {
         "resources": [
           {
