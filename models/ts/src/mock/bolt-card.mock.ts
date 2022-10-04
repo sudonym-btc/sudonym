@@ -17,6 +17,12 @@ export const factory = Factory.Sync.makeFactory<BoltCard>(
             limitMin: 0,
             userId: '123',
             data: 'lnurl23456789hghj',
+            lnurl: {
+                id: "123-123",
+                params: {
+                    callback: "https://sudonym.app/lnurlw/dfghj"
+                }
+            },
             lnurlId: 'zxcvb-bvc',
             createdAt: new Date()
         }

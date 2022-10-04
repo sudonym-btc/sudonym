@@ -61,8 +61,10 @@ abstract class EntityCubit<
   }
 
   set(EntityType entity) {
-    emit(stateClass(entity: entity, loading: false));
-    listenChanges();
+    if (!isClosed) {
+      emit(stateClass(entity: entity, loading: false));
+      listenChanges();
+    }
   }
 
   @override

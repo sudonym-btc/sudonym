@@ -1,10 +1,12 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 
 @injectable
-class TransactionListenerCubit extends Cubit<TransactionListenerCubitState> {
+class TransactionListenerCubit extends Cubit<TransactionListenerCubitState>
+    with ActionLogger {
   ClipboardListener clipboard = ClipboardListener();
   LinkListener link = LinkListener();
   NFCListener nfc = NFCListener();
@@ -30,11 +32,11 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState> {
   }
 
   void parseAddress(String address) {
-    print("Detected " + address);
+    loggy.info('Detected $address');
     if (!state.ignoredAddresses.contains(address)) {
       emit(TransactionReady(
           address: address, ignoredAddresses: state.ignoredAddresses));
-      ignoreAddress(address);
+      // ignoreAddress(address);
     }
   }
 

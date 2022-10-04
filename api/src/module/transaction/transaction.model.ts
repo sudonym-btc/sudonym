@@ -33,10 +33,12 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	id: number;
 
 	@ForeignKey(() => Onchain)
+	@AllowNull(true)
 	@Column(DataType.STRING(1024))
 	onchainId: string;
 
 	@ForeignKey(() => Invoice)
+	@AllowNull(true)
 	@Column(DataType.STRING(1024))
 	invoiceId: string;
 
@@ -60,6 +62,7 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	status: boolean;
 
 	@ForeignKey(() => Transaction)
+	@AllowNull(true)
 	@Column
 	transactionId: number;
 
@@ -71,10 +74,12 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	potId: number;
 
 	@ForeignKey(() => Sender)
+	@AllowNull(true)
 	@Column
 	senderId: number;
 
 	@ForeignKey(() => Receiver)
+	@AllowNull(true)
 	@Column
 	receiverId: number;
 
