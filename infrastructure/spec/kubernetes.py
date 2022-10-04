@@ -5,8 +5,9 @@
 
 from common import getConfig
 from dns import dns
+from db import db
 from kubernetes_ingress import ingress
-from kubernetes_db import db
+from kubernetes_db import kubernetes_db
 from kubernetes_ride_the_lightning import ride_the_lightning
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_cluster import cluster
@@ -73,7 +74,7 @@ def GenerateConfig(context):
         + api(config, cluster_types)["resources"]
         + dns(config, cluster_types)["resources"]
     ) + (
-        db(config, cluster_types)["resources"] if config["env"] == "development" else []
+        kubernetes_db(config, cluster_types)["resources"] if config["env"] in ["development", "test"] else db(config, cluster_types)["resources"] 
     )
     print(resources)
     return {"resources": resources, "cluster_types_root": cluster_types_root}
