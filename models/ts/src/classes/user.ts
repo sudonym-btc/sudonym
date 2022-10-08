@@ -1,13 +1,27 @@
-export class User  {
+import { BaseClass } from './base-class';
 
-    constructor(
-        public id: number, 
-        public passHash: String,
-        public firebaseId: String,
-        public lightningAddress: String
-    ) {}
+export class User extends BaseClass {
+	constructor(
+		public id: string,
+		public firebaseId: string,
+		public lightningAddress: string | null
+	) {
+		super();
+	}
 
-    static fromJson(json: Object) {
-        return new User(json["id"], json["passHash"], json["firebaseId"], json["lightningAddress"]);
-    }
+	static fromJson(json: Object): User {
+		return new User(
+			json['id'],
+			json['firebaseId'],
+			json['lightningAddress']
+		);
+	}
+
+	toJson(): any {
+		return {
+			id: this.id,
+			firebaseId: this.firebaseId,
+			lightningAddress: this.lightningAddress,
+		};
+	}
 }

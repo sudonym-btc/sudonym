@@ -1,33 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as crypto from 'crypto';
-import admin, { ServiceAccount } from 'firebase-admin';
-import { UserService } from '../user/user.service';
-import * as serviceAccount from '../../../service-account.json';
-import { AuthError } from './types/error';
-// Firebase Setup
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as ServiceAccount)
-});
+import {
+	FIREBASE_ADMIN,
+	T_FIREBASE_ADMIN,
+} from 'service/firebase-admin/firebase-admin';
 
 @Injectable()
 export class AuthService {
+	@Inject(FIREBASE_ADMIN) private firebaseAdmin: T_FIREBASE_ADMIN;
 
-    @Inject(UserService) private readonly userService: UserService;
-
-    async auth(pass: string) {
-        try {
-            const user = await this.userService.findOne({
-                where: {
-                    passHash: hash(pass)
-                }
-            });
-            return await admin.auth().createCustomToken(user.id.toString());
-        } catch (e) {
-            throw new AuthError(e.toString());
-        }
-    }
-}
-
-export const hash = (str: string) => {
-    return crypto.createHash('md5').update(str).digest('hex');
+	async auth({ token }: { token: string }) {
+		if (!token) return null;
+		return await this.firebaseAdmin.auth().verifyIdToken(token);
+	}
 }

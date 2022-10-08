@@ -1,19 +1,27 @@
-import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement } from 'sequelize-typescript'
+import {
+	Table,
+	Column,
+	Model,
+	HasMany,
+	PrimaryKey,
+	AutoIncrement,
+} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
+import { BaseModel } from '../base.model';
+import { Sender } from '../sender/sender.model';
 
 @Table
-export class User extends Model implements Models.User  {
-    @PrimaryKey
-    @AutoIncrement
-    @Column
-    id: number
+export class User extends BaseModel implements Models.User {
+	@PrimaryKey
+	@Column
+	id: string;
 
-    @Column
-    passHash: string
+	@Column
+	firebaseId: string;
 
-    @Column
-    firebaseId: string
+	@Column
+	lightningAddress: string;
 
-    @Column
-    lightningAddress: string
+	@HasMany(() => Sender)
+	Senders: Sender[];
 }

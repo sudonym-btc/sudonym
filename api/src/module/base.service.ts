@@ -1,39 +1,157 @@
-import { Inject } from "@nestjs/common";
-import { Model} from 'sequelize-typescript';
-import { Constructor } from "sequelize-typescript/dist/shared/types";
+import { Inject } from '@nestjs/common';
+import {
+	Constructor,
+	RecursivePartial,
+} from 'sequelize-typescript/dist/shared/types';
+import { EventsService, TriggeredEvent } from './events/events.service';
+import { Event } from '@sudonym/models';
+import { Callback } from '../helper/callback';
+import { FindOptions, Op } from 'sequelize';
+import { RequestType } from 'helper/parse-request.decorator';
+import { BaseModel } from './base.model';
+import { Subject } from 'rxjs';
 
-type ModelType<T> = Constructor<T> & typeof Model;
+type ModelType<T> = Constructor<T> & typeof BaseModel;
 
 export interface TControllerAndService<TModel> {
-    findOne(id): Promise<TModel>;
-    create(params);
-    list();
+	onModuleInit(): Promise<any>;
+	findOne(id, req?: RequestType): Promise<TModel>;
+	create(
+		params: RecursivePartial<TModel>,
+		req?: RequestType
+	): Promise<TModel>;
+	update(
+		id,
+		params: RecursivePartial<TModel>,
+		req?: RequestType
+	): Promise<TModel>;
+	list(
+		param: FindOptions,
+		req?: RequestType
+	): Promise<{
+		data: TModel[];
+		metadata: {
+			count: number;
+		};
+	}>;
 }
 export interface TBaseService<TModel> extends TControllerAndService<TModel> {
-    // repo: typeof TModel;
+	beforeCreate: Callback<TModel>;
+	afterCreate: Callback<TModel>;
+	onAfterCreated: Subject<TModel>;
+	beforeUpdate: Callback<TModel>;
+	afterUpdate: Callback<TModel>;
+	onAfterUpdated: Subject<TModel>;
+	getUserIds: (id: number | string, scope?: string) => Promise<string[]>;
 }
 
-export const BaseService = <TModel extends Model>(repository: ModelType<TModel>): Constructor<TBaseService<TModel>> => {
+export const BaseService = <TModel extends BaseModel>(
+	repository: ModelType<TModel>
+): Constructor<TBaseService<TModel>> => {
+	class X {
+		beforeCreate = new Callback<TModel>();
+		afterCreate = new Callback<TModel>();
+		onAfterCreated = new Subject<TModel>();
+		beforeUpdate = new Callback<TModel>();
+		afterUpdate = new Callback<TModel>();
+		onAfterUpdated = new Subject<TModel>();
+		@Inject(repository) repo: typeof repository;
+		@Inject(EventsService) eventsService: EventsService;
 
-    class X {
-        @Inject(repository) repo: typeof repository;
+		async onModuleInit() {}
 
-        async findOne(id: string | number) {
-            return (await this.repo.findOne({
-                where: {
-                    id
-                }
-            }));
-        }
+		async findOne(id: string | number | FindOptions, req: RequestType) {
+			return (
+				await this.list(
+					typeof id == 'object'
+						? id
+						: {
+								where: {
+									id: id as any,
+								},
+						  },
+					req
+				)
+			).data[0];
+		}
 
-        create(params) {
-            return this.repo.create(params);
-        }
+		async list(params: FindOptions, req: RequestType) {
+			const scopes = [
+				this.repo.scopes.find ? this.repo.scopes.find(req) : null,
+			].filter((i) => !!i);
+			const data = await this.repo
+				.scope(scopes as any)
+				.findAndCountAll(parseFindParams(params));
 
-        list() {
-            return this.repo.findAll();
-        }
-    }
+			return {
+				data: data.rows,
+				metadata: {
+					count: data.count,
+				},
+			};
+		}
 
-    return X;
-}
+		async getUserIds(id: string | number, scope = 'find') {
+			if (repository.accessors.canFind) {
+				const query = await repository.accessors.canFind(id);
+				const ids = query.map((i: any) => i.id) as string[];
+				return ids;
+			}
+			return [];
+		}
+
+		async update(id, params, req: RequestType) {
+			const scopes = [
+				repository.scopes.edit ? repository.scopes.edit(req) : null,
+				repository.scopes.find ? repository.scopes.find(req) : null,
+			].filter((i) => !!i);
+			const record = await this.repo.scope(scopes as any).findByPk(id);
+			const obj = await record.set(params).save();
+
+			await this.afterUpdate.execute(obj);
+			await this.onAfterUpdated.next(obj);
+
+			await this.eventsService.trigger(
+				new TriggeredEvent(
+					new Event(this.repo.name.toLowerCase() + '.updated', obj),
+					await this.getUserIds(obj.id)
+				)
+			);
+
+			return obj;
+		}
+
+		async create(params, req: RequestType) {
+			await this.beforeCreate.execute(params);
+			const obj = await this.repo.create(params);
+
+			await this.afterCreate.execute(obj);
+			await this.onAfterCreated.next(obj);
+
+			await this.eventsService.trigger(
+				new TriggeredEvent(
+					new Event(this.repo.name.toLowerCase() + '.created', obj),
+					await this.getUserIds(obj.id)
+				)
+			);
+
+			return obj;
+		}
+	}
+
+	return X;
+};
+
+const parseFindParams = (params) => {
+	Object.keys(params).forEach((key) => {
+		if (['lt', 'gt', 'eq', 'like'].includes(key)) {
+			params[Op[key]] = params[key];
+			delete params[key];
+			key = Op[key];
+		}
+		if (typeof params[key] === 'object') {
+			params[key] = parseFindParams(params[key]);
+		}
+	});
+	return params;
+};

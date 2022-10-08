@@ -4,10 +4,23 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    
+        {
+            "name": "flutter - widgetbook",
+            "cwd": "app",
+            "request": "launch",
+            "program": "widgetbook/lib/main.dart",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=mock",
+            ]
+        },
         {
             "name": "flutter - mock",
-            "cwd": "flutter",
+            "cwd": "app",
             "request": "launch",
+            "program": "lib/main-mock.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -16,8 +29,9 @@
         },
         {
             "name": "flutter - development",
-            "cwd": "flutter",
+            "cwd": "app",
             "request": "launch",
+            "program": "lib/main-dev.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -25,9 +39,21 @@
             ]
         },
         {
-            "name": "flutter - staging",
-            "cwd": "flutter",
+            "name": "flutter - test",
+            "cwd": "app",
             "request": "launch",
+            "program": "lib/main-test.dart",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "ENV=test",
+            ]
+        },
+        {
+            "name": "flutter - staging",
+            "cwd": "app",
+            "request": "launch",
+            "program": "lib/main-staging.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -36,8 +62,9 @@
         },
         {
             "name": "flutter - production",
-            "cwd": "flutter",
+            "cwd": "app",
             "request": "launch",
+            "program": "lib/main-prod.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",

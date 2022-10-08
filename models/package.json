@@ -1,18 +1,22 @@
 {
-  "name": "@sudonym/models",
+  "name": "@sudonym/models-combined",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "convert": "bash convert.sh",
+    "convert": "sh convert.sh && (cd ts && ts-node src/dart-decorator.ts)",
     "genMocks": "ts-node ./ts/src/mock/exporter.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.3.1",
     "factory.ts": "^0.5.2",
     "ts-node": "^10.6.0",
     "ts2dart": "^0.9.11",
     "typescript": "^4.6.2"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "madge": "^5.0.1"
+  }
 }

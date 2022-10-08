@@ -1,17 +1,23 @@
+import { BaseClass } from './base-class';
 
-export class PotUser {
+export class PotUser extends BaseClass {
+	constructor(
+		public id: number,
+		public potId: number,
+		public userId: string
+	) {
+		super();
+	}
 
-    constructor(
-        public id: number,
-        public potId: number,
-        public userId: number,
-    ) { }
+	static fromJson(json: Object): PotUser {
+		return new PotUser(json['id'], json['potId'], json['userId']);
+	}
 
-    static fromJson(json: Object) {
-        return new PotUser(
-            json["id"], 
-            json["potId"], 
-            json["userId"],
-        );
-    }
+	toJson(): any {
+		return {
+			id: this.id,
+			potId: this.potId,
+			userId: this.userId,
+		};
+	}
 }

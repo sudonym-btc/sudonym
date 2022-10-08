@@ -1,10 +1,31 @@
-class Pot {
-  String id;
+import "base-class.dart" show BaseClass;
+
+class Pot extends BaseClass {
+  dynamic /* num | null */ id;
   String name;
   String currency;
-  num balance;
-  Pot(this.id, this.name, this.currency, this.balance) {}
-  static fromJson(Map<String, dynamic> json) {
-    return new Pot(json["id"], json["name"], json["currency"], json["balance"]);
+  dynamic /* num | null */ balance;
+  dynamic /* num | null */ spendableBalance;
+  Pot(this.id,
+      [this.name = "",
+      this.currency = "BTC",
+      this.balance = 0,
+      this.spendableBalance = 0])
+      : super() {
+    /* super call moved to initializer */;
+  }
+  static Pot fromJson(Map<String, dynamic> json) {
+    return new Pot(json["id"], json["name"], json["currency"], json["balance"],
+        json["spendableBalance"]);
+  }
+
+  dynamic toJson() {
+    return {
+      "id": this.id,
+      "name": this.name,
+      "currency": this.currency,
+      "balance": this.balance,
+      "spendableBalance": this.spendableBalance
+    };
   }
 }

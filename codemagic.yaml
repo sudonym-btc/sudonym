@@ -1,0 +1,82 @@
+# Automatically generated on 2022-09-26 UTC from https://codemagic.io/app/621e5974bc3d3d5bbbc82181/settings
+# Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
+
+variables:
+  - &localproperties
+    name: Set up local.properties
+    script: |
+      cat >> "$CM_BUILD_DIR/app/android/local.properties" <<EOF
+      storePassword=$CM_KEYSTORE_PASSWORD
+      keyPassword=$CM_KEY_PASSWORD
+      keyAlias=$CM_KEY_ALIAS
+      storeFile=$CM_KEYSTORE_PATH
+      flutter.sdk=$HOME/programs/flutter
+      EOF
+  - &getpackages
+    script: cd app && flutter packages pub get
+  - &ghrelease
+    name: Publish to GitHub
+    script: |
+      #!/usr/bin/env zsh
+      gh release create "${CM_BRANCH}-${CM_COMMIT}" \
+        --title "sudonym ${CM_BRANCH}-${CM_COMMIT}" \
+       app/build/app/outputs/bundle/release/app-release.aab \
+       app/build/app/outputs/flutter-apk/app-release.apk
+
+workflows:
+  default-workflow: &default-workflow
+    name: Default Workflow
+    instance_type: linux
+    max_build_duration: 60
+    environment:
+      groups:
+        - google_credentials
+        - github_credentials
+      android_signing:
+        - patrick
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    artifacts:
+      - app/build/**/outputs/apk/**/*.apk
+      - app/build/**/outputs/bundle/**/*.aab
+      - app/build/**/outputs/**/mapping.txt
+      - app/*.snap
+      - app/build/windows/**/*.msix
+      - app/flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - patrick@sudonym.app
+      slack:
+        channel: "#general"
+        notify_on_build_start: true
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        in_app_update_priority: 0
+        submit_as_draft: true
+    when:
+      changeset:
+        includes:
+          - "app/"
+          - "models/"
+  test-workflow:
+    <<: *default-workflow
+    name: "Test Workflow"
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: test
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: "*"
+          include: true
+    scripts:
+      - *localproperties
+      - *getpackages
+      - 'cd app && flutter build appbundle -t lib/main-test.dart --release'
+      - 'cd app && flutter build apk -t lib/main-test.dart --release'
+      - *ghrelease

@@ -1,8 +1,47 @@
 {
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "autopep8",
     "dart.analysisExcludedFolders": [
         "api",
-        "models"
+        "models",
+        "node_modules"
     ],
-    "dart.shareDevToolsWithFlutter": false
+    "dart.shareDevToolsWithFlutter": false,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "local",
+            "database": "${workspaceFolder:sudonym}/api/database.sqlite"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "db.local.development",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "development",
+            "database": "test",
+            "username": "root",
+            "password": "testing"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "db.test.sudonym.app",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "test",
+            "database": "test",
+            "username": "root",
+            "password": "testing"
+        }
+    ],
+    "sqltools.useNodeRuntime": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }

@@ -3,4 +3,11 @@ node_modules
 build
 dist
 **.icloud
-ops/infrastructure/minikube.yaml
+**.bak
+minikube.yaml
+
+release
+.idea
+infrastructure/local-volumes/*/*
+!*.gitkeep
+key.json

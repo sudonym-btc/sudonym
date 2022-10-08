@@ -1,0 +1,31 @@
+import { BaseClass } from './base-class';
+import { Sender } from './sender';
+
+export class BoltCard extends BaseClass {
+	constructor(
+		public id: number | null,
+		public userId: string | null,
+		public senderId: number | null,
+		public sender: Sender | null,
+		public name: string | null,
+		public written: number | null
+	) {
+		super();
+	}
+
+	static fromJson(json: Object): BoltCard {
+
+		return new BoltCard(json['id'], json['userId'], json["senderId"], json["sender"] != null ? Sender.fromJson(json["sender"]) : null, json['name'], json['written']);
+	}
+
+	toJson(): any {
+		return {
+			id: this.id,
+			userId: this.userId,
+			senderId: this.senderId,
+			sender: this.sender != null ? this.sender.toJson() : null,
+			name: this.name,
+			written: this.written
+		};
+	}
+}

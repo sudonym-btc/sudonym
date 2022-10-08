@@ -1,0 +1,21 @@
+imports:
+- path: kubernetes.py
+- path: kubernetes_cluster.py
+- path: kubernetes_ingress.py
+- path: kubernetes_bitcoin.py
+- path: kubernetes_lightning.py
+- path: kubernetes_lightning_rest.py
+- path: kubernetes_ride_the_lightning.py
+- path: kubernetes_api.py
+- path: kubernetes_db.py
+- path: common.py
+- path: helper.py
+- path: dns.py
+- path: db.py
+- path: config.py
+
+resources:
+- name: config
+  type: config.py
+  properties:
+    env: test

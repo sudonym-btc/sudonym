@@ -3,6 +3,5 @@ import { PotUser } from './pot-user.model';
 
 @Injectable()
 export class PotUserService {
-    @Inject(PotUser) potUserRepository: typeof PotUser;
-
+	@Inject(PotUser) potUserRepository: typeof PotUser;
 }

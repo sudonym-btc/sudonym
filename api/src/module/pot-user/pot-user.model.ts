@@ -1,16 +1,35 @@
-import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement } from 'sequelize-typescript'
+import {
+	Table,
+	Column,
+	Model,
+	HasMany,
+	PrimaryKey,
+	AutoIncrement,
+	BelongsTo,
+	ForeignKey,
+} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
+import { BaseModel } from '../base.model';
+import { Pot } from '../pot/pot.model';
+import { User } from 'module/user/user.model';
 
-@Table
-export class PotUser extends Model implements Models.PotUser {
-    @PrimaryKey
-    @AutoIncrement
-    @Column
-    id: number
+@Table({
+	scopes: PotUser.scopes,
+})
+export class PotUser extends BaseModel implements Models.PotUser {
+	@PrimaryKey
+	@AutoIncrement
+	@Column
+	id: number;
 
-    @Column
-    potId: number
+	@BelongsTo(() => Pot)
+	Pot: Pot;
 
-    @Column
-    userId: number
+	@ForeignKey(() => Pot)
+	@Column
+	potId: number;
+
+	@ForeignKey(() => User)
+	@Column
+	userId: string;
 }

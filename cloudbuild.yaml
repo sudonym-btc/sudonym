@@ -1,4 +1,46 @@
 steps:
-- name: 'gcr.io/$PROJECT_ID/flutter'
-  entrypoint: 'bash'
-  args: ['bash ls -a']
+  - id: 'api'
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
+  
+  - id: 'push api'
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA']
+
+  - id: 'Setting API image tag'
+    waitFor:
+      - "-"
+    name: ubuntu
+    args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
+
+  - id: 'helm'
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    waitFor:
+      - "-"
+    args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      if [[ -z `gcloud container images list-tags --format='get(tags)' gcr.io/$PROJECT_ID/helm | grep latest` ]]
+      then
+        gcloud builds submit infrastructure/cloud-builders-community/helm --config=infrastructure/cloud-builders-community/helm/cloudbuild.yaml
+      else
+        echo "Image existed"
+      fi
+
+  - id: 'deploy'
+    name: 'gcr.io/$PROJECT_ID/helm'
+    entrypoint: 'bash'
+    args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']
+
+substitutions:
+    _CLOUDSDK_COMPUTE_REGION: us-central1-c
+    _CLOUDSDK_CONTAINER_CLUSTER: $BRANCH_NAME
+
+options:
+    dynamic_substitutions: true
+
+images: ["gcr.io/$PROJECT_ID/api:$SHORT_SHA", "gcr.io/$PROJECT_ID/api:latest"]
+timeout: 1200s

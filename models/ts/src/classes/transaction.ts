@@ -1,26 +1,69 @@
-export class Transaction {
+import { BaseClass } from './base-class';
 
-    constructor(
-        public id: string,
-        public transactionId: string,
-        public potId: string,
-        public amount: number,
-        public spendable: boolean,
-        public OnchainTransactionId: string,
-        public LightningInvoiceId: string,
-        public createdAt: Date
-    ) { }
+export class Transaction extends BaseClass {
+	constructor(
+		public id: number,
+		public onchainId: string | null,
+		public invoiceId: string | null,
+		public txid: string | null,
+		public potId: number,
+		public receiverId: number | null,
+		public senderId: number | null,
+		public outgoing: boolean,
+		public type: string | null,
+		public originalAddress: string | null,
+		public address: string | null,
+		public description: string | null,
+		public transactionId: number | null,
+		public amount: number,
+		public status: boolean | null,
+		public currencyCode: string,
+		public createdAt: Date
+	) {
+		super();
+	}
 
-    static fromJson(json: Object) {
-        return new Transaction(
-            json["id"],
-            json["transactionId"],
-            json["potId"],
-            json["amount"],
-            json["spendable"],
-            json["OnchainTransactionId"],
-            json["LightningInvoiceId"],
-            json["createdAt"]
-        );
-    }
+	static fromJson(json: Object): Transaction {
+		return new Transaction(
+			json['id'],
+			json['onchainId'],
+			json['invoiceId'],
+			json['txid'],
+			json['potId'],
+			json['receiverId'],
+			json['senderId'],
+			json['outgoing'],
+			json['type'],
+			json['originalAddress'],
+			json['address'],
+			json['description'],
+			json['transactionId'],
+			json['amount'],
+			json['status'],
+			json['currencyCode'],
+			json['createdAt']
+		);
+	}
+
+	toJson(): any {
+		return {
+			id: this.id,
+			onchainId: this.onchainId,
+			invoiceId: this.invoiceId,
+			txid: this.txid,
+			potId: this.potId,
+			receiverId: this.receiverId,
+			senderId: this.senderId,
+			outgoing: this.outgoing,
+			type: this.type,
+			originalAddress: this.originalAddress,
+			address: this.address,
+			description: this.description,
+			transactionId: this.transactionId,
+			amount: this.amount,
+			status: this.status,
+			currencyCode: this.currencyCode,
+			createdAt: this.createdAt,
+		};
+	}
 }

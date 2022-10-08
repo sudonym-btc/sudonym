@@ -1,36 +1,121 @@
-# sudonym monorepo
+# sudonym
 
-setup:
+This monorepo contains all code related to the sudonym whitelabel-able bitcoin
+and lightning wallet. The folder structure is outlined below:
 
- mac: isntall homebrew
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    install nvm
-    brew install nvm --> follow instructions
-    nvm install 16
-    brew install minikube
-    <!-- Instead of using docker as default engine, hyperkit will allow ports to be forwarded more easily -->
-    brew install hyperkit
-    <!-- Setup local domain -->
+```text
+📦 sudonym
+ ┣ 📂 api    // Contains code that runs on the backend
+ ┣ 📂 app    // Contains code for the mobile app
+ ┣ 📂 models // Contains any shared data structures
+ ┗ 📂 infrastructure    // Contains infrastructure as code
+```
 
-    cp ./ops/dnsmasq.conf /usr/local/etc/dnsmasq.conf
-    brew install dnsmasq
-    sudo cp $(brew list dnsmasq | grep /homebrew.mxcl.dnsmasq.plist$) /Library/LaunchDaemons/
-    sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
-    sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist
-    dscacheutil -flushcache
+<details>
+  <summary>Installation</summary>
 
-    sudo mkdir -p /etc/resolver
-    sudo tee /etc/resolver/local.app > /dev/null <<EOF
-nameserver 127.0.0.1
-domain local.app
-search_order 1
-EOF
+## Prerequisites
 
-frontend:
-    flutter:
-    https://docs.flutter.dev/get-started/install/macos
+Check that the `curl` command is available.
+On Debian, make sure the following is installed: `sudo apt install build-essential`.
 
-launch fresh:
-  install gcloud
-  enable deloyment manager, enable kubernetes api
-  gcloud deployment-manager deployments create a-single-vm --template vm_template.jinja
+## Install
+
+```bash
+git clone https://github.com/sudonym-btc/sudonym.git && cd sudonym && \
+./install.sh && \
+npm run deploy:development:hard
+```
+
+You are welcome to try the install.sh script.
+However you can also manually install the following tools:
+
+- Docker
+- Minikube
+- Google Cloud SDK
+- kubectl
+- Flutter
+- Github Cli
+- NVM
+- Python
+
+You will need to add the installed packages to your PATH variable in order to
+access them via the terminal.
+Run the brew installation command again in order to find the code to
+add brew to PATH if it isn't already.
+Call the `brew info nvm` command to see what
+you need to add to your .zshrc file for example.
+
+To be able to use Google APIs on Flutter,
+you will need to add your developer key to the firebase project.
+
+For android development, add command-line tools in android studio to be able to
+create virtual devices from VS Code.
+
+</details>
+
+<details>
+<summary>Run project</summary>
+
+## API
+
+```bash
+# Setup the backend
+# Makes sure the API is launched on local cluster
+npm run deploy:development
+# Optionally watch the API logs and hot reload changes
+npm run watch:api
+```
+
+## Frontend
+
+To run Flutter without a backend, run in the flutter - mock profile,
+can be found in the Run & Debug panel.
+Else, change to flutter - development
+
+</details>
+
+<details>
+<summary>Infrastructure/Cloud</summary>
+
+## Setup
+
+After you have installed the project locally using the instructions above,
+you should have logged into your Google Cloud account.
+
+If you are the admin of an empty Google Cloud project, you can run
+
+```npm run init:gcloud ["test" | "staging" | "production"]
+```
+
+You might have to run this multiple times as it takes a
+few minutes for APIs to be enabled.
+
+The above command enables the necessary APIs in the cloud project
+and sets up triggers to your repo, so that deploys happen via Git commits.
+
+Creating and merging PRs for the production and staging banches
+will cause deployment manager to read the specs found in the "infrastructure" folder
+and roll out the changes.
+
+The first deployment of each environment can take multiple executions
+as the clusters start up and there may be race conditions.
+
+To publish your app to play store etc you will have to follow codemagic
+instructions here <https://docs.codemagic.io/yaml-publishing/google-play/>
+
+Might have to run
+`gcloud beta deployment-manager type-providers delete test-cluster-type`
+if you abandon a deployment, otherwise the next deployment will use the old
+typeprovider with outdates IP address for spec.
+
+Get kubectl credentials for cluster
+`gcloud container clusters get-credentials test-cluster --zone us-central1-c`
+
+If cannot validate ingress
+`kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission`
+
+Backups will be sent to cloud storage. Can become corrupted if a new pod starts
+up while another syncing.
+
+</details>

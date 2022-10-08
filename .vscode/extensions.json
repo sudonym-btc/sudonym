@@ -8,6 +8,14 @@
         "dart-code.dart-code",
         "dart-code.flutter",
         "felixangelov.bloc",
-        "redhat.vscode-xml"
+        "redhat.vscode-xml",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-sqlite",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "davidanson.vscode-markdownlint",
+        "foxundermoon.shell-format",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "mtxr.sqltools-driver-mysql"
     ]
 }

@@ -1,18 +1,31 @@
-import { createMockApp, createMockEntities, mockScaffold } from "./create-mock-entities";
+import {
+	createMockApp,
+	createMockEntities,
+	mockScaffold,
+} from './create-mock-entities';
 
-export const scaffoldGroup = (description, callback: (scaffold: mockScaffold) => any) => {
-    return describe(description, () => {
-        let scaffold: mockScaffold = {} as any;
+export const scaffoldGroup = (
+	description,
+	callback: (scaffold: mockScaffold) => any
+) => {
+	return describe(description, () => {
+		const scaffold: mockScaffold = {} as any;
 
-        beforeAll(async () => {
-            scaffold.app = await createMockApp();
-        });
+		beforeAll(async () => {
+		});
 
-        beforeEach(async () => {
-            await scaffold.app.get('SEQUELIZE').truncate({ cascade: true });
-            scaffold.entities = await createMockEntities();
-        });
+		beforeEach(async () => {
+			scaffold.app = await createMockApp();
+			await scaffold.app.get('SEQUELIZE').truncate({ cascade: true });
+			scaffold.entities = await createMockEntities();
+		});
 
-        callback(scaffold);
-    })
+		afterEach(async () => {
+			await scaffold.app.close();
+		})
+
+		
+
+		callback(scaffold);
+	});
 };
