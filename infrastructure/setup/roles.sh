@@ -19,6 +19,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role="roles/compute.networkViewer"
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
+    --role="roles/cloudsql.editor"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
     --role roles/iam.serviceAccountKeyAdmin
 
 # cert-manager account for generating certificates
