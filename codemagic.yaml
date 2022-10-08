@@ -99,3 +99,9 @@ workflows:
       - 'cd app && flutter build appbundle -t lib/main-production.dart --release'
       - 'cd app && flutter build apk -t lib/main-production.dart --release'
       - *ghrelease
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: alpha
+        in_app_update_priority: 0
+        submit_as_draft: true
