@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ReceiverModule } from 'module/receiver/receiver.module';
 import { LightningNodeModule } from 'service/lightning-node/lightning-node.module';
 import { CurrencyModule } from '../currency/currency.module';
 import { LnUrlHandlerModule } from '../lightning/lnurl/lnurl-handler/lnurl-handler.module';
@@ -15,6 +16,7 @@ import { AddressParser } from './address-parser/address-parser';
 		LnUrlHandlerModule,
 		LightningNodeModule,
 		TransactionModule,
+		ReceiverModule,
 	],
 	controllers: [ActionController],
 	providers: [ActionService, AddressParser],

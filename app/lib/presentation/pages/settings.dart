@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:sudonym/config/config.dart';
@@ -42,7 +42,7 @@ class SettingsPage extends StatelessWidget {
                                     .lightningAddress,
                                 suffixText: '@${getIt<Config>().domain}'),
                             validator: (value) {
-                              if (value!.isEmpty) {
+                              if (value != null && value.isEmpty) {
                                 return 'Please enter some text';
                               }
                               return null;
@@ -54,7 +54,48 @@ class SettingsPage extends StatelessWidget {
             const Expanded(
                 child: const Padding(
                     padding: EdgeInsets.all(padding), child: BoltCardList())),
+            Button(
+              text: "Logout",
+              onPressed: (() async {
+                await getIt<AuthCubit>().logout();
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }),
+            ),
+            const AboutSection()
           ]),
         )));
+  }
+}
+
+class AboutSection extends StatefulWidget {
+  const AboutSection({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return AboutSectionState();
+  }
+}
+
+class AboutSectionState extends State<AboutSection> {
+  String appName = '';
+  String packageName = '';
+  String version = '';
+  String buildNumber = '';
+
+  @override
+  initState() {
+    PackageInfo.fromPlatform().then((packageInfo) {
+      appName = packageInfo.appName;
+      packageName = packageInfo.packageName;
+      version = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('$appName - $packageName - $version - $buildNumber');
   }
 }

@@ -7,7 +7,6 @@ import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -42,7 +41,10 @@ class ReceiveWidget extends StatelessWidget {
           }
           return Column(
             children: [
-              Expanded(child: image),
+              Expanded(
+                  child: Stack(children: [
+                image,
+              ])),
               const SizedBox(height: padding),
               Padding(
                 padding: const EdgeInsets.all(padding),

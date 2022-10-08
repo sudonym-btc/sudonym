@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class TransactionListItem extends StatelessWidget {
@@ -13,7 +12,7 @@ class TransactionListItem extends StatelessWidget {
   getTitle() {
     String networkName =
         ['lnurl', 'bolt11', 'bolt12', 'lightningaddress'].contains(entity.type)
-            ? 'lightning network'
+            ? 'via lightning network'
             : 'onchain';
     return entity.outgoing
         ? entity.address ?? 'Spent via $networkName'

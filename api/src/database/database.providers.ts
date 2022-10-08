@@ -4,7 +4,7 @@ export const databaseProviders = [
 	{
 		provide: 'SEQUELIZE',
 		useFactory: async () => {
-			await sequelize.sync({force: false});
+			await sequelize.sync({ force: false });
 			return sequelize;
 		},
 	},

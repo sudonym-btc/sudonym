@@ -2,6 +2,7 @@ import { Body, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { Constructor } from 'sequelize-typescript/dist/shared/types';
 import { ParseRequest } from 'helper/parse-request.decorator';
 import { TBaseService, TControllerAndService } from './base.service';
+import { requestContextCls } from 'helper/context-request';
 
 export interface TBaseController<TService, TModel>
 	extends TControllerAndService<TModel> {
@@ -18,6 +19,8 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 ): Constructor<TBaseController<TService, TModel>> => {
 	class X {
 		@Inject(service) service: TService;
+
+		async onModuleInit() {}
 
 		@Get(':id')
 		findOne(@Param('id') id: string | number, @ParseRequest() req) {

@@ -15,6 +15,8 @@ import { Receiver } from 'module/receiver/receiver.model';
 import { FIREBASE_ADMIN } from 'service/firebase-admin/firebase-admin';
 import { AddressParser } from 'module/action/address-parser/address-parser';
 import { WithdrawRequest } from '@sudonym/models';
+import { ActionService } from 'module/action/action.service';
+import * as bolt11 from 'bolt11';
 
 export type mockScaffold = {
 	app: INestApplication;
@@ -37,6 +39,8 @@ export const createMockApp = async () => {
 		.useClass(MockLightningEvents)
 		.overrideProvider(AddressParser)
 		.useClass(MockAddressParser)
+		.overrideProvider(ActionService)
+		.useClass(MockActionService)
 		.overrideProvider(FIREBASE_ADMIN)
 		.useValue(MockFirebaseAdmin)
 		.compile();
@@ -97,8 +101,26 @@ class MockLightningNodeService extends LightningNodeService {
 	getInvoices(): Promise<any> {
 		throw new Error('Method not implemented.');
 	}
-	createInvoice(amount: any, label?: any, description?: any): Promise<any> {
-		throw new Error('Method not implemented.');
+	async createInvoice(
+		amount: any,
+		label?: any,
+		description?: any
+	): Promise<any> {
+		const obj = bolt11.encode(
+			{
+				complete: true,
+				millisatoshis: amount,
+				tags: [
+					{
+						tagName: 'payment_hash',
+						data: 'qwertyuiop',
+					},
+				],
+			},
+			true
+		);
+		console.log(obj);
+		return { ...obj, bolt11: obj.paymentRequest };
 	}
 	getFees(pubkey: any, amount?: number): Promise<number> {
 		throw new Error('Method not implemented.');
@@ -153,6 +175,14 @@ class MockAddressParser extends AddressParser {
 		} else {
 		}
 	};
+}
+
+class MockActionService extends ActionService {
+	async getCallback(callback: any, params: any) {
+		if (callback.includes('lnurlw')) {
+			return { status: 'OK' };
+		}
+	}
 }
 
 const MockFirebaseAdmin = {

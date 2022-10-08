@@ -35,3 +35,9 @@ mixin NotificationLogger implements LoggyType {
   Loggy<NotificationLogger> get loggy =>
       Loggy<NotificationLogger>('Notification Logger - $runtimeType');
 }
+
+mixin CubitLogger implements LoggyType {
+  @override
+  Loggy<CubitLogger> get loggy =>
+      Loggy<CubitLogger>('Cubit Logger - $runtimeType');
+}

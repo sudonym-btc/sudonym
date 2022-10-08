@@ -2,6 +2,7 @@ export 'bolt_card/edit_bolt_card.dart';
 export 'contact.dart';
 export 'home_page.dart';
 export 'receive.dart';
+export 'receiver.dart';
 export 'send/send.dart';
 export 'send/amount.dart';
 export 'send_confirm.dart';

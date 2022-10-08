@@ -22,7 +22,6 @@ WidgetbookCategory buttons = WidgetbookCategory(
           builder: (context) => const Button(
               text: 'OK', icon: FaIcon(FontAwesomeIcons.addressBook)),
         ),
-        WidgetbookUseCase(name: 'NFC', builder: (context) => const NFC())
       ],
     ),
   ],

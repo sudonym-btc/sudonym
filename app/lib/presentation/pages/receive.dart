@@ -21,7 +21,7 @@ class ReceivePage extends StatelessWidget {
         color: Theme.of(context).colorScheme.background,
         child: SafeArea(
             child: DefaultTabController(
-                length: 4,
+                length: 3,
                 child: Scaffold(
                   appBar: AppBar(
                     title: Text(AppLocalizations.of(context)!.receive),
@@ -34,7 +34,7 @@ class ReceivePage extends StatelessWidget {
                           FontAwesomeIcons.bolt,
                           size: 12,
                         )),
-                        Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
+                        // Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
                       ],
                     ),
                   ),
@@ -43,7 +43,7 @@ class ReceivePage extends StatelessWidget {
                       ReceiveLnUrl(potId: data.potId),
                       ReceiveOnchain(potId: data.potId),
                       ReceiveBolt11(potId: data.potId),
-                      ReceiveBolt12(potId: data.potId),
+                      // ReceiveBolt12(potId: data.potId),
                     ],
                   ),
                 ))));

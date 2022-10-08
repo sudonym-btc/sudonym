@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 ThemeData getTheme({bool light = true}) {
-  ThemeData theme = ThemeData();
+  ThemeData theme = ThemeData.light();
   if (!light) theme = ThemeData.dark();
 
   Color textColor = light ? Colors.black : Colors.white;
@@ -50,11 +50,14 @@ ThemeData getTheme({bool light = true}) {
             borderSide:
                 BorderSide(style: BorderStyle.solid, width: 2, color: primary),
           )),
-      textTheme: TextTheme(
-          displayMedium: TextStyle(
-              color: textColor, fontSize: 20, fontWeight: FontWeight.w900),
-          displayLarge: TextStyle(
-              color: textColor, fontSize: 30, fontWeight: FontWeight.w900)));
+      textTheme: Typography()
+          .white
+          .copyWith(
+              displayMedium: TextStyle(
+                  color: textColor, fontSize: 20, fontWeight: FontWeight.w900),
+              displayLarge: TextStyle(
+                  color: textColor, fontSize: 30, fontWeight: FontWeight.w900))
+          .apply(bodyColor: textColor, displayColor: textColor));
 }
 
 const padding = 12.0;

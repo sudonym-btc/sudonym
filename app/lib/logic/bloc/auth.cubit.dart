@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart' as FB;
 import 'package:sudonym/data/index.dart';
 
 @singleton
@@ -8,21 +11,29 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
   final Websocket websocket;
+  StreamSubscription? authSub;
+  StreamSubscription? userSub;
 
   AuthCubit(this._authRepository, this._userRepository, this.websocket)
-      : super(LoadedState(null)) {
-    _authRepository.onStateChanged().listen((event) {
+      : super(LoadedState(null, null)) {
+    authSub = _authRepository.onStateChanged().listen((event) async {
       if (event == null) {
-        websocket.connect();
+        websocket.disconnect();
+        setUser(null, null);
       } else {
+        setUser(null, event);
         websocket.connect();
+        setUser(
+            await _userRepository
+                .create({'id': event.uid, 'firebaseId': event.uid}),
+            event);
       }
     });
 
-    _userRepository.updated.stream.listen((event) {
+    userSub = _userRepository.updated.stream.listen((event) {
       if (state.user != null) {
         if (event.id == state.user!.id) {
-          setUser(event);
+          setUser(event, state.firebaseUser!);
         }
       }
     });
@@ -32,43 +43,48 @@ class AuthCubit extends Cubit<AuthState> {
 
   loginWithGoogle() async {
     emit(LoadingState());
-    var user = await _authRepository.loginWithGoogle();
-    emit(LoadedState(await _userRepository
-        .create({'id': user.user!.uid, 'firebaseId': user.user!.uid})));
+    await _authRepository.loginWithGoogle();
   }
 
   loginWithFacebook() async {
     emit(LoadingState());
-    var user = await _authRepository.loginWithFacebook();
-    emit(LoadedState(await _userRepository
-        .create({'id': user.user!.uid, 'firebaseId': user.user!.uid})));
+    await _authRepository.loginWithFacebook();
   }
 
-  setUser(User u) {
-    emit(LoadedState(u));
+  setUser(User? u, FB.User? fbUser) {
+    emit(LoadedState(u, fbUser));
   }
 
   logout() async {
-    emit(LoadedState(null));
+    await _authRepository.logout();
+    emit(LoadedState(null, null));
+  }
+
+  @override
+  Future<void> close() async {
+    await userSub?.cancel();
+    await authSub?.cancel();
+    return super.close();
   }
 }
 
 abstract class AuthState {
   final User? user;
-  AuthState(this.user);
+  final FB.User? firebaseUser;
+  AuthState(this.user, this.firebaseUser);
 }
 
 class LoadingState extends AuthState {
-  LoadingState() : super(null);
+  LoadingState() : super(null, null);
 }
 
 class LoadedState extends AuthState {
-  LoadedState(User? user) : super(user);
+  LoadedState(User? user, FB.User? firebaseUser) : super(user, firebaseUser);
 
   @override
   List<User?> get props => [user];
 }
 
 class ErrorState extends AuthState {
-  ErrorState() : super(null);
+  ErrorState() : super(null, null);
 }

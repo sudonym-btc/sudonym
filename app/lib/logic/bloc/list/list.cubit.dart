@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/config/logger.dart';
@@ -8,12 +10,17 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   final CrudRepository _repository;
   final Map<String, dynamic> where;
   String order = 'DESC';
+  StreamSubscription? updater;
 
   ListCubit(this._repository, {this.where = const {}})
       : super(ListCubitState(
             data: const [], metadata: const {}, loading: false)) {
-    _repository.created.stream.listen((event) async {
-      loggy.debug("Loading Prev");
+    if (updater == null) {
+      loggy.debug("Subscribing to ${_repository.endpoint}");
+    }
+    updater ??= _repository.created.stream.listen((event) async {
+      loggy.debug("Created so reloading ${event.toJson().toString()}" +
+          _repository.endpoint);
       await loadPrevious();
       await loadNext();
     });
@@ -22,6 +29,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   loadNext() async {
     if (isClosed) return;
     if (!state.loading) {
+      loggy.debug('Loading next ${_repository.endpoint}');
+
       emit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
 
@@ -43,6 +52,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
     if (isClosed) return;
 
     if (!state.loading) {
+      loggy.debug('Loading previous ${_repository.endpoint}');
+
       emit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
 
@@ -72,6 +83,13 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
         99999999999999,
         (previousValue, element) =>
             element.id < previousValue ? element.id : previousValue);
+  }
+
+  @override
+  close() async {
+    loggy.debug("Unsubscribing to ${_repository.endpoint}");
+    await updater?.cancel();
+    return super.close();
   }
 }
 

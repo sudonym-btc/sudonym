@@ -48,7 +48,8 @@ config = {
         "env": "test",
         "domain": "test.sudonym.app",
         "network": "regtest",
-        "loglevel": "info"
+        "loglevel": "info",
+        "backup": True
     },
     "development": {
         "project": "sudonym-lightning-test",

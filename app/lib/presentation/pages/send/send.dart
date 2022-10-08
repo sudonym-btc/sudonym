@@ -4,7 +4,6 @@ import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SendPage extends StatefulWidget {
@@ -65,7 +64,8 @@ class _SendPageState extends State<SendPage> {
                       Expanded(
                           child: ListWidget(
                         emptyText: 'No contacts',
-                        list: ListCubit(getIt<ContactRepository>(), where: {
+                        list: () =>
+                            ListCubit(getIt<ContactRepository>(), where: {
                           'name': {'like': invoiceInput.controller!.value.text}
                         }),
                         builder: (el) {

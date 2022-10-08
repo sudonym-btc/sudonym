@@ -36,9 +36,9 @@ class ActionRepositoryImpl extends ActionRepository {
   }
 
   @override
-  Future<Withdraw> withdraw(Withdraw w) {
+  Future<Receiver> withdraw(Withdraw w) {
     return dio.post('/action',
-        data: {'action': w}).then((value) => Withdraw.fromJson(value.data));
+        data: {'action': w}).then((value) => Receiver.fromJson(value.data));
   }
 }
 
@@ -48,7 +48,7 @@ abstract class ActionRepository {
   Future<Payment> getPaymentInfo(Payment action);
   Future<Withdraw> getWithdrawInfo(Withdraw action);
   Future<Transaction> pay(Payment p);
-  Future<Withdraw> withdraw(Withdraw w);
+  Future<Receiver> withdraw(Withdraw w);
   ActionRepository(this.dio);
 }
 

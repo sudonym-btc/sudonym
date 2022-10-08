@@ -19,7 +19,7 @@ abstract class BoltCardRepository extends CrudRepository<BoltCard>
 
 class BoltCardRepositoryProps {
   @override
-  String endpoint = 'bolt-card';
+  String endpoint = 'boltCard';
   @override
   Function converter = (e) => BoltCard.fromJson(e);
 }

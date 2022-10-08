@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/config/logger.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:sudonym/config/config.dart';
 
@@ -18,7 +20,14 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
   WebsocketImpl(this.config) : super();
 
   @override
-  connect() {
+  disconnect() {
+    if (socketSubscription != null) {
+      socketSubscription!.cancel();
+    }
+  }
+
+  @override
+  connect() async {
     if (socketSubscription != null) {
       socketSubscription!.cancel();
     }
@@ -27,17 +36,19 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
 
     loggy.info('Connecting websocket to $url');
 
-    channel = IOWebSocketChannel.connect(url);
+    String bearer = await FirebaseAuth.instance.currentUser!.getIdToken();
+    channel =
+        IOWebSocketChannel.connect(url, headers: {'x-access-token': bearer});
 
     socketSubscription = channel!.stream.listen((event) {
       stream.sink.add(event);
     }, onError: (e) async {
       loggy.error(e);
       await Future.delayed(const Duration(seconds: 1));
-      connect();
+      await connect();
     }, onDone: () async {
       await Future.delayed(const Duration(seconds: 1));
-      connect();
+      await connect();
     }, cancelOnError: true);
   }
 
@@ -47,6 +58,7 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
 
 abstract class Websocket {
   connect();
+  disconnect();
   Stream getStream();
 }
 

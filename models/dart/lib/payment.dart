@@ -1,6 +1,7 @@
 import "action-type.dart" show ActionType;
 import "action-remote-response.dart" show ActionRemoteResponse;
 import "payment-request.dart" show PaymentRequest;
+import "types/index.dart" show MSATOSHIS;
 
 class Payment extends ActionType {
   dynamic /* num | null */ potId;
@@ -18,6 +19,7 @@ class Payment extends ActionType {
   dynamic /* bool | null */ isBolt11;
   dynamic /* bool | null */ isBolt12;
   dynamic /* bool | null */ isOnChain;
+  dynamic /* String | null */ comment;
   Payment(
       this.potId,
       this.originalAddress,
@@ -33,28 +35,35 @@ class Payment extends ActionType {
       this.isLnAddress = false,
       this.isBolt11 = false,
       this.isBolt12 = false,
-      this.isOnChain = false])
+      this.isOnChain = false,
+      this.comment = ""])
       : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
-            isOnChain) {
+            isOnChain, comment) {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {
+    final a = ActionRemoteResponse.fromJson(json["remoteResponse"]);
     return new Payment(
         json["potId"],
         json["originalAddress"],
         json["address"],
         json["currency"],
         json["amount"],
-        json["minAmount"],
-        json["maxAmount"],
+        json["minAmount"] != null
+            ? json["minAmount"]
+            : a.data["minSendable"] / MSATOSHIS,
+        json["maxAmount"] != null
+            ? json["maxAmount"]
+            : a.data["maxSendable"] / MSATOSHIS,
         json["fee"],
         json["feeCurrency"],
-        ActionRemoteResponse.fromJson(json["remoteResponse"]),
+        a,
         json["isLnUrl"],
         json["isLnAddress"],
         json["isBolt11"],
         json["isBolt12"],
-        json["isOnChain"]);
+        json["isOnChain"],
+        json["comment"]);
   }
 
   dynamic toJson() {
@@ -71,7 +80,8 @@ class Payment extends ActionType {
       "feeCurrency": this.feeCurrency,
       "remoteResponse": !identical(this.remoteResponse, null)
           ? this.remoteResponse.toJson()
-          : null
+          : null,
+      "comment": this.comment
     };
   }
 }

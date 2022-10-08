@@ -7,10 +7,18 @@ class NFCCubit extends Cubit<NFCCubitState> {
   NFCCubit() : super(NFCCubitState()) {}
 
   write(Uri url) async {
+    emit(NFCCubitState(writing: true));
     NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-      var x = Ndef.from(tag);
-      if (x != null) {
-        await x.write(NdefMessage([NdefRecord.createUri(url)]));
+      try {
+        var x = Ndef.from(tag);
+        if (x != null) {
+          await x.write(NdefMessage([NdefRecord.createUri(url)]));
+          emit(NFCCubitState(writing: false, success: true));
+        }
+      } on Error catch (e) {
+        emit(NFCCubitState(writing: false, success: false, e: e));
+      } catch (e) {
+        print(e);
       }
     });
   }
@@ -19,11 +27,13 @@ class NFCCubit extends Cubit<NFCCubitState> {
 class NFCCubitState {
   bool writing = false;
   bool reading = false;
+  bool success = false;
   Error? e;
 
   NFCCubitState({
     this.writing = false,
     this.reading = false,
+    this.success = false,
     this.e,
   });
 }

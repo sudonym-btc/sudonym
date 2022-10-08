@@ -10,6 +10,7 @@ export 'list/list.cubit.dart';
 export 'auth.cubit.dart';
 export 'action_trigger.service.dart';
 export 'pages/send.cubit.dart';
+export 'pages/withdraw.cubit.dart';
 export 'transaction-listener/transaction-listener.cubit.dart';
 export 'transaction-listener/ndef-record.dart';
 export 'transaction-listener/nfc-listener.dart';

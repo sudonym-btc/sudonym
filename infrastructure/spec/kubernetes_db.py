@@ -1,5 +1,6 @@
 from helper import (
     getBackupName,
+    getConfigName,
     getDeploymentName,
     getSecretName,
     getServiceName,
@@ -8,7 +9,7 @@ from helper import (
 from kubernetes_cluster import cluster
 
 
-def db(config, cluster_types):
+def kubernetes_db(config, cluster_types):
 
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-db"
@@ -117,6 +118,85 @@ def db(config, cluster_types):
                                 #         },
                                 #     }
                                 # ],
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "name": getServiceName(base_name + '-phpmyadmin'),
+                "type": cluster_types["Service"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Service",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": getServiceName(base_name + '-phpmyadmin'),
+                        "labels": {"app": base_name + '-phpmyadmin'},
+                    },
+                    "spec": {
+                        "type": "NodePort",
+                        "ports": [
+                            {"port": 80, "name": base_name + '-phpmyadmin'},
+                        ],
+                        "selector": {"app": base_name  + '-phpmyadmin'},
+                    },
+                },
+            },
+            {
+                "name": getDeploymentName(base_name + '-phpmyadmin'),
+                "type": cluster_types["Deployment"],
+                "metadata": {
+                    "dependsOn": [
+                        kube_type_name
+                    ]
+                },
+                "properties": {
+                    "apiVersion": "apps/v1",
+                    "kind": "Deployment",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": getDeploymentName(base_name+ '-phpmyadmin'),
+                        "labels": {"app": base_name + '-phpmyadmin'},
+                    },
+                    "spec": {
+                        "strategy": {"type": "Recreate"},
+                        "replicas": 1,
+                        "selector": {"matchLabels": {"app": base_name + '-phpmyadmin'}},
+                        "template": {
+                            "metadata": {"labels": {"app": base_name + '-phpmyadmin'}},
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": base_name + '-phpmyadmin',
+                                        "image": "phpmyadmin/phpmyadmin",
+                                        "env": [
+                                            {
+                                                "name": "MYSQL_ROOT_PASSWORD",
+                                                "value": "testing"
+                                            },
+                                            {
+                                                "name": "MYSQL_DATABASE",
+                                                "value": "test"
+                                            },
+                                            {
+                                                "name": "PMA_HOST",
+                                                "value": getServiceName(base_name)
+                                            },
+                                            {
+                                                "name": "PMA_PORT",
+                                                "value": "3306"
+                                            },
+                                        ],
+                                        "ports": [
+                                            {
+                                                "containerPort": 80,
+                                                "name": "phpmyadmin",
+                                            }
+                                        ],
+                                    }
+                                ],
                             },
                         },
                     },

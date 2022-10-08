@@ -24,12 +24,16 @@ def lightning(config, cluster_types):
     def getResource(num=1):
 
         gcs_log = " --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs " if config["loglevel"] == "debug" else ""
-        lightning_dir = "/lightning"
+        lightning_dir = "/root/.lightning"
+        backup_dir = "/backup"
         bucket = "sudonym-" + getBackupName(base_name, num)
         
-        mount = f"""mkdir -p {lightning_dir}/{chain_name} && 
-            echo $(gcsfuse --limit-ops-per-sec=1 {gcs_log} {bucket} {lightning_dir}/{chain_name})"""
-        unmount = f"""fusermount -u {lightning_dir}/{chain_name}"""            
+        mount = f"""mkdir -p {backup_dir} && 
+            echo $(gcsfuse --limit-ops-per-sec=0 {gcs_log} {bucket} {backup_dir}) &&
+            cp -ar {backup_dir}/. {lightning_dir} >> /proc/1/fd/1"""
+
+        unmount = f"""cp -ar {lightning_dir}/. {backup_dir} >> /proc/1/fd/1 &&
+        fusermount -u {backup_dir}"""
 
         return [
             {
@@ -37,6 +41,14 @@ def lightning(config, cluster_types):
                 "name": "sudonym-" + getBackupName(base_name, num),
                 "properties": {
                     "project": config["project"],
+                    "location": "US-CENTRAL1",
+                    "locationType": "region",
+                    "iamConfiguration": {
+                        "publicAccessPrevention": "enforced",
+                        "uniformBucketLevelAccess": {
+                            "enabled": True
+                        },
+                    },
                 },
             },
             {
@@ -124,9 +136,20 @@ def lightning(config, cluster_types):
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
                                         "lifecycle": {
+                                            "postStart": {
+                                                "exec": {
+                                                    "command": [
+                                                        '/bin/sh',
+                                                        '-c',
+                                                        "echo 'hello from postStart hook' >> /proc/1/fd/1"
+                                                    ],
+                                                }
+                                            },
                                             "preStop": {
                                                 "exec": {
                                                     "command": [
+                                                        '/bin/sh',
+                                                        '-c',
                                                         unmount
                                                     ],
                                                 }
@@ -138,7 +161,6 @@ def lightning(config, cluster_types):
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-lightning",
-                                        "resources": {"requests": {"cpu": "30m"}},
                                         "command": [
                                             "/bin/sh",
                                             "-ec",
@@ -163,7 +185,7 @@ def lightning(config, cluster_types):
                                                     "--experimental-offers",
                                                     "--network=" + chain_name,
                                                     "--bitcoin-rpcport="
-                                                    + str(config["bitcoin"]["rpcPort"]),
+                                                    + str(config["bitcoin"]["rpcPort"])
                                                 ]
                                             ),
                                         ],

@@ -10,10 +10,15 @@ kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-c-lightning-re
 kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-ride-the-lightning
 kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-api
 
-ln1cli="kubectl exec $(kubectl get pod -l app=$env-lightning -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
-ln2cli="kubectl exec $(kubectl get pod -l app=$env-lightning-2 -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
-ln3cli="kubectl exec $(kubectl get pod -l app=$env-lightning-3 -o name) -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
-bitcoincli="kubectl exec $(kubectl get pod -l app=$env-bitcoin -o name) -- bitcoin-cli -datadir=/bitcoin/.bitcoin -regtest=1 -rpcport=8332 -rpcuser=test -rpcpassword=test "
+ln1pod=$(kubectl get pod -l app=$env-lightning -o name)
+ln2pod=$(kubectl get pod -l app=$env-lightning-2 -o name)
+ln3pod=$(kubectl get pod -l app=$env-lightning-3 -o name)
+bitcoinpod=$(kubectl get pod -l app=$env-bitcoin -o name)
+
+ln1cli="kubectl exec $ln1pod -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
+ln2cli="kubectl exec $ln2pod -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
+ln3cli="kubectl exec $ln3pod -- lightning-cli --network=regtest --rpc-file=/rpc/lightning-rpc"
+bitcoincli="kubectl exec $bitcoinpod -- bitcoin-cli -datadir=/bitcoin/.bitcoin -regtest=1 -rpcport=8332 -rpcuser=test -rpcpassword=test "
 
 initial_block_height=$($ln1cli getinfo | jq -r '.blockheight')
 

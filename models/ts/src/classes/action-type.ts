@@ -6,6 +6,7 @@ export class ActionType {
 		public isLnAddress: boolean | null = false,
 		public isBolt11: boolean | null = false,
 		public isBolt12: boolean | null = false,
-		public isOnChain: boolean | null = false
+		public isOnChain: boolean | null = false,
+		public comment: string | null = ''
 	) {}
 }

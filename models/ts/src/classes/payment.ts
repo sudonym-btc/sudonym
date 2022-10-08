@@ -1,6 +1,7 @@
 import { ActionType } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
 import { PaymentRequest } from './payment-request';
+import { MSATOSHIS } from './types/index';
 
 export class Payment extends ActionType {
 	constructor(
@@ -18,28 +19,32 @@ export class Payment extends ActionType {
 		public isLnAddress: boolean | null = false,
 		public isBolt11: boolean | null = false,
 		public isBolt12: boolean | null = false,
-		public isOnChain: boolean | null = false
+		public isOnChain: boolean | null = false,
+		public comment: string | null = '',
 	) {
-		super('pay', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain);
+		super('pay', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain, comment);
 	}
 
 	static fromJson(json: Object): Payment {
+		const a = ActionRemoteResponse.fromJson(json['remoteResponse']);
+
 		return new Payment(
 			json['potId'],
 			json['originalAddress'],
 			json['address'],
 			json['currency'],
 			json['amount'],
-			json['minAmount'],
-			json['maxAmount'],
+			json['minAmount'] != null ? json['minAmount'] : a.data["minSendable"]/MSATOSHIS,
+			json['maxAmount'] != null ? json['maxAmount'] : a.data["maxSendable"]/MSATOSHIS,
 			json['fee'],
 			json['feeCurrency'],
-			ActionRemoteResponse.fromJson(json['remoteResponse']),
+			a,
 			json['isLnUrl'],
 			json['isLnAddress'],
 			json['isBolt11'],
 			json['isBolt12'],
-			json['isOnChain']
+			json['isOnChain'],
+			json['comment']
 		);
 	}
 
@@ -59,6 +64,7 @@ export class Payment extends ActionType {
 				this.remoteResponse !== null
 					? this.remoteResponse.toJson()
 					: null,
+			comment: this.comment
 		};
 	}
 }

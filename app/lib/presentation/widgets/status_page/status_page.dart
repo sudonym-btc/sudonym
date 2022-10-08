@@ -42,6 +42,7 @@ class StatusPage extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all(Colors.black),
           backgroundColor: MaterialStateProperty.all(Colors.white),
         ))
         // foregroundColor: MaterialStateProperty.all(textColor))),

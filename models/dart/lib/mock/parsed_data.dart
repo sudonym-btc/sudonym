@@ -28,6 +28,11 @@ class Mockdata {
           list.add(Model.Contact.fromJson(obj) as T);
         });
         break;
+      case "boltCard":
+        data["boltCard"]["mocks"].forEach((obj) {
+          list.add(Model.BoltCard.fromJson(obj) as T);
+        });
+        break;
     }
     return list;
   }

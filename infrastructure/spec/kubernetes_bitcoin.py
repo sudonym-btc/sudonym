@@ -143,7 +143,6 @@ def bitcoin(config, cluster_types):
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-bitcoin",
-                                        "resources": {"requests": {"cpu": "30m"}},
                                         "command": [
                                             "sh",
                                             "-c",

@@ -42,16 +42,16 @@ export class LightningListener extends TransactionListener {
 	listenOutgoing() {
 		this.transactionService.onAfterCreated.subscribe(
 			async (transaction) => {
-				this.logger.log(
-					'Lightning outgoing: ',
-					transaction.get({ plain: true })
-				);
 				if (
 					transaction.outgoing &&
 					['lnurl', 'lightningaddress', 'bolt11', 'bolt12'].includes(
 						transaction.type
 					)
 				) {
+					this.logger.log(
+						'Lightning outgoing: ',
+						transaction.get({ plain: true })
+					);
 					let bolt11;
 					switch (transaction.type) {
 						case 'bolt11':
@@ -76,9 +76,9 @@ export class LightningListener extends TransactionListener {
 					(async () => {
 						try {
 							await this.lightningNodeService.pay(bolt11);
-							await this.lightningNodeService.rpc('waitsendpay', [
-								bolt11,
-							]);
+							// await this.lightningNodeService.rpc('waitsendpay', [
+							// 	bolt11,
+							// ]);
 						} catch (e) {
 							console.error(e);
 						}

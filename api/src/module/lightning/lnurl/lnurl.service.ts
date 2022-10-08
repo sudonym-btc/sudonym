@@ -5,6 +5,7 @@ import { LnUrl } from './lnurl.model';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import { RequestType } from 'helper/parse-request.decorator';
 import * as crypto from 'crypto';
+import { PaymentRequest, WithdrawRequest } from '@sudonym/models';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
@@ -19,33 +20,51 @@ export class LnUrlService extends BaseService(LnUrl) {
 		return record;
 	}
 
-	async createPayRequest(potId: number, mSatoshiAmount?: number) {
+	async serve(id: string): Promise<WithdrawRequest | PaymentRequest> {
+		return (await this.findOne(id)).params as any;
+	}
+
+	async createPayRequest(mSatoshiAmount?: number) {
 		const tag = await this.create({
-			tag: 'payRequest',
-			potId,
 			params: {
 				tag: 'payRequest',
 				domain: getConfig().selfUrl,
 				minSendable: mSatoshiAmount || 0,
 				maxSendable: 10000000,
-				metadata: '',
-				commentAllowed: 500,
+				metadata: JSON.stringify([
+					[
+						"text/plain", // mandatory,
+						'Short description sudo' // short description displayed when paying and in transaction log
+					],
+					[
+						"text/long-desc", // optional
+						'Long description sudo' // longer description of the payment, MAY contain newlines
+					],
+					// [
+					// 	"image/png;base64",
+					// 	string // base64 string, optional 512x512px PNG thumbnail which will represent this lnurl in a list or grid. Up to 136536 characters (100Kb of image data in base-64 encoding)
+					// ],
+					// [
+					// 	"image/jpeg;base64", // optional
+					// 	string // base64 string, 512x512px JPG thumbnail which will represent this lnurl in a list or grid. Up to 136536 characters (100Kb of image data in base-64 encoding)
+					// ],
+				]),
 			},
 		});
 
 		return tag;
 	}
 
-	async createWithdrawRequest(potId: number, mSatoshiAmount?: number) {
+	async createWithdrawRequest(params?: RecursivePartial<WithdrawRequest>) {
 		const tag = await this.create({
-			tag: 'withdrawRequest',
-			potId,
 			params: {
 				tag: 'withdrawRequest',
 				domain: getConfig().selfUrl,
-				minWithdrawable: mSatoshiAmount || 0,
-				maxWithdrawable: 10000000,
-				metadata: '',
+				minWithdrawable: 0,
+				maxWithdrawable: 99999999999,
+				...params,
+				// "balanceCheck": string,
+				// "payLink": string
 				defaultDescription: 'Withdrawn desciption',
 			},
 		});

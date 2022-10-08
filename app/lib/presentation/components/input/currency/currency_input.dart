@@ -14,9 +14,21 @@ const List<String> defaultCurrencies = ['USD', 'BTC'];
 class CurrencyInput extends StatefulWidget {
   final Function(CurrencyInputOutput)? onChanged;
   final List<String> currencies;
+  final num min;
+  final num? max;
+  final num? initialValue;
+  final String initialValueCurrency;
+  final String outputCurrency;
 
   const CurrencyInput(
-      {Key? key, this.onChanged, this.currencies = defaultCurrencies})
+      {Key? key,
+      this.initialValueCurrency = 'BTC',
+      this.initialValue,
+      this.min = 0,
+      this.max,
+      this.onChanged,
+      this.outputCurrency = 'BTC',
+      this.currencies = defaultCurrencies})
       : super(key: key);
 
   @override
@@ -39,26 +51,47 @@ class _CurrencyInputState extends State<CurrencyInput> {
   final MoneyMaskedTextController _controller = MoneyMaskedTextController(
       initialValue: 0.0, decimalSeparator: '.', thousandSeparator: ',');
   num altValue = 0;
-  String currCurrency = 'USD';
-  String altCurrency = 'BTC';
+  int currCurrency = 0;
+  int altCurrency = 1;
   bool altValueLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() async {
-      widget.onChanged!(
-          CurrencyInputOutput(_controller.numberValue, currCurrency));
+    getIt<CurrencyRepository>()
+        .getRate(
+            widget.initialValueCurrency,
+            widget.currencies[currCurrency],
+            widget.initialValue != null ? widget.initialValue! : widget.min,
+            null)
+        .then((value) {
+      _controller.updateValue(value.amount.toDouble());
+    });
+
+    _controller.addListener(() {
       setState(() {
         altValueLoading = true;
       });
-      altValue = (await getIt<CurrencyRepository>().getRate(
-              currCurrency, altCurrency, _controller.numberValue, null))
-          .amount;
-      setState(() {
-        altValue = altValue;
-        altValueLoading = false;
+
+      getIt<CurrencyRepository>()
+          .getRate(widget.currencies[currCurrency], widget.outputCurrency,
+              _controller.numberValue, null)
+          .then((value) {
+        widget.onChanged!(
+            CurrencyInputOutput(value.amount, widget.outputCurrency));
       });
+
+      getIt<CurrencyRepository>()
+          .getRate(widget.currencies[currCurrency],
+              widget.currencies[altCurrency], _controller.numberValue, null)
+          .then((value) => {
+                setState(
+                  () {
+                    altValue = value.amount;
+                    altValueLoading = false;
+                  },
+                )
+              });
     });
   }
 
@@ -85,7 +118,8 @@ class _CurrencyInputState extends State<CurrencyInput> {
               labelText: AppLocalizations.of(context)!.amount,
               helperText: altValueLoading
                   ? '...'
-                  : FormatCurrency().format(altCurrency, altValue)),
+                  : FormatCurrency()
+                      .format(widget.currencies[altCurrency], altValue)),
           controller: _controller,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           keyboardType: TextInputType.number,
@@ -97,7 +131,9 @@ class _CurrencyInputState extends State<CurrencyInput> {
       Ink(
           decoration: buttonDecoration(context, negativeEnabled),
           child: IconButton(
-            onPressed: negativeEnabled ? () => updateValue(-1) : null,
+            onPressed: _controller.numberValue > widget.min!
+                ? () => updateValue(-1)
+                : null,
             color: Theme.of(context)
                 .elevatedButtonTheme
                 .style!

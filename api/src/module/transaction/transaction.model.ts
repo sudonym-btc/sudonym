@@ -8,6 +8,8 @@ import {
 	AllowNull,
 	DataType,
 	ForeignKey,
+	Sequelize,
+	BelongsTo,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
@@ -15,6 +17,10 @@ import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
 import { Onchain } from './onchain.model';
 import { Invoice } from './invoice.model';
+import { User } from 'module/user/user.model';
+import { Pot } from 'module/pot/pot.model';
+import { PotUser } from 'module/pot-user/pot-user.model';
+const { Op } = require('sequelize');
 
 @Table({
 	scopes: Transaction.scopes,
@@ -27,10 +33,12 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	id: number;
 
 	@ForeignKey(() => Onchain)
+	@AllowNull(true)
 	@Column(DataType.STRING(1024))
 	onchainId: string;
 
 	@ForeignKey(() => Invoice)
+	@AllowNull(true)
 	@Column(DataType.STRING(1024))
 	invoiceId: string;
 
@@ -53,17 +61,25 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	status: boolean;
 
+	@ForeignKey(() => Transaction)
+	@AllowNull(true)
 	@Column
 	transactionId: number;
 
+	@BelongsTo(() => Pot)
+	Pot: Pot;
+
+	@ForeignKey(() => Pot)
 	@Column
 	potId: number;
 
 	@ForeignKey(() => Sender)
+	@AllowNull(true)
 	@Column
 	senderId: number;
 
 	@ForeignKey(() => Receiver)
+	@AllowNull(true)
 	@Column
 	receiverId: number;
 
@@ -83,4 +99,29 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@CreatedAt
 	@Column
 	createdAt: Date;
+
+	static accessors = {
+		canFind: (id) =>
+			PotUser.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				include: [
+					{
+						model: Pot,
+						attributes: [],
+						required: true,
+						include: [
+							{
+								model: Transaction,
+								required: true,
+								attributes: [],
+								where: {
+									id,
+								},
+							},
+						],
+					},
+				],
+			}),
+	};
 }

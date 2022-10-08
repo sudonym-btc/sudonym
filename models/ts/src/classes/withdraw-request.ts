@@ -1,6 +1,7 @@
 export class WithdrawRequest {
 	constructor(
 		public tag = 'withdrawRequest', // type of LNURL
+		public domain: string | null, // The URL which LN SERVICE would accept a withdrawal Lightning invoice as query parameter
 		public callback: string | null, // The URL which LN SERVICE would accept a withdrawal Lightning invoice as query parameter
 		public k1: string | null, // Random or non-random string to identify the user's LN WALLET when using the callback URL
 		public defaultDescription: string | null, // A default withdrawal invoice description
@@ -11,6 +12,7 @@ export class WithdrawRequest {
 	static fromJson(json: Object): WithdrawRequest {
 		return new WithdrawRequest(
 			json['tag'],
+			json['domain'],
 			json['callback'],
 			json['k1'],
 			json['defaultDescription'],
@@ -22,6 +24,7 @@ export class WithdrawRequest {
 	toJson(): any {
 		return {
 			tag: this.tag,
+			domain: this.domain,
 			callback: this.callback,
 			k1: this.k1,
 			defaultDescription: this.defaultDescription,

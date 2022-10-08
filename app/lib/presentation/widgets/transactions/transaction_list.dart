@@ -27,8 +27,10 @@ class TransactionList extends StatelessWidget {
             builder: (el) {
               return TransactionListItem(entity: el);
             },
-            list: ListCubit(getIt<TransactionRepository>(),
-                where: {"potId": pot.id}),
+            list: () {
+              return ListCubit(getIt<TransactionRepository>(),
+                  where: {'potId': pot.id});
+            },
             emptyText: (AppLocalizations.of(context)!.noTransactionsFound),
           ))
         ]));

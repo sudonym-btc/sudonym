@@ -2,7 +2,7 @@ import { BaseClass } from './base-class';
 
 export class Receiver extends BaseClass {
 	constructor(
-		public id: number,
+		public id: number | null,
 		public parentId: number | null,
 		public potId: number,
 		public type: string,
@@ -10,6 +10,7 @@ export class Receiver extends BaseClass {
 		public amountCurrency: string,
 		public data: string,
 		public lnurlId: string | null,
+		public received: number | null,
 		public createdAt: Date
 	) {
 		super();
@@ -25,6 +26,7 @@ export class Receiver extends BaseClass {
 			json['amountCurrency'],
 			json['data'],
 			json['lnurlId'],
+			json['received'],
 			json['createdAt']
 		);
 	}
@@ -39,6 +41,7 @@ export class Receiver extends BaseClass {
 			amountCurrency: this.amountCurrency,
 			data: this.data,
 			lnurlId: this.lnurlId,
+			received: this.received,
 			createdAt: this.createdAt,
 		};
 	}

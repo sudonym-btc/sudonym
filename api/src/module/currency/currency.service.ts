@@ -1,10 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CurrencyResponse } from '@sudonym/models';
+import { ExchangeService } from 'service/exchange/exchange.service';
 
 @Injectable()
 export class CurrencyService {
-	convert(from, to, amount, time?): Promise<CurrencyResponse> {
-		throw Error('Unimplementd');
+	@Inject() exchangeService: ExchangeService;
+
+	async convert(from, to, amount = 1, time?: Date): Promise<CurrencyResponse> {
+		return new CurrencyResponse(
+			(await this.exchangeService.fetchPriceAtTime(from, to, time)) *
+				amount
+		);
 	}
 }
 
@@ -15,7 +21,7 @@ export class MockCurrencyService extends CurrencyService {
 		['USD', 'GBP', 1.2],
 	];
 
-	async convert(from, to, amount, time?) {
+	async convert(from = 'BTC', to = 'BTC', amount = 0, time?) {
 		if (from == to) return new CurrencyResponse(amount);
 		const rate = this.rates.find((r) => {
 			return (r[0] == from && r[1] == to) || (r[1] == from && r[0] == to);

@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { LightningEvents } from './lightning-events';
 import { Event, MSATOSHIS } from '@sudonym/models';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { EventsService } from 'module/events/events.service';
+import { EventsService, TriggeredEvent } from 'module/events/events.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 
 @Injectable()
@@ -21,15 +21,29 @@ export class EventBroadcaster {
 					e.receiverId
 				);
 				await this.eventsService.trigger(
-					new Event('receiver.received', receiver)
+					new TriggeredEvent(
+						new Event('receiver.received', receiver),
+						await this.receiverService.getUserIds(receiver.id)
+					)
 				);
+				await this.receiverService.update(receiver.id, {
+					received: receiver.received++
+				});
 				if (receiver.parentId) {
 					const parentReceiver = await this.receiverService.findOne(
 						e.receiverId
 					);
 					await this.eventsService.trigger(
-						new Event('receiver.received', parentReceiver)
+						new TriggeredEvent(
+							new Event('receiver.received', parentReceiver),
+							await this.receiverService.getUserIds(
+								parentReceiver.id
+							)
+						)
 					);
+					await this.receiverService.update(parentReceiver.id, {
+						received: parentReceiver.received++
+					});
 				}
 			}
 		});

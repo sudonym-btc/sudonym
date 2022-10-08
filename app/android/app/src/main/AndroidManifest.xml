@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.sudonym.sudonym">
   <uses-permission android:name="android.permission.NFC" />
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.CAMERA" />
 
   <uses-feature android:name="android.hardware.nfc" android:required="false" />
-
+  <uses-feature android:name="android.hardware.camera" android:required="false"/>
+  <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+  
   <application android:label="sudonym" android:icon="@mipmap/ic_launcher">
 
     <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:exported="true" android:windowSoftInputMode="adjustResize">
@@ -29,7 +32,17 @@
       </intent-filter>
       <intent-filter>
         <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+        <action android:name="android.nfc.action.TECH_DISCOVERED" />
+        <action android:name="android.nfc.action.TAG_DISCOVERED" />
         <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+
+      <intent-filter>
+        <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:scheme="lnurlw" />
       </intent-filter>
 
       <!-- Deep linking -->
