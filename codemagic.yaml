@@ -87,6 +87,32 @@ workflows:
       - 'cd app && flutter build appbundle -t lib/main-test.dart --release'
       - 'cd app && flutter build apk -t lib/main-test.dart --release'
       - *ghrelease
+  staging-workflow:
+    <<: *default-workflow
+    name: "Staging Workflow"
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: staging
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: "*"
+          include: true
+    publishing:
+      email:
+        recipients:
+          - patrick@sudonym.app
+      slack:
+        channel: "#general"
+        notify_on_build_start: true
+    scripts:
+      - *localproperties
+      - *getpackages
+      - 'cd app && flutter build appbundle -t lib/main-staging.dart --release'
+      - 'cd app && flutter build apk -t lib/main-staging.dart --release'
+      - *ghrelease
   production-workflow:
     <<: *default-workflow
     name: "Production Workflow"
