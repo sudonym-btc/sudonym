@@ -96,8 +96,8 @@ workflows:
     scripts:
       - *localproperties
       - *getpackages
-      - 'cd app && flutter build appbundle -t lib/main-production.dart --release'
-      - 'cd app && flutter build apk -t lib/main-production.dart --release'
+      - 'cd app && flutter build appbundle -t lib/main-prod.dart --release'
+      - 'cd app && flutter build apk -t lib/main-prod.dart --release'
       - *ghrelease
     publishing:
       google_play:
