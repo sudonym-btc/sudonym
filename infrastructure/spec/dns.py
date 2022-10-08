@@ -3,7 +3,7 @@ def dns(config, cluster_types):
     # Create the zone.
     zoneName = config["env"] + "-zone"
 
-    domain = ("" if config["env"] != "production" else config["env"] + ".") + config[
+    domain = ("" if config["env"] == "production" else config["env"] + ".") + config[
         "domain"
     ]
 
@@ -28,31 +28,31 @@ def dns(config, cluster_types):
                             "name": "rtl." + domain + ".",
                             "type": "A",
                             "ttl": 50,
-                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                            "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
                         },
                         {
                             "name": "api." + domain + ".",
                             "type": "A",
                             "ttl": 50,
-                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                            "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
                         },
                         {
                             "name": "app." + domain + ".",
                             "type": "A",
                             "ttl": 50,
-                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                            "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
                         },
                         {
                             "name": "db." + domain + ".",
                             "type": "A",
                             "ttl": 50,
-                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                            "rrdatas": [("$(ref." + config["env"] + "-ip.address)" ) if config["env"] != "production" else ("$(ref." + config["env"] + "-db.ipAddresses[0].ipAddress)")],
                         },
                         {
                             "name": domain + ".",
                             "type": "A",
                             "ttl": 50,
-                            "rrdatas": ["$(ref." + config["env"] + "-ip" + ".address)"],
+                            "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
                         },
                     ],
                 },
