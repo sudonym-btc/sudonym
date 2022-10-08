@@ -8,7 +8,7 @@ def storage(config, cluster_types):
     return {
         "resources": [{
                 "type": "storage.v1.bucket",
-                "name": base_name,
+                "name": config["project"] + '-config',
                 "properties": {
                     "project": config["project"],
                     "location": "US-CENTRAL1",
