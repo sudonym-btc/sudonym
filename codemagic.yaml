@@ -80,3 +80,22 @@ workflows:
       - 'cd app && flutter build appbundle -t lib/main-test.dart --release'
       - 'cd app && flutter build apk -t lib/main-test.dart --release'
       - *ghrelease
+  production-workflow:
+    <<: *default-workflow
+    name: "Production Workflow"
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: production
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: "*"
+          include: true
+    scripts:
+      - *localproperties
+      - *getpackages
+      - 'cd app && flutter build appbundle -t lib/main-production.dart --release'
+      - 'cd app && flutter build apk -t lib/main-production.dart --release'
+      - *ghrelease

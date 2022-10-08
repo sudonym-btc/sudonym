@@ -6,3 +6,4 @@ gcloud services enable storage.googleapis.com
 gcloud services enable dns.googleapis.com
 gcloud services enable androidpublisher.googleapis.com
 gcloud services enable secretmanager.googleapis.com
+gcloud services enable sql-component.googleapis.com
