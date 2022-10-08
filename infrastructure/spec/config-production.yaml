@@ -12,6 +12,7 @@ imports:
 - path: helper.py
 - path: dns.py
 - path: db.py
+- path: storage.py
 - path: config.py
 
 resources:

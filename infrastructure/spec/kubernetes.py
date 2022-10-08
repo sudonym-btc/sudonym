@@ -4,6 +4,7 @@
 #
 
 from common import getConfig
+from storage import storage
 from dns import dns
 from db import db
 from kubernetes_ingress import ingress
@@ -73,6 +74,7 @@ def GenerateConfig(context):
         + ride_the_lightning(config, cluster_types)["resources"]
         + api(config, cluster_types)["resources"]
         + dns(config, cluster_types)["resources"]
+        + storage(config, cluster_types)["resources"]
     ) + (
         kubernetes_db(config, cluster_types)["resources"] if config["env"] in ["development", "test"] else db(config, cluster_types)["resources"] 
     )
