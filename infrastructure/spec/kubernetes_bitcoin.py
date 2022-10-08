@@ -22,7 +22,17 @@ def bitcoin(config, cluster_types):
             {
                 "type": "storage.v1.bucket",
                 "name": "sudonym-" + getBackupName(base_name),
-                "properties": {"project": config["project"]},
+                "properties": {
+                    "project": config["project"],
+                    "location": "US-CENTRAL1",
+                    "locationType": "region",
+                    "iamConfiguration": {
+                        "publicAccessPrevention": "enforced",
+                        "uniformBucketLevelAccess": {
+                            "enabled": True
+                        },
+                    },
+                },
             },
             {
                 "name": getSecretName(base_name),
