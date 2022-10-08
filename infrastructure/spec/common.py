@@ -41,7 +41,11 @@ config = {
         "env": "staging",
         "domain": "staging.sudonym.app",
         "network": "mainnet",
-        "loglevel": "info"
+        "loglevel": "info",
+        "cluster": {
+            "machineType": "t2d-standard-1",
+            "diskSizeGb": 100
+        },
     },
     "test": {
         "project": "sudonym-lightning-test",
@@ -49,6 +53,10 @@ config = {
         "domain": "test.sudonym.app",
         "network": "regtest",
         "loglevel": "info",
+        "cluster": {
+            "machineType": "t2d-standard-1",
+            "diskSizeGb": 100
+        },
         "backup": True
     },
     "development": {
