@@ -20,6 +20,5 @@ def storage(config, cluster_types):
                         },
                     },
                 },
-        }
-        ]
+        }]
     }
