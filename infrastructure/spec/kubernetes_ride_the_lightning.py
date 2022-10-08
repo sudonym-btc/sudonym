@@ -127,9 +127,10 @@ def ride_the_lightning(config, cluster_types):
                     "dependsOn": [
                         kube_type_name,
                         getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
+                    ] + ([
                         getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
-                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
-                    ]
+                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3)
+                        ] if config["env"] != "production" else [])
                 },
                 "properties": {
                     "apiVersion": "apps/v1",
@@ -163,15 +164,15 @@ def ride_the_lightning(config, cluster_types):
                                                 "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
                                                 "mountPath": "RTL/certs1",
                                             },
-                                            {
+                                            
+                                        ] + ([{
                                                 "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
                                                 "mountPath": "RTL/certs2",
                                             },
                                             {
                                                 "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
                                                 "mountPath": "RTL/certs3",
-                                            },
-                                        ],
+                                            },] if config["env"] != "production" else []),
                                     }
                                 ],
                                 "volumes": [
@@ -185,7 +186,8 @@ def ride_the_lightning(config, cluster_types):
                                             "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1)
                                         },
                                     },
-                                    {
+                                    
+                                ] + ([{
                                         "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
                                         "persistentVolumeClaim": {
                                             "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2)
@@ -196,8 +198,7 @@ def ride_the_lightning(config, cluster_types):
                                         "persistentVolumeClaim": {
                                             "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3)
                                         },
-                                    },
-                                ],
+                                    },] if config["env"] != "production" else []),
                             },
                         },
                     },
