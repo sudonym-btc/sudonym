@@ -74,6 +74,13 @@ workflows:
       tag_patterns:
         - pattern: "*"
           include: true
+    publishing:
+      email:
+        recipients:
+          - patrick@sudonym.app
+      slack:
+        channel: "#general"
+        notify_on_build_start: true
     scripts:
       - *localproperties
       - *getpackages
@@ -102,6 +109,6 @@ workflows:
     publishing:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: alpha
+        track: internal
         in_app_update_priority: 0
         submit_as_draft: true
