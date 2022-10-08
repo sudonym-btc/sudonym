@@ -200,6 +200,6 @@ def lightning_rest(config, cluster_types):
             ]
             
     return  {
-            "resources": [] + getResource(1) + getResource(2) + getResource(3),
+            "resources": [] + ((getResource(1) + getResource(2) + getResource(3)) if config["env"] != "production" else getResource(1)),
             "base_name": base_name,
         }
