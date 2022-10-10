@@ -70,7 +70,7 @@ export class BitcoinEvents {
 					return out;
 				});
 
-				this.logger.debug('Received onchain transaction', txid, tx);
+				this.logger.verbose('Received onchain transaction', txid, tx);
 				this.onTransaction.next(tx);
 			}
 		});

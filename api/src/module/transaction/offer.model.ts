@@ -1,4 +1,11 @@
-import { Table, Column, Model, HasMany, CreatedAt, DataType } from 'sequelize-typescript';
+import {
+	Table,
+	Column,
+	Model,
+	HasMany,
+	CreatedAt,
+	DataType,
+} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from 'module/base.model';
 
@@ -13,7 +20,7 @@ export class Offer extends BaseModel implements Models.Offer {
 	@Column
 	active: boolean;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number | null;
 
 	@Column

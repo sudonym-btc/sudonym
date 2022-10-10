@@ -34,7 +34,7 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
     Uri url = Uri.parse(
         '${config.apiUrl.replaceAll('http', 'ws')}:${config.websocketPort}/socket.io');
 
-    loggy.info('Connecting websocket to $url');
+    loggy.i('Connecting websocket to $url');
 
     String bearer = await FirebaseAuth.instance.currentUser!.getIdToken();
     channel =
@@ -43,7 +43,7 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
     socketSubscription = channel!.stream.listen((event) {
       stream.sink.add(event);
     }, onError: (e) async {
-      loggy.error(e);
+      loggy.e(e);
       await Future.delayed(const Duration(seconds: 1));
       await connect();
     }, onDone: () async {

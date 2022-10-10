@@ -6,8 +6,9 @@ class Button extends StatelessWidget {
   final String? text;
   final Widget? icon;
   final void Function()? onPressed;
+  final ButtonStyle? style;
 
-  const Button({Key? key, this.text, this.icon, this.onPressed})
+  const Button({Key? key, this.text, this.icon, this.onPressed, this.style})
       : super(key: key);
 
   @override
@@ -16,14 +17,31 @@ class Button extends StatelessWidget {
       return ElevatedButton.icon(
         onPressed: onPressed,
         icon: icon!,
-        label: Text(text ?? ""),
-        style: raisedButtonStyle,
+        label: Text(text ?? ''),
+        style: style ?? raisedButtonStyle,
       );
     }
     return ElevatedButton(
-      child: Text(text!),
-      style: raisedButtonStyle,
+      style: style ?? raisedButtonStyle,
       onPressed: onPressed,
+      child: Text(text!),
     );
   }
+
+  factory Button.flat(
+          {Color foregroundColor = Colors.white,
+          Color backgroudColor = Colors.transparent,
+          required String text,
+          Function()? onPressed,
+          Widget? icon}) =>
+      Button(
+        style: raisedButtonStyle.copyWith(
+            foregroundColor:
+                MaterialStateColor.resolveWith((states) => foregroundColor),
+            backgroundColor:
+                MaterialStateColor.resolveWith((states) => backgroudColor)),
+        onPressed: onPressed,
+        text: text,
+        icon: icon,
+      );
 }

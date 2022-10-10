@@ -84,7 +84,7 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	receiverId: number;
 
 	@AllowNull(false)
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
 	@AllowNull(false)

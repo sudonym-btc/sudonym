@@ -23,18 +23,14 @@ class ContactList extends StatelessWidget {
           ),
           Expanded(
               child: ListWidget(
-            builder: (el) {
-              return CubitWrapper<ContactCubit, Contact>(
-                  entity: el,
-                  fetch: false,
-                  builder: (context, state) {
-                    return ContactListItem(contact: state.entity);
-                  });
-            },
-            list: () {
-              return ListCubit(getIt<ContactRepository>());
-            },
-            emptyText: (AppLocalizations.of(context)!.noContactsFound),
+            builder: (el) =>
+                CubitWrapper<ContactCubit, ContactCubitState, Contact>(
+                    entity: el,
+                    fetch: false,
+                    builder: (context, state) =>
+                        ContactListItem(contact: state.entity!)),
+            list: () => ListCubit(getIt<ContactRepository>()),
+            emptyText: AppLocalizations.of(context)!.noContactsFound,
           ))
         ]);
   }

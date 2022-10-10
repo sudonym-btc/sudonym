@@ -92,7 +92,7 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
           return CustomForm(
               entity: widget.entity ?? BoltCard.fromJson({'name': ''}),
               onSave: widget.onSave,
-              cubit: getIt<BoltCardCubit>(),
+              cubit: () => getIt<BoltCardCubit>(),
               children: children);
         }));
   }

@@ -37,12 +37,12 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	@AllowNull(false)
 	@Default(0)
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	balance: number;
 
 	@AllowNull(false)
 	@Default(0)
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	spendableBalance: number;
 
 	@Column
