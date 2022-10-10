@@ -22,7 +22,7 @@ export class Settlement extends BaseModel implements Models.Settlement {
 	@Column
 	toCurrency: string;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
 	@Column

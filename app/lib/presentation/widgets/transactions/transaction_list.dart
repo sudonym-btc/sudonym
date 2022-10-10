@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym.models/pot.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart' hide Pot;
@@ -24,13 +24,18 @@ class TransactionList extends StatelessWidget {
           ),
           Expanded(
               child: ListWidget(
-            builder: (el) {
-              return TransactionListItem(entity: el);
-            },
-            list: () {
-              return ListCubit(getIt<TransactionRepository>(),
-                  where: {'potId': pot.id});
-            },
+            builder: (el) => CubitWrapper<TransactionCubit,
+                    TransactionCubitState, Transaction>(
+                entity: el,
+                fetch: false,
+                builder: (context, state) {
+                  if (state.loading) {
+                    return Container();
+                  }
+                  return TransactionListItem(entity: el);
+                }),
+            list: () => ListCubit(getIt<TransactionRepository>(),
+                where: {'potId': pot.id}),
             emptyText: (AppLocalizations.of(context)!.noTransactionsFound),
           ))
         ]));

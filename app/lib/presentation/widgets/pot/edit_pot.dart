@@ -49,7 +49,7 @@ class EditPotFormState extends State<EditPotForm> {
     return CustomForm(
         entity: widget.entity ?? Pot.fromJson({'name': '', 'currency': 'BTC'}),
         onSave: widget.onSave,
-        cubit: getIt<PotCubit>(),
+        cubit: () => getIt<PotCubit>(),
         children: [
           Column(
             children: [

@@ -42,10 +42,10 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column(DataType.STRING(1024))
 	data: string;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
-	@Default("BTC")
+	@Default('BTC')
 	@Column
 	amountCurrency: CurrencyCode;
 

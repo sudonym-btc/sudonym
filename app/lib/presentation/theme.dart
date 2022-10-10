@@ -53,11 +53,16 @@ ThemeData getTheme({bool light = true}) {
       textTheme: Typography()
           .white
           .copyWith(
-              displayMedium: TextStyle(
-                  color: textColor, fontSize: 20, fontWeight: FontWeight.w900),
-              displayLarge: TextStyle(
-                  color: textColor, fontSize: 30, fontWeight: FontWeight.w900))
-          .apply(bodyColor: textColor, displayColor: textColor));
+            displayMedium: TextStyle(
+                color: textColor, fontSize: 20, fontWeight: FontWeight.w900),
+            displayLarge: TextStyle(
+                color: textColor, fontSize: 30, fontWeight: FontWeight.w900),
+          )
+          .apply(bodyColor: textColor, displayColor: textColor)
+          .copyWith(
+              bodySmall: TextStyle(
+            color: textColor.withAlpha(150),
+          )));
 }
 
 const padding = 12.0;

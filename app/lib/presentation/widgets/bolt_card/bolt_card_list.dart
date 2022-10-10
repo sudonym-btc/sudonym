@@ -3,7 +3,6 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:sudonym/injection.dart';
@@ -15,9 +14,14 @@ class BoltCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Subheader(AppLocalizations.of(context)!.boltCards),
+          Header(AppLocalizations.of(context)!.boltCards),
+          const SizedBox(
+            height: padding,
+          ),
+          const Info(
+              'Write your account details to an NFC card so that you can tap them to point of sales devices to pay'),
           const SizedBox(
             height: padding,
           ),

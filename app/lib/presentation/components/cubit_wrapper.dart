@@ -6,11 +6,12 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 
 class CubitWrapper<
-    C extends EntityCubit<CrudRepository<T>, EntityCubitState<T>, T>,
+    C extends EntityCubit<CrudRepository<T>, CS, T>,
+    CS extends EntityCubitState<T>,
     T extends BaseClass> extends StatelessWidget {
   final T entity;
   final bool fetch;
-  final Function builder;
+  final Widget Function(BuildContext context, CS state) builder;
 
   const CubitWrapper(
       {required this.entity,
@@ -20,19 +21,17 @@ class CubitWrapper<
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) {
-            C c = getIt.get<C>();
-            c.set(entity);
-            if (fetch) {
-              c.fetch(entity.toJson()['id']);
-            }
-            return c;
-          })
-        ],
-        child: BlocBuilder<C, dynamic>(builder: (BuildContext context, state) {
-          return builder(context, state);
-        }));
+    return BlocProvider(
+        create: (_) {
+          C c = getIt.get<C>();
+          c.set(entity);
+
+          if (fetch) {
+            c.fetch(entity.toJson()['id']);
+          }
+          return c;
+        },
+        lazy: false,
+        child: BlocBuilder<C, CS>(builder: builder));
   }
 }
