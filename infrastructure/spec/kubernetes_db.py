@@ -84,7 +84,6 @@ def kubernetes_db(config, cluster_types):
                                     {
                                         "name": base_name,
                                         "image": "mysql:5.7",
-                                        "resources": {"requests": {"cpu": "500m"}},
                                         "args": ["-h", "0.0.0.0"],
                                         "env": [
                                             {
