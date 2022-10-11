@@ -1,5 +1,4 @@
-# Generate mock data for tests
-npm run genMocks
+
 dir=../../../dart/lib/
 # Convert files from TS to Dart
 cd ./ts/src/classes
@@ -9,4 +8,3 @@ do
 done
 
 cd ../../
-npm run build

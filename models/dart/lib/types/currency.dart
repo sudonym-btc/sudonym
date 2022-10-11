@@ -1,3 +1,5 @@
+final List<String> CurrencyCodes = ["BTC", "USD", "GBP"];
+
 class CurrencyResponse {
   num amount;
   CurrencyResponse(this.amount) {}
