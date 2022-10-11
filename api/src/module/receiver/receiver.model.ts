@@ -8,9 +8,13 @@ import {
 	AutoIncrement,
 	Default,
 	ForeignKey,
+	AllowNull,
+	IsNumeric,
+	IsIn,
+	IsInt,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
-import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
+import { ADDRESS_TYPES, CurrencyCode, CurrencyCodes, TAddressType } from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from 'module/pot/pot.model';
 import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
@@ -19,6 +23,8 @@ import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
 	scopes: Receiver.scopes,
 })
 export class Receiver extends BaseModel implements Models.Receiver {
+
+
 	@PrimaryKey
 	@AutoIncrement
 	@Column
@@ -28,6 +34,7 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column
 	parentId: number;
 
+	@AllowNull(false)
 	@Column(DataType.ENUM(...ADDRESS_TYPES))
 	type: TAddressType;
 
@@ -42,13 +49,16 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column(DataType.STRING(1024))
 	data: string;
 
+	@IsNumeric
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
+	@IsIn([CurrencyCodes])
 	@Default('BTC')
 	@Column
 	amountCurrency: CurrencyCode;
 
+	@IsInt
 	@Default(0)
 	@Column
 	received: number;

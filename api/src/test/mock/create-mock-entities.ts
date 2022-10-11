@@ -17,6 +17,7 @@ import { AddressParser } from 'module/action/address-parser/address-parser';
 import { WithdrawRequest } from '@sudonym/models';
 import { ActionService } from 'module/action/action.service';
 import * as bolt11 from 'bolt11';
+import { applyGlobals } from 'app.globals';
 
 export type mockScaffold = {
 	app: INestApplication;
@@ -46,6 +47,7 @@ export const createMockApp = async () => {
 		.compile();
 
 	const app = moduleFixture.createNestApplication();
+	applyGlobals(app);
 	await app.init();
 	return app;
 };
