@@ -146,7 +146,7 @@ def bitcoin(config, cluster_types):
                                                     "command": [
                                                         '/bin/sh',
                                                         '-c',
-                                                        "echo '{}' >> " + data_dir + "/settings.json"
+                                                        "echo '{}' >> " + data_dir + "/settings.json && chmod 700 " + data_dir + " && chown -R bitcoin " + data_dir
                                                     ],
                                                 }
                                             },
