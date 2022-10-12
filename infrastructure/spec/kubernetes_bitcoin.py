@@ -169,11 +169,11 @@ def bitcoin(config, cluster_types):
                                                 if config["backup"]
                                                 else ""
                                             ) +
-                                            "echo '{}' >> " + data_dir + "/settings.json && chmod 700 " + data_dir + " && chown -R bitcoin " + data_dir + " &&"
                                         "bitcoind "
                                             + " ".join(
                                                 [
                                                     "-server",
+                                                    "-nosettings",
                                                     "-rest",
                                                     "-txindex",
                                                     "-datadir=" + data_dir,
