@@ -18,6 +18,9 @@ def bitcoin(config, cluster_types):
 
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-bitcoin"
+
+    data_dir="/home/bitcoin/.bitcoin"
+
     return {
         "resources": [
             {
@@ -172,7 +175,7 @@ def bitcoin(config, cluster_types):
                                                     "-server",
                                                     "-rest",
                                                     "-txindex",
-                                                    "-datadir=/bitcoin/.bitcoin",
+                                                    "-datadir=" + data_dir,
                                                     "-chain=" + getBitcoinChainName(config["network"]),
                                                     "-port="
                                                     + str(config["bitcoin"]["port"]),
@@ -240,13 +243,13 @@ def bitcoin(config, cluster_types):
                                         ],
                                         "volumeMounts": [
                                             {
-                                                "mountPath": "bitcoin/.bitcoin/settings.json",
+                                                "mountPath": data_dir + "/settings.json",
                                                 "subPath": "settings.json",
                                                 "name": "json-config",
                                             },
                                             {
                                                 "name": getVolumeClaimName(base_name),
-                                                "mountPath": "/bitcoin/.bitcoin",
+                                                "mountPath": data_dir,
                                             },
                                         ],
                                     }
