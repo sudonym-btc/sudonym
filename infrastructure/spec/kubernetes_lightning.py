@@ -177,15 +177,15 @@ def lightning(config, cluster_types):
                                                     "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
                                                     "--bitcoin-rpcconnect="
                                                     + getServiceName(bitcoin_base_name),
+                                                    "--bitcoin-rpcport="
+                                                    + str(config["bitcoin"]["rpcPort"]),
                                                     "--log-level=" + config["loglevel"],
                                                     "--lightning-dir=" + lightning_dir,
                                                     "--rpc-file=/rpc/lightning-rpc",
                                                     "--addr=0.0.0.0:"
                                                     + str(config["lightning"]["port"]),
                                                     "--experimental-offers",
-                                                    "--network=" + chain_name,
-                                                    "--bitcoin-rpcport="
-                                                    + str(config["bitcoin"]["rpcPort"])
+                                                    "--network=" + chain_name
                                                 ]
                                             ),
                                         ],
