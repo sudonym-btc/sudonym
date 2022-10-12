@@ -27,10 +27,12 @@ class ReceiverPage extends StatelessWidget {
           } else if (state.entity!.received > 0) {
             return const StatusPage(
                 title: 'Received',
-                subtitle: 'Received payment...',
+                subtitle: 'Received payment.',
                 icon: FontAwesomeIcons.check,
                 color: Colors.green);
           }
+          print("RECEIVER:" + state.entity!.toJson().toString());
+
           return StatusPage(
               title: 'Receiving',
               subtitle: 'Waiting for payment...',

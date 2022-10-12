@@ -107,7 +107,7 @@ export const BaseService = <TModel extends BaseModel>(
 			].filter((i) => !!i);
 			const record = await this.repo.scope(scopes as any).findByPk(id);
 			const obj = await record.set(params).save();
-
+			console.log(params, id, obj);
 			await this.afterUpdate.execute(obj);
 			await this.onAfterUpdated.next(obj);
 

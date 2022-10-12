@@ -35,10 +35,21 @@ class _LoggedInWidget extends StatelessWidget {
     return BlocListener<TransactionListenerCubit,
             TransactionListenerCubitState>(
         bloc: BlocProvider.of<TransactionListenerCubit>(context),
-        listener: (BuildContext context, state) {
+        listener: (BuildContext context, state) async {
           if (state.address != null) {
-            getIt<ActionTriggerService>()
-                .trigger(state.address.toString(), context);
+            try {
+              await getIt<ActionTriggerService>()
+                  .trigger(state.address.toString(), context);
+            } catch (e) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => StatusPage(
+                          title: 'Error',
+                          subtitle: 'Encountered an unrecoverable error',
+                          content: Text(e.toString()),
+                          color: Theme.of(context).errorColor)));
+            }
           }
         },
         child: const MessageHandler(child: HomePage()));

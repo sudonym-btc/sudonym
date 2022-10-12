@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
@@ -73,25 +74,33 @@ class _CurrencyInputState extends State<CurrencyInput> {
         altValueLoading = true;
       });
 
-      getIt<CurrencyRepository>()
-          .getRate(widget.currencies[currCurrency], widget.outputCurrency,
-              _controller.numberValue, null)
-          .then((value) {
+      Future<CurrencyResponse> output;
+      Future<CurrencyResponse> alt;
+
+      output = getIt<CurrencyRepository>().getRate(
+          widget.currencies[currCurrency],
+          widget.outputCurrency,
+          _controller.numberValue,
+          null);
+
+      alt = widget.currencies[altCurrency] == widget.outputCurrency
+          ? output
+          : getIt<CurrencyRepository>().getRate(widget.currencies[currCurrency],
+              widget.currencies[altCurrency], _controller.numberValue, null);
+
+      output.then((value) {
         widget.onChanged!(
             CurrencyInputOutput(value.amount, widget.outputCurrency));
       });
 
-      getIt<CurrencyRepository>()
-          .getRate(widget.currencies[currCurrency],
-              widget.currencies[altCurrency], _controller.numberValue, null)
-          .then((value) => {
-                setState(
-                  () {
-                    altValue = value.amount;
-                    altValueLoading = false;
-                  },
-                )
-              });
+      alt.then((value) => {
+            setState(
+              () {
+                altValue = value.amount;
+                altValueLoading = false;
+              },
+            )
+          });
     });
   }
 

@@ -18,7 +18,7 @@ class ReceiverCubit
 
   @override
   listenChanges() {
-    updater ??= repository.events.stream.listen((dynamic event) {
+    receiveSubscription ??= repository.events.stream.listen((dynamic event) {
       if (state.entity != null) {
         if (event['data']['id'] == state.entity!.id) {
           try {

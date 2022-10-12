@@ -62,6 +62,7 @@ class _CustomFormState extends State<CustomForm> {
                       if (_formKey.currentState!.validate()) {
                         try {
                           final formData = _formKey.currentState?.value;
+                          print(formData);
                           Map<String, dynamic> d =
                               ({...widget.entity.toJson(), ...formData!});
                           await c.createOrUpdate(c.repository.converter(d));
@@ -107,7 +108,7 @@ class _CustomFormState extends State<CustomForm> {
       }
     }
 
-    print(_changedValues);
+    print(_formKey.currentState!.fields);
 
     return _changedValues;
   }

@@ -18,7 +18,7 @@ class NFCListener extends TransactionListenerSubtype with NFCLogger {
             streamController.add(r.uri.toString());
           }
         }
-      });
+      }).then((value) => print('done'));
     }
   }
 

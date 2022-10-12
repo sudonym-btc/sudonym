@@ -34,6 +34,10 @@ export class LightningListener extends TransactionListener {
 						currencyCode: 'BTC',
 						txid: e.data.bolt11,
 					});
+
+					await this.receiveService.update(receivers.data[0].id, {
+						received: receivers.data[0].received+1
+					});
 				}
 			}
 		});

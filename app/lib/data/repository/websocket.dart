@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/config/logger.dart';
-import 'package:sudonym/logic/index.dart';
+import 'package:native_flutter_proxy/native_proxy_reader.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:sudonym/config/config.dart';
 
@@ -62,10 +62,23 @@ abstract class Websocket {
   Stream getStream();
 }
 
+dynamic proxy;
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
+    NativeProxyReader.proxySetting.then((value) {
+      proxy = value;
+    });
+
     return super.createHttpClient(context)
+      ..findProxy = (url) {
+        if (proxy != null) {
+          return 'PROXY ${proxy.host}:${proxy.port}';
+        } else {
+          return 'DIRECT';
+        }
+      }
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) =>
               true; // add your localhost detection logic here if you want

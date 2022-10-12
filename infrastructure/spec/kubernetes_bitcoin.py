@@ -1,5 +1,6 @@
 from helper import (
     getBackupName,
+    getConfigName,
     getDeploymentName,
     getSecretName,
     getServiceName,
@@ -106,6 +107,23 @@ def bitcoin(config, cluster_types):
                 },
             },
             {
+                "name": getConfigName(base_name),
+                "type": cluster_types["ConfigMap"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "ConfigMap",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": 'settings.json',
+                        "labels": {"app": base_name},
+                    },
+                    "data": {
+                        "settings.json": "{}",
+                    },
+                },
+            },
+            {
                 "name": getDeploymentName(base_name),
                 "type": cluster_types["Deployment"],
                 "metadata": {
@@ -136,19 +154,6 @@ def bitcoin(config, cluster_types):
                                             "privileged": True,
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
-                                        "lifecycle": {
-                                            # "preStop": {
-                                            #     "exec": {
-                                            #         "command": [
-                                            #             "/bin/sh",
-                                            #             "-c",
-                                            #             "cp -ar /bitcoin/.bitcoin/. /bitcoin/backup/$POD_ID >> /proc/1/fd/1 && find /bitcoin/backup/$POD_ID -name '.lock' -delete"
-                                            #         ]
-                                            #     }
-                                            # },
-                                        }
-                                        if config["backup"]
-                                        else {},
                                         "name": base_name,
                                         "image": "gcr.io/"
                                         + config["project"]
@@ -235,6 +240,11 @@ def bitcoin(config, cluster_types):
                                         ],
                                         "volumeMounts": [
                                             {
+                                                "mountPath": "bitcoin/.bitcoin/settings.json",
+                                                "subPath": "settings.json",
+                                                "name": "json-config",
+                                            },
+                                            {
                                                 "name": getVolumeClaimName(base_name),
                                                 "mountPath": "/bitcoin/.bitcoin",
                                             },
@@ -242,6 +252,10 @@ def bitcoin(config, cluster_types):
                                     }
                                 ],
                                 "volumes": [
+                                    {
+                                        "name": "json-config",
+                                        "configMap": {"name": "settings.json"},
+                                    },
                                     {
                                         "name": getVolumeClaimName(base_name),
                                         "persistentVolumeClaim": {

@@ -1,5 +1,6 @@
 export 'bolt_card/edit_bolt_card.dart';
-export 'contact.dart';
+export 'contact/contact.dart';
+export 'contact/edit_contact.dart';
 export 'home_page.dart';
 export 'receive.dart';
 export 'receiver.dart';

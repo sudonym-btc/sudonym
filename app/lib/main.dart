@@ -16,7 +16,7 @@ void main(List<String> args) {
 
 void mainCommon(String? env) async {
   env = env ?? const String.fromEnvironment('ENV');
-  env = env == "" ? Env.mock : env;
+  env = env == '' ? Env.mock : env;
 
   // Allow self signed certificates for development
   if ([Env.mock, Env.dev, Env.test].contains(env)) {
@@ -60,8 +60,8 @@ class _AppState extends State<App> {
       builder: (BuildContext context, Widget? widget) {
         ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
           return StatusPage(
-              title: "Error",
-              subtitle: "Encountered an unrecoverable error",
+              title: 'Error',
+              subtitle: 'Encountered an unrecoverable error',
               content: Text(errorDetails.toString()),
               color: Theme.of(context).errorColor);
         };
