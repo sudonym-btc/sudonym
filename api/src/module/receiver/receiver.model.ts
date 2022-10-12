@@ -12,12 +12,14 @@ import {
 	IsNumeric,
 	IsIn,
 	IsInt,
+	BelongsTo,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, CurrencyCodes, TAddressType } from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from 'module/pot/pot.model';
 import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
+import { PotUser } from 'module/pot-user/pot-user.model';
 
 @Table({
 	scopes: Receiver.scopes,
@@ -38,6 +40,9 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column(DataType.ENUM(...ADDRESS_TYPES))
 	type: TAddressType;
 
+	@BelongsTo(() => Pot)
+	Pot: Pot;
+	
 	@ForeignKey(() => Pot)
 	@Column
 	potId: number;
@@ -66,4 +71,29 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@CreatedAt
 	@Column
 	createdAt: Date;
+
+	static accessors = {
+		canFind: (id) =>
+			PotUser.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				include: [
+					{
+						model: Pot,
+						attributes: [],
+						required: true,
+						include: [
+							{
+								model: Receiver,
+								required: true,
+								attributes: [],
+								where: {
+									id,
+								},
+							},
+						],
+					},
+				],
+			}),
+	};
 }

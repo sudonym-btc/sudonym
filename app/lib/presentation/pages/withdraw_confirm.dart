@@ -60,8 +60,7 @@ class WithdrawConfirm extends StatelessWidget {
             state.receiverData!.fold((l) {
               color = Colors.red;
               title = (AppLocalizations.of(context)!.failed);
-              subtitle =
-                  (AppLocalizations.of(context)!.failedToCreateTransactions);
+              subtitle = 'Could not create receiver for this withdrawal';
               icon = FontAwesomeIcons.circleExclamation;
               content = Text(l.toString());
               actions = ButtonBar(

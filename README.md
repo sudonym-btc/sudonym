@@ -72,6 +72,10 @@ npm run watch:api
 To run Flutter without a backend, run in the flutter - mock profile,
 can be found in the Run & Debug panel.
 Else, change to flutter - development
+When running on a real device in development mode,
+you will need to setup your computer as a proxy
+so that the phone can route requests to the local API.
+Use quid, allow all connections and setup phone to connect via laptop.
 
 </details>
 
@@ -117,5 +121,11 @@ If cannot validate ingress
 
 Backups will be sent to cloud storage. Can become corrupted if a new pod starts
 up while another syncing.
+
+While synching to the real chain, you might want to increase memory size
+on the cloud computers. To do this, cordon default node and create a
+new node with more memory. Relaunch the bitcoin pod on the new node until
+chain has synched, then you can uncordon and move bitcoin pod back to default
+node.
 
 </details>

@@ -2,7 +2,6 @@ FROM ruimarinho/bitcoin-core:23.0
 ENV GCSFUSE_REPO gcsfuse-stretch
 
 RUN sed -i 's/bullseye\/updates/bullseye-security/g' /etc/apt/sources.list
-
 RUN apt-get update && apt-get install --yes --no-install-recommends \
     ca-certificates \
     curl \

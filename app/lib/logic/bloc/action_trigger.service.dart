@@ -22,8 +22,6 @@ class ActionTriggerService with ActionLogger {
     if (response.withdraw != null) {
       handleWithdraw(response.withdraw!, context, potId);
     }
-
-    return;
   }
 
   handlePayment(Payment p, BuildContext c, [int? potId]) {

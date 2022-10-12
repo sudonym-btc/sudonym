@@ -14,6 +14,7 @@ class NFCCubit extends Cubit<NFCCubitState> {
         if (x != null) {
           await x.write(NdefMessage([NdefRecord.createUri(url)]));
           emit(NFCCubitState(writing: false, success: true));
+          NfcManager.instance.stopSession();
         }
       } on Error catch (e) {
         emit(NFCCubitState(writing: false, success: false, e: e));

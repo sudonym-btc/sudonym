@@ -30,7 +30,7 @@ export class AddressParser implements IAddressParser {
 				);
 				return Action.from({
 					originalAddress: trimmedAddress,
-					type: remoteResponse.data.tag.replace('Request', ''),
+					type: remoteResponse.data.tag ? remoteResponse.data.tag.replace('Request', '') : '',
 					remoteResponse,
 					isLnUrl: true,
 				});
@@ -50,11 +50,11 @@ export class AddressParser implements IAddressParser {
 		this.logger.debug('Fetching LnUrl from ' + url);
 		const data = await fetch(url, fetchHttpOpts)
 			.then((r) => {
-				this.logger.debug('Fetched lnurl');
-				this.logger.debug(r);
 				return r.json();
 			})
 			.then((data) => {
+				this.logger.debug('Fetched lnurl');
+				this.logger.debug(data);
 				return {
 					success: true,
 					data,

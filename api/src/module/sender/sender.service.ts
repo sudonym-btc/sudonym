@@ -32,9 +32,7 @@ export class SenderService extends BaseService(Sender) {
 					maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 9999999999999
 				}
 				);
-				params.data = lnurl.encode(
-					getConfig().selfUrl + '/lnurl/' + tag.id
-				);
+				params.data = getConfig().selfUrl + '/lnurl/' + tag.id
 				params.lnurlId = tag.id;
 				break;
 		}

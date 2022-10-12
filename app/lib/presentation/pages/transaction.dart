@@ -94,6 +94,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
         subtitle: AppLocalizations.of(context)!.paymentHasSuccessfullyBeenSent,
+        content: _ContactSection(transaction),
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -141,5 +142,29 @@ class _IncomingFailed extends _TransactionStatusPage {
         subtitle:
             'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.address}',
         color: Theme.of(context).errorColor);
+  }
+}
+
+class _ContactSection extends StatelessWidget {
+  final Transaction entity;
+
+  const _ContactSection(this.entity);
+
+  @override
+  Widget build(BuildContext context) {
+    // if (entity != null) {
+    //   return ContactListItem(contact: entity!.);
+    // }
+    return Button(
+        text: 'Create Contact',
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditContact(
+                        entity: Contact.fromJson({
+                      'ContactAddresses': [
+                        {'address': entity.originalAddress}
+                      ]
+                    })))));
   }
 }

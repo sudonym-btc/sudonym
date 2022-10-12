@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "convert": "npm run genMocks && (cd ts && npm run build) && sh convert.sh && (ts-node src/dart-decorator.ts)",
+    "convert": "(cd ts && npm run build) && sh convert.sh && (ts-node src/dart-decorator.ts)",
     "genMocks": "ts-node ./ts/src/mock/exporter.ts"
   },
   "devDependencies": {
