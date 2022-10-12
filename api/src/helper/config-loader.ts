@@ -12,7 +12,7 @@ export async function downloadFiles(
 	if (!alreadyDone() || force) {
 		const buckets = (await storage.getBuckets())[0];
 		const bucket = buckets.find((b) =>
-			b.name.includes('config-' + getConfig().env)
+			b.name.includes('config') && b.name.includes(getConfig().env)
 		);
 
 		if (!bucket) {
