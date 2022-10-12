@@ -23,7 +23,7 @@ config = {
             "websocketPort": 3001
         },
         "cluster": {
-            "machineType": "e2-medium",
+            "machineType": "e2-standard-1",
             "diskSizeGb": 100
         },
         "backup": True,
