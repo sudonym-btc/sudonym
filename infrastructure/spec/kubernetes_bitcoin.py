@@ -19,7 +19,7 @@ def bitcoin(config, cluster_types):
     kube_type_name = cluster(config)["kube_type_name"]
     base_name = config["env"] + "-bitcoin"
 
-    data_dir="/home/bitcoin/.bitcoin"
+    data_dir = "/home/bitcoin/.bitcoin"
 
     return {
         "resources": [
@@ -110,6 +110,23 @@ def bitcoin(config, cluster_types):
                 },
             },
             {
+                "name": getConfigName(base_name),
+                "type": cluster_types["ConfigMap"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "ConfigMap",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": 'settings.json',
+                        "labels": {"app": base_name},
+                    },
+                    "data": {
+                        "settings.json": "{}",
+                    },
+                },
+            },
+            {
                 "name": getDeploymentName(base_name),
                 "type": cluster_types["Deployment"],
                 "metadata": {
@@ -140,22 +157,22 @@ def bitcoin(config, cluster_types):
                                             "privileged": True,
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
-                                        "lifecycle": {
-                                            "postStart": {
-                                                "exec": {
-                                                    "command": [
-                                                        '/bin/sh',
-                                                        '-c',
-                                                        "echo '{}' >> " + data_dir + "/settings.json && chmod 700 " + data_dir + " && chown -R bitcoin " + data_dir
-                                                    ],
-                                                }
-                                            },
-                                        },
                                         "name": base_name,
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-bitcoin",
-                                        "args": [
+                                        "command": [
+                                            "sh",
+                                            "-c",
+                                            (
+                                                "" # backup gsutil copy
+                                                if config["backup"]
+                                                else ""
+                                            ) +
+                                            "echo '{}' >> " + data_dir + "/settings.json && chmod 700 " + data_dir + " && chown -R bitcoin " + data_dir + " &&"
+                                        "bitcoind "
+                                            + " ".join(
+                                                [
                                                     "-server",
                                                     "-rest",
                                                     "-txindex",
@@ -176,6 +193,8 @@ def bitcoin(config, cluster_types):
                                                     "-zmqpubhashtx=tcp://*:5555",
                                                     "-zmqpubrawblock=tcp://*:5555",
                                                     "-debug=" + ("1" if config["loglevel"] == "debug" else "0"),
+                                                ]
+                                            ),
                                         ],
                                         "env": [
                                             {
