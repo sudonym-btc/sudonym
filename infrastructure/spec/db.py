@@ -20,18 +20,18 @@ def db(config, cluster_types):
                 }
             }
           },
-          {
-            "name": base_name + "-database",
-            "metadata": {
-              "dependsOn": [base_name]
-            },
-            "type": "gcp-types/sqladmin-v1beta4:databases",
-            "properties": {
-                "name": "app",
-                "instance": f"$(ref.{base_name}.name)",
-                "charset": "utf8"
-            }
-          },
+          # {
+          #   "name": base_name + "-database",
+          #   "metadata": {
+          #     "dependsOn": [base_name]
+          #   },
+          #   "type": "gcp-types/sqladmin-v1beta4:databases",
+          #   "properties": {
+          #       "name": "app",
+          #       "instance": f"$(ref.{base_name}.name)",
+          #       "charset": "utf8"
+          #   }
+          # },
           # {
           #   "name": base_name + "-user",
           #   "type": "gcp-types/sqladmin-v1beta4:users",

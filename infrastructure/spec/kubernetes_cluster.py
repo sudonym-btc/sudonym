@@ -24,7 +24,7 @@ def cluster(
                     # },
                     "nodePools": [
                         {
-                            "name": "default-pool",
+                            "name": "pool-1",
                             "initialNodeCount": 1,
                             "config": {
                                 "machineType": config["cluster"]["machineType"],
