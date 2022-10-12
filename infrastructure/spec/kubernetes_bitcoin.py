@@ -110,23 +110,6 @@ def bitcoin(config, cluster_types):
                 },
             },
             {
-                "name": getConfigName(base_name),
-                "type": cluster_types["ConfigMap"],
-                "metadata": {"dependsOn": [kube_type_name]},
-                "properties": {
-                    "apiVersion": "v1",
-                    "kind": "ConfigMap",
-                    "namespace": "default",
-                    "metadata": {
-                        "name": 'settings.json',
-                        "labels": {"app": base_name},
-                    },
-                    "data": {
-                        "settings.json": "{}",
-                    },
-                },
-            },
-            {
                 "name": getDeploymentName(base_name),
                 "type": cluster_types["Deployment"],
                 "metadata": {
@@ -157,21 +140,22 @@ def bitcoin(config, cluster_types):
                                             "privileged": True,
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
+                                        "lifecycle": {
+                                            "postStart": {
+                                                "exec": {
+                                                    "command": [
+                                                        '/bin/sh',
+                                                        '-c',
+                                                        "echo '{}' >> " + data_dir + "/settings.json"
+                                                    ],
+                                                }
+                                            },
+                                        },
                                         "name": base_name,
                                         "image": "gcr.io/"
                                         + config["project"]
                                         + "/fuse-bitcoin",
-                                        "command": [
-                                            "sh",
-                                            "-c",
-                                            (
-                                                "" # backup gsutil copy
-                                                if config["backup"]
-                                                else ""
-                                            )
-                                            + "bitcoind "
-                                            + " ".join(
-                                                [
+                                        "args": [
                                                     "-server",
                                                     "-rest",
                                                     "-txindex",
@@ -192,8 +176,6 @@ def bitcoin(config, cluster_types):
                                                     "-zmqpubhashtx=tcp://*:5555",
                                                     "-zmqpubrawblock=tcp://*:5555",
                                                     "-debug=" + ("1" if config["loglevel"] == "debug" else "0"),
-                                                ]
-                                            ),
                                         ],
                                         "env": [
                                             {
@@ -243,11 +225,6 @@ def bitcoin(config, cluster_types):
                                         ],
                                         "volumeMounts": [
                                             {
-                                                "mountPath": data_dir + "/settings.json",
-                                                "subPath": "settings.json",
-                                                "name": "json-config",
-                                            },
-                                            {
                                                 "name": getVolumeClaimName(base_name),
                                                 "mountPath": data_dir,
                                             },
@@ -255,10 +232,6 @@ def bitcoin(config, cluster_types):
                                     }
                                 ],
                                 "volumes": [
-                                    {
-                                        "name": "json-config",
-                                        "configMap": {"name": "settings.json"},
-                                    },
                                     {
                                         "name": getVolumeClaimName(base_name),
                                         "persistentVolumeClaim": {
