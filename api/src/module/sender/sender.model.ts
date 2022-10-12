@@ -59,22 +59,22 @@ export class Sender extends BaseModel implements Models.Sender {
 	@Column
 	data: string;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
 	@Default('BTC')
 	@Column
 	amountCurrency: CurrencyCode;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	limitDay: number;
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	limitMonth: number;
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	limitYear: number;
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	limitMin: number;
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	limitMax: number;
 
 	@CreatedAt

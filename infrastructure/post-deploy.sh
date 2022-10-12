@@ -11,7 +11,10 @@ then
     helm repo add jetstack https://charts.jetstack.io
     help repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
-    helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP=$(gcloud compute addresses describe $1-ip --region=us-central1 --format='get(address)')
+    
+    loadBalancerIP=$(gcloud compute addresses describe $1-ip --region=us-central1 --format='get(address)')
+    echo "Setting load balancer IP $loadBalancerIP"
+    helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP=$loadBalancerIP
     helm upgrade --install \
             cert-manager jetstack/cert-manager \
             --namespace cert-manager \

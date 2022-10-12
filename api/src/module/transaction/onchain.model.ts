@@ -14,7 +14,7 @@ export class Onchain extends BaseModel implements Models.OnchainTransaction {
 	@Column
 	id: string;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number | null;
 
 	@Column

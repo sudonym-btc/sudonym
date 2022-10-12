@@ -2,10 +2,10 @@ import { BaseClass } from './base-class';
 
 export class ContactAddress extends BaseClass {
 	constructor(
-		public contactId: number,
-		public addressType: string,
-		public address: string,
-		public name: string
+		public contactId: number | null,
+		public addressType: string | null,
+		public address: string | null,
+		public name: string | null
 	) {
 		super();
 	}

@@ -3,7 +3,7 @@ def dns(config, cluster_types):
     # Create the zone.
     zoneName = config["env"] + "-zone"
 
-    domain = ("" if config["env"] == "production" else config["env"] + ".") + config[
+    domain = config[
         "domain"
     ]
 

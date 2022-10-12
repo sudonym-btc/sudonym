@@ -8,7 +8,7 @@ import 'package:sudonym/presentation/index.dart';
 class CustomForm<Repo extends CrudRepository<T>, T extends BaseClass>
     extends StatefulWidget {
   final T entity;
-  final EntityCubit<Repo, EntityCubitState<T>, T> cubit;
+  final EntityCubit<Repo, EntityCubitState<T>, T> Function() cubit;
   final List<Widget> children;
   final Function? onSave;
   final bool hideSubmit;
@@ -29,10 +29,12 @@ class CustomForm<Repo extends CrudRepository<T>, T extends BaseClass>
 class _CustomFormState extends State<CustomForm> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool dirty = false;
+  late EntityCubit c;
 
   @override
   void initState() {
-    widget.cubit.set(widget.entity);
+    c = widget.cubit();
+    c.set(widget.entity);
     super.initState();
   }
 
@@ -47,7 +49,6 @@ class _CustomFormState extends State<CustomForm> {
               const SizedBox(height: padding)
             ],
           )),
-      // Expanded(child: Container()),
     ];
     children.addAll(dirty || !widget.hideSubmit
         ? [
@@ -61,10 +62,10 @@ class _CustomFormState extends State<CustomForm> {
                       if (_formKey.currentState!.validate()) {
                         try {
                           final formData = _formKey.currentState?.value;
+                          print(formData);
                           Map<String, dynamic> d =
                               ({...widget.entity.toJson(), ...formData!});
-                          await widget.cubit.createOrUpdate(
-                              widget.cubit.repository.converter(d));
+                          await c.createOrUpdate(c.repository.converter(d));
                           if (widget.onSave != null) widget.onSave!();
                         } catch (e) {
                           rethrow;
@@ -107,7 +108,7 @@ class _CustomFormState extends State<CustomForm> {
       }
     }
 
-    print(_changedValues);
+    print(_formKey.currentState!.fields);
 
     return _changedValues;
   }

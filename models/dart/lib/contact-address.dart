@@ -1,10 +1,10 @@
 import "base-class.dart" show BaseClass;
 
 class ContactAddress extends BaseClass {
-  num contactId;
-  String addressType;
-  String address;
-  String name;
+  dynamic /* num | null */ contactId;
+  dynamic /* String | null */ addressType;
+  dynamic /* String | null */ address;
+  dynamic /* String | null */ name;
   ContactAddress(this.contactId, this.addressType, this.address, this.name)
       : super() {
     /* super call moved to initializer */;

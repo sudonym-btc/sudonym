@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/logic/index.dart';
 
-class ListWidget extends StatefulWidget {
+class ListWidget extends StatefulWidget with ListLogger {
   final String? emptyText;
   final ListCubit Function() list;
   final Widget Function(dynamic el) builder;
@@ -21,7 +22,7 @@ class ListWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _ListWidgetState();
 }
 
-class _ListWidgetState extends State<ListWidget> {
+class _ListWidgetState extends State<ListWidget> with ListLogger {
   final ScrollController controller = ScrollController();
   late ListCubit c;
 
@@ -30,11 +31,11 @@ class _ListWidgetState extends State<ListWidget> {
     c = widget.list();
     controller.addListener(() {
       if (controller.position.pixels >= controller.position.maxScrollExtent) {
-        print("loading next due to scroll");
+        loggy.v('Loading next due to scroll');
         c.loadNext();
       }
     });
-    print("loading next due to init");
+    loggy.v('Loading next due to init');
     c.loadNext();
     super.initState();
   }
@@ -47,12 +48,13 @@ class _ListWidgetState extends State<ListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => c)],
+    return BlocProvider(
+        create: (_) => c,
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {
             List<Widget> children =
                 state.data.map<Widget>((e) => widget.builder(e)).toList();
+
             if (state.loading) {
               children.add(Center(
                   child: Column(children: const [
@@ -71,9 +73,10 @@ class _ListWidgetState extends State<ListWidget> {
               }
             }
 
-            return ListView(
+            return ListView.builder(
               controller: controller,
-              children: children,
+              itemBuilder: (context, index) => children[index],
+              itemCount: children.length,
             );
           },
         ));

@@ -1,22 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { WsAdapter } from './module/events/websocket-adapter';
-import { requestLogger } from './helper/logger';
-import { contextRequest } from './helper/context-request';
 import { downloadFiles } from './helper/config-loader';
-import { ValidationPipe } from '@nestjs/common';
-import { AuthService } from 'module/auth/auth.service';
+import { applyGlobals } from 'app.globals';
 
 async function bootstrap() {
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule);
-	app.useGlobalPipes(
-		new ValidationPipe({ whitelist: true, transform: true })
-	);
-	app.useWebSocketAdapter(new WsAdapter(app));
-	app.use(requestLogger);
-	app.use(contextRequest(app.get(AuthService)));
+	applyGlobals(app);
 
 	const config = new DocumentBuilder()
 		.setTitle('Sudonym')

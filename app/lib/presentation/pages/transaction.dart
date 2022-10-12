@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
+import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,7 +15,7 @@ class TransactionPage extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) => TransactionCubit()
+              create: (_) => getIt<TransactionCubit>()
                 ..fetch(
                     (ModalRoute.of(context)?.settings.arguments as Transaction)
                         .id))
@@ -93,6 +94,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
         subtitle: AppLocalizations.of(context)!.paymentHasSuccessfullyBeenSent,
+        content: _ContactSection(transaction),
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -140,5 +142,29 @@ class _IncomingFailed extends _TransactionStatusPage {
         subtitle:
             'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.address}',
         color: Theme.of(context).errorColor);
+  }
+}
+
+class _ContactSection extends StatelessWidget {
+  final Transaction entity;
+
+  const _ContactSection(this.entity);
+
+  @override
+  Widget build(BuildContext context) {
+    // if (entity != null) {
+    //   return ContactListItem(contact: entity!.);
+    // }
+    return Button(
+        text: 'Create Contact',
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditContact(
+                        entity: Contact.fromJson({
+                      'ContactAddresses': [
+                        {'address': entity.originalAddress}
+                      ]
+                    })))));
   }
 }

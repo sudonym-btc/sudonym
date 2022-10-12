@@ -32,7 +32,7 @@ abstract class EntityCubit<
     if (!shouldListen) return;
     updater ??= repository.updated.stream.listen((event) {
       if ((event as dynamic).id == (state.entity as dynamic).id) {
-        loggy.error(event.toJson());
+        loggy.i(event.toJson());
         set(event);
       }
     });

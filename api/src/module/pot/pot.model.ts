@@ -21,6 +21,8 @@ import { BaseModel } from '../base.model';
 import { requestContextCls } from 'helper/context-request';
 import { User } from 'module/user/user.model';
 import { Transaction } from 'module/transaction/transaction.model';
+import { Receiver } from 'module/receiver/receiver.model';
+import { Sender } from 'module/sender/sender.model';
 const { Op } = require('sequelize');
 
 @Table({
@@ -37,12 +39,12 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	@AllowNull(false)
 	@Default(0)
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	balance: number;
 
 	@AllowNull(false)
 	@Default(0)
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	spendableBalance: number;
 
 	@Column
@@ -53,6 +55,12 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	@HasMany(() => Transaction)
 	Transactions: Transaction[];
+
+	@HasMany(() => Receiver)
+	Receivers: Receiver[];
+
+	@HasMany(() => Sender)
+	Senders: Sender[];
 
 	@AfterCreate
 	static addPotUser = async (rec) => {

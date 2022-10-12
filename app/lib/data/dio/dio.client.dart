@@ -11,14 +11,6 @@ abstract class RegisterModule {
     Dio dio = Dio(BaseOptions(baseUrl: '${config.apiUrl}:${config.apiPort}'))
       ..interceptors.add(LoggyDioInterceptor())
       ..interceptors.add(AuthInterceptor());
-
-    // // //@todo: check bad certificate
-    // // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-    // //     (HttpClient client) {
-    // //   client.badCertificateCallback =
-    // //       (X509Certificate cert, String host, int port) => true;
-    //   return client;
-    // };
     return dio;
   }
 }

@@ -71,12 +71,9 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
                             : 'Write to NFC Tag',
                         onPressed: !state.writing
                             ? () {
-                                context.read<NFCCubit>().write(Uri.parse((widget
-                                        .entity!
-                                        .sender
-                                        .lnurl
-                                        .params['callback'] as String)
-                                    .replaceAll('https://', 'lnurlw://')));
+                                context.read<NFCCubit>().write(Uri.parse(
+                                    (widget.entity!.sender.data as String)
+                                        .replaceAll('https://', 'lnurlw://')));
                               }
                             : null,
                       ),
@@ -92,7 +89,7 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
           return CustomForm(
               entity: widget.entity ?? BoltCard.fromJson({'name': ''}),
               onSave: widget.onSave,
-              cubit: getIt<BoltCardCubit>(),
+              cubit: () => getIt<BoltCardCubit>(),
               children: children);
         }));
   }

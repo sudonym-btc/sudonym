@@ -3,9 +3,9 @@ import { ContactAddress } from './contact-address';
 
 export class Contact extends BaseClass {
 	constructor(
-		public id: number,
-		public userId: string,
-		public name: string,
+		public id: number | null,
+		public userId: string | null,
+		public name: string | null,
 		public ContactAddresses: ContactAddress[]
 	) {
 		super();
@@ -13,7 +13,7 @@ export class Contact extends BaseClass {
 
 	static fromJson(json: Object): Contact {
 		const addresses: ContactAddress[] = [];
-		json['ContactAddresses'].forEach((e) => {
+		(json['ContactAddresses'] != null ? json['ContactAddresses'] : []).forEach((e) => {
 			addresses.push(ContactAddress.fromJson(e));
 		});
 		return new Contact(json['id'], json['userId'], json['name'], addresses);

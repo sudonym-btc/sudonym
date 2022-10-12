@@ -13,57 +13,75 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Theme.of(context).colorScheme.background,
-        child: SafeArea(
-            child: Scaffold(
-          appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
-          body: Column(mainAxisSize: MainAxisSize.min, children: [
-            Padding(
-                padding: EdgeInsets.all(padding),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Subheader("Lightning"),
-                      // const SizedBox(
-                      //   height: padding,
-                      // ),
-                      CustomForm(
-                        cubit: getIt<UserCubit>(),
-                        entity: getIt<AuthCubit>().user!,
-                        children: [
-                          FormBuilderTextField(
-                            name: 'lightningAddress',
-                            initialValue:
-                                getIt<AuthCubit>().user!.lightningAddress,
-                            decoration: InputDecoration(
-                                hintText: 'satoshi',
-                                labelText: AppLocalizations.of(context)!
-                                    .lightningAddress,
-                                suffixText: '@${getIt<Config>().domain}'),
-                            validator: (value) {
-                              if (value != null && value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                      )
-                    ])),
-            const Expanded(
-                child: const Padding(
-                    padding: EdgeInsets.all(padding), child: BoltCardList())),
-            Button(
-              text: "Logout",
-              onPressed: (() async {
-                await getIt<AuthCubit>().logout();
-                Navigator.popUntil(context, (route) => route.isFirst);
-              }),
-            ),
-            const AboutSection()
-          ]),
-        )));
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
+      body: Column(mainAxisSize: MainAxisSize.min, children: [
+        const LightningSection(),
+        const CardSection(),
+        Button.flat(
+          text: 'Logout',
+          foregroundColor: Colors.red,
+          onPressed: (() async {
+            await getIt<AuthCubit>().logout();
+            Navigator.popUntil(context, (route) => route.isFirst);
+          }),
+        ),
+        const AboutSection()
+      ]),
+    ));
+  }
+}
+
+class CardSection extends StatelessWidget {
+  const CardSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Expanded(
+        child:
+            Padding(padding: EdgeInsets.all(padding), child: BoltCardList()));
+  }
+}
+
+class LightningSection extends StatelessWidget {
+  const LightningSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(padding),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Header('Lightning'),
+          const SizedBox(
+            height: padding,
+          ),
+          const Info(
+              'This is the email address that other wallets that support lightning addresses are able to send money to.'),
+          CustomForm(
+            cubit: () => getIt<UserCubit>(),
+            entity: getIt<AuthCubit>().user!,
+            children: [
+              FormBuilderTextField(
+                name: 'lightningAddress',
+                initialValue: getIt<AuthCubit>().user!.lightningAddress,
+                decoration: InputDecoration(
+                    hintText: 'satoshi',
+                    labelText: AppLocalizations.of(context)!.lightningAddress,
+                    suffixText: '@${getIt<Config>().domain}'),
+                validator: (value) {
+                  if (value != null && value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  if (!RegExp(r'^[A-Za-z0-9_.-]+$').hasMatch(value ?? '')) {
+                    return 'Cannot contain symbols';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          )
+        ]));
   }
 }
 
@@ -85,10 +103,12 @@ class AboutSectionState extends State<AboutSection> {
   @override
   initState() {
     PackageInfo.fromPlatform().then((packageInfo) {
-      appName = packageInfo.appName;
-      packageName = packageInfo.packageName;
-      version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
+      setState(() {
+        appName = packageInfo.appName;
+        packageName = packageInfo.packageName;
+        version = packageInfo.version;
+        buildNumber = packageInfo.buildNumber;
+      });
     });
 
     super.initState();
@@ -96,6 +116,23 @@ class AboutSectionState extends State<AboutSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('$appName - $packageName - $version - $buildNumber');
+    return Table(children: [
+      TableRow(children: [
+        const TableCell(child: Text('App name')),
+        TableCell(child: Text(appName))
+      ]),
+      TableRow(children: [
+        const TableCell(child: Text('Package')),
+        TableCell(child: Text(packageName))
+      ]),
+      TableRow(children: [
+        const TableCell(child: Text('Version')),
+        TableCell(child: Text(version))
+      ]),
+      TableRow(children: [
+        const TableCell(child: Text('Build')),
+        TableCell(child: Text(buildNumber))
+      ]),
+    ]);
   }
 }

@@ -16,20 +16,26 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
       : super(ListCubitState(
             data: const [], metadata: const {}, loading: false)) {
     if (updater == null) {
-      loggy.debug("Subscribing to ${_repository.endpoint}");
+      loggy.d('Subscribing to ${_repository.endpoint}');
     }
     updater ??= _repository.created.stream.listen((event) async {
-      loggy.debug("Created so reloading ${event.toJson().toString()}" +
-          _repository.endpoint);
+      loggy.d(
+          "Created ${event.toJson()["id"].toString()} reloading ${_repository.endpoint}");
       await loadPrevious();
-      await loadNext();
     });
+  }
+
+  filter(List x) {
+    return x
+        .where((element) =>
+            !state.data.map((e) => e.id).contains(element.toJson()['id']))
+        .toList();
   }
 
   loadNext() async {
     if (isClosed) return;
     if (!state.loading) {
-      loggy.debug('Loading next ${_repository.endpoint}');
+      loggy.d('Loading next ${_repository.endpoint}');
 
       emit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
@@ -38,8 +44,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
         ...where,
         'id': order == 'DESC' ? {'lt': getSmallestId()} : {'lt': getLargestId()}
       });
-
-      List elements = [...state.data, ...response.data];
+      List filtered = filter(response.data);
+      List elements = [...state.data, ...filtered];
 
       if (!isClosed) {
         emit(ListCubitState(
@@ -52,7 +58,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
     if (isClosed) return;
 
     if (!state.loading) {
-      loggy.debug('Loading previous ${_repository.endpoint}');
+      loggy.d('Loading previous ${_repository.endpoint}');
 
       emit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
@@ -62,7 +68,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
         'id': order == 'DESC' ? {'gt': getLargestId()} : {'gt': getSmallestId()}
       });
 
-      List elements = [...response.data, ...state.data];
+      List filtered = filter(response.data);
+      List elements = [...filtered, ...state.data];
 
       if (!isClosed) {
         emit(ListCubitState(
@@ -87,7 +94,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
 
   @override
   close() async {
-    loggy.debug("Unsubscribing to ${_repository.endpoint}");
+    loggy.d('Unsubscribing to ${_repository.endpoint}');
     await updater?.cancel();
     return super.close();
   }

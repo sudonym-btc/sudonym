@@ -2,16 +2,17 @@ import "base-class.dart" show BaseClass;
 import "contact-address.dart" show ContactAddress;
 
 class Contact extends BaseClass {
-  num id;
-  String userId;
-  String name;
+  dynamic /* num | null */ id;
+  dynamic /* String | null */ userId;
+  dynamic /* String | null */ name;
   List<ContactAddress> ContactAddresses;
   Contact(this.id, this.userId, this.name, this.ContactAddresses) : super() {
     /* super call moved to initializer */;
   }
   static Contact fromJson(Map<String, dynamic> json) {
     final List<ContactAddress> addresses = [];
-    json["ContactAddresses"].forEach((e) {
+    (json["ContactAddresses"] != null ? json["ContactAddresses"] : [])
+        .forEach((e) {
       addresses.add(ContactAddress.fromJson(e));
     });
     return new Contact(json["id"], json["userId"], json["name"], addresses);

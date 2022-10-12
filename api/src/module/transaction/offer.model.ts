@@ -20,7 +20,7 @@ export class Offer extends BaseModel implements Models.Offer {
 	@Column
 	active: boolean;
 
-	@Column(DataType.DOUBLE(18, 8))
+	@Column(DataType.DOUBLE(21, 11))
 	amount: number | null;
 
 	@Column

@@ -1,43 +1,33 @@
-import 'package:loggy/loggy.dart' show Loggy, LoggyType;
+import 'package:logger/logger.dart';
 
-mixin RepoLogger implements LoggyType {
-  @override
-  Loggy<RepoLogger> get loggy =>
-      Loggy<RepoLogger>('Repo Logger - $runtimeType');
+mixin RepoLogger {
+  Logger get loggy => Logger();
 }
 
-mixin ListLogger implements LoggyType {
-  @override
-  Loggy<ListLogger> get loggy =>
-      Loggy<ListLogger>('List Logger - $runtimeType');
+mixin ListLogger {
+  Logger get loggy => Logger();
 }
 
-mixin ActionLogger implements LoggyType {
-  @override
-  Loggy<ActionLogger> get loggy =>
-      Loggy<ActionLogger>('Action Logger - $runtimeType');
+mixin ActionLogger {
+  Logger get loggy => Logger();
 }
 
-mixin AmountLogger implements LoggyType {
-  @override
-  Loggy<AmountLogger> get loggy =>
-      Loggy<AmountLogger>('Amount Logger - $runtimeType');
+mixin NFCLogger {
+  Logger get loggy => Logger();
 }
 
-mixin WebsocketLogger implements LoggyType {
-  @override
-  Loggy<WebsocketLogger> get loggy =>
-      Loggy<WebsocketLogger>('Websocket Logger - $runtimeType');
+mixin AmountLogger {
+  Logger get loggy => Logger();
 }
 
-mixin NotificationLogger implements LoggyType {
-  @override
-  Loggy<NotificationLogger> get loggy =>
-      Loggy<NotificationLogger>('Notification Logger - $runtimeType');
+mixin WebsocketLogger {
+  Logger get loggy => Logger();
 }
 
-mixin CubitLogger implements LoggyType {
-  @override
-  Loggy<CubitLogger> get loggy =>
-      Loggy<CubitLogger>('Cubit Logger - $runtimeType');
+mixin NotificationLogger {
+  Logger get loggy => Logger();
+}
+
+mixin CubitLogger {
+  Logger get loggy => Logger();
 }

@@ -29,16 +29,11 @@ export class SenderService extends BaseService(Sender) {
 		switch (params.type) {
 			case 'lnurl':
 				const tag = await this.lnUrlService.createWithdrawRequest({
-					minWithdrawable: params.limitMin
-						? params.limitMin * MSATOSHIS
-						: 0,
-					maxWithdrawable: params.limitMax
-						? params.limitMax * MSATOSHIS
-						: 9999999999999,
-				});
-				params.data = lnurl.encode(
-					getConfig().selfUrl + '/lnurl/' + tag.id
+					minWithdrawable: params.limitMin ? params.limitMin * MSATOSHIS : 0,
+					maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 9999999999999
+				}
 				);
+				params.data = getConfig().selfUrl + '/lnurl/' + tag.id
 				params.lnurlId = tag.id;
 				break;
 		}

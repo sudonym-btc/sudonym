@@ -8,10 +8,12 @@ import { getConfig } from 'config/config';
 import { CurrencyCode, MSATOSHIS, TAddressType } from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
 import { ReceiveQuery } from './receiver.controller';
+import { PotService } from 'module/pot/pot.service';
 
 @Injectable()
 export class ReceiverService extends BaseService(Receiver) {
 	@Inject(CurrencyService) currencyService: CurrencyService;
+	@Inject(PotService) potService: PotService;
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 
@@ -46,6 +48,8 @@ export class ReceiverService extends BaseService(Receiver) {
 							)
 					  ).amount;
 			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
+
+			params.potId = params.potId || (await this.potService.findForUser()).id;
 
 			switch (params.type) {
 				case 'bolt11':
