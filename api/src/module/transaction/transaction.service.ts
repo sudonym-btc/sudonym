@@ -9,7 +9,7 @@ export class TransactionService extends BaseService(Transaction) {
 
     async onModuleInit() {
         this.beforeCreate.hook(async params => {
-            params.potId = params.potId || (await this.potService.findForUser()).id
+            params.potId = params.potId || (await this.potService.findForUser()).id;
         })
     }
 }

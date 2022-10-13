@@ -20,6 +20,8 @@ import { Invoice } from './invoice.model';
 import { User } from 'module/user/user.model';
 import { Pot } from 'module/pot/pot.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
+import { ContactAddress } from 'module/contact-address/contact-address.model';
+import { Contact } from 'module/contact/contact.model';
 const { Op } = require('sequelize');
 
 @Table({
@@ -65,6 +67,14 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@AllowNull(true)
 	@Column
 	transactionId: number;
+
+	@BelongsTo(() => ContactAddress)
+	ContactAddress: ContactAddress;
+
+	@ForeignKey(() => ContactAddress)
+	@AllowNull(true)
+	@Column
+	contactAddressId: number;;
 
 	@BelongsTo(() => Pot)
 	Pot: Pot;
@@ -124,4 +134,17 @@ export class Transaction extends BaseModel implements Models.Transaction {
 				],
 			}),
 	};
+
+	static scopes = {
+		find: () =>({
+			include: [{
+				model: ContactAddress,
+				as: 'ContactAddress',
+				include: [{
+					model: Contact,
+					as: 'Contact'
+				}]
+			}]
+		})
+	}
 }

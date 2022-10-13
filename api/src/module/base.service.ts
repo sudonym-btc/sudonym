@@ -174,6 +174,7 @@ export const BaseService = <TModel extends BaseModel>(
 };
 
 const parseFindParams = (params) => {
+	if(!params) return null;
 	Object.keys(params).forEach((key) => {
 		if (['lt', 'gt', 'eq', 'like'].includes(key)) {
 			params[Op[key]] = params[key];

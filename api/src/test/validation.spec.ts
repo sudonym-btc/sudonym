@@ -50,6 +50,8 @@ scaffoldGroup('Validation', (scaffold) => {
 			]
 		} as any);
 
+		console.log(await (await scaffold.app.get(ContactService).list({})).data[0]);
+
 		expect(first.id).toBe(second.id);
 		expect(second.ContactAddresses.length).toBe(1);
 	});
