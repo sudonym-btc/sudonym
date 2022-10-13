@@ -4,15 +4,18 @@ import 'package:sudonym/presentation/index.dart';
 
 class ContactListItem extends StatelessWidget {
   final Contact contact;
+  final Function() onPressed;
 
-  const ContactListItem({super.key, required this.contact});
+  const ContactListItem(
+      {super.key, required this.contact, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          Navigator.of(context).pushNamed('/contact');
-        },
+        onTap: onPressed ??
+            () {
+              Navigator.of(context).pushNamed('/contact');
+            },
         child: Container(
             padding: const EdgeInsets.all(padding),
             child: Row(

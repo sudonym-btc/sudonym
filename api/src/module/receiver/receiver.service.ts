@@ -50,6 +50,10 @@ export class ReceiverService extends BaseService(Receiver) {
 			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
 			params.potId = params.potId || (await this.potService.findForUser()).id;
+			params.amountCurrency = "BTC";
+			params.amount = Number(amountInBTC);
+			console.log(params);
+			console.log(typeof params.amount);
 
 			switch (params.type) {
 				case 'bolt11':

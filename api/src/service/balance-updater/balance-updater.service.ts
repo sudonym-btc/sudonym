@@ -18,24 +18,24 @@ export class BalanceUpdaterService {
 	private readonly logger = new Logger(this.constructor.name);
 
 	onModuleInit() {
-		this.transactionService.afterCreate.hook(async (t) => {
-			const pot = await this.potService.findOne(t.potId);
+		this.transactionService.afterCreate.hook(async ({entity}) => {
+			const pot = await this.potService.findOne(entity.potId);
 			let newBalance = pot.balance;
 			let newSpendableBalance = pot.spendableBalance;
 			const amountInPotCurrency = (
 				await this.currencyService.convert(
-					t.currencyCode,
+					entity.currencyCode,
 					pot.currency,
-					t.amount
+					entity.amount
 				)
 			).amount;
 
-			if (t.outgoing) {
+			if (entity.outgoing) {
 				newBalance -= amountInPotCurrency;
 				newSpendableBalance -= amountInPotCurrency;
 			} else {
 				newBalance += amountInPotCurrency;
-				if (t.status == true) {
+				if (entity.status == true) {
 					newSpendableBalance += amountInPotCurrency;
 				}
 			}
@@ -57,30 +57,30 @@ export class BalanceUpdaterService {
 				balance: newBalance,
 				spendableBalance: newSpendableBalance,
 			});
-			this.triggerNotification(t);
+			this.triggerNotification(entity);
 		});
 
-		this.transactionService.afterUpdate.hook(async (t) => {
-			const pot = await this.potService.findOne(t.potId);
+		this.transactionService.afterUpdate.hook(async ({entity}) => {
+			const pot = await this.potService.findOne(entity.potId);
 
 			let newBalance = pot.balance;
 			let newSpendableBalance = pot.spendableBalance;
 
 			const amountInPotCurrency = (
 				await this.currencyService.convert(
-					t.currencyCode,
+					entity.currencyCode,
 					pot.currency,
-					t.amount
+					entity.amount
 				)
 			).amount;
 
-			if (t.changed('status')) {
+			if (entity.changed('status')) {
 				// Increase spendable balance when outgoing fails
-				if (t.outgoing) {
-					if (t.status == false)
+				if (entity.outgoing) {
+					if (entity.status == false)
 						newSpendableBalance += amountInPotCurrency;
 				} else {
-					if (t.status == true) {
+					if (entity.status == true) {
 						newSpendableBalance += amountInPotCurrency;
 					} else {
 						newBalance -= amountInPotCurrency;
@@ -92,7 +92,7 @@ export class BalanceUpdaterService {
 					spendableBalance: newSpendableBalance,
 				});
 
-				this.triggerNotification(t);
+				this.triggerNotification(entity);
 			}
 		});
 	}

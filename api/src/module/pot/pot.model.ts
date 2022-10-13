@@ -18,7 +18,7 @@ import { CurrencyCode } from '@sudonym/models';
 import { PotUser } from '../pot-user/pot-user.model';
 import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from '../base.model';
-import { requestContextCls } from 'helper/context-request';
+import { context } from 'helper/context-request';
 import { User } from 'module/user/user.model';
 import { Transaction } from 'module/transaction/transaction.model';
 import { Receiver } from 'module/receiver/receiver.model';
@@ -66,7 +66,7 @@ export class Pot extends BaseModel implements Models.Pot {
 	static addPotUser = async (rec) => {
 		await PotUser.create({
 			potId: rec.id,
-			userId: requestContextCls.get('request')?.auth.uid,
+			userId: context.get('request')?.auth.uid,
 		});
 	};
 
@@ -82,8 +82,8 @@ export class Pot extends BaseModel implements Models.Pot {
 	};
 
 	static scopes = {
-		find: (request: RequestType) =>
-			request
+		find: () =>
+			context.get('request')
 				? {
 						include: [
 							{
@@ -91,7 +91,7 @@ export class Pot extends BaseModel implements Models.Pot {
 								as: 'PotUsers',
 								required: true,
 								where: {
-									userId: request.auth.uid,
+									userId: context.get('request').auth.uid,
 								},
 							},
 						],

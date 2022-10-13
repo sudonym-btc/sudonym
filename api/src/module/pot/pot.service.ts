@@ -3,7 +3,7 @@ import { BaseService } from '../base.service';
 import { Pot } from './pot.model';
 import { Op, Sequelize } from 'sequelize';
 import { PotUser } from 'module/pot-user/pot-user.model';
-import { requestContextCls } from 'helper/context-request';
+import { context } from 'helper/context-request';
 
 @Injectable()
 export class PotService extends BaseService(Pot) {
@@ -17,7 +17,7 @@ export class PotService extends BaseService(Pot) {
 						required: true,
 						model: PotUser,
 						where: {
-							userId: userId || requestContextCls.get('request')?.auth?.uid,
+							userId: userId || context.get('request')?.auth?.uid,
 						},
 					},
 				],

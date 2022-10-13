@@ -1,6 +1,7 @@
 import { scaffoldGroup } from './mock/scaffold-group';
 import * as request from 'supertest';
 import { ReceiverService } from 'module/receiver/receiver.service';
+import { ContactService } from 'module/contact/contact.service';
 
 scaffoldGroup('Validation', (scaffold) => {
 
@@ -25,6 +26,32 @@ scaffoldGroup('Validation', (scaffold) => {
 
 
 		// @todo: Compare that errors are returned the same way
+	});
+
+	it('create or update unique keys', async () => {
+
+		const first = await scaffold.app.get(ContactService).createOrUpdate({
+			userId: scaffold.entities.user[0].id,
+			name: 'tester',
+			ContactAddresses: [
+				{
+					address: 'lnurl32423423'
+				}
+			]
+		} as any);
+
+		const second = await scaffold.app.get(ContactService).createOrUpdate({
+			name: 'tester',
+			userId: scaffold.entities.user[0].id,
+			ContactAddresses: [
+				{
+					address: 'lnurl32423423'
+				}
+			]
+		} as any);
+
+		expect(first.id).toBe(second.id);
+		expect(second.ContactAddresses.length).toBe(1);
 	});
 
 });

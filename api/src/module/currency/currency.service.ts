@@ -8,7 +8,7 @@ export class CurrencyService {
 
 	async convert(from, to, amount = 1, time?: Date): Promise<CurrencyResponse> {
 		return new CurrencyResponse(
-			(await this.exchangeService.fetchPriceAtTime(from, to, time)) *
+			amount == 0 ? 0 : (await this.exchangeService.fetchPriceAtTime(from, to, time)) *
 				amount
 		);
 	}

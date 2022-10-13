@@ -182,6 +182,7 @@ def lightning(config, cluster_types):
                                                     "--log-level=" + config["loglevel"],
                                                     "--lightning-dir=" + lightning_dir,
                                                     "--rpc-file=/rpc/lightning-rpc",
+                                                    "--large-channels",
                                                     "--addr=0.0.0.0:"
                                                     + str(config["lightning"]["port"]),
                                                     "--experimental-offers",

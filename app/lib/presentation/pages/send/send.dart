@@ -21,9 +21,24 @@ class _SendPageState extends State<SendPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   TextEditingController controller = TextEditingController();
   bool camOpen = false;
-
+  late ListCubit listCubit;
   toggleCam() {
     camOpen = !camOpen;
+  }
+
+  @override
+  void initState() {
+    listCubit = ListCubit(getIt<ContactRepository>());
+    controller.addListener(() {
+      listCubit.setWhere(controller.value.text.isNotEmpty
+          ? {
+              'name': {'like': controller.value.text}
+            }
+          : {});
+      listCubit.reset();
+      listCubit.loadNext();
+    });
+    super.initState();
   }
 
   @override
@@ -64,12 +79,13 @@ class _SendPageState extends State<SendPage> {
                       Expanded(
                           child: ListWidget(
                         emptyText: 'No contacts',
-                        list: () =>
-                            ListCubit(getIt<ContactRepository>(), where: {
-                          'name': {'like': invoiceInput.controller!.value.text}
-                        }),
+                        list: () => listCubit,
                         builder: (el) {
-                          return ContactListItem(contact: el);
+                          return ContactListItem(
+                              contact: el,
+                              onPressed: () => getIt<ActionTriggerService>()
+                                  .trigger(el.ContactAddresses[0].address,
+                                      context, widget.potId));
                         },
                       ))
                     ],

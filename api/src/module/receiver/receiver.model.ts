@@ -20,6 +20,7 @@ import { BaseModel } from '../base.model';
 import { Pot } from 'module/pot/pot.model';
 import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
+import { IsNumber } from 'class-validator';
 
 @Table({
 	scopes: Receiver.scopes,
@@ -54,7 +55,7 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column(DataType.STRING(1024))
 	data: string;
 
-	@IsNumeric
+	@IsNumber()
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
