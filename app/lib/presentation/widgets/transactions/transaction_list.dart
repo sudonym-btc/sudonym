@@ -24,16 +24,18 @@ class TransactionList extends StatelessWidget {
           ),
           Expanded(
               child: ListWidget(
-            builder: (el) => CubitWrapper<TransactionCubit,
-                    TransactionCubitState, Transaction>(
-                entity: el,
-                fetch: false,
-                builder: (context, state) {
-                  if (state.loading) {
-                    return Container();
-                  }
-                  return TransactionListItem(entity: el);
-                }),
+            builder: (el) {
+              return CubitWrapper<TransactionCubit, TransactionCubitState,
+                      Transaction>(
+                  entity: el,
+                  fetch: true,
+                  builder: (context, state) {
+                    if (state.loading) {
+                      return Container();
+                    }
+                    return TransactionListItem(entity: state.entity!);
+                  });
+            },
             list: () => ListCubit(getIt<TransactionRepository>(),
                 where: {'potId': pot.id}),
             emptyText: (AppLocalizations.of(context)!.noTransactionsFound),

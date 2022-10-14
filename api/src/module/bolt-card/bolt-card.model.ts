@@ -32,12 +32,12 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 		params.userId = context.get('request')?.auth?.uid;
 	}
 
+	@BelongsTo(() => Sender)
+	Sender: Sender;
+
 	@ForeignKey(() => Sender)
 	@Column
 	senderId: number;
-
-	@BelongsTo(() => Sender)
-	sender: Sender;
 
 	@Column
 	name: string;
@@ -62,7 +62,7 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 				{
 					model: Sender,
 					required: true,
-					as: 'sender',
+					as: 'Sender',
 					include: [
 						{
 							required: true,

@@ -83,7 +83,7 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	static scopes = {
 		find: () =>
-			context.get('request')
+			context.get('request')?.auth
 				? {
 						include: [
 							{

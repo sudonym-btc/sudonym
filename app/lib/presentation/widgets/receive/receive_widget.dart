@@ -33,10 +33,6 @@ class ReceiveWidget extends StatelessWidget {
               foregroundColor:
                   Theme.of(context).appBarTheme.titleTextStyle!.color,
               version: QrVersions.auto,
-              // embeddedImage: AssetImage('assets/images/my_embedded_image.png'),
-              // embeddedImageStyle: QrEmbeddedImageStyle(
-              //   size: Size(80, 80),
-              // ),
             );
           }
           return Column(

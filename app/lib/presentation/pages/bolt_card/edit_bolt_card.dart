@@ -61,7 +61,7 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
               ),
             ),
           ];
-          children.addAll(widget.entity!.sender != null
+          children.addAll(widget.entity!.Sender != null
               ? [
                   Column(
                     children: [
@@ -72,7 +72,7 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
                         onPressed: !state.writing
                             ? () {
                                 context.read<NFCCubit>().write(Uri.parse(
-                                    (widget.entity!.sender.data as String)
+                                    (widget.entity!.Sender.data as String)
                                         .replaceAll('https://', 'lnurlw://')));
                               }
                             : null,

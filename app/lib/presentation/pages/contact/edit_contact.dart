@@ -86,8 +86,9 @@ class EditContactFormState extends State<EditContactForm> {
             ),
             IconButton(
                 onPressed: () {
-                  // final index = contactAddresses.indexOf(f);
-                  // contactAddresses.removeAt(index);
+                  // final index = addressList.controls.indexOf(f);
+                  addressList.remove(f);
+                  // addressList.removeAt(index);
                 },
                 icon: const Icon(Icons.delete)),
           ],
@@ -100,32 +101,36 @@ class EditContactFormState extends State<EditContactForm> {
         create: ((context) => NFCCubit()),
         child: BlocBuilder<NFCCubit, NFCCubitState>(
             builder: (BuildContext context, NFCCubitState state) {
-          var children = <Widget>[
-            ReactiveTextField(
-              formControlName: 'name',
-              decoration: const InputDecoration(
-                labelText: 'Contact name',
-              ),
-            ),
-          ];
-
-          children.add(ReactiveFormArray(
-              formArrayName: 'ContactAddresses',
-              builder: (context, formArray, child) => Column(
-                    children: addressList.controls
-                        .map((control) => control as FormGroup)
-                        .map(_buildAddress)
-                        .toList(),
-                  )));
-
-          children.add(Button(onPressed: addAddress, text: 'Add Address'));
-
           return CustomForm(
               entity: widget.entity ?? Contact.fromJson({'name': ''}),
               onSave: widget.onSave,
               cubit: () => getIt<ContactCubit>(),
               formGroup: () => f,
-              children: children);
+              children: [
+                Column(children: [
+                  ReactiveTextField(
+                    formControlName: 'name',
+                    decoration: const InputDecoration(
+                      labelText: 'Contact name',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: padding,
+                  ),
+                  ReactiveFormArray(
+                      formArrayName: 'ContactAddresses',
+                      builder: (context, formArray, child) => Column(
+                            children: addressList.controls
+                                .map((control) => control as FormGroup)
+                                .map(_buildAddress)
+                                .toList(),
+                          )),
+                  const SizedBox(
+                    height: padding,
+                  ),
+                  Button.flat(onPressed: addAddress, text: 'Add Address')
+                ])
+              ]);
         }));
   }
 }

@@ -1,4 +1,5 @@
 import "base-class.dart" show BaseClass;
+import "contact-address.dart" as Model;
 
 class Transaction extends BaseClass {
   num id;
@@ -11,6 +12,7 @@ class Transaction extends BaseClass {
   bool outgoing;
   dynamic /* String | null */ type;
   dynamic /* num | null */ contactAddressId;
+  dynamic /* Model . ContactAddress | null */ ContactAddress;
   dynamic /* String | null */ originalAddress;
   dynamic /* String | null */ address;
   dynamic /* String | null */ description;
@@ -30,6 +32,7 @@ class Transaction extends BaseClass {
       this.outgoing,
       this.type,
       this.contactAddressId,
+      this.ContactAddress,
       this.originalAddress,
       this.address,
       this.description,
@@ -53,6 +56,9 @@ class Transaction extends BaseClass {
         json["outgoing"],
         json["type"],
         json["contactAddressId"],
+        json["ContactAddress"] != null
+            ? Model.ContactAddress.fromJson(json["ContactAddress"])
+            : null,
         json["originalAddress"],
         json["address"],
         json["description"],
@@ -75,6 +81,7 @@ class Transaction extends BaseClass {
       "outgoing": this.outgoing,
       "type": this.type,
       "contactAddressId": this.contactAddressId,
+      "ContactAddress": this.ContactAddress,
       "originalAddress": this.originalAddress,
       "address": this.address,
       "description": this.description,

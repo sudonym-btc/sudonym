@@ -1,12 +1,12 @@
 import { BaseClass } from './base-class';
-import { Sender } from './sender';
+import * as Model from './sender';
 
 export class BoltCard extends BaseClass {
 	constructor(
 		public id: number | null,
 		public userId: string | null,
 		public senderId: number | null,
-		public sender: Sender | null,
+		public Sender: Model.Sender | null,
 		public name: string | null,
 		public written: number | null
 	) {
@@ -15,7 +15,7 @@ export class BoltCard extends BaseClass {
 
 	static fromJson(json: Object): BoltCard {
 
-		return new BoltCard(json['id'], json['userId'], json["senderId"], json["sender"] != null ? Sender.fromJson(json["sender"]) : null, json['name'], json['written']);
+		return new BoltCard(json['id'], json['userId'], json["senderId"], json["Sender"] != null ? Model.Sender.fromJson(json["Sender"]) : null, json['name'], json['written']);
 	}
 
 	toJson(): any {
@@ -23,7 +23,7 @@ export class BoltCard extends BaseClass {
 			id: this.id,
 			userId: this.userId,
 			senderId: this.senderId,
-			sender: this.sender != null ? this.sender.toJson() : null,
+			Sender: this.Sender != null ? this.Sender.toJson() : null,
 			name: this.name,
 			written: this.written
 		};

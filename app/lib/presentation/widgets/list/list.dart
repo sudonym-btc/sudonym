@@ -1,3 +1,4 @@
+import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/config/logger.dart';
@@ -53,7 +54,7 @@ class _ListWidgetState extends State<ListWidget> with ListLogger {
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {
             List<Widget> children =
-                state.data.map<Widget>((e) => widget.builder(e)).toList();
+                state.data.map<Widget>((e) => Container()).toList();
 
             if (state.loading) {
               children.add(Center(
@@ -73,9 +74,22 @@ class _ListWidgetState extends State<ListWidget> with ListLogger {
               }
             }
 
-            return ListView.builder(
+            return LiveList(
+              showItemInterval: Duration(milliseconds: 100),
+              showItemDuration: Duration(milliseconds: 100),
               controller: controller,
-              itemBuilder: (context, index) => children[index],
+              itemBuilder: (context, index, animation) {
+                if (index < state.data.length) {
+                  return ScaleTransition(
+                      scale: Tween<double>(
+                        begin: 0,
+                        end: 1,
+                      ).animate(animation),
+                      child: widget.builder(state.data[index]));
+                } else {
+                  return children[index];
+                }
+              },
               itemCount: children.length,
             );
           },

@@ -45,6 +45,7 @@ dependencies:
   dart_lnurl: ^0.1.0
   bech32: any
   money_formatter: ^0.0.3
+  auto_animated: ^3.1.0
   app_links: ^3.2.0
   flutter_local_notifications: ^9.6.1
   firebase_app_installations: ^0.1.1+1

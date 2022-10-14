@@ -52,32 +52,28 @@ class StatusPage extends StatelessWidget {
       Header(title),
       Subtitle(subtitle),
       const SizedBox(height: padding * 2),
-      if (content == null && icon == null) Expanded(child: Container())
     ];
-
-    if (icon != null) {
-      children = [
-        ...children,
-        Expanded(
+    if (content == null && icon == null) {
+      children.add(Expanded(child: Container()));
+    } else {
+      if (content != null) {
+        children.add(content!);
+      }
+      if (icon != null) {
+        children.add(Expanded(
             child: Center(
           child: FaIcon(
             icon,
             color: Colors.white.withAlpha(100),
             size: 60,
           ),
-        ))
-      ];
+        )));
+      }
     }
 
-    if (content != null) {
-      children = [...children, Expanded(child: content!)];
+    if (actions != null) {
+      children.addAll([Expanded(child: Container()), actions!]);
     }
-
-    children = [
-      ...children,
-      if (actions != null) Expanded(child: Container()),
-      if (actions != null) actions!
-    ];
 
     return Theme(
       data: newTheme,

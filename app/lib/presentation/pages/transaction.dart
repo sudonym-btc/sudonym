@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
@@ -12,17 +12,10 @@ class TransactionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (_) => getIt<TransactionCubit>()
-                ..fetch(
-                    (ModalRoute.of(context)?.settings.arguments as Transaction)
-                        .id))
-        ],
-        child: BlocBuilder<TransactionCubit, TransactionCubitState>(
-            builder: ((context, state) {
-          if (state.entity == null) {
+    return CubitWrapper<TransactionCubit, TransactionCubitState, Transaction>(
+        entity: ModalRoute.of(context)?.settings.arguments as Transaction,
+        builder: ((context, state) {
+          if (state.loading || state.entity == null) {
             return StatusPage(
                 title: '',
                 subtitle: '',
@@ -46,7 +39,7 @@ class TransactionPage extends StatelessWidget {
               return _IncomingFailed(transaction: state.entity!);
             }
           }
-        })));
+        }));
   }
 }
 
@@ -94,8 +87,31 @@ class _OutgoingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
         subtitle: AppLocalizations.of(context)!.paymentHasSuccessfullyBeenSent,
-        content: _ContactSection(transaction),
-        icon: FontAwesomeIcons.check,
+        content: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ContactSection(transaction),
+              SizedBox(
+                height: padding * 2,
+              ),
+              Table(children: [
+                TableRow(children: [
+                  Text(AppLocalizations.of(context)!.amount),
+                  Text(FormatCurrency()
+                      .format(transaction.currencyCode, transaction.amount))
+                ]),
+                TableRow(children: [
+                  const Text('Address'),
+                  Text(
+                    transaction.originalAddress,
+                    style: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                ]),
+              ]),
+            ]),
         color: Colors.green);
   }
 }
@@ -126,6 +142,24 @@ class _IncomingComplete extends _TransactionStatusPage {
         title: AppLocalizations.of(context)!.paymentReceived,
         subtitle:
             'Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} received',
+        content: Table(
+          children: [
+            TableRow(children: [
+              Text(AppLocalizations.of(context)!.amount),
+              Text(FormatCurrency()
+                  .format(transaction.currencyCode, transaction.amount))
+            ]),
+            TableRow(children: [
+              const Text('Address'),
+              Text(
+                transaction.originalAddress,
+                style: const TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            ]),
+          ],
+        ),
         icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
@@ -152,10 +186,12 @@ class _ContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // if (entity != null) {
-    //   return ContactListItem(contact: entity!.);
-    // }
+    if (entity.ContactAddress?.contactId != null) {
+      return ContactListItem(
+          contact: Contact.fromJson({'id': entity.ContactAddress.contactId}));
+    }
     return Button(
+        icon: const Icon(Icons.add),
         text: 'Create Contact',
         onPressed: () => Navigator.push(
             context,

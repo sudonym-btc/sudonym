@@ -24,7 +24,7 @@ class ReceiverCubit
           try {
             FlutterRingtonePlayer.playNotification();
           } catch (e) {
-            print("Could not play sound");
+            print('Could not play sound');
           }
         }
       }
