@@ -19,6 +19,7 @@ import { Pot } from 'module/pot/pot.model';
 import { LnUrl } from '../lightning/lnurl/lnurl.model';
 import { User } from '../user/user.model';
 import { context } from 'helper/context-request';
+import { BoltCard } from 'module/bolt-card/bolt-card.model';
 
 @Table({
 	scopes: Sender.scopes,
@@ -76,6 +77,9 @@ export class Sender extends BaseModel implements Models.Sender {
 	limitMin: number;
 	@Column(DataType.DOUBLE(21, 11))
 	limitMax: number;
+
+	@HasOne(() => BoltCard)
+	BoltCard: BoltCard;
 
 	@CreatedAt
 	@Column
