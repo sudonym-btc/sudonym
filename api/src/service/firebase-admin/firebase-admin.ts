@@ -6,7 +6,7 @@ export const FIREBASE_ADMIN = 'FB_ADMIN';
 
 export type T_FIREBASE_ADMIN = typeof admin;
 
-const fb = (() => {
+const fb = () => {
 	return ['mock'].includes(getConfig().env)
 		? {}
 		: (() => {
@@ -29,11 +29,11 @@ const fb = (() => {
 				);
 				return admin;
 		  })();
-})();
+};
 
 export const firebaseAdminProviders = [
 	{
 		provide: FIREBASE_ADMIN,
-		useValue: fb,
+		useValue: fb(),
 	},
 ];
