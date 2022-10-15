@@ -1,3 +1,4 @@
+import { Provider } from '@nestjs/common';
 import { getConfig } from 'config/config';
 import admin, { ServiceAccount } from 'firebase-admin';
 import * as fs from 'fs';
@@ -10,30 +11,30 @@ const fb = () => {
 	return ['mock'].includes(getConfig().env)
 		? {}
 		: (() => {
-				const serviceAccountPath =
-					process.cwd() + '/src/service-account.json';
-				const serviceAccount = fs.existsSync(serviceAccountPath)
-					? require(serviceAccountPath)
-					: null;
+			const serviceAccountPath =
+				process.cwd() + '/src/service-account.json';
+			const serviceAccount = fs.existsSync(serviceAccountPath)
+				? require(serviceAccountPath)
+				: null;
 
-				console.log(serviceAccount);
-				// Firebase Setup
-				admin.initializeApp(
-					serviceAccount
-						? {
-								credential: admin.credential.cert(
-									serviceAccount as ServiceAccount
-								),
-						  }
-						: {}
-				);
-				return admin;
-		  })();
+			console.log(serviceAccount);
+			// Firebase Setup
+			admin.initializeApp(
+				serviceAccount
+					? {
+						credential: admin.credential.cert(
+							serviceAccount as ServiceAccount
+						),
+					}
+					: {}
+			);
+			return admin;
+		})();
 };
 
-export const firebaseAdminProviders = [
+export const firebaseAdminProviders: Provider[] = [
 	{
 		provide: FIREBASE_ADMIN,
-		useValue: fb(),
+		useFactory: fb,
 	},
 ];
