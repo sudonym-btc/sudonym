@@ -9,6 +9,7 @@ export async function downloadFiles(
 	alreadyDone = () =>
 		fs.existsSync(process.cwd() + '/src/service-account.json')
 ) {
+	console.log("Downloading files already done? " + alreadyDone());
 	if (!alreadyDone() || force) {
 		const buckets = (await storage.getBuckets())[0];
 		const bucket = buckets.find((b) =>
