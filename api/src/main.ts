@@ -3,10 +3,20 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { downloadFiles } from './helper/config-loader';
 import { applyGlobals } from 'app.globals';
+import { getConfig } from 'config/config';
+import { LogLevel } from '@nestjs/common';
 
 async function bootstrap() {
 	await downloadFiles();
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AppModule, {
+		logger: [
+			...(getConfig().env != "production" ? ['verbose'] : []),
+			'error',
+			'warn',
+			'log',
+			'debug'
+		] as LogLevel[],
+	});
 	applyGlobals(app);
 
 	const config = new DocumentBuilder()
