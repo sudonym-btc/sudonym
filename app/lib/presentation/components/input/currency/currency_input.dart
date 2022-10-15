@@ -169,7 +169,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
       Ink(
           decoration: buttonDecoration(context, negativeEnabled),
           child: IconButton(
-            onPressed: _controller.numberValue > widget.min!
+            onPressed: _controller.numberValue > widget.min
                 ? () => updateValue(-1)
                 : null,
             color: Theme.of(context)

@@ -47,9 +47,9 @@ class StagingConfig implements Config {
   @override
   String apiUrl = 'https://api.staging.sudonym.app';
   @override
-  num apiPort = 3000;
+  num apiPort = 443;
   @override
-  num websocketPort = 3000;
+  num websocketPort = 443;
 }
 
 @prod
@@ -60,9 +60,9 @@ class ProdConfig implements Config {
   @override
   String apiUrl = 'https://api.sudonym.app';
   @override
-  num apiPort = 3000;
+  num apiPort = 443;
   @override
-  num websocketPort = 3000;
+  num websocketPort = 443;
 }
 
 abstract class Config {
