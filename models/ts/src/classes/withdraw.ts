@@ -17,10 +17,18 @@ export class Withdraw extends ActionType {
 		public isBolt11: boolean | null = false,
 		public isBolt12: boolean | null = false,
 		public isOnChain: boolean | null = false,
-		public comment: string | null = '',
-
+		public comment: string | null = ''
 	) {
-		super('withdraw', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain, comment);
+		super(
+			'withdraw',
+			originalAddress,
+			isLnUrl,
+			isLnAddress,
+			isBolt11,
+			isBolt12,
+			isOnChain,
+			comment
+		);
 	}
 
 	static fromJson(json: Object): Withdraw {
@@ -30,8 +38,16 @@ export class Withdraw extends ActionType {
 			json['originalAddress'],
 			json['currency'],
 			json['amount'],
-			json['minAmount'] != null ? json['minAmount'] : a.data['minWithdrawable'] / MSATOSHIS,
-			json['maxAmount'] != null ? json['maxAmount'] : a.data['maxWithdrawable'] / MSATOSHIS,
+			json['minAmount'] != null
+				? json['minAmount']
+				: a.success
+				? a.data['minWithdrawable'] / MSATOSHIS
+				: null,
+			json['maxAmount'] != null
+				? json['maxAmount']
+				: a.success
+				? a.data['maxWithdrawable'] / MSATOSHIS
+				: null,
 			a,
 			json['isLnUrl'],
 			json['isLnAddress'],
@@ -55,7 +71,7 @@ export class Withdraw extends ActionType {
 				this.remoteResponse !== null
 					? this.remoteResponse.toJson()
 					: null,
-			comment: this.comment
+			comment: this.comment,
 		};
 	}
 }

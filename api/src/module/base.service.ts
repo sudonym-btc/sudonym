@@ -16,16 +16,9 @@ type ModelType<T> = Constructor<T> & typeof BaseModel;
 export interface TControllerAndService<TModel> {
 	onModuleInit(): any;
 	findOne(id): Promise<TModel>;
-	create(
-		params: RecursivePartial<TModel>
-	): Promise<TModel>;
-	update(
-		id,
-		params: RecursivePartial<TModel>
-	): Promise<TModel>;
-	list(
-		param: FindOptions
-	): Promise<{
+	create(params: RecursivePartial<TModel>): Promise<TModel>;
+	update(id, params: RecursivePartial<TModel>): Promise<TModel>;
+	list(param: FindOptions): Promise<{
 		data: TModel[];
 		metadata: {
 			count: number;
@@ -61,7 +54,7 @@ export const BaseService = <TModel extends BaseModel>(
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
 
-		async onModuleInit() { }
+		async onModuleInit() {}
 
 		async findOne(id: string | number | FindOptions) {
 			return (
@@ -69,10 +62,10 @@ export const BaseService = <TModel extends BaseModel>(
 					typeof id == 'object'
 						? id
 						: {
-							where: {
-								id: id as any,
-							},
-						}
+								where: {
+									id: id as any,
+								},
+						  }
 				)
 			).data[0];
 		}
@@ -115,7 +108,10 @@ export const BaseService = <TModel extends BaseModel>(
 
 			await this.eventsService.trigger(
 				new TriggeredEvent(
-					new Event(this.repo.name.toLowerCase() + '.updated', entity),
+					new Event(
+						this.repo.name.toLowerCase() + '.updated',
+						entity
+					),
 					await this.getUserIds(entity.id)
 				)
 			);
@@ -132,7 +128,10 @@ export const BaseService = <TModel extends BaseModel>(
 
 			await this.eventsService.trigger(
 				new TriggeredEvent(
-					new Event(this.repo.name.toLowerCase() + '.created', entity),
+					new Event(
+						this.repo.name.toLowerCase() + '.created',
+						entity
+					),
 					await this.getUserIds(entity.id)
 				)
 			);
@@ -154,18 +153,20 @@ export const BaseService = <TModel extends BaseModel>(
 
 		async findWithUniqueKeys(params) {
 			const uniqueKeys = Object.values(this.repo.getAttributes())
-				.filter(i => i.unique)
-				.map(key => ({
-					[key.field]: params[key.field]
+				.filter((i) => i.unique)
+				.map((key) => ({
+					[key.field]: params[key.field],
 				}))
-				.reduce((prev, curr) => ({
-					...prev,
-					...curr
-				}), {});
-			console.log(uniqueKeys);
+				.reduce(
+					(prev, curr) => ({
+						...prev,
+						...curr,
+					}),
+					{}
+				);
 
 			return this.findOne({
-				where: uniqueKeys
+				where: uniqueKeys,
 			});
 		}
 	}
@@ -174,7 +175,7 @@ export const BaseService = <TModel extends BaseModel>(
 };
 
 const parseFindParams = (params) => {
-	if(!params) return null;
+	if (!params) return null;
 	Object.keys(params).forEach((key) => {
 		if (['lt', 'gt', 'eq', 'like'].includes(key)) {
 			params[Op[key]] = params[key];

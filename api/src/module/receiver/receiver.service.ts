@@ -25,7 +25,6 @@ export class ReceiverService extends BaseService(Receiver) {
 		super.onModuleInit();
 
 		this.beforeCreate.hook(async (params) => {
-
 			const amountInBTC =
 				params.amountCurrency == 'BTC'
 					? params.amount
@@ -38,8 +37,9 @@ export class ReceiverService extends BaseService(Receiver) {
 					  ).amount;
 			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
-			params.potId = params.potId || (await this.potService.findForUser()).id;
-			params.amountCurrency = "BTC";
+			params.potId =
+				params.potId || (await this.potService.findForUser()).id;
+			params.amountCurrency = 'BTC';
 			params.amount = Number(amountInBTC);
 
 			switch (params.type) {
@@ -67,7 +67,6 @@ export class ReceiverService extends BaseService(Receiver) {
 					params.lnurlId = tag.id;
 					break;
 				case 'onchain':
-					console.log(await this.lightningNodeService.generateOnChainAddress());
 					params.data = (
 						await this.lightningNodeService.generateOnChainAddress()
 					).address;

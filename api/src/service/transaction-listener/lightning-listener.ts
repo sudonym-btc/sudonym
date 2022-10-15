@@ -15,7 +15,7 @@ export class LightningListener extends TransactionListener {
 
 	listenIncoming() {
 		this.lightningEvents.onEvent.subscribe(async (e) => {
-			if (e.event == 'invoice' && e.data.status == "paid") {
+			if (e.event == 'invoice' && e.data.status == 'paid') {
 				const receivers = await this.receiveService.list({
 					where: {
 						data: e.data.bolt11,
@@ -37,7 +37,7 @@ export class LightningListener extends TransactionListener {
 					});
 
 					await this.receiveService.update(receivers.data[0].id, {
-						received: receivers.data[0].received + 1
+						received: receivers.data[0].received + 1,
 					});
 				}
 			}
@@ -80,32 +80,43 @@ export class LightningListener extends TransactionListener {
 					// Attempt to trigger payment
 					(async () => {
 						try {
-							const response = await this.lightningNodeService.pay(invoice);
+							const response =
+								await this.lightningNodeService.pay(invoice);
 							// const obj = bolt11.decode(invoice);
 							// const hash = obj.tags.find(t => t.tagName == "payment_hash").data;
 							// console.log(obj);
-							await this.lightningNodeService.rpc('waitsendpay', [
-								response.payment_hash,
-							]).catch(e => {
-								if (e.response) {
-									this.logger.warn('Wait send pay error', e.response.data);
-									this.lightningEvents.onEvent.next({
-										event: 'invoice',
-										data:
-											e.response.data.error.data
-									});
-									console.log("triggered");
-								}
-							});
+							await this.lightningNodeService
+								.rpc('waitsendpay', [response.payment_hash])
+								.catch((e) => {
+									if (e.response) {
+										this.logger.warn(
+											'Wait send pay error',
+											e.response.data
+										);
+										this.lightningEvents.onEvent.next({
+											event: 'invoice',
+											data: e.response.data.error.data,
+										});
+										console.log('triggered');
+									}
+								});
 						} catch (e) {
 							console.error(e);
+							if (e.response) {
+								this.logger.warn(' Pay error', e.response.data);
+								this.lightningEvents.onEvent.next({
+									event: 'invoice',
+									data: e.response.data.error.data,
+								});
+								console.log('triggered');
+							}
 						}
 					})();
 				}
 			}
 		);
 
-		this.lightningEvents.onEvent.subscribe(async e => {
+		this.lightningEvents.onEvent.subscribe(async (e) => {
 			if (e.event == 'invoice') {
 				const transactions = await this.transactionService.list({
 					where: {
@@ -116,7 +127,12 @@ export class LightningListener extends TransactionListener {
 					await this.transactionService.update(
 						transactions.data[0].id,
 						{
-							status: e.data.status == "pending" ? null : (e.data.status == "paid" ? true : false),
+							status:
+								e.data.status == 'pending'
+									? null
+									: e.data.status == 'paid'
+									? true
+									: false,
 						}
 					);
 				}

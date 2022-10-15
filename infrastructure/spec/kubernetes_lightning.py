@@ -269,6 +269,6 @@ def lightning(config, cluster_types):
         ]
 
     return {
-        "resources": [] + ((getResource(1) + getResource(2) + getResource(3)) if config["env"] != "production" else getResource(1)),
+        "resources": [getResource(1)] + ([getResource(2)] if config["env"] != "production" else []),
         "base_name": base_name,
     }

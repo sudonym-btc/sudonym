@@ -25,6 +25,13 @@ export class LightningNodeService {
 			}
 		}
 
+		return [
+			validEntryAndExists[0].outgoing,
+			validEntryAndExists[0].incoming,
+		];
+
+		console.log(validEntryAndExists);
+
 		const validEntryExitIds = validEntryAndExists.map((e) => [
 			e.outgoing.id,
 			e.incoming.id,
@@ -52,8 +59,70 @@ export class LightningNodeService {
 		});
 
 		// @todo: order by capacity
-
 		return circles[0];
+	}
+
+	convertChannelsToRoute(circle, inv = null) {
+		console.log(inv);
+		this.logger.debug('Circular payment along route', circle);
+		const totalFees = circle.reduce(
+			(acc, curr) => acc + Number(curr.base_fee_millisatoshi),
+			0
+		);
+		let totalDelay =
+			3 +
+			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
+			circle[circle.length - 1].delay;
+		const firstAmount = Number(inv?.millisatoshis || 100) + totalFees;
+		const circleRoute = (circle as Array<any>).reduce(
+			(acc, curr, index) => {
+				const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
+				const lastAmount = Number(
+					lastRouteItem?.amount_msat || firstAmount
+				);
+				console.log(lastAmount, acc, curr, totalFees, totalDelay);
+
+				return [
+					...acc,
+					{
+						id:
+							lastRouteItem?.id == this.info.id
+								? curr.destination
+								: curr.source,
+						channel: curr.short_channel_id,
+						direction: 1 - index,
+						amount_msat: (
+							lastAmount - curr.base_fee_millisatoshi
+						).toString(),
+						delay: (totalDelay -= curr.delay),
+						style: 'tlv',
+					},
+				];
+			},
+			[]
+		);
+		console.log(circleRoute);
+		// const circleRoute = circle.map((channel, index) => ({
+		// 	id:
+		// 		index + 1 == circle.length
+		// 			? this.info.id
+		// 			: (lastNodeId =
+		// 				channel.id ||
+		// 				(channel.destination != lastNodeId
+		// 					? channel.destination
+		// 					: channel.source)),
+		// 	channel: channel.short_channel_id,
+		// 	direction: index < 2 ? 1 : 0,
+		// 	amount_msat: (
+		// 		parseInt(inv?.millisatoshis || 0) +
+		// 		circle.length -
+		// 		index -
+		// 		1
+		// 	).toString(),
+		// 	delay: (blockoffset -= 6),
+		// 	style: 'tlv',
+		// }));
+		return circleRoute;
 	}
 
 	async onModuleInit() {
@@ -65,7 +134,13 @@ export class LightningNodeService {
 			this.logger.verbose('Loading lightning node information.');
 
 			this.info = await this.getInfo();
-			this.connectedChannels = await this.listChannels();
+			this.connectedChannels = await Promise.all(
+				await this.listChannels().then((i) =>
+					i.map((ch) => this.getChannel(ch.short_channel_id))
+				)
+			).then((x) => x[0]);
+
+			console.log(this.connectedChannels);
 			this.peers = await this.listPeers();
 
 			this.logger.verbose(
@@ -74,6 +149,8 @@ export class LightningNodeService {
 			if (this.connectedChannels.length == 0) {
 				this.logger.warn('0 connected channels. Payments not possible');
 			}
+
+			console.log(this.convertChannelsToRoute(await this.findCircular()));
 		} catch (e) {
 			this.logger.error(e);
 		}
@@ -93,6 +170,12 @@ export class LightningNodeService {
 	async listChannels() {
 		return this.makeRequest({
 			path: '/v1/channel/listChannels',
+		});
+	}
+
+	async getChannel(c) {
+		return this.makeRequest({
+			path: '/v1/network/listChannel/' + c,
 		});
 	}
 
@@ -136,29 +219,7 @@ export class LightningNodeService {
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
 			const circle = await this.findCircular();
-			let blockoffset = 3 + (circle.length + 1) * 6;
-			this.logger.debug('Circular payment along route', circle);
-			let lastNodeId = '';
-			const circleRoute = circle.map((channel, index) => ({
-				id:
-					index + 1 == circle.length
-						? this.info.id
-						: (lastNodeId =
-								channel.id ||
-								(channel.destination != lastNodeId
-									? channel.destination
-									: channel.source)),
-				channel: channel.short_channel_id,
-				direction: index < 2 ? 1 : 0,
-				amount_msat: (
-					parseInt(inv.millisatoshis) +
-					circle.length -
-					index -
-					1
-				).toString(),
-				delay: (blockoffset -= 6),
-				style: 'tlv',
-			}));
+			const circleRoute = this.convertChannelsToRoute(circle, inv);
 			this.logger.debug(
 				circleRoute,
 				inv.tagsObject.payment_hash,
