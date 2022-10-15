@@ -3,7 +3,6 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:sudonym/injection.dart';
@@ -27,8 +26,10 @@ class ContactList extends StatelessWidget {
                 CubitWrapper<ContactCubit, ContactCubitState, Contact>(
                     entity: el,
                     fetch: false,
-                    builder: (context, state) =>
-                        ContactListItem(contact: state.entity!)),
+                    builder: (context, state) => ContactListItem(
+                          contact: state.entity!,
+                          onPressed: () {},
+                        )),
             list: () => ListCubit(getIt<ContactRepository>()),
             emptyText: AppLocalizations.of(context)!.noContactsFound,
           ))

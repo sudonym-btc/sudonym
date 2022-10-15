@@ -34,9 +34,11 @@ class ActionTriggerService with ActionLogger {
       }
       return Navigator.pushNamed(c, '/confirmSend', arguments: p);
     }
+    handleError(c, p.remoteResponse);
   }
 
   handleWithdraw(Withdraw w, BuildContext c, [int? potId]) {
+    print("Ya mug");
     w.potId = potId;
 
     if (w.remoteResponse.success) {
@@ -46,6 +48,7 @@ class ActionTriggerService with ActionLogger {
       }
       return Navigator.pushNamed(c, '/confirmWithdraw', arguments: w);
     }
+    handleError(c, w.remoteResponse);
   }
 
   canChangeAmountWithdraw(Withdraw p) {
@@ -60,5 +63,16 @@ class ActionTriggerService with ActionLogger {
       return true;
     }
     return false;
+  }
+
+  handleError(BuildContext c, ActionRemoteResponse a) {
+    return Navigator.push(
+        c,
+        MaterialPageRoute(
+            builder: (context) => StatusPage(
+                title: 'Error',
+                subtitle: 'Could not get an OK response from remote server',
+                content: Text("${a.data['statusCode']}: ${a.data['message']}"),
+                color: Theme.of(context).errorColor)));
   }
 }

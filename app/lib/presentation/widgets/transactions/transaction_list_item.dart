@@ -60,9 +60,7 @@ getTitle(Transaction entity) {
       ['lnurl', 'bolt11', 'bolt12', 'lightningaddress'].contains(entity.type)
           ? 'via lightning network'
           : 'onchain';
-  return entity.outgoing
-      ? entity.address ?? 'Spent via $networkName'
-      : 'Received $networkName';
+  return entity.outgoing ? 'Spent $networkName' : 'Received $networkName';
 }
 
 getDescription(Transaction entity) {

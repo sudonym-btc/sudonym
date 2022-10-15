@@ -1,4 +1,5 @@
 import { BaseClass } from './base-class';
+import * as Model from './contact-address';
 
 export class Transaction extends BaseClass {
 	constructor(
@@ -11,6 +12,8 @@ export class Transaction extends BaseClass {
 		public senderId: number | null,
 		public outgoing: boolean,
 		public type: string | null,
+		public contactAddressId: number | null,
+		public ContactAddress: Model.ContactAddress | null,
 		public originalAddress: string | null,
 		public address: string | null,
 		public description: string | null,
@@ -34,6 +37,8 @@ export class Transaction extends BaseClass {
 			json['senderId'],
 			json['outgoing'],
 			json['type'],
+			json['contactAddressId'],
+			json['ContactAddress'] != null ? Model.ContactAddress.fromJson(json['ContactAddress']) : null,
 			json['originalAddress'],
 			json['address'],
 			json['description'],
@@ -56,6 +61,8 @@ export class Transaction extends BaseClass {
 			senderId: this.senderId,
 			outgoing: this.outgoing,
 			type: this.type,
+			contactAddressId: this.contactAddressId,
+			ContactAddress: this.ContactAddress,
 			originalAddress: this.originalAddress,
 			address: this.address,
 			description: this.description,

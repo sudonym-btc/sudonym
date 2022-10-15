@@ -18,8 +18,7 @@ export class CreatePot {
 @Controller('pot')
 export class PotController extends BaseController(PotService, Pot) {
 	@Post('')
-	creater(@Body() params: CreatePot, req?: RequestType): Promise<Pot> {
-		console.log(params);
-		return super.create(params as any, req);
+	creater(@Body() params: CreatePot): Promise<Pot> {
+		return super.create(params as any);
 	}
 }

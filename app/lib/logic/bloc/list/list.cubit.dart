@@ -8,7 +8,7 @@ import 'package:sudonym/data/index.dart';
 
 class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   final CrudRepository _repository;
-  final Map<String, dynamic> where;
+  Map<String, dynamic> where;
   String order = 'DESC';
   StreamSubscription? updater;
 
@@ -30,6 +30,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
         .where((element) =>
             !state.data.map((e) => e.id).contains(element.toJson()['id']))
         .toList();
+  }
+
+  setWhere(Map<String, dynamic> w) {
+    where = w;
   }
 
   loadNext() async {
@@ -97,6 +101,12 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
     loggy.d('Unsubscribing to ${_repository.endpoint}');
     await updater?.cancel();
     return super.close();
+  }
+
+  reset() {
+    if (!isClosed) {
+      emit(ListCubitState(data: [], metadata: {}, loading: false));
+    }
   }
 }
 

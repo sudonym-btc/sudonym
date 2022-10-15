@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
@@ -53,15 +54,14 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
         child: BlocBuilder<NFCCubit, NFCCubitState>(
             builder: (BuildContext context, NFCCubitState state) {
           var children = <Widget>[
-            FormBuilderTextField(
-              name: 'name',
+            ReactiveTextField(
+              formControlName: 'name',
               decoration: const InputDecoration(
                 labelText: 'Card name',
               ),
-              initialValue: widget.entity!.name,
             ),
           ];
-          children.addAll(widget.entity!.sender != null
+          children.addAll(widget.entity!.Sender != null
               ? [
                   Column(
                     children: [
@@ -72,7 +72,7 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
                         onPressed: !state.writing
                             ? () {
                                 context.read<NFCCubit>().write(Uri.parse(
-                                    (widget.entity!.sender.data as String)
+                                    (widget.entity!.Sender.data as String)
                                         .replaceAll('https://', 'lnurlw://')));
                               }
                             : null,
@@ -90,6 +90,8 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
               entity: widget.entity ?? BoltCard.fromJson({'name': ''}),
               onSave: widget.onSave,
               cubit: () => getIt<BoltCardCubit>(),
+              formGroup: () => FormGroup(
+                  {'name': FormControl<String>(value: widget.entity!.name)}),
               children: children);
         }));
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
@@ -9,6 +10,7 @@ class CustomForm<Repo extends CrudRepository<T>, T extends BaseClass>
     extends StatefulWidget {
   final T entity;
   final EntityCubit<Repo, EntityCubitState<T>, T> Function() cubit;
+  final FormGroup Function() formGroup;
   final List<Widget> children;
   final Function? onSave;
   final bool hideSubmit;
@@ -16,6 +18,7 @@ class CustomForm<Repo extends CrudRepository<T>, T extends BaseClass>
   const CustomForm(
       {required this.entity,
       required this.cubit,
+      required this.formGroup,
       required this.children,
       this.onSave,
       this.hideSubmit = false,
@@ -27,20 +30,20 @@ class CustomForm<Repo extends CrudRepository<T>, T extends BaseClass>
 }
 
 class _CustomFormState extends State<CustomForm> {
-  final _formKey = GlobalKey<FormBuilderState>();
-  bool dirty = false;
   late EntityCubit c;
+  late FormGroup formGroup;
 
   @override
   void initState() {
     c = widget.cubit();
     c.set(widget.entity);
+    formGroup = widget.formGroup();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_formKey.currentState != null) _formKey.currentState!.validate();
+    // if (_formKey.currentState != null) _formKey.currentState!.validate();
     var children = <Widget>[
       ...widget.children.map((e) => Column(
             children: [
@@ -50,66 +53,37 @@ class _CustomFormState extends State<CustomForm> {
             ],
           )),
     ];
-    children.addAll(dirty || !widget.hideSubmit
-        ? [
-            Button(
-              onPressed: _formKey.currentState != null &&
-                      _formKey.currentState!.isValid
-                  ? () async {
-                      _formKey.currentState?.save();
-
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          final formData = _formKey.currentState?.value;
-                          print(formData);
-                          Map<String, dynamic> d =
-                              ({...widget.entity.toJson(), ...formData!});
-                          await c.createOrUpdate(c.repository.converter(d));
-                          if (widget.onSave != null) widget.onSave!();
-                        } catch (e) {
-                          rethrow;
+    children.addAll([
+      ReactiveFormConsumer(
+        builder: (context, form, child) {
+          return form.dirty || !widget.hideSubmit
+              ? Button(
+                  onPressed: form.valid
+                      ? () async {
+                          // Validate returns true if the form is valid, or false otherwise.
+                          try {
+                            final formData = form.value;
+                            print(formData);
+                            Map<String, dynamic> d =
+                                ({...widget.entity.toJson(), ...formData});
+                            await c.createOrUpdate(c.repository.converter(d));
+                            if (widget.onSave != null) widget.onSave!();
+                          } catch (e) {
+                            rethrow;
+                          }
                         }
-                      }
-                    }
-                  : null,
-              text: 'Submit',
-            )
-          ]
-        : []);
-    return FormBuilder(
-        key: _formKey,
-        onChanged: () {
-          setState(() {
-            dirty = getChangedValues(useInstantValues: true).isNotEmpty;
-          });
+                      : null,
+                  text: 'Submit',
+                )
+              : Container();
         },
-        autovalidateMode: AutovalidateMode.always,
+      ),
+    ]);
+    return ReactiveForm(
+        formGroup: formGroup,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: children));
-  }
-
-  /// Get only the changed values.
-  /// Compare the initial value and actual value of form and get the difference
-  ///
-  /// By default, use saved values [formValues] as actual value
-  Map<String, dynamic> getChangedValues({bool useInstantValues = false}) {
-    final _formValues = useInstantValues
-        ? _formKey.currentState?.instantValue ?? {}
-        : _formKey.currentState?.value ?? {};
-    final _initialValues = _formKey.currentState?.initialValue ?? {};
-    final _changedValues = <String, dynamic>{};
-
-    for (var entry in _formValues.entries) {
-      if (_formValues[entry.key] != _initialValues[entry.key]) {
-        _changedValues[entry.key] = entry.value;
-      }
-    }
-
-    print(_formKey.currentState!.fields);
-
-    return _changedValues;
   }
 }

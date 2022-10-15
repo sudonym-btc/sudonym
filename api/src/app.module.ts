@@ -19,11 +19,13 @@ import { ExchangeSettlerModule } from './service/exchange/exchange-settler.modul
 import { ContactModule } from 'module/contact/contact.module';
 import { SenderModule } from 'module/sender/sender.module';
 import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
+import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
 
 @Module({
 	imports: [
 		TransactionListenerModule,
 		// ExchangeSettlerModule,
+		TransactionContactLinkerModule,
 		DatabaseModule,
 		CurrencyModule,
 		LightningModule,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym.models/base-class.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
@@ -32,7 +33,6 @@ abstract class EntityCubit<
     if (!shouldListen) return;
     updater ??= repository.updated.stream.listen((event) {
       if ((event as dynamic).id == (state.entity as dynamic).id) {
-        loggy.i(event.toJson());
         set(event);
       }
     });

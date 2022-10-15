@@ -20,6 +20,9 @@ import { Invoice } from './invoice.model';
 import { User } from 'module/user/user.model';
 import { Pot } from 'module/pot/pot.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
+import { ContactAddress } from 'module/contact-address/contact-address.model';
+import { Contact } from 'module/contact/contact.model';
+import { BoltCard } from 'module/bolt-card/bolt-card.model';
 const { Op } = require('sequelize');
 
 @Table({
@@ -66,6 +69,14 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	transactionId: number;
 
+	@BelongsTo(() => ContactAddress)
+	ContactAddress: ContactAddress;
+
+	@ForeignKey(() => ContactAddress)
+	@AllowNull(true)
+	@Column
+	contactAddressId: number;;
+
 	@BelongsTo(() => Pot)
 	Pot: Pot;
 
@@ -73,10 +84,16 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	potId: number;
 
+	@BelongsTo(() => Sender)
+	Sender: Sender;
+
 	@ForeignKey(() => Sender)
 	@AllowNull(true)
 	@Column
 	senderId: number;
+
+	@BelongsTo(() => Receiver)
+	Receiver: Receiver;
 
 	@ForeignKey(() => Receiver)
 	@AllowNull(true)
@@ -124,4 +141,24 @@ export class Transaction extends BaseModel implements Models.Transaction {
 				],
 			}),
 	};
+
+	static scopes = {
+		find: () =>({
+			include: [{
+				model: ContactAddress,
+				as: 'ContactAddress',
+				include: [{
+					model: Contact,
+					as: 'Contact'
+				}]
+			}, {
+				model: Sender,
+				as: 'Sender',
+				include: [{
+					model: BoltCard,
+					as: 'BoltCard'
+				}]
+			}]
+		})
+	}
 }

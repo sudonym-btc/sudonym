@@ -17,13 +17,13 @@ export class UserService extends BaseService(User) {
 			});
 		});
 	}
-	async create(params: RecursivePartial<User>, req?: RequestType) {
+	async create(params: RecursivePartial<User>) {
 		try {
-			const data = await this.findOne(params.id, req);
-			return this.update(data.id, params, req);
+			const data = await this.findOne(params.id);
+			return this.update(data.id, params);
 		} catch (e) {
 			params.lightningAddress ??= generateUsername('', 0);
-			return super.create(params, req);
+			return super.create(params);
 		}
 	}
 }

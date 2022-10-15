@@ -25,18 +25,6 @@ export class ReceiverService extends BaseService(Receiver) {
 		super.onModuleInit();
 
 		this.beforeCreate.hook(async (params) => {
-			if (!['bolt11', 'lnurl'].includes(params.type)) {
-				const exists = await Receiver.findOne({
-					where: {
-						potId: params.potId,
-						type: params.type,
-						amount: params.amount,
-						amountCurrency: params.amountCurrency,
-					},
-				});
-				if (exists) return exists;
-			}
-
 			const amountInBTC =
 				params.amountCurrency == 'BTC'
 					? params.amount
@@ -49,7 +37,10 @@ export class ReceiverService extends BaseService(Receiver) {
 					  ).amount;
 			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
-			params.potId = params.potId || (await this.potService.findForUser()).id;
+			params.potId =
+				params.potId || (await this.potService.findForUser()).id;
+			params.amountCurrency = 'BTC';
+			params.amount = Number(amountInBTC);
 
 			switch (params.type) {
 				case 'bolt11':

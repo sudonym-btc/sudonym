@@ -38,10 +38,10 @@ class Withdraw extends ActionType {
         json["amount"],
         json["minAmount"] != null
             ? json["minAmount"]
-            : a.data["minWithdrawable"] / MSATOSHIS,
+            : (a.success ? a.data["minWithdrawable"] / MSATOSHIS : null),
         json["maxAmount"] != null
             ? json["maxAmount"]
-            : a.data["maxWithdrawable"] / MSATOSHIS,
+            : (a.success ? a.data["maxWithdrawable"] / MSATOSHIS : null),
         a,
         json["isLnUrl"],
         json["isLnAddress"],

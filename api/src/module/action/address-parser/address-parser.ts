@@ -3,7 +3,7 @@ import { bech32 } from 'bech32';
 import { Buffer } from 'buffer';
 import fetch from 'node-fetch';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { IAddressParser, Action } from '@sudonym/models';
+import { IAddressParser, Action, ActionRemoteResponse } from '@sudonym/models';
 import { fetchHttpOpts } from './http-agent';
 
 @Injectable()
@@ -30,7 +30,9 @@ export class AddressParser implements IAddressParser {
 				);
 				return Action.from({
 					originalAddress: trimmedAddress,
-					type: remoteResponse.data.tag ? remoteResponse.data.tag.replace('Request', '') : '',
+					type: remoteResponse.data.tag
+						? remoteResponse.data.tag.replace('Request', '')
+						: '',
 					remoteResponse,
 					isLnUrl: true,
 				});
@@ -56,7 +58,9 @@ export class AddressParser implements IAddressParser {
 				this.logger.debug('Fetched lnurl');
 				this.logger.debug(data);
 				return {
-					success: true,
+					success: data.statusCode
+						? data.statusCode.toString().startsWith(2)
+						: true,
 					data,
 				};
 			})
@@ -120,9 +124,13 @@ export class AddressParser implements IAddressParser {
 		}
 
 		// Decoded BOLT11 Invoice
-		const result = await this.lightningNodeService.decodeInvoice(invoice);
+		const data = await this.lightningNodeService.decodeInvoice(invoice);
 
-		return result;
+		return ActionRemoteResponse.fromJson({
+			data,
+			message: null,
+			success: true,
+		}).toJson();
 	};
 
 	getType(address: string): [string, string] {

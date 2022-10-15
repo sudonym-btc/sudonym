@@ -43,18 +43,14 @@ class Payment extends ActionType {
   }
   static Payment fromJson(Map<String, dynamic> json) {
     final a = ActionRemoteResponse.fromJson(json["remoteResponse"]);
-    return new Payment(
+    final p = new Payment(
         json["potId"],
         json["originalAddress"],
         json["address"],
         json["currency"],
         json["amount"],
-        json["minAmount"] != null
-            ? json["minAmount"]
-            : a.data["minSendable"] / MSATOSHIS,
-        json["maxAmount"] != null
-            ? json["maxAmount"]
-            : a.data["maxSendable"] / MSATOSHIS,
+        json["minAmount"],
+        json["maxAmount"],
         json["fee"],
         json["feeCurrency"],
         a,
@@ -64,6 +60,18 @@ class Payment extends ActionType {
         json["isBolt12"],
         json["isOnChain"],
         json["comment"]);
+    if (p.isBolt11) {
+      if (p.remoteResponse.data["msatoshi"] != null) {
+        p.minAmount = p.remoteResponse.data["msatoshi"] / MSATOSHIS;
+        p.maxAmount = p.remoteResponse.data["msatoshi"] / MSATOSHIS;
+      }
+    } else if (p.isLnUrl) {
+      if (p.remoteResponse.success) {
+        p.minAmount = a.data["minSendable"] / MSATOSHIS;
+        p.maxAmount = a.data["maxSendable"] / MSATOSHIS;
+      }
+    }
+    return p;
   }
 
   dynamic toJson() {

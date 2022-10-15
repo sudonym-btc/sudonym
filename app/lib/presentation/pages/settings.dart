@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
@@ -61,23 +62,21 @@ class LightningSection extends StatelessWidget {
           CustomForm(
             cubit: () => getIt<UserCubit>(),
             entity: getIt<AuthCubit>().user!,
+            formGroup: () => FormGroup({
+              'lightningAddress': FormControl<String>(
+                  value: getIt<AuthCubit>().user!.lightningAddress,
+                  validators: [
+                    Validators.required,
+                    Validators.pattern(r'^[A-Za-z0-9_.-]+$')
+                  ]),
+            }),
             children: [
-              FormBuilderTextField(
-                name: 'lightningAddress',
-                initialValue: getIt<AuthCubit>().user!.lightningAddress,
+              ReactiveTextField(
+                formControlName: 'lightningAddress',
                 decoration: InputDecoration(
                     hintText: 'satoshi',
                     labelText: AppLocalizations.of(context)!.lightningAddress,
                     suffixText: '@${getIt<Config>().domain}'),
-                validator: (value) {
-                  if (value != null && value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  if (!RegExp(r'^[A-Za-z0-9_.-]+$').hasMatch(value ?? '')) {
-                    return 'Cannot contain symbols';
-                  }
-                  return null;
-                },
               ),
             ],
           )

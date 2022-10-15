@@ -59,7 +59,7 @@ export class ActionService {
 						...action,
 						address: action.originalAddress,
 						fee: await this.lightningNodeService.getFees(
-							bolt11.decode(action.address).payeeNodeKey,
+							bolt11.decode(action.originalAddress).payeeNodeKey,
 							mSatoshiAmount
 						),
 						feeCurrency: 'BTC',
