@@ -29,8 +29,8 @@ def lightning(config, cluster_types):
         bucket = "sudonym-" + getBackupName(base_name, num)
         
         mount = f"""mkdir -p {backup_dir} && 
-            echo $(gcsfuse --limit-ops-per-sec=0 {gcs_log} {bucket} {backup_dir}) &&
-            cp -ar {backup_dir}/. {lightning_dir} >> /proc/1/fd/1"""
+            echo $(gcsfuse --limit-ops-per-sec=10 {gcs_log} {bucket} {backup_dir}) &&
+            cp -ar {backup_dir}/. {lightning_dir} >> /proc/1/fd/1 && ls -la {lightning_dir}"""
 
         unmount = f"""cp -ar {lightning_dir}/. {backup_dir} >> /proc/1/fd/1 &&
         fusermount -u {backup_dir}"""
