@@ -26,7 +26,7 @@ config = {
             "machineType": "e2-standard-2",
             "diskSizeGb": 100
         },
-        "backup": True,
+        "backup": False,
         "loglevel": "debug"
     },
     "production": {
@@ -57,14 +57,14 @@ config = {
             "machineType": "t2d-standard-1",
             "diskSizeGb": 100
         },
-        "backup": True
+        "backup": False
     },
     "development": {
         "project": "sudonym-lightning-test",
         "env": "development",
         "domain": "local.development",
         "network": "regtest",
-        "backup": True,
+        "backup": False,
     }
 }
 

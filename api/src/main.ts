@@ -10,7 +10,7 @@ async function bootstrap() {
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule, {
 		logger: [
-			...(getConfig().env != "production" ? ['verbose'] : []),
+			...(["mock", "development"].includes(getConfig().env) ? ['verbose'] : []),
 			'error',
 			'warn',
 			'log',
