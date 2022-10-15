@@ -10,7 +10,7 @@ export class BoltCardService extends BaseService(BoltCard) {
 	async onModuleInit() {
 		this.beforeCreate.hook(async (params) => {
 			const sender = await this.senderService.create({
-				...params.sender,
+				...params.Sender,
 				type: 'lnurl',
 			});
 			params.senderId = sender.id;

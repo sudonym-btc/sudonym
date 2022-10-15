@@ -92,7 +92,22 @@ class WithdrawConfirm extends StatelessWidget {
                   (AppLocalizations.of(context)!.gatheredWithdrawalInformation);
               content = Column(children: [
                 Table(
-                  children: [],
+                  children: [
+                    TableRow(children: [
+                      Text(AppLocalizations.of(context)!.amount),
+                      Text(FormatCurrency()
+                          .format(r.currency ?? 'BTC', r.amount ?? 0))
+                    ]),
+                    TableRow(children: [
+                      const Text('Address'),
+                      Text(
+                        r.originalAddress ?? '',
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ]),
+                  ],
                 )
               ]);
               actions = ButtonBar(children: [

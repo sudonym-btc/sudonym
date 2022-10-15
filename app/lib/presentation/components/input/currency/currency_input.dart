@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,13 +49,15 @@ class CurrencyInputOutput {
 }
 
 class _CurrencyInputState extends State<CurrencyInput> {
-  StreamController<String> streamController = StreamController();
+  StreamController<num> streamController = StreamController();
   final MoneyMaskedTextController _controller = MoneyMaskedTextController(
       initialValue: 0.0, decimalSeparator: '.', thousandSeparator: ',');
   num altValue = 0;
   int currCurrency = 0;
   int altCurrency = 1;
   bool altValueLoading = false;
+  late Future<CurrencyResponse> output;
+  late Future<CurrencyResponse> alt;
 
   @override
   void initState() {
@@ -70,38 +73,64 @@ class _CurrencyInputState extends State<CurrencyInput> {
     });
 
     _controller.addListener(() {
-      setState(() {
-        altValueLoading = true;
-      });
-
-      Future<CurrencyResponse> output;
-      Future<CurrencyResponse> alt;
-
-      output = getIt<CurrencyRepository>().getRate(
-          widget.currencies[currCurrency],
-          widget.outputCurrency,
-          _controller.numberValue,
-          null);
-
-      alt = widget.currencies[altCurrency] == widget.outputCurrency
-          ? output
-          : getIt<CurrencyRepository>().getRate(widget.currencies[currCurrency],
-              widget.currencies[altCurrency], _controller.numberValue, null);
-
-      output.then((value) {
-        widget.onChanged!(
-            CurrencyInputOutput(value.amount, widget.outputCurrency));
-      });
-
-      alt.then((value) => {
-            setState(
-              () {
-                altValue = value.amount;
-                altValueLoading = false;
-              },
-            )
-          });
+      streamController.add(_controller.numberValue);
     });
+
+    streamController.stream
+        .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+          setState(() {
+            altValueLoading = true;
+          });
+          sink.add(data);
+        }))
+        .asyncMap((e) async => await getValues(e))
+        .listen((event) {
+          print(event);
+          print("output");
+        });
+    // .pipe((element) {
+    //   print(element);
+    //   setState(() {
+    //     altValueLoading = true;
+    //   });
+    //   return element;
+    // })
+    // .asStream()
+    // .forEach((element) {
+    //   print(element);
+    // })
+    // .asStream()
+    // .asyncMap((e) async => await getValues(e))
+    // .listen((event) {
+    //   print(event);
+    // });
+  }
+
+  getValues(value) {
+    output = getIt<CurrencyRepository>().getRate(
+        widget.currencies[currCurrency],
+        widget.outputCurrency,
+        _controller.numberValue,
+        null);
+
+    alt = widget.currencies[altCurrency] == widget.outputCurrency
+        ? output
+        : getIt<CurrencyRepository>().getRate(widget.currencies[currCurrency],
+            widget.currencies[altCurrency], _controller.numberValue, null);
+
+    output.then((value) {
+      widget
+          .onChanged!(CurrencyInputOutput(value.amount, widget.outputCurrency));
+    });
+
+    alt.then((value) => {
+          setState(
+            () {
+              altValue = value.amount;
+              altValueLoading = false;
+            },
+          )
+        });
   }
 
   @override

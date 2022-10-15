@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym.models/types/index.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/withdraw_confirm.dart';
@@ -22,27 +21,10 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
 
   @override
   Widget build(BuildContext context) {
-    num min = 0;
-    num? max;
-    num? value;
-
-    ActionRemoteResponse remoteResponse = widget.action?.remoteResponse;
-    if (remoteResponse != null) {
-      max = (remoteResponse.data['maxSendable'] ??
-              remoteResponse.data['maxWithdrawable']) /
-          MSATOSHIS;
-
-      min = (remoteResponse.data['minSendable'] ??
-              remoteResponse.data['minWithdrawable']) /
-          MSATOSHIS;
-
-      value = remoteResponse.data['minSendable'] != null ? min : max;
-    }
-
     CurrencyInput currencyInput = CurrencyInput(
         max: widget.action?.maxAmount,
         min: widget.action?.minAmount,
-        initialValue: value,
+        initialValue: widget.action?.minAmount,
         initialValueCurrency: 'BTC',
         onChanged: (val) {
           widget.action.amount = val.amount;

@@ -30,7 +30,6 @@ export class LightningEvents {
 			if (data.type == 'Buffer') {
 				data.data = Buffer.from(data.data);
 			}
-			this.logger.verbose('Lightning event received: ', data);
 			this.onEvent.next(data);
 		});
 

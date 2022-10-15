@@ -14,31 +14,33 @@ export class SenderService extends BaseService(Sender) {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 
-	async create(params: RecursivePartial<Sender>, req?: RequestType) {
-		const amountInBTC = (
-			await this.currencyService.convert(
-				params.amountCurrency || 'BTC',
-				'BTC',
-				params.amount
-			)
-		).amount;
-		const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
+	onModuleInit() {
+		this.beforeCreate.hook(async (params) => {
+			const amountInBTC = (
+				await this.currencyService.convert(
+					params.amountCurrency || 'BTC',
+					'BTC',
+					params.amount
+				)
+			).amount;
+			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
-		params.amount = Number(amountInBTC);
+			params.amount = Number(amountInBTC);
 
-		switch (params.type) {
-			case 'lnurl':
-				const tag = await this.lnUrlService.createWithdrawRequest({
-					minWithdrawable: params.limitMin ? params.limitMin * MSATOSHIS : 0,
-					maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 9999999999999
-				}
-				);
-				params.data = getConfig().selfUrl + '/lnurl/' + tag.id
-				params.lnurlId = tag.id;
-				break;
-		}
-		const sender = await super.create(params, req);
-
-		return sender;
+			switch (params.type) {
+				case 'lnurl':
+					const tag = await this.lnUrlService.createWithdrawRequest({
+						minWithdrawable: params.limitMin
+							? params.limitMin * MSATOSHIS
+							: 0,
+						maxWithdrawable: params.limitMax
+							? params.limitMax * MSATOSHIS
+							: 9999999999999,
+					});
+					params.data = getConfig().selfUrl + '/lnurl/' + tag.id;
+					params.lnurlId = tag.id;
+					break;
+			}
+		});
 	}
 }

@@ -20,22 +20,31 @@ export class Payment extends ActionType {
 		public isBolt11: boolean | null = false,
 		public isBolt12: boolean | null = false,
 		public isOnChain: boolean | null = false,
-		public comment: string | null = '',
+		public comment: string | null = ''
 	) {
-		super('pay', originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12, isOnChain, comment);
+		super(
+			'pay',
+			originalAddress,
+			isLnUrl,
+			isLnAddress,
+			isBolt11,
+			isBolt12,
+			isOnChain,
+			comment
+		);
 	}
 
 	static fromJson(json: Object): Payment {
 		const a = ActionRemoteResponse.fromJson(json['remoteResponse']);
 
-		return new Payment(
+		const p = new Payment(
 			json['potId'],
 			json['originalAddress'],
 			json['address'],
 			json['currency'],
 			json['amount'],
-			json['minAmount'] != null ? json['minAmount'] : a.data["minSendable"]/MSATOSHIS,
-			json['maxAmount'] != null ? json['maxAmount'] : a.data["maxSendable"]/MSATOSHIS,
+			json['minAmount'],
+			json['maxAmount'],
 			json['fee'],
 			json['feeCurrency'],
 			a,
@@ -46,6 +55,19 @@ export class Payment extends ActionType {
 			json['isOnChain'],
 			json['comment']
 		);
+
+		if (p.isBolt11) {
+			if (p.remoteResponse.data['msatoshi'] != null) {
+				p.minAmount = p.remoteResponse.data['msatoshi'] / MSATOSHIS;
+				p.maxAmount = p.remoteResponse.data['msatoshi'] / MSATOSHIS;
+			}
+		} else if (p.isLnUrl) {
+			if (p.remoteResponse.success) {
+				p.minAmount = a.data['minSendable'] / MSATOSHIS;
+				p.maxAmount = a.data['maxSendable'] / MSATOSHIS;
+			}
+		}
+		return p;
 	}
 
 	toJson(): any {
@@ -64,7 +86,7 @@ export class Payment extends ActionType {
 				this.remoteResponse !== null
 					? this.remoteResponse.toJson()
 					: null,
-			comment: this.comment
+			comment: this.comment,
 		};
 	}
 }

@@ -9,17 +9,13 @@ import { PaymentRequest, WithdrawRequest } from '@sudonym/models';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
-	async create(params: RecursivePartial<LnUrl>, req?: RequestType) {
-		params.id = crypto.randomUUID();
-		const record = await super.create(params, req);
-		record.set('params', {
-			...record.params,
-			callback: getConfig().selfUrl + '/lnurl/handle/' + record.id,
+	onModuleInit() {
+		this.beforeCreate.hook(async (params) => {
+			params.id = crypto.randomUUID();
+			params.params.callback =
+				getConfig().selfUrl + '/lnurl/handle/' + params.id;
 		});
-		await record.save();
-		return record;
 	}
-
 	async serve(id: string): Promise<WithdrawRequest | PaymentRequest> {
 		return (await this.findOne(id)).params as any;
 	}

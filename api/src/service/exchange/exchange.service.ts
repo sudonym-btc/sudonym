@@ -70,7 +70,7 @@ export class ExchangeService {
 				(m.baseId == from && m.quoteId == to) ||
 				(m.baseId == to && m.quoteId == from)
 		);
-		this.logger.debug('Found market', market);
+		this.logger.debug('Found market', market.symbol);
 		return market;
 	}
 

@@ -182,6 +182,7 @@ def lightning(config, cluster_types):
                                                     "--log-level=" + config["loglevel"],
                                                     "--lightning-dir=" + lightning_dir,
                                                     "--rpc-file=/rpc/lightning-rpc",
+                                                    "--large-channels",
                                                     "--addr=0.0.0.0:"
                                                     + str(config["lightning"]["port"]),
                                                     "--experimental-offers",
@@ -266,8 +267,7 @@ def lightning(config, cluster_types):
                 },
             },
         ]
-
     return {
-        "resources": [] + ((getResource(1) + getResource(2) + getResource(3)) if config["env"] != "production" else getResource(1)),
+        "resources": getResource(1) + (getResource(2) if config["env"] != "production" else []),
         "base_name": base_name,
     }

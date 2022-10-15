@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
@@ -50,23 +51,28 @@ class EditPotFormState extends State<EditPotForm> {
         entity: widget.entity ?? Pot.fromJson({'name': '', 'currency': 'BTC'}),
         onSave: widget.onSave,
         cubit: () => getIt<PotCubit>(),
+        formGroup: () => FormGroup({
+              'name': FormControl<String>(
+                  value: widget.entity?.name ?? '',
+                  validators: [Validators.required]),
+              'currency': FormControl<String>(
+                  value: widget.entity?.currency ?? 'BTC',
+                  validators: [Validators.required])
+            }),
         children: [
           Column(
             children: [
-              FormBuilderTextField(
-                name: 'name',
+              ReactiveTextField(
+                formControlName: 'name',
                 decoration: const InputDecoration(
                   labelText: 'Pot name',
                 ),
-                initialValue: widget.entity?.name ?? '',
               ),
-              FormBuilderDropdown(
-                name: 'currency',
+              ReactiveDropdownField(
+                formControlName: 'currency',
                 decoration: const InputDecoration(
                   labelText: 'Currency',
                 ),
-                // initialValue: 'Male',
-                allowClear: true,
                 hint: const Text('Select Currency'),
                 items: listOfValue
                     .map((currency) => DropdownMenuItem(

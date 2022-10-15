@@ -16,44 +16,50 @@ export class LightningNodeService {
 	private peers;
 	private connectedChannels;
 
-	async findCircular() {
-		const validEntryAndExists = [];
-		for (const outgoing of this.connectedChannels) {
-			for (const incoming of this.connectedChannels) {
-				if (outgoing == incoming) continue;
-				validEntryAndExists.push({ outgoing, incoming });
-			}
-		}
+	calcHopFee(chann, amount) {
+		return (
+			Number(chann.base_fee_millisatoshi) +
+			Math.ceil((chann.fee_per_millionth / 1000000) * amount)
+		);
+	}
 
-		const validEntryExitIds = validEntryAndExists.map((e) => [
-			e.outgoing.id,
-			e.incoming.id,
-		]);
+	convertChannelsToRoute(inv = null) {
+		const circle = this.connectedChannels[0];
+		this.logger.debug('Circular payment along route', circle);
+		const firstAmount = circle
+			.reverse()
+			.reduce(
+				(acc, curr) => acc + this.calcHopFee(curr, acc),
+				Number(inv?.millisatoshis)
+			);
+		let totalDelay =
+			3 +
+			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
+			circle[circle.length - 1].delay;
 
-		const channels = (await this.rpc('listchannels', [])).channels;
+		return circle.reduce((acc, curr, index) => {
+			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
+			const lastNodeId = lastRouteItem?.id || this.info.id;
+			const lastAmount = Number(
+				lastRouteItem?.amount_msat || firstAmount
+			);
+			const id =
+				curr.destination == lastNodeId ? curr.source : curr.destination;
 
-		const circles = [];
-		const relevantChannels = channels.filter((c) => {
-			const vv = validEntryExitIds.find((v) => {
-				return (
-					(v[0] == c.source && v[1] == c.destination) ||
-					(v[0] == c.destination && v[1] == c.source)
-				);
-			});
-			if (vv) {
-				const circle = [
-					this.connectedChannels.find((c) => c.id == vv[0]),
-					c,
-					this.connectedChannels.find((c) => c.id == vv[1]),
-				];
-				circles.push(circle);
-			}
-			return !!vv;
-		});
-
-		// @todo: order by capacity
-
-		return circles[0];
+			return [
+				...acc,
+				{
+					id,
+					channel: curr.short_channel_id,
+					direction: curr.source < curr.destination ? 0 : 1,
+					amount_msat: (
+						lastAmount - this.calcHopFee(curr, lastAmount)
+					).toString(),
+					delay: (totalDelay -= curr.delay),
+					style: 'tlv',
+				},
+			];
+		}, []);
 	}
 
 	async onModuleInit() {
@@ -65,7 +71,11 @@ export class LightningNodeService {
 			this.logger.verbose('Loading lightning node information.');
 
 			this.info = await this.getInfo();
-			this.connectedChannels = await this.listChannels();
+			this.connectedChannels = await Promise.all(
+				await this.listChannels().then((i) =>
+					i.map((ch) => this.getChannel(ch.short_channel_id))
+				)
+			).then((x) => x);
 			this.peers = await this.listPeers();
 
 			this.logger.verbose(
@@ -93,6 +103,12 @@ export class LightningNodeService {
 	async listChannels() {
 		return this.makeRequest({
 			path: '/v1/channel/listChannels',
+		});
+	}
+
+	async getChannel(c) {
+		return this.makeRequest({
+			path: '/v1/network/listChannel/' + c,
 		});
 	}
 
@@ -135,30 +151,8 @@ export class LightningNodeService {
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
-			const circle = await this.findCircular();
-			let blockoffset = 3 + (circle.length + 1) * 6;
-			this.logger.debug('Circular payment along route', circle);
-			let lastNodeId = '';
-			const circleRoute = circle.map((channel, index) => ({
-				id:
-					index + 1 == circle.length
-						? this.info.id
-						: (lastNodeId =
-								channel.id ||
-								(channel.destination != lastNodeId
-									? channel.destination
-									: channel.source)),
-				channel: channel.short_channel_id,
-				direction: index < 2 ? 1 : 0,
-				amount_msat: (
-					parseInt(inv.millisatoshis) +
-					circle.length -
-					index -
-					1
-				).toString(),
-				delay: (blockoffset -= 6),
-				style: 'tlv',
-			}));
+			const circleRoute = this.convertChannelsToRoute(inv);
+			console.log(circleRoute);
 			this.logger.debug(
 				circleRoute,
 				inv.tagsObject.payment_hash,
