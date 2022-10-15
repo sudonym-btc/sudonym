@@ -7,7 +7,6 @@ kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning
 kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-lightning-2
 kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-c-lightning-rest
 kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-ride-the-lightning
-kubectl wait --for=condition=ready --timeout=300s pod -l app=$env-api
 
 ln1pod=$(kubectl get pod -l app=$env-lightning -o name)
 ln2pod=$(kubectl get pod -l app=$env-lightning-2 -o name)
@@ -38,7 +37,7 @@ ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
 # Push mining transactions to LN Nodes firther down chain so they become spendable
 $bitcoincli generatetoaddress 200 myVFkhe2QzAzp4JqkBiCTK8n9vNhH2ZbPt
 
-while [ $ln1Funds -ne $(($initial_block_height+600)) ] || [ $ln2Funds -ne $(($initial_block_height+600)) ] || [ $ln3Funds -ne $(($initial_block_height+600)) ]
+while [ $ln1Funds -ne $(($initial_block_height+600)) ] || [ $ln2Funds -ne $(($initial_block_height+600)) ]
 do
   sleep 1
   ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')
@@ -57,10 +56,10 @@ $bitcoincli generatetoaddress 200 myVFkhe2QzAzp4JqkBiCTK8n9vNhH2ZbPt
 ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')
 ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
 
-while [ $ln1Funds -ne $(($initial_block_height+1000)) ] || [ $ln2Funds -ne $(($initial_block_height+1000)) ]
+while [ $ln1Funds -ne $(($initial_block_height+800)) ] || [ $ln2Funds -ne $(($initial_block_height+800)) ]
 do
   sleep 1
-  echo "Waiting until block height ${initial_block_height+1000} synched"
+  echo "Waiting until block height ${initial_block_height+800} synched"
   echo $ln1Funds
   echo $ln2Funds
   ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')

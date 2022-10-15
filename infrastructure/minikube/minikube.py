@@ -39,6 +39,7 @@ print()
 
 # Make image pull for API local.
 for idx, item in enumerate(minikube_resources):
+    print(item["metadata"]["name"])
     if item["metadata"]["name"] == "development-api-deployment":
         item["spec"]["template"]["spec"]["containers"][0]["imagePullPolicy"] = "IfNotPresent"
         item["spec"]["template"]["spec"]["containers"][0]["image"] = "api"
