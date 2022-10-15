@@ -15,6 +15,8 @@ const fb = (() => {
 				const serviceAccount = fs.existsSync(serviceAccountPath)
 					? require(serviceAccountPath)
 					: null;
+
+				console.log(serviceAccount);
 				// Firebase Setup
 				admin.initializeApp(
 					serviceAccount
