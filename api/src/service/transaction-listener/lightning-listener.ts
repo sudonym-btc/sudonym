@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { LightningEvents } from './lightning-events';
-import { MSATOSHIS } from '@sudonym/models';
+import { Bolt11Received, MSATOSHIS } from '@sudonym/models';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { TransactionListener } from './transaction-listener.interface';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
@@ -15,7 +15,7 @@ export class LightningListener extends TransactionListener {
 
 	listenIncoming() {
 		this.lightningEvents.onEvent.subscribe(async (e) => {
-			if (e.event == 'invoice' && e.data.status == 'paid') {
+			if (e.event == 'invoice' && ['paid', 'complete'].includes(e.data.status)) {
 				const receivers = await this.receiveService.list({
 					where: {
 						data: e.data.bolt11,
@@ -82,7 +82,8 @@ export class LightningListener extends TransactionListener {
 						try {
 							const response =
 								await this.lightningNodeService.pay(invoice);
-							this.logger.debug('Lightning pay', response, response.parts || response.partid);
+							this.logger.debug('Lightning pay', response);
+							this.logger.debug('Part', response.parts || response.partid);
 							await this.lightningNodeService
 								.rpc('waitsendpay', [response.payment_hash, 100, response.parts || response.partid])
 								.catch((e) => {
@@ -98,12 +99,22 @@ export class LightningListener extends TransactionListener {
 											});
 										}
 									}
+								}).then(e => {
+									this.lightningEvents.onEvent.next({
+										event: 'invoice',
+										data: {
+											bolt11: invoice,
+											...e.response.data,
+											msatoshi: e.response.data.amount_sent_msat
+										}
+									})
+									e.response.data
 								});
 						} catch (e) {
 							this.logger.error(
 								'Pay error', e);
 							if (e.response) {
-								this.logger.warn(' Pay error', e.response.data);
+								this.logger.warn('Pay error', e.response.data);
 								this.lightningEvents.onEvent.next({
 									event: 'invoice',
 									data: e.response.data.error.data,
@@ -130,7 +141,7 @@ export class LightningListener extends TransactionListener {
 							status:
 								e.data.status == 'pending'
 									? null
-									: e.data.status == 'paid'
+									: ['paid', 'complete'].includes(e.data.status)
 										? true
 										: false,
 						}
