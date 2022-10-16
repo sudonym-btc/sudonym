@@ -25,7 +25,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 			params: {
 				tag: 'payRequest',
 				domain: getConfig().selfUrl,
-				minSendable: mSatoshiAmount || 0,
+				minSendable: Math.max(mSatoshiAmount, 1),
 				maxSendable: 10000000,
 				metadata: JSON.stringify([
 					[
