@@ -263,7 +263,7 @@ export class LightningNodeService {
 			},
 			...options,
 		}).catch((e) => {
-			this.logger.error('Lightning error', e.response);
+			this.logger.error('Lightning error', e.data);
 			throw e;
 		});
 		return response.data;
