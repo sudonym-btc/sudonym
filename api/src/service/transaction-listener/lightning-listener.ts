@@ -82,9 +82,9 @@ export class LightningListener extends TransactionListener {
 						try {
 							const response =
 								await this.lightningNodeService.pay(invoice);
-							this.logger.debug('Lightning pay', response);
+							this.logger.debug('Lightning pay', response, response.parts || response.partid);
 							await this.lightningNodeService
-								.rpc('waitsendpay', [response.payment_hash])
+								.rpc('waitsendpay', [response.payment_hash, 100, response.parts || response.partid])
 								.catch((e) => {
 									if (e.response) {
 										this.logger.error(
