@@ -47,7 +47,7 @@ class Payment extends ActionType {
         json["potId"],
         json["originalAddress"],
         json["address"],
-        json["currency"],
+        json["currency"] != null ? json["currency"] : "BTC",
         json["amount"],
         json["minAmount"],
         json["maxAmount"],
@@ -70,6 +70,9 @@ class Payment extends ActionType {
         p.minAmount = a.data["minSendable"] / MSATOSHIS;
         p.maxAmount = a.data["maxSendable"] / MSATOSHIS;
       }
+    }
+    if (p.amount == null && (p.minAmount == p.maxAmount)) {
+      p.amount = p.minAmount;
     }
     return p;
   }

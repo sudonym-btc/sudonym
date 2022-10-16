@@ -31,17 +31,17 @@ class Withdraw extends ActionType {
   }
   static Withdraw fromJson(Map<String, dynamic> json) {
     final a = ActionRemoteResponse.fromJson(json["remoteResponse"]);
-    return new Withdraw(
+    final w = new Withdraw(
         json["potId"],
         json["originalAddress"],
-        json["currency"],
+        json["currency"] != null ? json["currency"] : "BTC",
         json["amount"],
         json["minAmount"] != null
             ? json["minAmount"]
-            : (a.success ? a.data["minWithdrawable"] / MSATOSHIS : null),
+            : a.success ? a.data["minWithdrawable"] / MSATOSHIS : null,
         json["maxAmount"] != null
             ? json["maxAmount"]
-            : (a.success ? a.data["maxWithdrawable"] / MSATOSHIS : null),
+            : a.success ? a.data["maxWithdrawable"] / MSATOSHIS : null,
         a,
         json["isLnUrl"],
         json["isLnAddress"],
@@ -49,6 +49,10 @@ class Withdraw extends ActionType {
         json["isBolt12"],
         json["isOnChain"],
         json["comment"]);
+    if (w.amount == null && (w.minAmount == w.maxAmount)) {
+      w.amount = w.minAmount;
+    }
+    return w;
   }
 
   dynamic toJson() {

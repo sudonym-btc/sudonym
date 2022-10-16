@@ -28,7 +28,7 @@ export class ActionService {
 	@Inject(TransactionService) transactionService: TransactionService;
 	@Inject(ReceiverService) receiverService: ReceiverService;
 	@Inject(AddressParser) addressParser: AddressParser;
-	private readonly logger = new Logger(ActionService.name);
+	private readonly logger = new Logger(this.constructor.name);
 
 	async parse(invoice): Promise<ActionParseResponse> {
 		return ActionParseResponse.from(
@@ -58,10 +58,10 @@ export class ActionService {
 					return Action.from({
 						...action,
 						address: action.originalAddress,
-						fee: await this.lightningNodeService.getFees(
+						fee: (await this.lightningNodeService.getFees(
 							bolt11.decode(action.originalAddress).payeeNodeKey,
 							mSatoshiAmount
-						),
+						)) / MSATOSHIS,
 						feeCurrency: 'BTC',
 					});
 				case 'bolt12':
