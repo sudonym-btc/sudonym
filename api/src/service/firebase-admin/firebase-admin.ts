@@ -17,7 +17,6 @@ const fb = () => {
 				? require(serviceAccountPath)
 				: null;
 
-			console.log(serviceAccount);
 			// Firebase Setup
 			admin.initializeApp(
 				serviceAccount
