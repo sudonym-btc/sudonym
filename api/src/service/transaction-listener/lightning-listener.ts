@@ -87,11 +87,11 @@ export class LightningListener extends TransactionListener {
 								.rpc('waitsendpay', [response.payment_hash])
 								.catch((e) => {
 									if (e.response) {
-										this.logger.warn(
+										this.logger.error(
 											'Wait send pay error',
 											e.response.data
 										);
-										if (e.response.data && e.response.data.error?.data) {
+										if (e.response.data?.error?.data) {
 											this.lightningEvents.onEvent.next({
 												event: 'invoice',
 												data: e.response.data.error.data,
@@ -100,7 +100,7 @@ export class LightningListener extends TransactionListener {
 									}
 								});
 						} catch (e) {
-							this.logger.warn(
+							this.logger.error(
 								'Pay error', e);
 							if (e.response) {
 								this.logger.warn(' Pay error', e.response.data);
