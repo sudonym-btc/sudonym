@@ -55,8 +55,7 @@ export class AddressParser implements IAddressParser {
 				return r.json();
 			})
 			.then((data) => {
-				this.logger.debug('Fetched lnurl');
-				this.logger.debug(data);
+				this.logger.debug('Fetched lnurl', data);
 				return {
 					success: data.statusCode
 						? data.statusCode.toString().startsWith(2)
