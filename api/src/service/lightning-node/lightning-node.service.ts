@@ -167,11 +167,10 @@ export class LightningNodeService {
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
 			const circleRoute = this.convertChannelsToRoute(inv);
-			console.log(circleRoute);
 			this.logger.debug(
+				'Routing local payment',
 				circleRoute,
 				inv.tagsObject.payment_hash,
-				'selfpaymentlabel',
 				inv.millisatoshis,
 				invoice,
 				inv.tagsObject.payment_secret
@@ -185,6 +184,8 @@ export class LightningNodeService {
 				inv.tagsObject.payment_secret,
 			]);
 		}
+
+		this.logger.debug('Making payment to ' + invoice);
 
 		return this.makeRequest({
 			path: '/v1/pay',
