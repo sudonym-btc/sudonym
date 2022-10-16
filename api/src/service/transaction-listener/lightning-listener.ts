@@ -82,9 +82,7 @@ export class LightningListener extends TransactionListener {
 						try {
 							const response =
 								await this.lightningNodeService.pay(invoice);
-							// const obj = bolt11.decode(invoice);
-							// const hash = obj.tags.find(t => t.tagName == "payment_hash").data;
-							// console.log(obj);
+							this.logger.debug('Lightning pay', response);
 							await this.lightningNodeService
 								.rpc('waitsendpay', [response.payment_hash])
 								.catch((e) => {
@@ -93,11 +91,12 @@ export class LightningListener extends TransactionListener {
 											'Wait send pay error',
 											e.response.data
 										);
-										this.lightningEvents.onEvent.next({
-											event: 'invoice',
-											data: e.response.data.error.data,
-										});
-										console.log('triggered');
+										if (e.response.data && e.response.data.error?.data) {
+											this.lightningEvents.onEvent.next({
+												event: 'invoice',
+												data: e.response.data.error.data,
+											});
+										}
 									}
 								});
 						} catch (e) {
@@ -117,6 +116,7 @@ export class LightningListener extends TransactionListener {
 		);
 
 		this.lightningEvents.onEvent.subscribe(async (e) => {
+			console.log(e);
 			if (e.event == 'invoice') {
 				const transactions = await this.transactionService.list({
 					where: {
@@ -131,8 +131,8 @@ export class LightningListener extends TransactionListener {
 								e.data.status == 'pending'
 									? null
 									: e.data.status == 'paid'
-									? true
-									: false,
+										? true
+										: false,
 						}
 					);
 				}
