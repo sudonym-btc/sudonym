@@ -12,7 +12,7 @@ const fb = () => {
 		? {}
 		: (() => {
 			const serviceAccountPath =
-				process.cwd() + '/src/service-account.json';
+				process.cwd() + '/src/config/service-account.json';
 			const serviceAccount = fs.existsSync(serviceAccountPath)
 				? require(serviceAccountPath)
 				: null;
