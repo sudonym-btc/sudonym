@@ -100,14 +100,14 @@ export class LightningListener extends TransactionListener {
 									}
 								});
 						} catch (e) {
-							console.error(e);
+							this.logger.warn(
+								'Pay error', e);
 							if (e.response) {
 								this.logger.warn(' Pay error', e.response.data);
 								this.lightningEvents.onEvent.next({
 									event: 'invoice',
 									data: e.response.data.error.data,
 								});
-								console.log('triggered');
 							}
 						}
 					})();
@@ -116,7 +116,7 @@ export class LightningListener extends TransactionListener {
 		);
 
 		this.lightningEvents.onEvent.subscribe(async (e) => {
-			console.log(e);
+			this.logger.log('Lightning event in listener', e);
 			if (e.event == 'invoice') {
 				const transactions = await this.transactionService.list({
 					where: {

@@ -33,10 +33,10 @@ export class Withdraw extends ActionType {
 
 	static fromJson(json: Object): Withdraw {
 		const a = ActionRemoteResponse.fromJson(json['remoteResponse']);
-		return new Withdraw(
+		const w = new Withdraw(
 			json['potId'],
 			json['originalAddress'],
-			json['currency'],
+			json['currency'] != null ? json['currency'] : 'BTC',
 			json['amount'],
 			json['minAmount'] != null
 				? json['minAmount']
@@ -56,6 +56,12 @@ export class Withdraw extends ActionType {
 			json['isOnChain'],
 			json['comment']
 		);
+
+		if(w.amount == null && (w.minAmount == w.maxAmount)) {
+			w.amount = w.minAmount;
+		}
+
+		return w;
 	}
 
 	toJson(): any {

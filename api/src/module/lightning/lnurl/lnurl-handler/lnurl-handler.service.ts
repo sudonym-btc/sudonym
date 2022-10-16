@@ -1,4 +1,4 @@
-import { HttpException, Inject } from '@nestjs/common';
+import { HttpException, Inject, Logger } from '@nestjs/common';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { LnUrlService } from '../lnurl.service';
 import { MSATOSHIS } from '@sudonym/models';
@@ -14,6 +14,7 @@ export class LnUrlHandlerService {
 	@Inject(PotService) potService: PotService;
 	@Inject(SenderService) senderService: SenderService;
 	@Inject(TransactionService) transactionService: TransactionService;
+	private readonly logger = new Logger(this.constructor.name);
 
 	// Function that is called when someone else triggers OUR callbacks.
 	async handle(id, query) {
@@ -45,14 +46,14 @@ export class LnUrlHandlerService {
 						lnurlId: tag.id,
 					},
 				});
-				console.log(sender);
+				this.logger.debug(sender);
 				const parsed = bolt11.decode(query.pr);
 
 				const pot = await this.potService.findForUser(
 					sender.userId,
 					sender.potId
 				);
-				console.log(pot);
+				this.logger.debug(pot);
 				await this.transactionService.create({
 					outgoing: true,
 					potId: pot.id,
