@@ -51,7 +51,7 @@ export class LightningNodeService {
 				{
 					id,
 					channel: curr.short_channel_id,
-					direction: curr.source < curr.destination ? 0 : 1,
+					direction: lastNodeId < id ? 0 : 1,
 					amount_msat: (
 						lastAmount - this.calcHopFee(curr, lastAmount)
 					).toString(),
