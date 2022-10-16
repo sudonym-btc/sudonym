@@ -104,9 +104,9 @@ export class LightningListener extends TransactionListener {
 									this.lightningEvents.onEvent.next({
 										event: 'invoice',
 										data: {
+											...e,
 											bolt11: invoice,
-											...e.data,
-											msatoshi: e.data.amount_sent_msat
+											msatoshi: e.amount_sent_msat
 										}
 									});
 								});
