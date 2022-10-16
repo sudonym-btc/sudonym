@@ -68,12 +68,14 @@ export class LightningNodeService {
 		this.info = await this.getInfo();
 		this.connectedChannels = await Promise.all(
 			await this.listChannels().then((i) =>
-				i.map((ch) => this.getChannel(ch.short_channel_id))
+				i
+					.filter(ch => ch.short_channel_id)
+					.map((ch) => this.getChannel(ch.short_channel_id))
 			)
-		).then((x) => x);
+		);
 		this.peers = await this.listPeers();
 
-		if(this.info.warning_lightningd_sync) {
+		if (this.info.warning_lightningd_sync) {
 			this.logger.error(this.info.warning_lightningd_sync);
 		}
 
@@ -96,7 +98,7 @@ export class LightningNodeService {
 			setInterval(() => {
 				this.loadInfo();
 			}, 5 * 60 * 1000); // refresh every 5 minutes
-			
+
 		} catch (e) {
 			this.logger.error(e);
 		}
