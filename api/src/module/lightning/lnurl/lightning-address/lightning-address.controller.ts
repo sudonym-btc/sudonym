@@ -14,7 +14,7 @@ import { User } from 'module/user/user.model';
 import { LnUrlService } from '../lnurl.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { PotService } from 'module/pot/pot.service';
-import { MSATOSHIS } from '@sudonym/models';
+import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
 
 @Controller('')
 export class LightningAddressController {
@@ -55,7 +55,7 @@ export class LightningAddressController {
 		const receiver = await this.receiverService.create({
 			potId: pot.id,
 			type: 'lnurl',
-			amount: 1 / MSATOSHIS
+			amount: 1 / SATOSHIS
 		});
 
 		return (await this.lnUrlService.findOne(receiver.lnurlId)).params;
