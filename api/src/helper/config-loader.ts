@@ -7,7 +7,7 @@ const storage = new Storage();
 export async function downloadFiles(
 	force = false,
 	alreadyDone = () =>
-		["mock", "development"].includes(getConfig().env) && fs.existsSync(process.cwd() + '/src/service-account.json')
+		["mock", "development"].includes(getConfig().env) && fs.existsSync(process.cwd() + '/src/config/service-account.json')
 ) {
 	console.log("Downloading files already done? " + alreadyDone());
 	if (!alreadyDone() || force) {
@@ -25,7 +25,7 @@ export async function downloadFiles(
 		for (const file of files) {
 			// Ignore folders
 			if (file.name.split('.').length == 1) continue;
-			const destination = process.cwd() + '/src/' + file.name;
+			const destination = process.cwd() + '/src/config/' + file.name;
 
 			try {
 				await bucket.file(file.name).download({
