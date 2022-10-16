@@ -100,15 +100,15 @@ export class LightningListener extends TransactionListener {
 										}
 									}
 								}).then(e => {
+									this.logger.debug(e);
 									this.lightningEvents.onEvent.next({
 										event: 'invoice',
 										data: {
 											bolt11: invoice,
-											...e.response.data,
-											msatoshi: e.response.data.amount_sent_msat
+											...e.data,
+											msatoshi: e.data.amount_sent_msat
 										}
-									})
-									e.response.data
+									});
 								});
 						} catch (e) {
 							this.logger.error(
