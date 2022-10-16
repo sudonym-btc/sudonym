@@ -7,7 +7,7 @@ const storage = new Storage();
 export async function downloadFiles(
 	force = false,
 	alreadyDone = () =>
-		fs.existsSync(process.cwd() + '/src/service-account.json')
+		["mock", "development"].includes(getConfig().env) && fs.existsSync(process.cwd() + '/src/service-account.json')
 ) {
 	console.log("Downloading files already done? " + alreadyDone());
 	if (!alreadyDone() || force) {
