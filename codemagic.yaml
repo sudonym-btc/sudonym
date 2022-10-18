@@ -131,6 +131,7 @@ workflows:
       - *getpackages
       - 'cd app && flutter build appbundle -t lib/main-prod.dart --release'
       - 'cd app && flutter build apk -t lib/main-prod.dart --release'
+      - 'cd app && flutter build ipa -t lib/main-prod.dart --release'
       - *ghrelease
     publishing:
       google_play:
