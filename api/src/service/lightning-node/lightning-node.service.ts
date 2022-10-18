@@ -44,10 +44,11 @@ export class LightningNodeService {
 
 		this.logger.debug("total delay", totalDelay);
 		this.logger.debug("total fee", firstAmount - inv?.millisatoshis);
+		this.logger.debug("first amount", firstAmount, inv?.millisatoshis);
 
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
-			const lastNodeId = lastRouteItem?.id || this.info.id;
+			const lastNodeId = lastRouteItem ? lastRouteItem?.id : this.info.id;
 			const lastAmount = lastRouteItem ? lastRouteItem.msatoshi : firstAmount;
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
