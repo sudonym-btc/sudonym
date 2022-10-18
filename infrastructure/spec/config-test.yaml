@@ -8,6 +8,7 @@ imports:
 - path: kubernetes_ride_the_lightning.py
 - path: kubernetes_api.py
 - path: kubernetes_db.py
+- path: kubernetes_homepage.py
 - path: common.py
 - path: helper.py
 - path: dns.py

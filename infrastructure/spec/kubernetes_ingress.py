@@ -1,4 +1,5 @@
 from helper import getDeploymentName, getServiceName, getVolumeClaimName
+from infrastructure.spec.kubernetes_homepage import homepage
 from kubernetes_lightning import lightning
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
@@ -10,6 +11,7 @@ from kubernetes_cluster import cluster
 from kubernetes_bitcoin import bitcoin
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_api import api
+from kubernetes_homepage import homepage
 
 
 def ingress(config, cluster_types):
@@ -22,6 +24,7 @@ def ingress(config, cluster_types):
     lightning_base_name = lightning(config, cluster_types)["base_name"]
     lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
     api_base_name = api(config, cluster_types)["base_name"]
+    homepage_base_name = homepage(config, cluster_types)["base_name"]
     bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
     db_base_name = kubernetes_db(config, cluster_types)["base_name"]
 
@@ -59,6 +62,7 @@ def ingress(config, cluster_types):
                             {
                                 "hosts": [
                                     config["domain"],
+                                    "www." + config["domain"],
                                     "api." + config["domain"],
                                     "rtl." + config["domain"],
                                     "ln-rest." + config["domain"],
@@ -214,6 +218,48 @@ def ingress(config, cluster_types):
                                                 }
                                             },
                                         }
+                                    ]
+                                },
+                            },
+                            {
+                                "host": "www." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        homepage_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": 8080
+                                                    },
+                                                }
+                                            },
+                                        },
+                                    ]
+                                },
+                            },
+                            {
+                                "host": config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        homepage_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": 8080
+                                                    },
+                                                }
+                                            },
+                                        },
                                     ]
                                 },
                             },

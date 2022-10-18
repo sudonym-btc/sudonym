@@ -28,8 +28,9 @@ export class LnUrlHandlerService {
 				});
 
 				// Create a new receiver, this time bolt11 not lnurl
-				const receiver = await this.receiveService.getInvoice({
+				const receiver = await this.receiveService.create({
 					parentId: parentReceiver.id,
+					lnurlId: tag.id,
 					potId: parentReceiver.potId,
 					type: 'bolt11',
 					amount: query.amount / MSATOSHIS,

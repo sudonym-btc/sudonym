@@ -16,6 +16,7 @@ from kubernetes_bitcoin import bitcoin
 from kubernetes_lightning import lightning
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_api import api
+from kubernetes_homepage import homepage
 
 
 def GenerateConfig(context):
@@ -75,6 +76,7 @@ def GenerateConfig(context):
         + api(config, cluster_types)["resources"]
         + dns(config, cluster_types)["resources"]
         + storage(config, cluster_types)["resources"]
+        + homepage(config, cluster_types)["resources"]
     ) + (
         kubernetes_db(config, cluster_types)["resources"] if config["env"] in ["development", "test"] else db(config, cluster_types)["resources"] 
     )
