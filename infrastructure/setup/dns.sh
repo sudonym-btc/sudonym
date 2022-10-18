@@ -11,7 +11,9 @@ gcloud dns managed-zones create $ENV-zone \
    --visibility=public
 
 ns=$(gcloud dns managed-zones describe $ENV-zone --format json | jq --raw-output '.nameServers  | join(" ")')
-
+if [[ $ENV == "production" ]]; then
+   gcloud dns record-sets import production-dns-records.yaml --zone=production-zone
+fi
 echo "Must add $ns record to production zone"
 # gcloud dns record-sets transaction start \
 #    --zone=production-zone
