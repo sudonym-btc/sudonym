@@ -49,6 +49,7 @@ def certificates(config):
                 },
                 "dnsNames":[
                     "" + domain,
+                    "www." + domain,
                     "rtl." + domain,
                     "api." + domain,
                     "btc." + domain,
