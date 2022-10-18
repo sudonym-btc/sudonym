@@ -48,11 +48,11 @@ export class LightningNodeService {
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
 			const lastNodeId = lastRouteItem?.id || this.info.id;
-			const lastAmount = Number(
-				lastRouteItem?.msatoshi || firstAmount
-			);
+			const lastAmount = lastRouteItem ? lastRouteItem.msatoshi : firstAmount;
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
+
+			this.logger.debug("lastAmount", lastAmount, "fee", this.calcHopFee(curr, lastAmount))
 
 			const amount_msat = lastAmount - this.calcHopFee(curr, lastAmount);
 			return [
