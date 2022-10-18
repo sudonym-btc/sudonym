@@ -15,7 +15,7 @@ export class LightningListener extends TransactionListener {
 
 	listenIncoming() {
 		this.lightningEvents.onEvent.subscribe(async (e) => {
-			if (e.event == 'invoice' && ['paid', 'complete'].includes(e.data.status)) {
+			if (e.event == 'invoice' && e.data && ['paid', 'complete'].includes(e.data.status)) {
 				const receivers = await this.receiveService.list({
 					where: {
 						data: e.data.bolt11,
@@ -102,11 +102,11 @@ export class LightningListener extends TransactionListener {
 								}).then(e => {
 									this.logger.debug(e);
 									this.lightningEvents.onEvent.next({
-										event: 'invoice',
+										event: 'sendpay',
 										data: {
 											...e,
 											bolt11: invoice,
-											msatoshi: e.amount_sent_msat
+											msatoshi: e.msatoshi_sent
 										}
 									});
 								});
@@ -128,7 +128,7 @@ export class LightningListener extends TransactionListener {
 
 		this.lightningEvents.onEvent.subscribe(async (e) => {
 			this.logger.log('Lightning event in listener', e);
-			if (e.event == 'invoice') {
+			if (e.event == 'sendpay') {
 				const transactions = await this.transactionService.list({
 					where: {
 						txid: e.data.bolt11,

@@ -8,7 +8,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "getConfig": "ts-node src/helper/config-loader.ts",
+    "getConfig": "GCLOUD_PROJECT=$(gcloud config get project) ts-node src/helper/config-loader.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

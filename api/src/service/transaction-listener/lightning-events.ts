@@ -62,6 +62,6 @@ export class LightningEvents {
 }
 
 export class LightningEvent {
-	event: 'invoice' | 'channel';
+	event: 'invoice' | 'channel' | 'sendpay';
 	data: Bolt11Received;
 }

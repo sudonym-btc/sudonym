@@ -28,7 +28,7 @@ class TransactionList extends StatelessWidget {
               return CubitWrapper<TransactionCubit, TransactionCubitState,
                       Transaction>(
                   entity: el,
-                  fetch: true,
+                  fetch: false,
                   builder: (context, state) {
                     if (state.loading) {
                       return Container();
