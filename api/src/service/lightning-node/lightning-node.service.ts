@@ -18,7 +18,7 @@ export class LightningNodeService {
 
 	calcHopFee(chann, amount) {
 		const fee = Number(chann.base_fee_millisatoshi) +
-		Math.ceil((chann.fee_per_millionth / 1000000) * amount);
+			Math.ceil((chann.fee_per_millionth / 1000000) * amount);
 		this.logger.debug("Calculating fee", chann, amount, fee);
 		return fee;
 	}
@@ -31,12 +31,17 @@ export class LightningNodeService {
 		} catch (e) {
 			this.logger.error(e);
 		}
-		const firstAmount = circle
+		const fees = [];
+		let firstAmount = circle
 			.reverse()
 			.reduce(
-				(acc, curr) => acc + this.calcHopFee(curr, acc),
+				(acc, curr) => {
+					fees.push(this.calcHopFee(curr, acc));
+					return acc + fees[fees.length - 1];
+				},
 				Number(inv?.millisatoshis)
 			);
+		firstAmount -= fees[fees.length-1];
 		let totalDelay =
 			3 +
 			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
@@ -44,6 +49,7 @@ export class LightningNodeService {
 
 		this.logger.debug("total delay", totalDelay);
 		this.logger.debug("total fee", firstAmount - inv?.millisatoshis);
+		this.logger.debug("fees", fees);
 		this.logger.debug("first amount", firstAmount, inv?.millisatoshis);
 
 		return circle.reduce((acc, curr, index) => {
@@ -53,9 +59,9 @@ export class LightningNodeService {
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
 
-			this.logger.debug("lastAmount", lastAmount, "fee", this.calcHopFee(curr, lastAmount))
+			this.logger.debug("lastAmount", lastAmount, "fee", fees[index])
 
-			const amount_msat = lastAmount - this.calcHopFee(curr, lastAmount);
+			const amount_msat = lastAmount - (index > 0 ? fees[index - 1]: 0);
 			return [
 				...acc,
 				{
