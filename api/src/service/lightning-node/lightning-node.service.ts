@@ -17,45 +17,60 @@ export class LightningNodeService {
 	private connectedChannels;
 
 	calcHopFee(chann, amount) {
-		return (
-			Number(chann.base_fee_millisatoshi) +
-			Math.ceil((chann.fee_per_millionth / 1000000) * amount)
-		);
+		const fee = Number(chann.base_fee_millisatoshi) +
+			Math.ceil((chann.fee_per_millionth / 1000000) * amount);
+		this.logger.debug("Calculating fee", chann, amount, fee);
+		return fee;
 	}
 
-	convertChannelsToRoute(inv = null) {
-		const circle = this.connectedChannels[0];
-		this.logger.debug('Circular payment along route', circle);
-		const firstAmount = circle
+	async convertChannelsToRoute(inv = null) {
+		const circle = this.connectedChannels[this.connectedChannels.length - 1];
+		this.logger.debug('Circular payment along route', JSON.stringify(circle));
+		try {
+			this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
+		} catch (e) {
+			this.logger.error(e);
+		}
+		const fees = [];
+		let firstAmount = circle
 			.reverse()
 			.reduce(
-				(acc, curr) => acc + this.calcHopFee(curr, acc),
+				(acc, curr) => {
+					fees.push(this.calcHopFee(curr, acc));
+					return acc + fees[fees.length - 1];
+				},
 				Number(inv?.millisatoshis)
 			);
+		firstAmount -= fees[fees.length-1];
 		let totalDelay =
 			3 +
 			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
-			circle[circle.length - 1].delay;
+			circle[0].delay;
+
+		this.logger.debug("total delay", totalDelay);
+		this.logger.debug("total fee", firstAmount - inv?.millisatoshis);
+		this.logger.debug("fees", fees);
+		this.logger.debug("first amount", firstAmount, inv?.millisatoshis);
 
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
-			const lastNodeId = lastRouteItem?.id || this.info.id;
-			const lastAmount = Number(
-				lastRouteItem?.amount_msat || firstAmount
-			);
+			const lastNodeId = lastRouteItem ? lastRouteItem?.id : this.info.id;
+			const lastAmount = lastRouteItem ? lastRouteItem.msatoshi : firstAmount;
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
 
+			this.logger.debug("lastAmount", lastAmount, "fee", fees[index])
+
+			const amount_msat = lastAmount - (index > 0 ? fees[index - 1]: 0);
 			return [
 				...acc,
 				{
 					id,
 					channel: curr.short_channel_id,
 					direction: lastNodeId < id ? 0 : 1,
-					amount_msat: (
-						lastAmount - this.calcHopFee(curr, lastAmount)
-					).toString(),
-					delay: (totalDelay -= curr.delay),
+					msatoshi: amount_msat,
+					amount_msat: amount_msat.toString() + "msat",
+					delay: totalDelay -= curr.delay,
 					style: 'tlv',
 				},
 			];
@@ -73,6 +88,7 @@ export class LightningNodeService {
 					.map((ch) => this.getChannel(ch.short_channel_id))
 			)
 		);
+		this.logger.debug("channels", JSON.stringify(this.connectedChannels));
 		this.peers = await this.listPeers();
 
 		if (this.info.warning_lightningd_sync) {
@@ -166,10 +182,11 @@ export class LightningNodeService {
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
-			const circleRoute = this.convertChannelsToRoute(inv);
+
+			const circleRoute = await this.convertChannelsToRoute(inv);
 			this.logger.debug(
 				'Routing local payment',
-				circleRoute,
+				JSON.stringify(circleRoute),
 				inv.tagsObject.payment_hash,
 				inv.millisatoshis,
 				invoice,

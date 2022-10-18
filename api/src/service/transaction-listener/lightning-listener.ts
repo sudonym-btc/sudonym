@@ -83,9 +83,10 @@ export class LightningListener extends TransactionListener {
 							const response =
 								await this.lightningNodeService.pay(invoice);
 							this.logger.debug('Lightning pay', response);
-							this.logger.debug('Part', response.parts || response.partid);
+							const partId = isNaN(response.parts) ? response.partid : (response.parts - 1);
+							this.logger.debug('PartId', partId);
 							await this.lightningNodeService
-								.rpc('waitsendpay', [response.payment_hash, 100, response.parts || response.partid])
+								.rpc('waitsendpay', [response.payment_hash, 100, partId])
 								.catch((e) => {
 									if (e.response) {
 										this.logger.error(
@@ -101,14 +102,16 @@ export class LightningListener extends TransactionListener {
 									}
 								}).then(e => {
 									this.logger.debug(e);
-									this.lightningEvents.onEvent.next({
-										event: 'sendpay',
-										data: {
-											...e,
-											bolt11: invoice,
-											msatoshi: e.msatoshi_sent
-										}
-									});
+									if (e) {
+										this.lightningEvents.onEvent.next({
+											event: 'sendpay',
+											data: {
+												...e,
+												bolt11: invoice,
+												msatoshi: e.msatoshi_sent
+											}
+										});
+									}
 								});
 						} catch (e) {
 							this.logger.error(

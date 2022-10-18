@@ -1,7 +1,7 @@
 import "action-type.dart" show ActionType;
 import "action-remote-response.dart" show ActionRemoteResponse;
 import "payment-request.dart" show PaymentRequest;
-import "types/index.dart" show MSATOSHIS;
+import "types/index.dart" show MSATOSHIS, SATOSHIS;
 
 class Payment extends ActionType {
   dynamic /* num | null */ potId;
@@ -61,9 +61,9 @@ class Payment extends ActionType {
         json["isOnChain"],
         json["comment"]);
     if (p.isBolt11) {
-      if (p.remoteResponse.data["msatoshi"] != null) {
-        p.minAmount = p.remoteResponse.data["msatoshi"] / MSATOSHIS;
-        p.maxAmount = p.remoteResponse.data["msatoshi"] / MSATOSHIS;
+      if (p.remoteResponse.data["satoshis"] != null) {
+        p.minAmount = p.remoteResponse.data["satoshis"] / SATOSHIS;
+        p.maxAmount = p.remoteResponse.data["satoshis"] / SATOSHIS;
       }
     } else if (p.isLnUrl) {
       if (p.remoteResponse.success) {

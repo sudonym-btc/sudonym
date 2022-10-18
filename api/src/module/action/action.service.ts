@@ -64,9 +64,16 @@ export class ActionService {
 					} catch (e) {
 
 					}
+					if(action.amount) {
+						action.address = bolt11.encode({
+							...bolt11.decode(action.originalAddress),
+							satoshis: mSatoshiAmount * 1000,
+							millisatoshis: undefined
+						}).paymentRequest;
+					}
 					return Action.from({
 						...action,
-						address: action.originalAddress,
+						address: action.address,
 						fee,
 						feeCurrency: 'BTC',
 					});
