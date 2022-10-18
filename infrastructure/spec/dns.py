@@ -49,6 +49,12 @@ def dns(config, cluster_types):
                             "rrdatas": [("$(ref." + config["env"] + "-ip.address)" ) if config["env"] != "production" else ("$(ref." + config["env"] + "-db.ipAddresses[0].ipAddress)")],
                         },
                         {
+                            "name": "www." + domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
+                        },
+                        {
                             "name": domain + ".",
                             "type": "A",
                             "ttl": 50,
