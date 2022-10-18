@@ -12,6 +12,7 @@
     "deploy:development": "sudo echo && npm run minikube:start && parallelshell 'npm run minikube:loadApi' 'npm run loadAndStart'",
     "deploy:development:hard": "sudo echo && npm run deploy:development:clear && npm run deploy:development && npm run init:lightning",
     "deploy:development:clear": "parallelshell 'minikube delete --all' 'npm run clearcloudcache'",
+    "build:homepage": "docker build -t gcr.io/$(gcloud config get project)/homepage -f infrastructure/spec/homepage.Dockerfile ./homepage && docker push gcr.io/$(gcloud config get project)/homepage",
     "prewatch:api": "echo $(killall ksync) && echo $(killall syncthing)",
     "watch:api": "echo $(ksync init) && (ksync watch &) && sleep 5 && ksync delete --all && ksync create --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
     "watch:models": "ksync create --selector=app=development-api $(pwd)/models /usr/src/app/models",
