@@ -233,7 +233,7 @@ def ingress(config, cluster_types):
                                                         homepage_base_name
                                                     ),
                                                     "port": {
-                                                        "number": 8080
+                                                        "number": 80
                                                     },
                                                 }
                                             },
@@ -254,7 +254,7 @@ def ingress(config, cluster_types):
                                                         homepage_base_name
                                                     ),
                                                     "port": {
-                                                        "number": 8080
+                                                        "number": 80
                                                     },
                                                 }
                                             },

@@ -19,6 +19,7 @@ const confDnsLinux = () => {
 	}
 #MINIKUBE
 ${minikubeIp.trim()} local.development
+${minikubeIp.trim()} www.local.development
 ${minikubeIp.trim()} api.local.development
 ${minikubeIp.trim()} rtl.local.development
 ${minikubeIp.trim()} db.local.development
