@@ -27,7 +27,7 @@ def homepage(config, cluster_types):
                     "spec": {
                         "type": "NodePort",
                         "ports": [
-                            {"port": 8080, "name": "main"},
+                            {"port": 80, "name": "main"},
                         ],
                         "selector": {"app": base_name},
                     },
@@ -64,7 +64,7 @@ def homepage(config, cluster_types):
                                         + "/homepage",
                                         "ports": [
                                             {
-                                                "containerPort": 8080,
+                                                "containerPort": 80,
                                                 "name": "main",
                                             }
                                         ],
