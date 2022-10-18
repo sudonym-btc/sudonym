@@ -53,15 +53,15 @@ export class LightningNodeService {
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
 
+				const amount_msat = lastAmount - this.calcHopFee(curr, lastAmount);
 			return [
 				...acc,
 				{
 					id,
 					channel: curr.short_channel_id,
 					direction: lastNodeId < id ? 0 : 1,
-					amount_msat: (
-						lastAmount - this.calcHopFee(curr, lastAmount)
-					).toString(),
+					msatoshi: amount_msat,
+					amount_msat: amount_msat.toString() + "msat",
 					delay: totalDelay -= curr.delay,
 					style: 'tlv',
 				},
