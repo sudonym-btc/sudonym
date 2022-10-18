@@ -45,23 +45,29 @@ export class ActionService {
 				action.currency == 'BTC'
 					? action.amount
 					: (
-							await this.currencyService.convert(
-								action.currency,
-								'BTC',
-								action.amount
-							)
-					  ).amount;
+						await this.currencyService.convert(
+							action.currency,
+							'BTC',
+							action.amount
+						)
+					).amount;
 			const mSatoshiAmount = Math.round(btcAmount * MSATOSHIS);
+			let fee;
 
 			switch (t) {
 				case 'bolt11':
+					try {
+						fee = (await this.lightningNodeService.getFees(
+							bolt11.decode(action.originalAddress).payeeNodeKey,
+							mSatoshiAmount
+						)) / MSATOSHIS;
+					} catch (e) {
+
+					}
 					return Action.from({
 						...action,
 						address: action.originalAddress,
-						fee: (await this.lightningNodeService.getFees(
-							bolt11.decode(action.originalAddress).payeeNodeKey,
-							mSatoshiAmount
-						)) / MSATOSHIS,
+						fee,
 						feeCurrency: 'BTC',
 					});
 				case 'bolt12':
@@ -69,15 +75,16 @@ export class ActionService {
 						await this.lightningNodeService.fetchOfferInvoice(
 							action.originalAddress
 						);
-
+					try {
+						fee = (await this.lightningNodeService.getFees(
+							bolt11.decode(offerInvoice).payeeNodeKey,
+							mSatoshiAmount
+						)) / MSATOSHIS
+					} catch (e) { }
 					return Action.from({
 						...action,
 						address: offerInvoice,
-						fee:
-							(await this.lightningNodeService.getFees(
-								bolt11.decode(offerInvoice).payeeNodeKey,
-								mSatoshiAmount
-							)) / MSATOSHIS,
+						fee,
 						feeCurrency: 'BTC',
 						remoteResponse: await this.addressParser.parse(
 							offerInvoice

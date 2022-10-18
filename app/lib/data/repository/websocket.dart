@@ -73,7 +73,7 @@ class MyHttpOverrides extends HttpOverrides {
 
     return super.createHttpClient(context)
       ..findProxy = (url) {
-        if (proxy != null) {
+        if (proxy != null && proxy.host != null && proxy.port != null) {
           return 'PROXY ${proxy.host}:${proxy.port}';
         } else {
           return 'DIRECT';

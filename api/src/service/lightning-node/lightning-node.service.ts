@@ -245,10 +245,11 @@ export class LightningNodeService {
 	}
 
 	async decodeInvoice(invoice) {
-		return this.makeRequest({
-			path: '/v1/pay/decodePay/' + invoice,
-			method: 'GET',
-		});
+		return bolt11.decode(invoice);
+		// return this.makeRequest({
+		// 	path: '/v1/pay/decodePay/' + invoice,
+		// 	method: 'GET',
+		// });
 	}
 
 	async makeRequest(options) {
@@ -263,7 +264,7 @@ export class LightningNodeService {
 			},
 			...options,
 		}).catch((e) => {
-			this.logger.error('Lightning error', e.data);
+			this.logger.error('Lightning error', e, e.data);
 			throw e;
 		});
 		return response.data;
