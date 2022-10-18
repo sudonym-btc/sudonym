@@ -23,9 +23,14 @@ export class LightningNodeService {
 		);
 	}
 
-	convertChannelsToRoute(inv = null) {
+	async convertChannelsToRoute(inv = null) {
 		const circle = this.connectedChannels[0];
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
+		try {
+			this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
+		} catch(e){
+			this.logger.error(e);
+		}
 		const firstAmount = circle
 			.reverse()
 			.reduce(
@@ -51,7 +56,7 @@ export class LightningNodeService {
 				{
 					id,
 					channel: curr.short_channel_id,
-					direction: lastNodeId < id ? 0 : 1,
+					direction: lastNodeId > id ? 0 : 1,
 					amount_msat: (
 						lastAmount - this.calcHopFee(curr, lastAmount)
 					).toString(),
@@ -166,7 +171,8 @@ export class LightningNodeService {
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
-			const circleRoute = this.convertChannelsToRoute(inv);
+
+			const circleRoute = await this.convertChannelsToRoute(inv);
 			this.logger.debug(
 				'Routing local payment',
 				JSON.stringify(circleRoute),
