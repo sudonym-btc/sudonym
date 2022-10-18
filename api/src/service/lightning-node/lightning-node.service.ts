@@ -39,7 +39,8 @@ export class LightningNodeService {
 			);
 		let totalDelay =
 			3 +
-			circle.reduce((acc, curr) => acc + Number(curr.delay), 0)
+			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
+			circle[0].delay;
 
 		this.logger.debug("total delay", totalDelay);
 
@@ -61,7 +62,7 @@ export class LightningNodeService {
 					amount_msat: (
 						lastAmount - this.calcHopFee(curr, lastAmount)
 					).toString(),
-					delay: (totalDelay -= (index > 0 ? curr.delay : 0)),
+					delay: totalDelay -= curr.delay,
 					style: 'tlv',
 				},
 			];
