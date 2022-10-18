@@ -8,6 +8,7 @@ ThemeData getTheme({bool light = true}) {
   Color backgroundColor = light ? Colors.white : Colors.black;
 
   return theme.copyWith(
+      backgroundColor: backgroundColor,
       tabBarTheme: TabBarTheme(
         labelColor: textColor,
         indicator: BoxDecoration(

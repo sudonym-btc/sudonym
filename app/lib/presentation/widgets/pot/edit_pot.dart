@@ -13,9 +13,8 @@ class EditPot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).backgroundColor,
         child: SafeArea(
-            bottom: false,
             child: Scaffold(
                 appBar: AppBar(
                   title: Text("${entity?.id == null ? "Create" : "Edit"} Pot"),
