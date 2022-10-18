@@ -88,6 +88,7 @@ export class LightningNodeService {
 					.map((ch) => this.getChannel(ch.short_channel_id))
 			)
 		);
+		this.logger.verbose("channels", this.connectedChannels);
 		this.peers = await this.listPeers();
 
 		if (this.info.warning_lightningd_sync) {
