@@ -32,45 +32,47 @@ class _HomePageState extends State<HomePage> {
                 state.data.map<Widget>((e) => Pot(entity: e)).toList();
             children.add(const AddPotSlide());
 
-            return SafeArea(
-                bottom: false,
-                child: Scaffold(
-                    appBar: AppBar(actions: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/settings');
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
-                      )
-                    ]),
-                    body: state.loading
-                        ? const Center(child: CircularProgressIndicator())
-                        : Column(
-                            children: [
-                              Expanded(
-                                child: PageView(
-                                  controller: controller,
-                                  scrollDirection: Axis.horizontal,
-                                  children: children,
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.all(padding),
-                                  child: SmoothPageIndicator(
-                                    controller: controller, // PageController
-                                    count: (children.isNotEmpty
-                                        ? children.length
-                                        : 1),
+            return Container(
+                color: Theme.of(context).backgroundColor,
+                child: SafeArea(
+                    child: Scaffold(
+                        appBar: AppBar(actions: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/settings');
+                            },
+                            icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
+                          )
+                        ]),
+                        body: state.loading
+                            ? const Center(child: CircularProgressIndicator())
+                            : Column(
+                                children: [
+                                  Expanded(
+                                    child: PageView(
+                                      controller: controller,
+                                      scrollDirection: Axis.horizontal,
+                                      children: children,
+                                    ),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.all(padding),
+                                      child: SmoothPageIndicator(
+                                        controller:
+                                            controller, // PageController
+                                        count: (children.isNotEmpty
+                                            ? children.length
+                                            : 1),
 
-                                    // forcing the indicator to use a specific direction
-                                    effect: ExpandingDotsEffect(
-                                        dotHeight: 6,
-                                        dotWidth: 6,
-                                        activeDotColor:
-                                            Theme.of(context).primaryColor),
-                                  ))
-                            ],
-                          )));
+                                        // forcing the indicator to use a specific direction
+                                        effect: ExpandingDotsEffect(
+                                            dotHeight: 6,
+                                            dotWidth: 6,
+                                            activeDotColor:
+                                                Theme.of(context).primaryColor),
+                                      ))
+                                ],
+                              ))));
           },
         ));
   }

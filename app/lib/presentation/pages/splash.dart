@@ -6,9 +6,12 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        body: Center(
-          child: Text('sudo|nym', style: TextStyle(fontFamily: 'Satoshi', fontSize: 24),),
+      body: Center(
+        child: Text(
+          'sudonym',
+          style: TextStyle(fontFamily: 'Satoshi', fontSize: 24),
         ),
-      );
+      ),
+    );
   }
 }

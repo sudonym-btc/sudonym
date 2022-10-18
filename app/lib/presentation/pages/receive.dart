@@ -18,7 +18,7 @@ class ReceivePage extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as ReceivePageArgs;
 
     return Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).backgroundColor,
         child: SafeArea(
             child: DefaultTabController(
                 length: 3,

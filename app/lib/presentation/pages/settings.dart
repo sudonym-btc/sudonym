@@ -14,23 +14,25 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
-      body: Column(mainAxisSize: MainAxisSize.min, children: [
-        const LightningSection(),
-        const CardSection(),
-        Button.flat(
-          text: 'Logout',
-          foregroundColor: Colors.red,
-          onPressed: (() async {
-            await getIt<AuthCubit>().logout();
-            Navigator.popUntil(context, (route) => route.isFirst);
-          }),
-        ),
-        const AboutSection()
-      ]),
-    ));
+    return Container(
+        color: Theme.of(context).backgroundColor,
+        child: SafeArea(
+            child: Scaffold(
+          appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
+          body: Column(mainAxisSize: MainAxisSize.min, children: [
+            const LightningSection(),
+            const CardSection(),
+            Button.flat(
+              text: 'Logout',
+              foregroundColor: Colors.red,
+              onPressed: (() async {
+                await getIt<AuthCubit>().logout();
+                Navigator.popUntil(context, (route) => route.isFirst);
+              }),
+            ),
+            const AboutSection()
+          ]),
+        )));
   }
 }
 
