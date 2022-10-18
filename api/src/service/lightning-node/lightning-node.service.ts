@@ -39,8 +39,9 @@ export class LightningNodeService {
 			);
 		let totalDelay =
 			3 +
-			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
-			circle[circle.length - 1].delay;
+			circle.reduce((acc, curr) => acc + Number(curr.delay), 0)
+
+		this.logger.debug("total delay", totalDelay);
 
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
@@ -56,11 +57,11 @@ export class LightningNodeService {
 				{
 					id,
 					channel: curr.short_channel_id,
-					direction: lastNodeId > id ? 0 : 1,
+					direction: lastNodeId < id ? 0 : 1,
 					amount_msat: (
 						lastAmount - this.calcHopFee(curr, lastAmount)
 					).toString(),
-					delay: (totalDelay -= curr.delay),
+					delay: (totalDelay -= (index > 0 ? curr.delay : 0)),
 					style: 'tlv',
 				},
 			];
