@@ -25,7 +25,7 @@ export class LightningNodeService {
 
 	convertChannelsToRoute(inv = null) {
 		const circle = this.connectedChannels[0];
-		this.logger.debug('Circular payment along route', circle);
+		this.logger.debug('Circular payment along route', JSON.stringify(circle));
 		const firstAmount = circle
 			.reverse()
 			.reduce(
@@ -169,7 +169,7 @@ export class LightningNodeService {
 			const circleRoute = this.convertChannelsToRoute(inv);
 			this.logger.debug(
 				'Routing local payment',
-				circleRoute,
+				JSON.stringify(circleRoute),
 				inv.tagsObject.payment_hash,
 				inv.millisatoshis,
 				invoice,
