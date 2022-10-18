@@ -48,7 +48,7 @@ export class LightningNodeService {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
 			const lastNodeId = lastRouteItem?.id || this.info.id;
 			const lastAmount = Number(
-				lastRouteItem?.amount_msat || firstAmount
+				lastRouteItem?.msatoshi || firstAmount
 			);
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
