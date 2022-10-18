@@ -1,5 +1,4 @@
 from helper import getDeploymentName, getServiceName, getVolumeClaimName
-from infrastructure.spec.kubernetes_homepage import homepage
 from kubernetes_lightning import lightning
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
