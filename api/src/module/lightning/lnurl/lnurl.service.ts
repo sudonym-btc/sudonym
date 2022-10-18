@@ -51,13 +51,13 @@ export class LnUrlService extends BaseService(LnUrl) {
 		return tag;
 	}
 
-	async createWithdrawRequest(params?: RecursivePartial<WithdrawRequest>) {
+	async createWithdrawRequest(params: RecursivePartial<WithdrawRequest> = {}) {
 		const tag = await this.create({
 			params: {
 				tag: 'withdrawRequest',
 				domain: getConfig().selfUrl,
 				minWithdrawable: 0,
-				maxWithdrawable: 99999999,
+				maxWithdrawable: 999999,
 				...params,
 				// "balanceCheck": string,
 				// "payLink": string
