@@ -17,10 +17,10 @@ export class LightningNodeService {
 	private connectedChannels;
 
 	calcHopFee(chann, amount) {
-		return (
-			Number(chann.base_fee_millisatoshi) +
-			Math.ceil((chann.fee_per_millionth / 1000000) * amount)
-		);
+		const fee = Number(chann.base_fee_millisatoshi) +
+		Math.ceil((chann.fee_per_millionth / 1000000) * amount);
+		this.logger.debug("Calculating fee", chann, amount, fee);
+		return fee;
 	}
 
 	async convertChannelsToRoute(inv = null) {
@@ -28,7 +28,7 @@ export class LightningNodeService {
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
 		try {
 			this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
-		} catch(e){
+		} catch (e) {
 			this.logger.error(e);
 		}
 		const firstAmount = circle
@@ -43,6 +43,7 @@ export class LightningNodeService {
 			circle[0].delay;
 
 		this.logger.debug("total delay", totalDelay);
+		this.logger.debug("total fee", firstAmount - inv?.millisatoshis);
 
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
@@ -53,7 +54,7 @@ export class LightningNodeService {
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
 
-				const amount_msat = lastAmount - this.calcHopFee(curr, lastAmount);
+			const amount_msat = lastAmount - this.calcHopFee(curr, lastAmount);
 			return [
 				...acc,
 				{
