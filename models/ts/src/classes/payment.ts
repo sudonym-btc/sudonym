@@ -1,7 +1,7 @@
 import { ActionType } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
 import { PaymentRequest } from './payment-request';
-import { MSATOSHIS } from './types/index';
+import { MSATOSHIS, SATOSHIS } from './types/index';
 
 export class Payment extends ActionType {
 	constructor(
@@ -57,9 +57,9 @@ export class Payment extends ActionType {
 		);
 
 		if (p.isBolt11) {
-			if (p.remoteResponse.data['msatoshi'] != null) {
-				p.minAmount = p.remoteResponse.data['msatoshi'] / MSATOSHIS;
-				p.maxAmount = p.remoteResponse.data['msatoshi'] / MSATOSHIS;
+			if (p.remoteResponse.data['satoshis'] != null) {
+				p.minAmount = p.remoteResponse.data['satoshis'] / SATOSHIS;
+				p.maxAmount = p.remoteResponse.data['satoshis'] / SATOSHIS;
 			}
 		} else if (p.isLnUrl) {
 			if (p.remoteResponse.success) {

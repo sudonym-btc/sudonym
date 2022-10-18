@@ -16,7 +16,7 @@ const List<String> defaultCurrencies = ['USD', 'BTC'];
 class CurrencyInput extends StatefulWidget {
   final Function(CurrencyInputOutput)? onChanged;
   final List<String> currencies;
-  final num min;
+  final num? min;
   final num? max;
   final num? initialValue;
   final String initialValueCurrency;
@@ -26,7 +26,7 @@ class CurrencyInput extends StatefulWidget {
       {Key? key,
       this.initialValueCurrency = 'BTC',
       this.initialValue,
-      this.min = 0,
+      this.min,
       this.max,
       this.onChanged,
       this.outputCurrency = 'BTC',
@@ -66,7 +66,9 @@ class _CurrencyInputState extends State<CurrencyInput> {
         .getRate(
             widget.initialValueCurrency,
             widget.currencies[currCurrency],
-            widget.initialValue != null ? widget.initialValue! : widget.min,
+            widget.initialValue != null
+                ? widget.initialValue!
+                : (widget.min ?? 0),
             null)
         .then((value) {
       _controller.updateValue(value.amount.toDouble());
@@ -140,7 +142,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
       _controller.updateValue(_controller.numberValue + v);
     }
 
-    bool negativeEnabled = _controller.numberValue > 0;
+    bool negativeEnabled = _controller.numberValue > (widget.min ?? 0);
     bool positiveEnabled = true;
 
     List<MaterialState> negativeButtonState =
@@ -169,9 +171,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
       Ink(
           decoration: buttonDecoration(context, negativeEnabled),
           child: IconButton(
-            onPressed: _controller.numberValue > widget.min
-                ? () => updateValue(-1)
-                : null,
+            onPressed: negativeEnabled ? () => updateValue(-1) : null,
             color: Theme.of(context)
                 .elevatedButtonTheme
                 .style!
@@ -185,7 +185,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
       Ink(
           decoration: buttonDecoration(context, positiveEnabled),
           child: IconButton(
-            onPressed: () => updateValue(1),
+            onPressed: positiveEnabled ? () => updateValue(1) : null,
             color: Theme.of(context)
                 .elevatedButtonTheme
                 .style!

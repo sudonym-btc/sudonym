@@ -52,7 +52,7 @@ class _SendPageState extends State<SendPage> {
     );
 
     return Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).backgroundColor,
         child: SafeArea(
           child: Scaffold(
               appBar: AppBar(

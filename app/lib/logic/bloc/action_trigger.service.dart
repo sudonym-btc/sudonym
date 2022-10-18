@@ -14,12 +14,12 @@ class ActionTriggerService with ActionLogger {
 
   trigger(String link, BuildContext context, [int? potId]) async {
     ActionParseResponse response = await _actionRepository.parse(link);
-    loggy.i(response.payment);
-    loggy.i(response.withdraw);
     if (response.payment != null) {
+      loggy.i(response.payment.toJson());
       handlePayment(response.payment!, context, potId);
     }
     if (response.withdraw != null) {
+      loggy.i(response.withdraw.toJson());
       handleWithdraw(response.withdraw!, context, potId);
     }
   }
@@ -38,7 +38,6 @@ class ActionTriggerService with ActionLogger {
   }
 
   handleWithdraw(Withdraw w, BuildContext c, [int? potId]) {
-    print("Ya mug");
     w.potId = potId;
 
     if (w.remoteResponse.success) {

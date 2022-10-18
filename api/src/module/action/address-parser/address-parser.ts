@@ -124,6 +124,7 @@ export class AddressParser implements IAddressParser {
 
 		// Decoded BOLT11 Invoice
 		const data = await this.lightningNodeService.decodeInvoice(invoice);
+		this.logger.debug(data);
 
 		return ActionRemoteResponse.fromJson({
 			data,
