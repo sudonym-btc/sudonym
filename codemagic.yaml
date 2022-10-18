@@ -32,11 +32,19 @@ workflows:
       groups:
         - google_credentials
         - github_credentials
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.sudonym.wallet
       android_signing:
         - patrick
       flutter: stable
       xcode: latest
       cocoapods: default
+      vars:
+        BUNDLE_ID: "com.sudonym.wallet"
+        XCODE_WORKSPACE: "app/ios/Runner.xcworkspace" # <-- Put the name of your Xcode workspace here
+        XCODE_SCHEME: "CodemagicSample" # <-- Put the name of your Xcode scheme here
+        APP_ID: 1555555551
     artifacts:
       - app/build/**/outputs/apk/**/*.apk
       - app/build/**/outputs/bundle/**/*.aab
@@ -125,6 +133,7 @@ workflows:
   production-workflow:
     <<: *default-workflow
     name: "Production Workflow"
+    instance_type: mac_mini_m1
     triggering:
       events:
         - push
@@ -138,6 +147,8 @@ workflows:
     scripts:
       - *localproperties
       - *getpackages
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
       - 'cd app && flutter build appbundle -t lib/main-prod.dart --release'
       - 'cd app && flutter build apk -t lib/main-prod.dart --release'
       - *ghrelease
