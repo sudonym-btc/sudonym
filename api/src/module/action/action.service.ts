@@ -68,7 +68,7 @@ export class ActionService {
 						action.address = bolt11.encode({
 							...bolt11.decode(action.originalAddress),
 							satoshis: mSatoshiAmount * 1000,
-							millisatoshis: mSatoshiAmount.toString()
+							millisatoshis: undefined
 						}).paymentRequest;
 					}
 					return Action.from({
