@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import {
 	Constructor,
 	RecursivePartial,
@@ -57,7 +57,7 @@ export const BaseService = <TModel extends BaseModel>(
 		async onModuleInit() {}
 
 		async findOne(id: string | number | FindOptions) {
-			return (
+			const obj = (
 				await this.list(
 					typeof id == 'object'
 						? id
@@ -68,6 +68,8 @@ export const BaseService = <TModel extends BaseModel>(
 						  }
 				)
 			).data[0];
+			if(!obj) throw new NotFoundException();
+			return obj;
 		}
 
 		async list(params: FindOptions) {
