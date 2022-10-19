@@ -190,7 +190,8 @@ export class LightningNodeService {
 				inv.tagsObject.payment_hash,
 				inv.millisatoshis,
 				invoice,
-				inv.tagsObject.payment_secret
+				inv.tagsObject.payment_secret,
+				1
 			);
 			return this.rpc('sendpay', [
 				circleRoute,
@@ -199,6 +200,7 @@ export class LightningNodeService {
 				inv.millisatoshis,
 				invoice,
 				inv.tagsObject.payment_secret,
+				1
 			]);
 		}
 
