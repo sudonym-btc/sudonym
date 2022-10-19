@@ -24,7 +24,7 @@ export class LightningNodeService {
 	}
 
 	async convertChannelsToRoute(millisatoshis) {
-		const circle = this.connectedChannels[this.connectedChannels.length - 1];
+		const circle = this.connectedChannels[0];
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
 		// try {
 		// 	this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
