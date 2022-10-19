@@ -57,7 +57,7 @@ export const BaseService = <TModel extends BaseModel>(
 		async onModuleInit() {}
 
 		async findOne(id: string | number | FindOptions) {
-			const obj = (
+			return (
 				await this.list(
 					typeof id == 'object'
 						? id
@@ -68,8 +68,8 @@ export const BaseService = <TModel extends BaseModel>(
 						  }
 				)
 			).data[0];
-			if(!obj) throw new NotFoundException();
-			return obj;
+			// if(!obj) throw new NotFoundException();
+			// return obj;
 		}
 
 		async list(params: FindOptions) {
