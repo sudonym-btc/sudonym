@@ -83,8 +83,12 @@ export class LightningListener extends TransactionListener {
 							const response =
 								await this.lightningNodeService.pay(invoice);
 							this.logger.debug('Lightning pay', response);
-							const partId = !isNaN(response.partid) ? response.partid : undefined;
+							let partId = !isNaN(response.partid) ? response.partid : undefined;
 							this.logger.debug('PartId', partId);
+							if (!partId && response.bolt11) {
+								const sendpays = (await this.lightningNodeService.rpc('listsendpays', response.bolt11)).payments;
+								partId = sendpays[0].partid;
+							}
 							await this.lightningNodeService
 								.rpc('waitsendpay', [response.payment_hash, 1000, partId])
 								.catch((e) => {
