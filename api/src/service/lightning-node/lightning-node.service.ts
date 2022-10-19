@@ -23,14 +23,14 @@ export class LightningNodeService {
 		return fee;
 	}
 
-	async convertChannelsToRoute(inv = null) {
+	async convertChannelsToRoute(millisatoshis) {
 		const circle = this.connectedChannels[this.connectedChannels.length - 1];
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
-		try {
-			this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
-		} catch (e) {
-			this.logger.error(e);
-		}
+		// try {
+		// 	this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
+		// } catch (e) {
+		// 	this.logger.error(e);
+		// }
 		const fees = [];
 		let firstAmount = circle
 			.reverse()
@@ -39,29 +39,29 @@ export class LightningNodeService {
 					fees.push(this.calcHopFee(curr, acc));
 					return acc + fees[fees.length - 1];
 				},
-				Number(inv?.millisatoshis)
+				Number(millisatoshis)
 			);
-		firstAmount -= fees[fees.length-1];
 		let totalDelay =
 			3 +
 			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
 			circle[0].delay;
 
 		this.logger.debug("total delay", totalDelay);
-		this.logger.debug("total fee", firstAmount - inv?.millisatoshis);
+		this.logger.debug("total fee", firstAmount - millisatoshis);
 		this.logger.debug("fees", fees);
-		this.logger.debug("first amount", firstAmount, inv?.millisatoshis);
+		this.logger.debug("first amount", firstAmount, millisatoshis);
 
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
 			const lastNodeId = lastRouteItem ? lastRouteItem?.id : this.info.id;
 			const lastAmount = lastRouteItem ? lastRouteItem.msatoshi : firstAmount;
+			const lastFee = fees[index];
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
 
-			this.logger.debug("lastAmount", lastAmount, "fee", fees[index])
+			this.logger.debug("lastAmount", lastAmount, "fee", lastFee)
 
-			const amount_msat = lastAmount - (index > 0 ? fees[index - 1]: 0);
+			const amount_msat = lastAmount - lastFee;
 			return [
 				...acc,
 				{
@@ -172,6 +172,9 @@ export class LightningNodeService {
 	}
 
 	async getRoute(pubkey, amount = 0) {
+		if(pubkey == this.info.id) {
+			return await this.convertChannelsToRoute(amount);
+		}
 		return this.makeRequest({
 			path: '/v1/network/getRoute/' + pubkey + '/' + amount,
 		});
@@ -183,7 +186,7 @@ export class LightningNodeService {
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
 
-			const circleRoute = await this.convertChannelsToRoute(inv);
+			const circleRoute = await this.getRoute(inv.payeeNodeKey, Number(inv.millisatoshis));
 			this.logger.debug(
 				'Routing local payment',
 				JSON.stringify(circleRoute),
