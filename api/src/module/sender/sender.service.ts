@@ -30,7 +30,7 @@ export class SenderService extends BaseService(Sender) {
 				case 'lnurl':
 					const tag = await this.lnUrlService.createWithdrawRequest({
 						minWithdrawable: params.limitMin ? params.limitMin * MSATOSHIS : 0,
-						maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 9999999999999
+						maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 999999
 					}
 					);
 					params.data = getConfig().selfUrl + '/lnurl/' + tag.id
