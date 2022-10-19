@@ -48,7 +48,8 @@ export class ReceiverService extends BaseService(Receiver) {
 					let description = (params as any).description;
 					if(params.lnurlId) {
 						const tag = await this.lnUrlService.findOne(params.lnurlId);
-						description = sha256((tag.params as PaymentRequest).metadata)
+						description = sha256((tag.params as PaymentRequest).metadata);
+						console.log("hash" + description);
 					}
 					params.data = (
 						await this.lightningNodeService.createInvoice(
