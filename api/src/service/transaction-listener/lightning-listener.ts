@@ -139,6 +139,7 @@ export class LightningListener extends TransactionListener {
 				const transactions = await this.transactionService.list({
 					where: {
 						txid: e.data.bolt11,
+						outgoing: true
 					},
 				});
 				if (transactions.metadata.count) {
