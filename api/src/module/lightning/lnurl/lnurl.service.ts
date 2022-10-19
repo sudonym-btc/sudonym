@@ -6,6 +6,7 @@ import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import { RequestType } from 'helper/parse-request.decorator';
 import * as crypto from 'crypto';
 import { PaymentRequest, WithdrawRequest } from '@sudonym/models';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
@@ -58,6 +59,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				domain: getConfig().selfUrl,
 				minWithdrawable: 0,
 				maxWithdrawable: 99999999,
+				k1: uuid(),
 				...params,
 				// "balanceCheck": string,
 				// "payLink": string
