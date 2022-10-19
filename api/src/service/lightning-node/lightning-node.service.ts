@@ -262,7 +262,11 @@ export class LightningNodeService {
 	}
 
 	async decodeInvoice(invoice) {
-		return bolt11.decode(invoice);
+		const inv = bolt11.decode(invoice);
+		if(!inv.satoshis && inv.millisatoshis) {
+			inv.satoshis = Number(inv.millisatoshis) / 1000;
+		}
+		return inv;
 		// return this.makeRequest({
 		// 	path: '/v1/pay/decodePay/' + invoice,
 		// 	method: 'GET',

@@ -61,11 +61,12 @@ class Payment extends ActionType {
         json["isOnChain"],
         json["comment"]);
     if (p.isBolt11) {
-      final sats = p.remoteResponse.data["satoshis"] ||
-          (p.remoteResponse.data["millisatoshis"]
+      final sats = p.remoteResponse.data["satoshis"] != null
+          ? p.remoteResponse.data["satoshis"]
+          : (p.remoteResponse.data["millisatoshis"] != null
               ? p.remoteResponse.data["millisatoshis"] / 1000
               : null);
-      if (sats) {
+      if (sats != null) {
         p.minAmount = sats / SATOSHIS;
         p.maxAmount = sats / SATOSHIS;
       }

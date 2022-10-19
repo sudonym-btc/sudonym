@@ -65,10 +65,10 @@ export class ActionService {
 
 					}
 					if(action.amount) {
+						console.log(mSatoshiAmount / 1000);
 						action.address = bolt11.encode({
 							...bolt11.decode(action.originalAddress),
-							satoshis: mSatoshiAmount * 1000,
-							millisatoshis: undefined
+							millisatoshis: mSatoshiAmount.toString()
 						}).paymentRequest;
 					}
 					return Action.from({
