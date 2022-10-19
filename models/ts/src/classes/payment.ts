@@ -57,9 +57,10 @@ export class Payment extends ActionType {
 		);
 
 		if (p.isBolt11) {
-			if (p.remoteResponse.data['satoshis'] != null) {
-				p.minAmount = p.remoteResponse.data['satoshis'] / SATOSHIS;
-				p.maxAmount = p.remoteResponse.data['satoshis'] / SATOSHIS;
+			const sats = p.remoteResponse.data['satoshis'] || (p.remoteResponse.data['millisatoshis'] ? p.remoteResponse.data['millisatoshis'] / 1000 : null)
+			if (sats) {
+				p.minAmount = sats / SATOSHIS;
+				p.maxAmount = sats / SATOSHIS;
 			}
 		} else if (p.isLnUrl) {
 			if (p.remoteResponse.success) {
