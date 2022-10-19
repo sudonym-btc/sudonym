@@ -104,13 +104,13 @@ export class LightningNodeService {
 	}
 
 	async onModuleInit() {
+
 		try {
 			this.macaroon = Buffer.from(
 				fs.readFileSync(getConfig().macaroonFile)
 			).toString('base64');
 
-			this.loadInfo();
-
+			await this.loadInfo();
 			setInterval(() => {
 				this.loadInfo();
 			}, 5 * 60 * 1000); // refresh every 5 minutes
@@ -149,7 +149,8 @@ export class LightningNodeService {
 		});
 	}
 
-	async createInvoice(amount, label = null, description = null) {
+	async createInvoice(amount, label = null, description = null, desc_hash = false, preimage = undefined) {
+		return this.rpc('invoice', [amount, label || uuid(), description || uuid(), null, null, preimage, null, null, desc_hash]);
 		return this.makeRequest({
 			path: '/v1/invoice/genInvoice',
 			method: 'POST',
@@ -172,7 +173,7 @@ export class LightningNodeService {
 	}
 
 	async getRoute(pubkey, amount = 0) {
-		if(pubkey == this.info.id) {
+		if (pubkey == this.info.id) {
 			return await this.convertChannelsToRoute(amount);
 		}
 		return this.makeRequest({
@@ -268,7 +269,7 @@ export class LightningNodeService {
 
 	async decodeInvoice(invoice) {
 		const inv = bolt11.decode(invoice);
-		if(!inv.satoshis && inv.millisatoshis) {
+		if (!inv.satoshis && inv.millisatoshis) {
 			inv.satoshis = Number(inv.millisatoshis) / 1000;
 		}
 		return inv;
