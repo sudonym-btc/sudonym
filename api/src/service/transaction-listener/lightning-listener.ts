@@ -86,7 +86,7 @@ export class LightningListener extends TransactionListener {
 							const partId = isNaN(response.parts) ? response.partid : (response.parts - 1);
 							this.logger.debug('PartId', partId);
 							await this.lightningNodeService
-								.rpc('waitsendpay', [response.payment_hash, 100, partId])
+								.rpc('waitsendpay', [response.payment_hash, 100])
 								.catch((e) => {
 									if (e.response) {
 										this.logger.error(
