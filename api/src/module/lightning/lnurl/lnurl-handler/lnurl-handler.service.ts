@@ -18,6 +18,7 @@ export class LnUrlHandlerService {
 
 	// Function that is called when someone else triggers OUR callbacks.
 	async handle(id, query) {
+		this.logger.warn("handling lnurl", id, query);
 		const tag = await this.lnUrlService.findOne(id);
 		switch (tag.params.tag) {
 			case 'payRequest':
@@ -47,14 +48,25 @@ export class LnUrlHandlerService {
 						lnurlId: tag.id,
 					},
 				});
-				this.logger.debug(sender);
+				this.logger.debug(sender.toJSON());
 				const parsed = bolt11.decode(query.pr);
 
 				const pot = await this.potService.findForUser(
 					sender.userId,
 					sender.potId
 				);
-				this.logger.debug(pot);
+				this.logger.debug(pot.toJSON());
+				this.logger.debug({
+					outgoing: true,
+					potId: pot.id,
+					senderId: sender.id,
+					address: query.pr,
+					originalAddress: query.pr,
+					txid: query.pr,
+					type: getAddressType(query.pr),
+					amount: parseInt(parsed.millisatoshis) / MSATOSHIS,
+					currencyCode: 'BTC',
+				});
 				await this.transactionService.create({
 					outgoing: true,
 					potId: pot.id,
