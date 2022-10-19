@@ -38,7 +38,7 @@ export class LnUrlHandlerService {
 					amountCurrency: 'BTC',
 				});
 				return {
-					disposable: false,
+					// disposable: false,
 					pr: receiver.data,
 					routes: [],
 				};
