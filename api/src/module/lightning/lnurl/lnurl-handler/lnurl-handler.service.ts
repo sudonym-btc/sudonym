@@ -78,6 +78,8 @@ export class LnUrlHandlerService {
 					amount: parseInt(parsed.millisatoshis) / MSATOSHIS,
 					currencyCode: 'BTC',
 				});
+
+				return { status: 'OK' }
 		}
 
 		throw new HttpException('Unhandleable lnurl request', 400);
