@@ -34,6 +34,7 @@ export class SenderService extends BaseService(Sender) {
 						maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 999999
 					}
 					);
+					// todo: replace with max account balance
 					params.data = getConfig().selfUrl + '/lnurl/' + tag.id
 					params.lnurlId = tag.id;
 					break;
