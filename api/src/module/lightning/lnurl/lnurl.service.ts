@@ -5,7 +5,7 @@ import { LnUrl } from './lnurl.model';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import { RequestType } from 'helper/parse-request.decorator';
 import * as crypto from 'crypto';
-import { PaymentRequest, WithdrawRequest } from '@sudonym/models';
+import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				tag: 'payRequest',
 				domain: getConfig().selfUrl,
 				minSendable: Math.max(mSatoshiAmount, 1),
-				maxSendable: 10000000,
+				maxSendable: 0.01 * MSATOSHIS,
 				metadata: JSON.stringify([
 					[
 						'text/plain', // mandatory,

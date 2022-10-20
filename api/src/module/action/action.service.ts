@@ -66,7 +66,7 @@ export class ActionService {
 					}
 					return Action.from({
 						...action,
-						address: action.address,
+						address: action.originalAddress,
 						fee,
 						feeCurrency: 'BTC',
 					});
