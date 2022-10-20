@@ -78,8 +78,9 @@ export class LightningListener extends TransactionListener {
 					// Attempt to trigger payment
 					(async () => {
 						try {
+							this.logger.debug("Amount", transaction.amount, transaction.amount * MSATOSHIS)
 							const response =
-								await this.lightningNodeService.pay(invoice, transaction.amount * MSATOSHIS);
+								await this.lightningNodeService.pay(invoice, Math.round(transaction.amount * MSATOSHIS));
 							this.logger.verbose('Lightning pay', response);
 							let partId = !isNaN(response.partid) ? response.partid : undefined;
 							this.logger.verbose('PartId', partId);
