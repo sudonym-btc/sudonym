@@ -117,7 +117,7 @@ export class BalanceUpdaterService {
 			const message = {
 				data: { data: JSON.stringify(t.toJSON()) },
 				notification: {
-					title: t.amount + t.currencyCode + ' was ' + (t.outgoing ? 'spent from' : 'sent to') + 'your account',
+					title: t.amount + ' ' + t.currencyCode + ' was ' + (t.outgoing ? 'spent from' : 'sent to') + ' your account',
 					body: "Click to check transaction",
 				},
 				token: device.token,
