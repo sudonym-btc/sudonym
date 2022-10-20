@@ -22,6 +22,7 @@ class ReceiverCubit
       if (state.entity != null) {
         if (event['data']['id'] == state.entity!.id) {
           try {
+            print("playing sound");
             FlutterRingtonePlayer.playNotification();
           } catch (e) {
             print('Could not play sound');

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/index.dart';
@@ -11,12 +10,10 @@ class ReceiverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ReceiverCubit()..fetch(receiver.id))
-        ],
-        child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
-            builder: ((context, state) {
+    return CubitWrapper<ReceiverCubit, ReceiverCubitState, Receiver>(
+        entity: receiver,
+        fetch: true,
+        builder: ((context, state) {
           if (state.entity == null) {
             return StatusPage(
                 title: '',
@@ -31,7 +28,6 @@ class ReceiverPage extends StatelessWidget {
                 icon: FontAwesomeIcons.check,
                 color: Colors.green);
           }
-          print("RECEIVER:" + state.entity!.toJson().toString());
 
           return StatusPage(
               title: 'Receiving',
@@ -39,6 +35,6 @@ class ReceiverPage extends StatelessWidget {
               content: const Center(
                   child: CircularProgressIndicator(color: Colors.white)),
               color: Colors.indigo.shade800);
-        })));
+        }));
   }
 }
