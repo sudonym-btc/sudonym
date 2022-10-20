@@ -64,13 +64,6 @@ export class ActionService {
 					} catch (e) {
 
 					}
-					if(action.amount) {
-						console.log(mSatoshiAmount / 1000);
-						action.address = bolt11.encode({
-							...bolt11.decode(action.originalAddress),
-							millisatoshis: mSatoshiAmount.toString()
-						}).paymentRequest;
-					}
 					return Action.from({
 						...action,
 						address: action.address,
