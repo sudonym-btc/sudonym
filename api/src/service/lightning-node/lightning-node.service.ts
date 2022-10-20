@@ -178,6 +178,10 @@ export class LightningNodeService {
 
 	async pay(invoice, amount) {
 		const inv = bolt11.decode(invoice);
+		let hasAmount=false;
+		if(inv.millisatoshis || inv.satoshis) {
+			hasAmount = true;
+		}
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
@@ -196,7 +200,7 @@ export class LightningNodeService {
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
-				amount || inv.millisatoshis,
+				hasAmount? null : amount || inv.millisatoshis,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1
@@ -210,7 +214,7 @@ export class LightningNodeService {
 			method: 'POST',
 			data: {
 				invoice,
-				amount: Math.round(amount),
+				amount: hasAmount ? Math.round(amount) : null,
 				retry_for: 20, //seconds
 			},
 		});
