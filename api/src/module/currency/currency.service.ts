@@ -6,10 +6,20 @@ import { ExchangeService } from 'service/exchange/exchange.service';
 export class CurrencyService {
 	@Inject() exchangeService: ExchangeService;
 
-	async convert(from, to, amount = 1, time?: Date): Promise<CurrencyResponse> {
+	async convert(
+		from,
+		to,
+		amount = 1,
+		time?: Date
+	): Promise<CurrencyResponse> {
 		return new CurrencyResponse(
-			amount == 0 ? 0 : (await this.exchangeService.fetchPriceAtTime(from, to, time)) *
-				amount
+			amount == 0
+				? 0
+				: (await this.exchangeService.fetchPriceAtTime(
+						from,
+						to,
+						time
+				  )) * amount
 		);
 	}
 }

@@ -16,7 +16,7 @@ import { ContactAddress } from '../contact-address/contact-address.model';
 import { authUserIdGetter, context } from 'helper/context-request';
 
 @Table({
-	scopes: Contact.scopes
+	scopes: Contact.scopes,
 })
 export class Contact extends BaseModel implements Models.Contact {
 	@PrimaryKey
@@ -34,13 +34,13 @@ export class Contact extends BaseModel implements Models.Contact {
 	@AllowNull(false)
 	@ForeignKey(() => User)
 	@Column({
-		unique: 'composite'
+		unique: 'composite',
 	})
 	userId: string;
 
 	@AllowNull(false)
 	@Column({
-		unique: 'composite'
+		unique: 'composite',
 	})
 	name: string;
 
@@ -49,10 +49,12 @@ export class Contact extends BaseModel implements Models.Contact {
 
 	static scopes = {
 		find: () => ({
-			include: [{
-				model: ContactAddress,
-				as: 'ContactAddresses'
-			}]
-		})
+			include: [
+				{
+					model: ContactAddress,
+					as: 'ContactAddresses',
+				},
+			],
+		}),
 	};
 }

@@ -75,7 +75,7 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@ForeignKey(() => ContactAddress)
 	@AllowNull(true)
 	@Column
-	contactAddressId: number;;
+	contactAddressId: number;
 
 	@BelongsTo(() => Pot)
 	Pot: Pot;
@@ -143,22 +143,29 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	};
 
 	static scopes = {
-		find: () =>({
-			include: [{
-				model: ContactAddress,
-				as: 'ContactAddress',
-				include: [{
-					model: Contact,
-					as: 'Contact'
-				}]
-			}, {
-				model: Sender,
-				as: 'Sender',
-				include: [{
-					model: BoltCard,
-					as: 'BoltCard'
-				}]
-			}]
-		})
-	}
+		find: () => ({
+			include: [
+				{
+					model: ContactAddress,
+					as: 'ContactAddress',
+					include: [
+						{
+							model: Contact,
+							as: 'Contact',
+						},
+					],
+				},
+				{
+					model: Sender,
+					as: 'Sender',
+					include: [
+						{
+							model: BoltCard,
+							as: 'BoltCard',
+						},
+					],
+				},
+			],
+		}),
+	};
 }

@@ -4,6 +4,4 @@ import { Sender } from './sender.model';
 import { SenderService } from './sender.service';
 
 @Controller('sender')
-export class SenderController extends BaseController(SenderService, Sender) {
-	
-}
+export class SenderController extends BaseController(SenderService, Sender) {}

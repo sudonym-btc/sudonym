@@ -27,7 +27,7 @@ export class EventBroadcaster {
 					)
 				);
 				await this.receiverService.update(receiver.id, {
-					received: receiver.received++
+					received: receiver.received++,
 				});
 				if (receiver.parentId) {
 					const parentReceiver = await this.receiverService.findOne(
@@ -42,7 +42,7 @@ export class EventBroadcaster {
 						)
 					);
 					await this.receiverService.update(parentReceiver.id, {
-						received: parentReceiver.received++
+						received: parentReceiver.received++,
 					});
 				}
 			}

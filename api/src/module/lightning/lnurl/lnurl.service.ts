@@ -10,11 +10,11 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
-
 	onModuleInit() {
 		this.beforeCreate.hook(async (params) => {
 			params.id = crypto.randomUUID();
-			params.params.callback = getConfig().selfUrl + '/lnurl/handle/' + params.id;
+			params.params.callback =
+				getConfig().selfUrl + '/lnurl/handle/' + params.id;
 		});
 	}
 	async serve(id: string): Promise<WithdrawRequest | PaymentRequest> {
@@ -30,12 +30,12 @@ export class LnUrlService extends BaseService(LnUrl) {
 				maxSendable: 10000000,
 				metadata: JSON.stringify([
 					[
-						"text/plain", // mandatory,
-						'Short description sudo' // short description displayed when paying and in transaction log
+						'text/plain', // mandatory,
+						'Short description sudo', // short description displayed when paying and in transaction log
 					],
 					[
-						"text/long-desc", // optional
-						'Long description sudo' // longer description of the payment, MAY contain newlines
+						'text/long-desc', // optional
+						'Long description sudo', // longer description of the payment, MAY contain newlines
 					],
 					// [
 					// 	"image/png;base64",

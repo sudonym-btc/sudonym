@@ -4,9 +4,9 @@ export const configDevelopment = {
 		name: 'app',
 		dialect: 'mysql',
 		host: 'development-db-service',
-		username: "root",
-		password: "testing",
-		database: "test",
+		username: 'root',
+		password: 'testing',
+		database: 'test',
 	},
 	// database: {
 	// 	name: 'app',

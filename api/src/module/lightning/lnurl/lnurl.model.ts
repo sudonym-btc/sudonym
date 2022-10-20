@@ -8,11 +8,9 @@ import { Sender } from '../../sender/sender.model';
 
 @Table
 export class LnUrl extends BaseModel implements Models.Lnurl {
-
 	@PrimaryKey
 	@Column
 	id: string;
 
 	@Column(DataTypes.JSON) params: WithdrawRequest | PaymentRequest;
-
 }

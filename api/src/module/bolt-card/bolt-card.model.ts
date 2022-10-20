@@ -70,8 +70,7 @@ export class BoltCard extends BaseModel implements Models.BoltCard {
 							as: 'User',
 							where: context.get('request')?.auth?.uid
 								? {
-										id: context.get('request')
-											?.auth.uid,
+										id: context.get('request')?.auth.uid,
 								  }
 								: {},
 						},

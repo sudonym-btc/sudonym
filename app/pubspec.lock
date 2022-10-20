@@ -686,13 +686,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  logger:
-    dependency: "direct main"
-    description:
-      name: logger
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   logging:
     dependency: transitive
     description:
@@ -756,13 +749,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.3"
-  native_flutter_proxy:
-    dependency: "direct main"
-    description:
-      name: native_flutter_proxy
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.15"
   nested:
     dependency: transitive
     description:
@@ -980,6 +966,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+<<<<<<< HEAD
+=======
   reactive_forms:
     dependency: "direct main"
     description:
@@ -994,6 +982,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.5"
+>>>>>>> test
   sentry:
     dependency: transitive
     description:

@@ -12,6 +12,11 @@ export class CurrencyController {
 		@Query('amount') amount,
 		@Query('time') time
 	) {
-		return this.service.convert(from, to, amount, time ? new Date(time) : new Date());
+		return this.service.convert(
+			from,
+			to,
+			amount,
+			time ? new Date(time) : new Date()
+		);
 	}
 }

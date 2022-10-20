@@ -16,11 +16,12 @@ export class SenderService extends BaseService(Sender) {
 
 	onModuleInit() {
 		this.beforeCreate.hook(async (params) => {
-			const amountInBTC = (await this.currencyService.convert(
-				params.amountCurrency || 'BTC',
-				'BTC',
-				params.amount
-			)
+			const amountInBTC = (
+				await this.currencyService.convert(
+					params.amountCurrency || 'BTC',
+					'BTC',
+					params.amount
+				)
 			).amount;
 			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
 
@@ -38,6 +39,6 @@ export class SenderService extends BaseService(Sender) {
 					params.lnurlId = tag.id;
 					break;
 			}
-		})
+		});
 	}
 }

@@ -5,11 +5,12 @@ import { Transaction } from './transaction.model';
 
 @Injectable()
 export class TransactionService extends BaseService(Transaction) {
-    @Inject() potService: PotService;
+	@Inject() potService: PotService;
 
-    async onModuleInit() {
-        this.beforeCreate.hook(async params => {
-            params.potId = params.potId || (await this.potService.findForUser()).id;
-        })
-    }
+	async onModuleInit() {
+		this.beforeCreate.hook(async (params) => {
+			params.potId =
+				params.potId || (await this.potService.findForUser()).id;
+		});
+	}
 }

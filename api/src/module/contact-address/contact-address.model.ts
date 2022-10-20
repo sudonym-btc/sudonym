@@ -1,4 +1,14 @@
-import { Table, Column, ForeignKey, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, HasOne, HasMany } from 'sequelize-typescript';
+import {
+	Table,
+	Column,
+	ForeignKey,
+	PrimaryKey,
+	AutoIncrement,
+	AllowNull,
+	BelongsTo,
+	HasOne,
+	HasMany,
+} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Contact } from '../contact/contact.model';
@@ -22,7 +32,7 @@ export class ContactAddress extends BaseModel implements Models.ContactAddress {
 	@AllowNull(false)
 	@ForeignKey(() => Contact)
 	@Column({
-		unique: 'composite'
+		unique: 'composite',
 	})
 	contactId: number;
 
@@ -30,7 +40,7 @@ export class ContactAddress extends BaseModel implements Models.ContactAddress {
 	addressType: string;
 
 	@Column({
-		unique: 'composite'
+		unique: 'composite',
 	})
 	address: string;
 

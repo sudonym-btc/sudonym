@@ -5,18 +5,18 @@ import { AuthService } from 'module/auth/auth.service';
 export const context = cls.createNamespace('context');
 export const contextRequest =
 	(authService: AuthService) =>
-		(request: Request, response: Response, next: NextFunction) => {
-			context.run(async () => {
-				const req = {
-					auth: await authService.auth({
-						token: request.headers['x-access-token'] as string,
-					})
-				};
+	(request: Request, response: Response, next: NextFunction) => {
+		context.run(async () => {
+			const req = {
+				auth: await authService.auth({
+					token: request.headers['x-access-token'] as string,
+				}),
+			};
 
-				context.set('request', req);
+			context.set('request', req);
 
-				next();
-			});
-		};
+			next();
+		});
+	};
 
-export const authUserIdGetter = () => context.get('request')?.auth?.uid
+export const authUserIdGetter = () => context.get('request')?.auth?.uid;
