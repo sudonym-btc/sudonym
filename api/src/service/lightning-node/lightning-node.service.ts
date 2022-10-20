@@ -215,7 +215,7 @@ export class LightningNodeService {
 			data: {
 				invoice,
 				amount: !hasAmount ? Math.round(amount) : null,
-				retry_for: 20, //second
+				retry_for: 20, //seconds
 			},
 		});
 	}
