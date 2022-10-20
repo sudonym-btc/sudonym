@@ -58,7 +58,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				tag: 'withdrawRequest',
 				domain: getConfig().selfUrl,
 				minWithdrawable: 0,
-				maxWithdrawable: 99999999,
+				maxWithdrawable: 0.001 * MSATOSHIS,
 				k1: uuid(),
 				...params,
 				// "balanceCheck": string,
