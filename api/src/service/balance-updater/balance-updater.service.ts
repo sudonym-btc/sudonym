@@ -8,17 +8,20 @@ import {
 	FIREBASE_ADMIN,
 	T_FIREBASE_ADMIN,
 } from 'service/firebase-admin/firebase-admin';
+import { UserDeviceService } from 'module/user-device/user-device.service';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class BalanceUpdaterService {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(PotService) potService: PotService;
 	@Inject(TransactionService) transactionService: TransactionService;
+	@Inject(UserDeviceService) userDeviceService: UserDeviceService;
 	@Inject(FIREBASE_ADMIN) firebaseAdmin: T_FIREBASE_ADMIN;
 	private readonly logger = new Logger(this.constructor.name);
 
 	onModuleInit() {
-		this.transactionService.afterCreate.hook(async ({entity}) => {
+		this.transactionService.afterCreate.hook(async ({ entity }) => {
 			const pot = await this.potService.findOne(entity.potId);
 			let newBalance = pot.balance;
 			let newSpendableBalance = pot.spendableBalance;
@@ -60,7 +63,7 @@ export class BalanceUpdaterService {
 			this.triggerNotification(entity);
 		});
 
-		this.transactionService.afterUpdate.hook(async ({entity}) => {
+		this.transactionService.afterUpdate.hook(async ({ entity }) => {
 			const pot = await this.potService.findOne(entity.potId);
 
 			let newBalance = pot.balance;
@@ -97,30 +100,40 @@ export class BalanceUpdaterService {
 		});
 	}
 
-	triggerNotification(t: Transaction) {
-		// This registration token comes from the client FCM SDKs.
-		const registrationToken =
-			'cYPqDzBgTLuICZ0IR3Xi9f:APA91bFyAXt4l3HNBLMOb35e1Xr91DO8UI5Pd6oqDiE0HYcArACt1pvywuscwxqWqnlWyyTTZ_fZ_qL7AFSk4OqVD9m12ml2J1UPylvF-4BcosGJYwzsYK3bKux1ijci89Yedfe5NcfY';
+	async triggerNotification(t: Transaction) {
+		const users = await this.transactionService.getUserIds(t.id);
+		this.logger.debug("Sending notification to", users);
 
-		const message = {
-			data: { data: JSON.stringify(t.toJSON()) },
-			notification: {
-				title: '$FooCorp up 1.43% on the day',
-				body: '$FooCorp gained 11.80 points to close at 835.67, up 1.43% on the day.',
-			},
-			token: registrationToken,
-		};
-		// Send a message to the device corresponding to the provided
-		// registration token.
-		this.firebaseAdmin
-			.messaging()
-			.send(message)
-			.then((response) => {
-				// Response is a message ID string.
-				this.logger.debug('Successfully sent message:', response);
-			})
-			.catch((error) => {
-				this.logger.debug('Error sending message:', error);
-			});
+		const userDevices = await this.userDeviceService.list({
+			where: {
+				uid: {
+					[Op.in]: users
+				}
+			}
+		});
+
+		for (const device of userDevices.data) {
+
+			const message = {
+				data: { data: JSON.stringify(t.toJSON()) },
+				notification: {
+					title: t.amount + t.currencyCode + ' was ' + (t.outgoing ? 'spent from' : 'sent to') + 'your account',
+					body: "Click to check transaction",
+				},
+				token: device.token,
+			};
+			// Send a message to the device corresponding to the provided
+			// registration token.
+			this.firebaseAdmin
+				.messaging()
+				.send(message)
+				.then((response) => {
+					// Response is a message ID string.
+					this.logger.debug('Successfully sent message:', response);
+				})
+				.catch((error) => {
+					this.logger.debug('Error sending message:', error);
+				});
+		}
 	}
 }

@@ -19,18 +19,13 @@ export class LightningNodeService {
 	calcHopFee(chann, amount) {
 		const fee = Number(chann.base_fee_millisatoshi) +
 			Math.ceil((chann.fee_per_millionth / 1000000) * amount);
-		this.logger.debug("Calculating fee", chann, amount, fee);
+		// this.logger.debug("Calculating fee", chann, amount, fee);
 		return fee;
 	}
 
-	async convertChannelsToRoute(millisatoshis) {
+	convertChannelsToRoute(millisatoshis) {
 		const circle = this.connectedChannels[0];
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
-		// try {
-		// 	this.logger.debug(JSON.stringify(await this.getRoute(circle[0].source, 100)));
-		// } catch (e) {
-		// 	this.logger.error(e);
-		// }
 		const fees = [];
 		let firstAmount = circle
 			.reverse()
@@ -181,7 +176,7 @@ export class LightningNodeService {
 		});
 	}
 
-	async pay(invoice) {
+	async pay(invoice, amount) {
 		const inv = bolt11.decode(invoice);
 
 		// Selfpayments must be routed manually for core-ln
@@ -192,7 +187,7 @@ export class LightningNodeService {
 				'Routing local payment',
 				JSON.stringify(circleRoute),
 				inv.tagsObject.payment_hash,
-				inv.millisatoshis,
+				amount || inv.millisatoshis,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1
@@ -208,13 +203,14 @@ export class LightningNodeService {
 			]);
 		}
 
-		this.logger.debug('Making payment to ' + invoice);
+		this.logger.verbose('Making payment to ' + invoice);
 
 		return this.makeRequest({
 			path: '/v1/pay',
 			method: 'POST',
 			data: {
 				invoice,
+				amount,
 				retry_for: 20, //seconds
 			},
 		});

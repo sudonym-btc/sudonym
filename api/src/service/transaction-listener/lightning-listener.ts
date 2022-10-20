@@ -1,10 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { LightningEvents } from './lightning-events';
-import { Bolt11Received, MSATOSHIS } from '@sudonym/models';
-import { TransactionService } from 'module/transaction/transaction.service';
+import { MSATOSHIS } from '@sudonym/models';
 import { TransactionListener } from './transaction-listener.interface';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
-import * as bolt11 from 'bolt11';
 
 @Injectable()
 export class LightningListener extends TransactionListener {
@@ -53,7 +51,7 @@ export class LightningListener extends TransactionListener {
 						transaction.type
 					)
 				) {
-					this.logger.log(
+					this.logger.debug(
 						'Lightning outgoing: ',
 						transaction.get({ plain: true })
 					);
@@ -81,16 +79,16 @@ export class LightningListener extends TransactionListener {
 					(async () => {
 						try {
 							const response =
-								await this.lightningNodeService.pay(invoice);
-							this.logger.debug('Lightning pay', response);
+								await this.lightningNodeService.pay(invoice, transaction.amount * MSATOSHIS);
+							this.logger.verbose('Lightning pay', response);
 							let partId = !isNaN(response.partid) ? response.partid : undefined;
-							this.logger.debug('PartId', partId);
+							this.logger.verbose('PartId', partId);
 							if (!partId && response.bolt11) {
 								const sendpays = (await this.lightningNodeService.rpc('listsendpays', response.bolt11)).payments;
-								this.logger.debug('sendpays', sendpays);
+								this.logger.verbose('Sendpays', sendpays);
 								partId = sendpays[0].partid != null ? sendpays[0].partid : sendpays.length;
 							}
-							this.logger.debug('PartId', partId);
+							this.logger.verbose('PartId', partId);
 							await this.lightningNodeService
 								.rpc('waitsendpay', [response.payment_hash, 1000, partId])
 								.catch((e) => {
@@ -107,7 +105,6 @@ export class LightningListener extends TransactionListener {
 										}
 									}
 								}).then(e => {
-									this.logger.debug(e);
 									if (e) {
 										this.lightningEvents.onEvent.next({
 											event: 'sendpay',
@@ -136,7 +133,6 @@ export class LightningListener extends TransactionListener {
 		);
 
 		this.lightningEvents.onEvent.subscribe(async (e) => {
-			this.logger.log('Lightning event in listener', e);
 			if (e.event == 'sendpay') {
 				const transactions = await this.transactionService.list({
 					where: {
