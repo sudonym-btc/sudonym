@@ -21,11 +21,12 @@ class BoltCardList extends StatelessWidget {
             height: padding,
           ),
           const Info(
-              'Write your account details to an NFC card so that you can tap them to point of sales devices to pay'),
+              'Write your account details to an NFC card so that you can tap them to a point of sales device to pay.'),
           const SizedBox(
             height: padding,
           ),
-          Expanded(
+          ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 300),
               child: ListWidget(
                   builder: (el) {
                     return BoltCardListItem(entity: el);

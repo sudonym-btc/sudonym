@@ -32,7 +32,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
         });
 
     return Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).backgroundColor,
         child: SafeArea(
           child: Scaffold(
               appBar: AppBar(

@@ -17,7 +17,7 @@ class _QRPageState extends State<QRPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).backgroundColor,
         child: SafeArea(
             child: Scaffold(appBar: AppBar(), body: QRView(widget.potId))));
   }

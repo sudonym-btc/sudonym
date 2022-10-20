@@ -5,6 +5,9 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+Widget loader = const Expanded(
+    child: Center(child: CircularProgressIndicator(color: Colors.white)));
+
 class TransactionPage extends StatelessWidget {
   const TransactionPage({Key? key}) : super(key: key);
 
@@ -17,8 +20,7 @@ class TransactionPage extends StatelessWidget {
             return StatusPage(
                 title: '',
                 subtitle: '',
-                content: const Center(
-                    child: CircularProgressIndicator(color: Colors.white)),
+                content: loader,
                 color: Colors.indigo.shade800);
           } else if (state.entity!.outgoing) {
             if (state.entity!.status == true) {
@@ -56,8 +58,7 @@ class _OutgoingPending extends _TransactionStatusPage {
     return StatusPage(
         title: (AppLocalizations.of(context)!.paymentPending),
         subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit),
-        content:
-            const Center(child: CircularProgressIndicator(color: Colors.white)),
+        content: loader,
         color: Colors.indigo.shade800);
   }
 }
@@ -124,8 +125,7 @@ class _IncomingPending extends _TransactionStatusPage {
         title: AppLocalizations.of(context)!.paymentIncoming,
         subtitle:
             'Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} is currently in transit',
-        content:
-            const Center(child: CircularProgressIndicator(color: Colors.white)),
+        content: loader,
         color: Colors.indigo.shade800);
   }
 }
@@ -188,17 +188,19 @@ class _ContactSection extends StatelessWidget {
       return ContactListItem(
           contact: Contact.fromJson({'id': entity.ContactAddress.contactId}));
     }
-    return Button(
-        icon: const Icon(Icons.add),
-        text: 'Create Contact',
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditContact(
-                        entity: Contact.fromJson({
-                      'ContactAddresses': [
-                        {'address': entity.originalAddress}
-                      ]
-                    })))));
+    return ['lnurl', 'lightningaddress'].contains(entity.type)
+        ? Button(
+            icon: const Icon(Icons.add),
+            text: 'Create Contact',
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditContact(
+                            entity: Contact.fromJson({
+                          'ContactAddresses': [
+                            {'address': entity.originalAddress}
+                          ]
+                        })))))
+        : Container();
   }
 }

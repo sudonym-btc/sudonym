@@ -41,8 +41,7 @@ class SendConfirmPage extends StatelessWidget {
           String subtitle =
               (AppLocalizations.of(context)!.gatheringPaymentInfomation);
           IconData? icon;
-          Widget? content = const Center(
-              child: CircularProgressIndicator(color: Colors.white));
+          Widget? content = loader;
           Color color = Colors.indigo.shade800;
           Widget? actions;
 
@@ -50,8 +49,7 @@ class SendConfirmPage extends StatelessWidget {
             title = 'Sending';
             subtitle = 'Payment is in progress';
             icon;
-            content = const Center(
-                child: CircularProgressIndicator(color: Colors.white));
+            content = loader;
             color = Colors.indigo.shade800;
             actions = null;
           }

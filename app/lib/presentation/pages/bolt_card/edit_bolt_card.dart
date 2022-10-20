@@ -87,8 +87,11 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
               entity: widget.entity ?? BoltCard.fromJson({'name': ''}),
               onSave: widget.onSave,
               cubit: () => getIt<BoltCardCubit>(),
-              formGroup: () => FormGroup(
-                  {'name': FormControl<String>(value: widget.entity!.name)}),
+              formGroup: () => FormGroup({
+                    'name': FormControl<String>(
+                        value: widget.entity!.name,
+                        validators: [Validators.required])
+                  }),
               children: children);
         }));
   }

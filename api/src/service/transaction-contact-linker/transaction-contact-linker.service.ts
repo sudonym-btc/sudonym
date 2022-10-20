@@ -29,6 +29,7 @@ export class TransactionContactLinkerService {
 
 			const transactions = await this.transactionService.list({
 				where: {
+					originalAddress: entity.address,
 					potId: {
 						[Op.in]: (await PotUser.findAll({
 							attributes: ['potId'],

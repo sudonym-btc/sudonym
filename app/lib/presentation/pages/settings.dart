@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -18,21 +17,23 @@ class SettingsPage extends StatelessWidget {
         color: Theme.of(context).backgroundColor,
         child: SafeArea(
             child: Scaffold(
-          appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
-          body: Column(mainAxisSize: MainAxisSize.min, children: [
-            const LightningSection(),
-            const CardSection(),
-            Button.flat(
-              text: 'Logout',
-              foregroundColor: Colors.red,
-              onPressed: (() async {
-                await getIt<AuthCubit>().logout();
-                Navigator.popUntil(context, (route) => route.isFirst);
-              }),
-            ),
-            const AboutSection()
-          ]),
-        )));
+                appBar:
+                    AppBar(title: Text(AppLocalizations.of(context)!.settings)),
+                body: SingleChildScrollView(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const LightningSection(),
+                    const CardSection(),
+                    Button.flat(
+                      text: 'Logout',
+                      foregroundColor: Colors.red,
+                      onPressed: (() async {
+                        await getIt<AuthCubit>().logout();
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                      }),
+                    ),
+                    const AboutSection()
+                  ]),
+                ))));
   }
 }
 
@@ -41,9 +42,7 @@ class CardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
-        child:
-            Padding(padding: EdgeInsets.all(padding), child: BoltCardList()));
+    return Padding(padding: EdgeInsets.all(padding), child: BoltCardList());
   }
 }
 
@@ -117,23 +116,25 @@ class AboutSectionState extends State<AboutSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Table(children: [
-      TableRow(children: [
-        const TableCell(child: Text('App name')),
-        TableCell(child: Text(appName))
-      ]),
-      TableRow(children: [
-        const TableCell(child: Text('Package')),
-        TableCell(child: Text(packageName))
-      ]),
-      TableRow(children: [
-        const TableCell(child: Text('Version')),
-        TableCell(child: Text(version))
-      ]),
-      TableRow(children: [
-        const TableCell(child: Text('Build')),
-        TableCell(child: Text(buildNumber))
-      ]),
-    ]);
+    return Padding(
+        padding: EdgeInsets.all(padding),
+        child: Table(children: [
+          TableRow(children: [
+            const TableCell(child: Info('App name')),
+            TableCell(child: Info(appName))
+          ]),
+          TableRow(children: [
+            const TableCell(child: Info('Package')),
+            TableCell(child: Info(packageName))
+          ]),
+          TableRow(children: [
+            const TableCell(child: Info('Version')),
+            TableCell(child: Info(version))
+          ]),
+          TableRow(children: [
+            const TableCell(child: Info('Build')),
+            TableCell(child: Info(buildNumber))
+          ]),
+        ]));
   }
 }

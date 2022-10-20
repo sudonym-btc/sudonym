@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
@@ -17,6 +18,8 @@ class BoltCardListItem extends StatelessWidget {
                         entity: entity,
                       )));
         },
-        child: ListTile(title: Text(entity.name)));
+        child: ListTile(
+            leading: const Icon(Icons.credit_card_outlined),
+            title: Text(entity.name)));
   }
 }

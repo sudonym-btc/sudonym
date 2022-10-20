@@ -18,7 +18,7 @@
 		<string>es</string>
 	</array>
 	<key>CFBundleName</key>
-	<string>sudonym</string>
+	<string>com.sudonym.wallet</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

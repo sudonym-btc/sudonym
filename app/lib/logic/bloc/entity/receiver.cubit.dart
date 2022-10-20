@@ -19,8 +19,9 @@ class ReceiverCubit
   @override
   listenChanges() {
     receiveSubscription ??= repository.events.stream.listen((dynamic event) {
-      if (state.entity != null) {
-        if (event['data']['id'] == state.entity!.id) {
+      if (state.entity != null && event.name == "receiver.received") {
+        if (event.data['id'] == state.entity!.id ||
+            event.data['parentId'] == state.entity!.id) {
           try {
             print("playing sound");
             FlutterRingtonePlayer.playNotification();

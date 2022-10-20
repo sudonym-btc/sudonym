@@ -8,7 +8,7 @@ class ContactPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).backgroundColor,
         child: SafeArea(
           child: MultiBlocProvider(
             providers: [BlocProvider(create: (_) => ContactCubit())],

@@ -13,9 +13,10 @@ class EditContact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        bottom: false,
-        child: Scaffold(
+    return Container(
+        color: Theme.of(context).backgroundColor,
+        child: SafeArea(
+            child: Scaffold(
           appBar: AppBar(
             title: Text("${entity.id == null ? "Create" : "Edit"} Contact"),
           ),
@@ -24,7 +25,7 @@ class EditContact extends StatelessWidget {
             child: EditContactForm(
                 onSave: () => Navigator.pop(context), entity: entity),
           ),
-        ));
+        )));
   }
 }
 

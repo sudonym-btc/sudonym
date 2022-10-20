@@ -76,7 +76,7 @@ class EditPotFormState extends State<EditPotForm> {
                 items: listOfValue
                     .map((currency) => DropdownMenuItem(
                           value: currency,
-                          child: Text(currency),
+                          child: Row(children: [Text(currency)]),
                         ))
                     .toList(),
               )
