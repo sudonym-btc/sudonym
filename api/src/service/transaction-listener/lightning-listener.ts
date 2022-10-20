@@ -87,7 +87,7 @@ export class LightningListener extends TransactionListener {
 							if (!partId && response.payment_hash) {
 								const sendpays = (await this.lightningNodeService.rpc('listsendpays', [null, response.payment_hash])).payments;
 								this.logger.verbose('Sendpays', sendpays);
-								partId = sendpays[0].partid != null ? sendpays[0].partid : sendpays.length;
+								partId = sendpays[0].partid;
 							}
 							this.logger.verbose('PartId', partId);
 							await this.lightningNodeService
