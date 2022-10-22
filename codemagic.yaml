@@ -48,12 +48,14 @@ workflows:
         XCODE_SCHEME: "CodemagicSample" # <-- Put the name of your Xcode scheme here
         APP_ID: 1555555551
     artifacts:
+      - app/build/**/outputs/ipa/**/*.ipa
       - app/build/**/outputs/apk/**/*.apk
       - app/build/**/outputs/bundle/**/*.aab
       - app/build/**/outputs/**/mapping.txt
       - app/*.snap
       - app/build/windows/**/*.msix
       - app/flutter_drive.log
+      - app/build/ios/ipa/*.ipa
     publishing:
       email:
         recipients:
