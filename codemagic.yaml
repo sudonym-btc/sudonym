@@ -178,7 +178,7 @@ workflows:
         script: xcode-project use-profiles
       - name: build #          BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_ID") + 1)) 
         script: |
-          cd app && flutter build ipa -t lib/main-prod.dart --release --export-options-plist=/Users/builder/export_options.plist"
+          cd app && flutter build ipa -t lib/main-prod.dart --release"
     publishing:
       app_store_connect:
         # Use referenced App Store Connect API key to authenticate binary upload
