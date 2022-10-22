@@ -170,12 +170,10 @@ workflows:
         - pattern: "*"
           include: true
     scripts:
-      - *localproperties
       - *getpackages
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
       - "cd app && flutter build ipa -t lib/main-prod.dart --release"
-      - *ghrelease
     publishing:
       app_store_connect:
         # Use referenced App Store Connect API key to authenticate binary upload
