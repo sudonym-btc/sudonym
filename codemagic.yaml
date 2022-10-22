@@ -180,6 +180,3 @@ workflows:
         # Optional boolean, defaults to false. Whether or not to submit the uploaded
         # build to App Store review. Note: This action is performed during post-processing.
         submit_to_app_store: false
-        
-        # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
-        release_type: SCHEDULED
