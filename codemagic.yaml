@@ -129,9 +129,35 @@ workflows:
       - "cd app && flutter build appbundle -t lib/main-staging.dart --release"
       - "cd app && flutter build apk -t lib/main-staging.dart --release"
       - *ghrelease
-  production-workflow:
+  production-android-workflow:
     <<: *default-workflow
-    name: "Production Workflow"
+    name: "Production Android Workflow"
+    instance_type: linux
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: production
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: "*"
+          include: true
+    scripts:
+      - *localproperties
+      - *getpackages
+      - "cd app && flutter build appbundle -t lib/main-prod.dart --release"
+      - "cd app && flutter build apk -t lib/main-prod.dart --release"
+      - *ghrelease
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        in_app_update_priority: 0
+        submit_as_draft: true
+  production-apple-workflow:
+    <<: *default-workflow
+    name: "Production iOS Workflow"
     instance_type: mac_mini_m1
     triggering:
       events:
@@ -148,16 +174,9 @@ workflows:
       - *getpackages
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - "cd app && flutter build appbundle -t lib/main-prod.dart --release"
-      - "cd app && flutter build apk -t lib/main-prod.dart --release"
       - "cd app && flutter build ipa -t lib/main-prod.dart --release"
       - *ghrelease
     publishing:
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: internal
-        in_app_update_priority: 0
-        submit_as_draft: true
       app_store_connect:
         # Use referenced App Store Connect API key to authenticate binary upload
         auth: integration
