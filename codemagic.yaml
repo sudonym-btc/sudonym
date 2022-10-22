@@ -176,9 +176,8 @@ workflows:
       - *getpackages
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - name: build
+      - name: build #          BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_ID") + 1)) 
         script: |
-          BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_ID") + 1)) 
           cd app && flutter build ipa -t lib/main-prod.dart --release --export-options-plist=/Users/builder/export_options.plist"
     publishing:
       app_store_connect:
