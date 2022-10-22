@@ -28,6 +28,8 @@ workflows:
     name: Default Workflow
     instance_type: linux
     max_build_duration: 60
+    integrations:
+      app_store_connect: 69F8J29576
     environment:
       groups:
         - google_credentials
@@ -98,8 +100,8 @@ workflows:
     scripts:
       - *localproperties
       - *getpackages
-      - 'cd app && flutter build appbundle -t lib/main-test.dart --release'
-      - 'cd app && flutter build apk -t lib/main-test.dart --release'
+      - "cd app && flutter build appbundle -t lib/main-test.dart --release"
+      - "cd app && flutter build apk -t lib/main-test.dart --release"
       - *ghrelease
   staging-workflow:
     <<: *default-workflow
@@ -124,8 +126,8 @@ workflows:
     scripts:
       - *localproperties
       - *getpackages
-      - 'cd app && flutter build appbundle -t lib/main-staging.dart --release'
-      - 'cd app && flutter build apk -t lib/main-staging.dart --release'
+      - "cd app && flutter build appbundle -t lib/main-staging.dart --release"
+      - "cd app && flutter build apk -t lib/main-staging.dart --release"
       - *ghrelease
   production-workflow:
     <<: *default-workflow
@@ -146,9 +148,9 @@ workflows:
       - *getpackages
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - 'cd app && flutter build appbundle -t lib/main-prod.dart --release'
-      - 'cd app && flutter build apk -t lib/main-prod.dart --release'
-      - 'cd app && flutter build ipa -t lib/main-prod.dart --release'
+      - "cd app && flutter build appbundle -t lib/main-prod.dart --release"
+      - "cd app && flutter build apk -t lib/main-prod.dart --release"
+      - "cd app && flutter build ipa -t lib/main-prod.dart --release"
       - *ghrelease
     publishing:
       google_play:
@@ -157,21 +159,21 @@ workflows:
         in_app_update_priority: 0
         submit_as_draft: true
       app_store_connect:
-            # Use referenced App Store Connect API key to authenticate binary upload
-        auth: integration 
+        # Use referenced App Store Connect API key to authenticate binary upload
+        auth: integration
 
         # Configuration related to TestFlight (optional)
 
         # Optional boolean, defaults to false. Whether or not to submit the uploaded
         # build to TestFlight beta review. Required for distributing to beta groups.
         # Note: This action is performed during post-processing.
-        submit_to_testflight: true 
+        submit_to_testflight: true
 
-        # Specify the names of beta tester groups that will get access to the build 
+        # Specify the names of beta tester groups that will get access to the build
         # once it has passed beta review.
-        beta_groups: 
+        beta_groups:
           - beta
-    
+
         # Configuration related to App Store (optional)
 
         # Optional boolean, defaults to false. Whether or not to submit the uploaded
