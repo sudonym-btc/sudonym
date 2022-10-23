@@ -1,5 +1,6 @@
 import { BaseClass } from './base-class';
 import * as Model from './contact-address';
+import * as PotModel from './pot';
 
 export class Transaction extends BaseClass {
 	constructor(
@@ -8,6 +9,7 @@ export class Transaction extends BaseClass {
 		public invoiceId: string | null,
 		public txid: string | null,
 		public potId: number,
+		public Pot: PotModel.Pot | null,
 		public receiverId: number | null,
 		public senderId: number | null,
 		public outgoing: boolean,
@@ -33,6 +35,7 @@ export class Transaction extends BaseClass {
 			json['invoiceId'],
 			json['txid'],
 			json['potId'],
+			json['Pot'] != null ? PotModel.Pot.fromJson(json['Pot']) : null,
 			json['receiverId'],
 			json['senderId'],
 			json['outgoing'],
@@ -57,6 +60,7 @@ export class Transaction extends BaseClass {
 			invoiceId: this.invoiceId,
 			txid: this.txid,
 			potId: this.potId,
+			Pot: this.Pot,
 			receiverId: this.receiverId,
 			senderId: this.senderId,
 			outgoing: this.outgoing,

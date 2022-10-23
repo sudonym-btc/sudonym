@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {
             List<Widget> children =
-                state.data.map<Widget>((e) => Pot(entity: e)).toList();
+                state.data.map<Widget>((e) => PotPage(entity: e)).toList();
             children.add(const AddPotSlide());
 
             return Container(

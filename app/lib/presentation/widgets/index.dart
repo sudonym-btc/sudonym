@@ -18,5 +18,6 @@ export 'send/qr.dart';
 export 'status_page/status_page.dart';
 export 'transactions/transaction_list.dart';
 export 'transactions/transaction_list_item.dart';
+export 'amount_text.dart';
 export 'incoming_transaction_handler.dart';
 export 'message_handler.dart';

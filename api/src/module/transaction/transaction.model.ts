@@ -143,6 +143,12 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	};
 
 	static scopes = {
+		findOne: () => ({
+			include: [{
+				model: Pot,
+				as: 'Pot'
+			}]
+		}),
 		find: () => ({
 			include: [
 				{

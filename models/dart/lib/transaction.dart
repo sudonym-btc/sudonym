@@ -1,5 +1,6 @@
 import "base-class.dart" show BaseClass;
 import "contact-address.dart" as Model;
+import "pot.dart" as PotModel;
 
 class Transaction extends BaseClass {
   num id;
@@ -7,6 +8,7 @@ class Transaction extends BaseClass {
   dynamic /* String | null */ invoiceId;
   dynamic /* String | null */ txid;
   num potId;
+  dynamic /* PotModel . Pot | null */ Pot;
   dynamic /* num | null */ receiverId;
   dynamic /* num | null */ senderId;
   bool outgoing;
@@ -27,6 +29,7 @@ class Transaction extends BaseClass {
       this.invoiceId,
       this.txid,
       this.potId,
+      this.Pot,
       this.receiverId,
       this.senderId,
       this.outgoing,
@@ -51,6 +54,7 @@ class Transaction extends BaseClass {
         json["invoiceId"],
         json["txid"],
         json["potId"],
+        json["Pot"] != null ? PotModel.Pot.fromJson(json["Pot"]) : null,
         json["receiverId"],
         json["senderId"],
         json["outgoing"],
@@ -76,6 +80,7 @@ class Transaction extends BaseClass {
       "invoiceId": this.invoiceId,
       "txid": this.txid,
       "potId": this.potId,
+      "Pot": this.Pot,
       "receiverId": this.receiverId,
       "senderId": this.senderId,
       "outgoing": this.outgoing,

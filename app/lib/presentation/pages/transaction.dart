@@ -99,11 +99,15 @@ class _OutgoingComplete extends _TransactionStatusPage {
               Table(children: [
                 TableRow(children: [
                   Text(AppLocalizations.of(context)!.amount),
-                  Text(FormatCurrency()
-                      .format(transaction.currencyCode, transaction.amount))
+                  AmountText(
+                    amount: transaction.amount,
+                    fromCurrency: transaction.currencyCode,
+                    toCurrency: transaction.Pot.currency,
+                    date: transaction.createdAt,
+                  )
                 ]),
                 TableRow(children: [
-                  const Text('Address'),
+                  Text(AppLocalizations.of(context)!.address),
                   Text(
                     transaction.originalAddress,
                     style: const TextStyle(

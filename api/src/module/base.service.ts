@@ -18,7 +18,7 @@ export interface TControllerAndService<TModel> {
 	findOne(id): Promise<TModel>;
 	create(params: RecursivePartial<TModel>): Promise<TModel>;
 	update(id, params: RecursivePartial<TModel>): Promise<TModel>;
-	list(param: FindOptions): Promise<{
+	list(param: FindOptions, options?): Promise<{
 		data: TModel[];
 		metadata: {
 			count: number;
@@ -57,7 +57,7 @@ export const BaseService = <TModel extends BaseModel>(
 		async onModuleInit() {}
 
 		async findOne(id: string | number | FindOptions) {
-			return (
+			const obj = (
 				await this.list(
 					typeof id == 'object'
 						? id
@@ -65,15 +65,20 @@ export const BaseService = <TModel extends BaseModel>(
 								where: {
 									id: id as any,
 								},
-						  }
-				)
+						  },
+						  {
+							scopes: [
+								this.repo.scopes.findOne()
+							]
+						  })
 			).data[0];
-			// if(!obj) throw new NotFoundException();
-			// return obj;
+			if(!obj) throw new NotFoundException();
+			return obj;
 		}
 
-		async list(params: FindOptions) {
+		async list(params: FindOptions, options: ListOptions = {scopes: []}) {
 			const scopes = [
+				...(options.scopes || []),
 				this.repo.scopes.find ? this.repo.scopes.find() : null,
 			].filter((i) => !!i);
 			const data = await this.repo
@@ -190,3 +195,7 @@ const parseFindParams = (params) => {
 	});
 	return params;
 };
+
+class ListOptions {
+	scopes
+}

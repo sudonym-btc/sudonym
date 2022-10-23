@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/logic/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class TransactionListItem extends StatelessWidget {
   final Transaction entity;
+  final Pot? pot;
 
-  const TransactionListItem({required this.entity, Key? key}) : super(key: key);
+  const TransactionListItem({required this.entity, this.pot, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +24,17 @@ class TransactionListItem extends StatelessWidget {
                   children: [
                     SizedBox(
                         width: 75,
-                        child: Text(
-                          (entity.outgoing ? '- ' : '') +
-                              FormatCurrency()
-                                  .format(entity.currencyCode, entity.amount),
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: entity.outgoing
-                                  ? Theme.of(context).errorColor
-                                  : Theme.of(context).primaryColor),
-                        )),
+                        child: AmountText(
+                            fromCurrency: entity.currencyCode,
+                            toCurrency: pot?.currency ?? entity.currencyCode,
+                            amount: entity.amount,
+                            date: entity.createdAt,
+                            builder: (state) => Text(state,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: entity.outgoing
+                                        ? Theme.of(context).errorColor
+                                        : Theme.of(context).primaryColor)))),
                     Expanded(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
