@@ -4,8 +4,8 @@ import 'package:sudonym/presentation/index.dart';
 
 class StatusPage extends StatelessWidget {
   final String pageTitle;
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final IconData? icon;
   final Widget? content;
   final Widget? actions;
@@ -14,8 +14,8 @@ class StatusPage extends StatelessWidget {
   const StatusPage(
       {Key? key,
       this.pageTitle = '',
-      required this.title,
-      required this.subtitle,
+      this.title,
+      this.subtitle,
       this.icon,
       this.content,
       this.actions,

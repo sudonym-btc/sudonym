@@ -18,7 +18,6 @@ class SendPage extends StatefulWidget {
 }
 
 class _SendPageState extends State<SendPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   TextEditingController controller = TextEditingController();
   bool camOpen = false;
   late ListCubit listCubit;

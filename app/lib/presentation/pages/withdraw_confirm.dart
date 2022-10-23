@@ -8,8 +8,6 @@ import 'package:sudonym/presentation/index.dart';
 
 import 'package:sudonym/injection.dart';
 
-final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
 class WithdrawConfirm extends StatelessWidget {
   final Withdraw action;
   const WithdrawConfirm(this.action, {Key? key}) : super(key: key);
