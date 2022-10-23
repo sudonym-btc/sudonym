@@ -17,9 +17,6 @@ class Pot extends StatelessWidget {
     return CubitWrapper<PotCubit, PotCubitState, model.Pot>(
         entity: entity,
         builder: (BuildContext context, state) {
-          if (state.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
           List<Widget> children = [
             SlidingUpPanel(
               body: Column(

@@ -8,20 +8,22 @@ class NFCCubit extends Cubit<NFCCubitState> {
 
   write(Uri url) async {
     emit(NFCCubitState(writing: true));
-    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-      try {
-        var x = Ndef.from(tag);
-        if (x != null) {
-          await x.write(NdefMessage([NdefRecord.createUri(url)]));
-          emit(NFCCubitState(writing: false, success: true));
-          NfcManager.instance.stopSession();
-        }
-      } on Error catch (e) {
-        emit(NFCCubitState(writing: false, success: false, e: e));
-      } catch (e) {
-        print(e);
-      }
-    });
+    NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {
+          try {
+            var x = Ndef.from(tag);
+            if (x != null) {
+              await x.write(NdefMessage([NdefRecord.createUri(url)]));
+              emit(NFCCubitState(writing: false, success: true));
+              NfcManager.instance.stopSession();
+            }
+          } on Error catch (e) {
+            emit(NFCCubitState(writing: false, success: false, e: e));
+          } catch (e) {
+            print(e);
+          }
+        },
+        alertMessage: 'Successfully wrote to NFC card');
   }
 }
 

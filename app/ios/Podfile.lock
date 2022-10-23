@@ -181,7 +181,6 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
-  - Firebase/Messaging
   - firebase_app_installations (from `.symlinks/plugins/firebase_app_installations/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -313,6 +312,6 @@ SPEC CHECKSUMS:
   Sentry: d6b16e66a0ad0c39a0b76d9a1194e68e78c37ce6
   sentry_flutter: 609b096af497fa64af7c6c94e792d0780aa472a6
 
-PODFILE CHECKSUM: 4f88572adc0219bc3e87ed24fc77c2045a3b6c7f
+PODFILE CHECKSUM: 92a18c99d9134836a9a764b2192bef7447997474
 
 COCOAPODS: 1.11.3

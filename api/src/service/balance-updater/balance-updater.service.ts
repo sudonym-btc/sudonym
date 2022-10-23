@@ -102,6 +102,7 @@ export class BalanceUpdaterService {
 
 	async triggerNotification(t: Transaction) {
 		const users = await this.transactionService.getUserIds(t.id);
+		const pot = await this.potService.findOne(t.potId);
 		this.logger.debug("Sending notification to", users);
 
 		const userDevices = await this.userDeviceService.list({
@@ -117,7 +118,7 @@ export class BalanceUpdaterService {
 			const message = {
 				data: { data: JSON.stringify(t.toJSON()) },
 				notification: {
-					title: t.amount + ' ' + t.currencyCode + ' was ' + (t.outgoing ? 'spent from' : 'sent to') + ' your account',
+					title: this.currencyService.format(await this.currencyService.convert(t.currencyCode, pot.currency, t.amount), pot.currency) + ' was ' + (t.outgoing ? 'spent from' : 'sent to') + ' your account',
 					body: "Click to check transaction",
 				},
 				token: device.token,

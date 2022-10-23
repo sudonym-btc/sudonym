@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CurrencyResponse } from '@sudonym/models';
+import { CurrencyResponse, SATOSHIS } from '@sudonym/models';
 import { ExchangeService } from 'service/exchange/exchange.service';
 
 @Injectable()
@@ -16,11 +16,32 @@ export class CurrencyService {
 			amount == 0
 				? 0
 				: (await this.exchangeService.fetchPriceAtTime(
-						from,
-						to,
-						time
-				  )) * amount
+					from,
+					to,
+					time
+				)) * amount
 		);
+	}
+
+	format(amount, currency) {
+		if (currency == "BTC") {
+			if (amount > 0.1) {
+				return `${amount.toStringAsPrecision(4)} BTC`;
+			} else {
+				return `${new Intl.NumberFormat('en-US').format(amount * SATOSHIS)} sats`;
+			}
+		}
+		// Create our number formatter.
+		const formatter = new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency,
+
+			// These options are needed to round to whole numbers if that's what you want.
+			//minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+			//maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+		});
+
+		return formatter.format(amount);
 	}
 }
 
