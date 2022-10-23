@@ -131,6 +131,8 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (1.7.2)
+  - local_auth_ios (0.0.1):
+    - Flutter
   - MLImage (1.0.0-beta2)
   - MLKitBarcodeScanning (1.7.0):
     - MLKitCommon (~> 5.0)
@@ -179,6 +181,7 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - Firebase/Messaging
   - firebase_app_installations (from `.symlinks/plugins/firebase_app_installations/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -188,6 +191,7 @@ DEPENDENCIES:
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
+  - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
   - native_flutter_proxy (from `.symlinks/plugins/native_flutter_proxy/ios`)
   - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
@@ -247,6 +251,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_ringtone_player/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
+  local_auth_ios:
+    :path: ".symlinks/plugins/local_auth_ios/ios"
   mobile_scanner:
     :path: ".symlinks/plugins/mobile_scanner/ios"
   native_flutter_proxy:
@@ -291,6 +297,7 @@ SPEC CHECKSUMS:
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
+  local_auth_ios: 0d333dde7780f669e66f19d2ff6005f3ea84008d
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitBarcodeScanning: b8257854f6afc1c8443d61ec6b98c28b35625df6
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
@@ -306,6 +313,6 @@ SPEC CHECKSUMS:
   Sentry: d6b16e66a0ad0c39a0b76d9a1194e68e78c37ce6
   sentry_flutter: 609b096af497fa64af7c6c94e792d0780aa472a6
 
-PODFILE CHECKSUM: 6da6fbdee41ec14894238a40f28acbc553fdb2d3
+PODFILE CHECKSUM: 4f88572adc0219bc3e87ed24fc77c2045a3b6c7f
 
 COCOAPODS: 1.11.3

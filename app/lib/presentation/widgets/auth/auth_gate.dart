@@ -52,6 +52,7 @@ class _LoggedInWidget extends StatelessWidget {
             }
           }
         },
-        child: const MessageHandler(child: HomePage()));
+        child: const MessageHandler(
+            child: IncomingTransactionHandler(child: HomePage())));
   }
 }

@@ -59,6 +59,7 @@ dependencies:
   nfc_manager: ^3.1.1
   package_info_plus: ^1.4.3+1
   flutter_ringtone_player: ^3.2.0
+  local_auth: ^2.1.2
 
 dev_dependencies:
   test: ^1.21.1

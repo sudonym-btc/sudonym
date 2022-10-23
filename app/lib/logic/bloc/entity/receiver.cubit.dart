@@ -22,12 +22,7 @@ class ReceiverCubit
       if (state.entity != null && event.name == "receiver.received") {
         if (event.data['id'] == state.entity!.id ||
             event.data['parentId'] == state.entity!.id) {
-          try {
-            print("playing sound");
-            FlutterRingtonePlayer.playNotification();
-          } catch (e) {
-            print('Could not play sound');
-          }
+          // TODO: Reload the invoice after usage
         }
       }
     });

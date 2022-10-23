@@ -14,6 +14,8 @@ export class UserDevice extends BaseModel implements Models.UserDevice {
 	@Column
 	uid: string;
 
-	@Column
+	@Column({
+		unique: true,
+	})
 	token: string;
 }

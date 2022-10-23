@@ -9,12 +9,14 @@ Widget loader = const Expanded(
     child: Center(child: CircularProgressIndicator(color: Colors.white)));
 
 class TransactionPage extends StatelessWidget {
-  const TransactionPage({Key? key}) : super(key: key);
+  final Transaction? entity;
+  const TransactionPage({Key? key, this.entity}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CubitWrapper<TransactionCubit, TransactionCubitState, Transaction>(
-        entity: ModalRoute.of(context)?.settings.arguments as Transaction,
+        entity:
+            entity ?? ModalRoute.of(context)?.settings.arguments as Transaction,
         builder: ((context, state) {
           if (state.loading || state.entity == null) {
             return StatusPage(
