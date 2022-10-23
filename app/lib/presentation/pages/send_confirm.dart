@@ -8,8 +8,6 @@ import 'package:sudonym/presentation/index.dart';
 
 import 'package:sudonym/injection.dart';
 
-final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
 class SendConfirmPage extends StatelessWidget {
   const SendConfirmPage({Key? key}) : super(key: key);
 

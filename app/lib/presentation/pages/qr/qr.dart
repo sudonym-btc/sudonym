@@ -12,13 +12,13 @@ class QRPage extends StatefulWidget {
 }
 
 class _QRPageState extends State<QRPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
   @override
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-            child: Scaffold(appBar: AppBar(), body: QRView(widget.potId))));
+        child: Stack(children: [
+          QRView(widget.potId),
+          SafeArea(child: Scaffold(appBar: AppBar()))
+        ]));
   }
 }
