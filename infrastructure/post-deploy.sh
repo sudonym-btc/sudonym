@@ -9,9 +9,9 @@ then
     gcloud secrets versions access latest --secret="$1-cert-resolver" --out-file="key.json"  
     kubectl create secret generic $1-cert-resolver --from-file=key.json
     rm key.json 
-    gcloud secrets versions access latest --secret="$1-ride-the-lightning-secret" --out-file="key.json"  
-    kubectl create secret generic $1-ride-the-lightning-secret --from-file=key.json
-    rm key.json
+    gcloud secrets versions access latest --secret="$1-ride-the-lightning-secret" --out-file="key.txt"  
+    kubectl create secret generic $1-ride-the-lightning-secret --from-file=key.txt
+    rm key.txt
 
     helm repo add jetstack https://charts.jetstack.io
     help repo add ingress-nginx https://kubernetes.github.io/ingress-nginx

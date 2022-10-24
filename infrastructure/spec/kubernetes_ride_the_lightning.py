@@ -138,7 +138,7 @@ def ride_the_lightning(config, cluster_types):
                                             "valueFrom": {
                                                 "secretKeyRef": {
                                                     "name": config["env"] + "-ride-the-lightning-secret",
-                                                    "key": "pass",
+                                                    "key": "key.txt",
                                                     "optional": False
                                                 }
                                             }
