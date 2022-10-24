@@ -46,10 +46,12 @@ export async function downloadFiles(
 	 */
 	const envFile = `${process.cwd()}/src/config/.env`;
 	if (fs.existsSync(envFile)) {
+		console.log("Setting env");
 		dotenv.config({
 			path: envFile
 		});
 	}
+	console.log(process.env);
 }
 if (require.main === module) {
 	downloadFiles();
