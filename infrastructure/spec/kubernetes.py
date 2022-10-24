@@ -68,7 +68,7 @@ def GenerateConfig(context):
             [
                 cluster_types_root,
                 ":",
-                "/apis/networking.k8s.io/v1/namespaces/{namespace}/serviceaccounts/{name}",
+                "/api/v1/namespaces/{namespace}/serviceaccounts/{name}",
             ]
         ),
     }
