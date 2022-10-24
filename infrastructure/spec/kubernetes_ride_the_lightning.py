@@ -132,7 +132,7 @@ def ride_the_lightning(config, cluster_types):
                                     {
                                         "name": base_name,
                                         "image": "shahanafarooqui/rtl:0.13.1",
-                                        "command": ["/sbin/tini", "-g", "--", "sh", "-c", 'echo $RTL_PASS && cp RTL-Config-Read-Only.json RTL-Config.json && sed "s:testing:$RTL_PASS:" -i RTL-Config.json && node rtl'],
+                                        "command": ["/sbin/tini", "-g", "--", "sh", "-c", 'echo $RTL_PASS && $(printf \'%s\n\' "$RTL_PASS" | sed -e \'s/[\/&]/\\&/g\') && cp RTL-Config-Read-Only.json RTL-Config.json && sed "s:testing:$(printf \'%s\n\' "$RTL_PASS" | sed -e \'s/[\/&]/\\&/g\'):" -i RTL-Config.json && node rtl'],
                                         "env": [{
                                             "name": "RTL_PASS",
                                             "valueFrom": {
