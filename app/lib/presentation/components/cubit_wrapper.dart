@@ -22,7 +22,7 @@ class CubitWrapper<
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        key: ValueKey(entity.toJson()["id"].toString()),
+        key: ValueKey(entity.toJson()['id'].toString()),
         create: (_) {
           C c = getIt.get<C>();
           c.set(entity);

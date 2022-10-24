@@ -13,7 +13,7 @@ class ReceiverPage extends StatelessWidget {
     return CubitWrapper<ReceiverCubit, ReceiverCubitState, Receiver>(
         entity: receiver,
         fetch: true,
-        builder: ((context, state) {
+        builder: (context, state) {
           if (state.entity == null) {
             return StatusPage(
                 title: '',
@@ -35,6 +35,6 @@ class ReceiverPage extends StatelessWidget {
               content: const Center(
                   child: CircularProgressIndicator(color: Colors.white)),
               color: Colors.indigo.shade800);
-        }));
+        });
   }
 }

@@ -68,11 +68,13 @@ export const BaseService = <TModel extends BaseModel>(
 						  },
 						  {
 							scopes: [
-								this.repo.scopes.findOne()
+								repository.scopes.findOne ? repository.scopes.findOne() : null,
 							]
 						  })
 			).data[0];
-			if(!obj) throw new NotFoundException();
+			if(!obj) { 
+				throw new NotFoundException();
+			}
 			return obj;
 		}
 
@@ -81,6 +83,7 @@ export const BaseService = <TModel extends BaseModel>(
 				...(options.scopes || []),
 				this.repo.scopes.find ? this.repo.scopes.find() : null,
 			].filter((i) => !!i);
+
 			const data = await this.repo
 				.scope(scopes as any)
 				.findAndCountAll(parseFindParams(params));
@@ -108,7 +111,8 @@ export const BaseService = <TModel extends BaseModel>(
 				repository.scopes.find ? repository.scopes.find() : null,
 			].filter((i) => !!i);
 			const record = await this.repo.scope(scopes as any).findByPk(id);
-			const entity = await record.set(params).save();
+			let entity = await record.set(params).save();
+			entity = await this.findOne(entity.id);
 
 			await this.afterUpdate.execute({ entity, params });
 			await this.onAfterUpdated.next(entity);
@@ -128,7 +132,9 @@ export const BaseService = <TModel extends BaseModel>(
 
 		async create(params) {
 			await this.beforeCreate.execute(params);
-			const entity = await this.repo.create(params);
+			let entity = await this.repo.create(params);
+
+			entity = await this.findOne(entity.id);
 
 			await this.afterCreate.execute({ entity, params });
 			await this.onAfterCreated.next(entity);

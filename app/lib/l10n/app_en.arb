@@ -47,7 +47,7 @@
 "gatheredPaymentInformation" :      "Gathered payment information",
 "gatheredWithdrawalInformation" :   "Gathered withdrawal information",
 "name" :                            "Name",
-"fee" :                             "fee",
+"fee" :                             "Fee",
 "noTransactionsFound" :             "No transactions found"
 
 }

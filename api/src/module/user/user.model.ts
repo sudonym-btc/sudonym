@@ -24,4 +24,8 @@ export class User extends BaseModel implements Models.User {
 
 	@HasMany(() => Sender)
 	Senders: Sender[];
+
+	static accessors = {
+		canFind: (id) => [{id}]
+	}
 }

@@ -67,7 +67,7 @@ class _ListWidgetState extends State<ListWidget> with ListLogger {
               ])));
             } else {
               if (state.data.isEmpty && widget.emptyText != null) {
-                children.add(Text(widget.emptyText!));
+                children.add(Info(widget.emptyText!));
               }
               if (widget.appendItem != null) {
                 children.add(widget.appendItem!);

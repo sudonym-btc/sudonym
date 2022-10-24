@@ -100,7 +100,7 @@ class SendConfirmPage extends StatelessWidget {
                           .format(r.feeCurrency ?? 'BTC', r.fee ?? 0))
                     ]),
                     TableRow(children: [
-                      const Text('address'),
+                      Text(AppLocalizations.of(context)!.address),
                       Text(
                         r.address ?? '',
                         style: const TextStyle(

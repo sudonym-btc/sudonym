@@ -41,15 +41,13 @@ class EditPotForm extends StatefulWidget {
 }
 
 class EditPotFormState extends State<EditPotForm> {
-  final _formKey = GlobalKey<FormState>();
   List<String> listOfValue = ['BTC', 'USD', 'GBP'];
 
   @override
   Widget build(BuildContext context) {
-    return CustomForm(
+    return CustomForm<PotCubit, PotCubitState, Pot>(
         entity: widget.entity ?? Pot.fromJson({'name': '', 'currency': 'BTC'}),
         onSave: widget.onSave,
-        cubit: () => getIt<PotCubit>(),
         formGroup: () => FormGroup({
               'name': FormControl<String>(
                   value: widget.entity?.name ?? '',
@@ -58,30 +56,28 @@ class EditPotFormState extends State<EditPotForm> {
                   value: widget.entity?.currency ?? 'BTC',
                   validators: [Validators.required])
             }),
-        children: [
-          Column(
-            children: [
-              ReactiveTextField(
-                formControlName: 'name',
-                decoration: const InputDecoration(
-                  labelText: 'Pot name',
+        builder: (BuildContext context, state) => Column(
+              children: [
+                ReactiveTextField(
+                  formControlName: 'name',
+                  decoration: const InputDecoration(
+                    labelText: 'Pot name',
+                  ),
                 ),
-              ),
-              ReactiveDropdownField(
-                formControlName: 'currency',
-                decoration: const InputDecoration(
-                  labelText: 'Currency',
-                ),
-                hint: const Text('Select Currency'),
-                items: listOfValue
-                    .map((currency) => DropdownMenuItem(
-                          value: currency,
-                          child: Row(children: [Text(currency)]),
-                        ))
-                    .toList(),
-              )
-            ],
-          )
-        ]);
+                ReactiveDropdownField(
+                  formControlName: 'currency',
+                  decoration: const InputDecoration(
+                    labelText: 'Currency',
+                  ),
+                  hint: const Text('Select Currency'),
+                  items: listOfValue
+                      .map((currency) => DropdownMenuItem(
+                            value: currency,
+                            child: Row(children: [Text(currency)]),
+                          ))
+                      .toList(),
+                )
+              ],
+            ));
   }
 }

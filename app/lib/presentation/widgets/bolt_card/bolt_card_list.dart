@@ -16,7 +16,18 @@ class BoltCardList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Header(AppLocalizations.of(context)!.boltCards),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Header(AppLocalizations.of(context)!.boltCards),
+            Button(
+                text: 'Add Card',
+                onPressed: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditBoltCard(
+                                  entity: BoltCard.fromJson({'name': ''}))))
+                    })
+          ]),
           const SizedBox(
             height: padding,
           ),
@@ -31,19 +42,10 @@ class BoltCardList extends StatelessWidget {
                   builder: (el) {
                     return BoltCardListItem(entity: el);
                   },
+                  emptyText: 'No cards added yet',
                   list: () {
                     return ListCubit(getIt<BoltCardRepository>());
-                  },
-                  appendItem: Button(
-                      text: 'Add Card',
-                      onPressed: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditBoltCard(
-                                        entity:
-                                            BoltCard.fromJson({'name': ''}))))
-                          })))
+                  }))
         ]);
   }
 }
