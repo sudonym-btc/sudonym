@@ -193,7 +193,7 @@ def ride_the_lightning(config, cluster_types):
                     "namespace": "default",
                     "metadata": {"name": base_name + "-secret"},
                     "type": "Opaque",
-                    "data": {"pass": "dGVzdGluZw=="},
+                    "data": {"pass": "dGVzdGluZw=="}, # Default development password "testing"
                 },
             },] if config["env"] == "development" else []),
         "base_name": base_name,

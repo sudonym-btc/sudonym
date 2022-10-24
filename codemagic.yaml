@@ -178,7 +178,7 @@ workflows:
         script: xcode-project use-profiles
       - name: build
         script: |
-          BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_ID") + 1)) 
+          BUILD_NUMBER=$(($(app-store-connect get-latest-test-flight-build-number "$APP_ID") + 1)) 
           cd app && flutter build ipa -t lib/main-prod.dart --release --export-options-plist=/Users/builder/export_options.plist --build-number=$BUILD_NUMBER
     publishing:
       app_store_connect:
