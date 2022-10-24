@@ -51,7 +51,6 @@ export async function downloadFiles(
 			path: envFile
 		});
 	}
-	console.log(process.env);
 }
 if (require.main === module) {
 	downloadFiles();

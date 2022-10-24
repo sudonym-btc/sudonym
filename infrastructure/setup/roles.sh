@@ -12,10 +12,21 @@ gcloud iam service-accounts create $ENV-api \
     --description="$ENV-api" \
     --display-name="$ENV-api"
 
+gcloud iam roles create bucketViewer \
+    --project $PROJECT_ID \
+    --title "Bucket Viewer" \
+    --description "This role has allows user to list buckets and get its objects" \
+    --permissions storage.buckets.get,storage.buckets.list,storage.objects.list,storage.multipartUploads.list
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$ENV-api@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="projects/$PROJECT_ID/roles/bucketViewer"
+
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:$ENV-api@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/cloudsql.client"
     
+# Kubernetes should be able to use the api service account
 gcloud iam service-accounts add-iam-policy-binding \
 --role="roles/iam.workloadIdentityUser" \
 --member="serviceAccount:$PROJECT_ID.svc.id.goog[default/api]" \
