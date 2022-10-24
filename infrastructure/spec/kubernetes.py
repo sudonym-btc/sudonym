@@ -64,6 +64,13 @@ def GenerateConfig(context):
                 "/apis/networking.k8s.io/v1/namespaces/{namespace}/ingresses/{name}",
             ]
         ),
+        "ServiceAccount": "".join(
+            [
+                cluster_types_root,
+                ":",
+                "/apis/networking.k8s.io/v1/namespaces/{namespace}/serviceaccounts/{name}",
+            ]
+        ),
     }
 
     resources = (

@@ -8,16 +8,16 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 
 # Create a service account for the API and link it to Kubernetes service account
-gcloud iam service-accounts create api \
-    --description="api" \
-    --display-name="api"
+gcloud iam service-accounts create $ENV-api \
+    --description="$ENV-api" \
+    --display-name="$ENV-api"
 gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:api@$PROJECT_ID.iam.gserviceaccount.com" \
+    --member="serviceAccount:$ENV-api@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/cloudsql.client"
 gcloud iam service-accounts add-iam-policy-binding \
 --role="roles/iam.workloadIdentityUser" \
 --member="serviceAccount:$PROJECT_ID.svc.id.goog[default/api]" \
-api@$PROJECT_ID.iam.gserviceaccount.com
+$ENV-api@$PROJECT_ID.iam.gserviceaccount.com
 
 # Cloud build account permissions
 gcloud projects add-iam-policy-binding $PROJECT_ID \

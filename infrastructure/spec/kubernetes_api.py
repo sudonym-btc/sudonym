@@ -14,7 +14,7 @@ def api(config, cluster_types):
                 "name": base_name + "-service-account",
                 "type": cluster_types["ServiceAccount"],
                 "metadata": {},
-                "proeprties": {
+                "properties": {
                     "apiVersion": "v1",
                     "kind": "ServiceAccount",
                     "metadata": {
