@@ -11,9 +11,11 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 gcloud iam service-accounts create $ENV-api \
     --description="$ENV-api" \
     --display-name="$ENV-api"
+
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:$ENV-api@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/cloudsql.client"
+    
 gcloud iam service-accounts add-iam-policy-binding \
 --role="roles/iam.workloadIdentityUser" \
 --member="serviceAccount:$PROJECT_ID.svc.id.goog[default/api]" \

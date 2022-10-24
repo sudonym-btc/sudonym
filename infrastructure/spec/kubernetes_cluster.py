@@ -22,6 +22,9 @@ def cluster(
                     #         {"resourceType": "cpu", "minimum": 1, "maximum": 10},
                     #     ],
                     # },
+                    "workloadIdentityConfig": {
+                        "workloadPool": config["project"] + ".svc.id.goog"
+                    },
                     "nodePools": [
                         {
                             "name": "pool-1",
@@ -29,6 +32,9 @@ def cluster(
                             "config": {
                                 "machineType": config["cluster"]["machineType"],
                                 "diskSizeGb": config["cluster"]["diskSizeGb"],
+                                "workloadMetadataConfig": {
+                                    "mode": "GKE_METADATA"
+                                },
                                 "oauthScopes": [
                                     "https://www.googleapis.com/auth/" + s
                                     for s in [

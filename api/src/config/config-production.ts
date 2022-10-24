@@ -8,7 +8,7 @@ export const configProduction = () => {
 			name: 'app',
 			database: 'app',
 			dialect: 'mysql',
-			host: 'db.sudonym.app',
+			host: '127.0.0.1',
 			username: process.env.MYSQL_USER,
 			password: process.env.MYSQL_PASS,
 		}

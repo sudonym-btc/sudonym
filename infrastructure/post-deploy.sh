@@ -17,9 +17,7 @@ then
     kubectl create secret generic $1-ride-the-lightning-secret --from-file=key.txt
     rm key.txt
 
-    kubectl annotate serviceaccount \
-    api \
-    iam.gke.io/gcp-service-account=api@$PROJECT_NUM.iam.gserviceaccount.com
+    kubectl annotate serviceaccount --overwrite api iam.gke.io/gcp-service-account=$ENV-api@$PROJECT_ID.iam.gserviceaccount.com
 
     helm repo add jetstack https://charts.jetstack.io
     help repo add ingress-nginx https://kubernetes.github.io/ingress-nginx

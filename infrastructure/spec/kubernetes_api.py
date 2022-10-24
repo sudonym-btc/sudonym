@@ -13,10 +13,11 @@ def api(config, cluster_types):
             {
                 "name": base_name + "-service-account",
                 "type": cluster_types["ServiceAccount"],
-                "metadata": {},
+                "metadata": {"dependsOn": [kube_type_name]},
                 "properties": {
                     "apiVersion": "v1",
                     "kind": "ServiceAccount",
+                    "namespace": "default",
                     "metadata": {
                         "name": "api"
                     }
@@ -66,11 +67,11 @@ def api(config, cluster_types):
                         "replicas": 1,
                         "selector": {"matchLabels": {"app": base_name}},
                         "template": {
-                            "serviceAccountName": "api",
                             "metadata": {
                                 "labels": {"app": base_name},
                             },
                             "spec": {
+                                "serviceAccountName": "api",
                                 "initContainers": [
                                     {
                                         "name": "wait",
@@ -103,7 +104,20 @@ def api(config, cluster_types):
                                             },
                                         ],
                                     }
-                                ],
+                                ] + ([{
+                                    "name": "cloud-sql-proxy",
+                                    "image": "gcr.io/cloudsql-docker/gce-proxy:1.32.0", # make sure the use the latest version
+                                    "command": [ "/cloud_sql_proxy", "-log_debug_stdout", "-instances=" + config["project"] + ":us-central1:production-db=tcp:3306" ],
+                                    "securityContext": {
+                                        "runAsNonRoot": True
+                                    },
+                                    "resources": {
+                                        "requests": {
+                                        #   memory: "2Gi"
+                                        #   cpu:    "1"
+                                        }
+                                    }
+                                }] if config["env"] != "development" else []),
                                 "volumes": [
                                     {
                                         "name": getVolumeClaimName(
