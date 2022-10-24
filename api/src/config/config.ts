@@ -17,7 +17,7 @@ const env = process.env.NODE_ENV || 'development';
 export const getConfig = () => {
 	return {
 		...config,
-		...configs[env],
+		...configs[env](),
 	};
 };
 

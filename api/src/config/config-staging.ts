@@ -1,4 +1,4 @@
-export const configStaging = {
+export const configStaging = () => ({
 	domain: 'staging.sudonym.app',
 	network: 'mainnet',
 	database: {
@@ -6,4 +6,4 @@ export const configStaging = {
 		dialect: 'sqlite',
 		storage: './database.sqlite',
 	},
-};
+});

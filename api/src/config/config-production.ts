@@ -1,4 +1,4 @@
-export const configProduction = {
+export const configProduction = () => ({
 	domain: 'sudonym.app',
 	network: 'mainnet',
 	database: {
@@ -9,4 +9,4 @@ export const configProduction = {
 		password: process.env.MYSQL_PASS,
 		database: 'test',
 	},
-};
+});

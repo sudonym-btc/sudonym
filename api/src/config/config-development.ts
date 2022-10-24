@@ -1,4 +1,4 @@
-export const configDevelopment = {
+export const configDevelopment = () => ({
 	domain: 'local.development',
 	database: {
 		name: 'app',
@@ -13,4 +13,4 @@ export const configDevelopment = {
 	// 	dialect: 'sqlite',
 	// 	storage: './database.sqlite',
 	// },
-};
+});
