@@ -1,4 +1,8 @@
 #!/bin/bash
+export PROJECT_ID=$(gcloud config get project)
+ENV=$1
+export ENV=${ENV:="development"}
+export PROJECT_NUM=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
 if [ "$1" != "development" ];
 then
@@ -12,6 +16,10 @@ then
     gcloud secrets versions access latest --secret="$1-ride-the-lightning-secret" --out-file="key.txt"  
     kubectl create secret generic $1-ride-the-lightning-secret --from-file=key.txt
     rm key.txt
+
+    kubectl annotate serviceaccount \
+    api \
+    iam.gke.io/gcp-service-account=api@$PROJECT_NUM.iam.gserviceaccount.com
 
     helm repo add jetstack https://charts.jetstack.io
     help repo add ingress-nginx https://kubernetes.github.io/ingress-nginx

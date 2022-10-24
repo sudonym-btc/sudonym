@@ -11,6 +11,18 @@ def api(config, cluster_types):
     return {
         "resources": [
             {
+                "name": base_name + "-service-account",
+                "type": cluster_types["ServiceAccount"],
+                "metadata": {},
+                "proeprties": {
+                    "apiVersion": "v1",
+                    "kind": "ServiceAccount",
+                    "metadata": {
+                        "name": "api"
+                    }
+                }
+            },
+            {
                 "name": getServiceName(base_name),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
@@ -54,6 +66,7 @@ def api(config, cluster_types):
                         "replicas": 1,
                         "selector": {"matchLabels": {"app": base_name}},
                         "template": {
+                            "serviceAccountName": "api",
                             "metadata": {
                                 "labels": {"app": base_name},
                             },
