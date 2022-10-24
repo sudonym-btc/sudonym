@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +37,18 @@ void mainCommon(String? env) async {
   configureInjection(env);
 
   await SentryFlutter.init(
-    (options) => options.dsn =
-        'REDACTED_SENTRY_DSN',
-    appRunner: () => runApp(const App()),
-  );
+      (options) => options.dsn =
+          'REDACTED_SENTRY_DSN',
+      appRunner: () => runZonedGuarded(() async {
+            runApp(const App());
+          }, (error, stackTrace) {
+            print("Error FROM OUT_SIDE FRAMEWORK ");
+            print("--------------------------------");
+            print("Error :  $error");
+            print("StackTrace :  $stackTrace");
+          }));
+
+  FlutterError.onError = (details) => print(details);
 }
 
 class App extends StatefulWidget {

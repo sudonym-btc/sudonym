@@ -27,6 +27,8 @@ export class LnUrlHandlerService {
 						lnurlId: tag.id,
 					},
 				});
+				console.log(id, query, 'parent');
+
 
 				// Create a new receiver, this time bolt11 not lnurl
 				const receiver = await this.receiveService.create({
@@ -37,12 +39,14 @@ export class LnUrlHandlerService {
 					amount: query.amount / MSATOSHIS,
 					amountCurrency: 'BTC',
 				});
+				console.log('here');
 				return {
 					// disposable: false,
 					pr: receiver.data,
 					routes: [],
 				};
 			case 'withdrawRequest':
+
 				const sender = await this.senderService.findOne({
 					where: {
 						lnurlId: tag.id,
@@ -50,6 +54,8 @@ export class LnUrlHandlerService {
 				});
 				this.logger.debug(sender.toJSON());
 				const parsed = bolt11.decode(query.pr);
+
+				console.log(sender);
 
 				const pot = await this.potService.findForUser(
 					sender.userId,

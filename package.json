@@ -17,8 +17,8 @@
     "watch:api": "echo $(ksync init) && (ksync watch &) && sleep 5 && ksync delete --all && ksync create --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
     "watch:models": "ksync create --selector=app=development-api $(pwd)/models /usr/src/app/models",
     "watch:wait": "bash -c 'while ksync get | grep watching > /dev/null; do sleep 1 echo \"working...\" done'",
-    "minikube:dashboard": "kill -9 $(pgrep -f 'minikube dashboard') && minikube dashboard >/dev/null &",
-    "minikube:tunnel": "kill -9 $(pgrep -f 'minikube tunnel') && minikube tunnel >/dev/null &",
+    "minikube:dashboard": "pkill 'minikube dashboard' || true && minikube dashboard >/dev/null &",
+    "minikube:tunnel": "pkill 'minikube tunnel' || true && minikube tunnel >/dev/null &",
     "minikube:start": "minikube start --driver=docker",
     "minikube:dns": "sudo echo && npm run minikube:tunnel && npm run minikube:dashboard && parallelshell 'minikube addons enable gcp-auth' 'minikube addons enable ingress' 'minikube addons enable ingress-dns' 'npx ts-node infrastructure/minikube/minikube-dns.ts'",
     "minikube:deploy": "echo $(kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission) && python3 infrastructure/minikube/minikube.py && minikube kubectl -- apply -f infrastructure/minikube/minikube.yaml --validate=false",
@@ -56,6 +56,7 @@
     ]
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "ts-node": "^10.8.2"
   },
   "devDependencies": {

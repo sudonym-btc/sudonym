@@ -6,6 +6,7 @@ import { LnUrlService } from 'module/lightning/lnurl/lnurl.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { SenderService } from 'module/sender/sender.service';
 import { scaffoldGroup } from '../mock/scaffold-group';
+import * as bolt11 from 'bolt11';
 
 scaffoldGroup('LnUrl', (scaffold) => {
 	describe('do', () => {
@@ -14,6 +15,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 				const url = 'lnurlw://coincorner.com/lnurlw';
 				const info = await scaffold.app.get(ActionService).parse(url);
 				expect(info.withdraw).toBeTruthy();
+				info.withdraw.potId = scaffold.entities.pot[0].id;
 				const execute = await scaffold.app
 					.get(ActionService)
 					.execute(info.withdraw);
@@ -76,8 +78,8 @@ scaffoldGroup('LnUrl', (scaffold) => {
 					.handle(receiver.lnurlId, {
 						amount: 1000,
 					});
-				console.log(tag);
-				// expect(tag.pr); @TODO: parse pr to check it has right amount
+				
+				expect(bolt11.decode(tag.pr).millisatoshis).toBe("1000");
 			});
 
 			describe('lightningAddress', () => {
@@ -85,7 +87,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 					const p = await scaffold.app.get(LightningAddressController)
 						.lightningAddress(scaffold.entities.user[0].lightningAddress) as PaymentRequest;
 					
-					expect(p.minSendable).toBe(0);
+					expect(p.minSendable).toBe(1000);
 					expect(p.tag).toBe('payRequest');
 				});
 			});

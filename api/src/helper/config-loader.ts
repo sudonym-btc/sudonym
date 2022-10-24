@@ -2,6 +2,7 @@ import { Storage } from '@google-cloud/storage';
 import * as fs from 'fs';
 import { getConfig } from '../config/config';
 const storage = new Storage();
+import * as dotenv from 'dotenv';
 
 // Downloads config files from google cloud project
 export async function downloadFiles(
@@ -25,7 +26,7 @@ export async function downloadFiles(
 		for (const file of files) {
 			// Ignore folders
 			if (file.name.split('.').length == 1) continue;
-			const destination = process.cwd() + '/src/config/' + file.name;
+			const destination = `${process.cwd()}/src/config/${file.name}`;
 
 			try {
 				await bucket.file(file.name).download({
@@ -38,6 +39,16 @@ export async function downloadFiles(
 				console.error(e);
 			}
 		}
+	}
+
+	/**
+	 * Set environment variables if a .env file is found
+	 */
+	const envFile = `${process.cwd()}/src/config/.env`;
+	if (fs.existsSync(envFile)) {
+		dotenv.config({
+			path: envFile
+		});
 	}
 }
 if (require.main === module) {

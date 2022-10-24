@@ -144,7 +144,6 @@ export class ActionService {
 			});
 		} else if (action instanceof Withdraw) {
 			this.logger.warn('Withdrawing', action);
-
 			const receiver = await this.receiverService.create({
 				potId: action.potId,
 				amountCurrency: 'BTC',
@@ -157,7 +156,6 @@ export class ActionService {
 				).amount,
 				type: 'bolt11',
 			});
-
 			const response = this.getCallback(
 				action.remoteResponse.data.callback,
 				{

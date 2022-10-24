@@ -58,9 +58,6 @@ export class ReceiverService extends BaseService(Receiver) {
 							!!description
 						)
 					).bolt11;
-					console.log(params);
-					const inv = bolt11.decode(params.data);
-					console.log(inv);
 					break;
 				case 'bolt12':
 					params.data = (

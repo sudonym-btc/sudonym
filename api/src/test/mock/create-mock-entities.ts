@@ -18,6 +18,7 @@ import { WithdrawRequest } from '@sudonym/models';
 import { ActionService } from 'module/action/action.service';
 import * as bolt11 from 'bolt11';
 import { applyGlobals } from 'app.globals';
+import { randomBytes } from 'crypto';
 
 export type mockScaffold = {
 	app: INestApplication;
@@ -121,8 +122,7 @@ class MockLightningNodeService extends LightningNodeService {
 			},
 			true
 		);
-		console.log(obj);
-		return { ...obj, bolt11: obj.paymentRequest };
+		return { ...obj, bolt11: bolt11.sign(obj, randomBytes(32)).paymentRequest };
 	}
 	getFees(pubkey: any, amount?: number): Promise<number> {
 		throw new Error('Method not implemented.');

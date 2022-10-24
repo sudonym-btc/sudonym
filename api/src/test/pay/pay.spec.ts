@@ -5,6 +5,7 @@ import { scaffoldGroup } from '../mock/scaffold-group';
 import waitForExpect from 'wait-for-expect';
 import { PotService } from 'module/pot/pot.service';
 import { transaction } from '@sudonym/models/src/mock/bolt11.mock';
+import { SATOSHIS } from '@sudonym/models';
 
 scaffoldGroup('Payment', (scaffold) => {
 	describe('Bolt11', () => {
@@ -78,9 +79,10 @@ scaffoldGroup('Payment', (scaffold) => {
 					).toBe(1);
 					expect(
 						(scaffold.app.get(LightningNodeService) as any)
-							.withdrawOnChain.mock.calls[0]
-					).toContain({
-						amount: 1,
+							.withdrawOnChain.mock.calls[0][0]
+					).toMatchObject({
+						address: 'bc1qwerty',
+						satoshis: 1 * SATOSHIS,
 					});
 				}),
 				firstValueFrom(

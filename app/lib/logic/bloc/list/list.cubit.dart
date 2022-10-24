@@ -10,18 +10,27 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   final CrudRepository _repository;
   Map<String, dynamic> where;
   String order = 'DESC';
-  StreamSubscription? updater;
+  StreamSubscription? onCreated;
+  StreamSubscription? onUpdated;
 
   ListCubit(this._repository, {this.where = const {}})
       : super(ListCubitState(
             data: const [], metadata: const {}, loading: false)) {
-    if (updater == null) {
+    if (onCreated == null) {
       loggy.d('Subscribing to ${_repository.endpoint}');
     }
-    updater ??= _repository.created.stream.listen((event) async {
+    onCreated ??= _repository.created.stream.listen((event) async {
       loggy.d(
           "Created ${event.toJson()["id"].toString()} reloading ${_repository.endpoint}");
       await loadPrevious();
+    });
+
+    onUpdated ??= _repository.updated.stream.listen((event) async {
+      emit(ListCubitState(
+          data: state.data
+              .map((e) => e.id == (event as dynamic).id ? event : e)
+              .toList(),
+          metadata: state.metadata));
     });
   }
 
@@ -99,7 +108,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   @override
   close() async {
     loggy.d('Unsubscribing to ${_repository.endpoint}');
-    await updater?.cancel();
+    await onCreated?.cancel();
+    await onUpdated?.cancel();
     return super.close();
   }
 
@@ -118,7 +128,7 @@ class ListCubitState<T> extends Equatable implements ListState<T> {
   bool loading;
 
   ListCubitState(
-      {required this.data, required this.metadata, required this.loading});
+      {required this.data, required this.metadata, this.loading = false});
 
   @override
   List<Object?> get props => [data, metadata, loading];

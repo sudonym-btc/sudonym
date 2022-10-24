@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as child_process from 'child_process';
 
-const minikubeIp = child_process.execSync('minikube ip').toString().trim();
+const minikubeIp = process.platform == 'darwin' ? '127.0.0.1' : child_process.execSync('minikube ip').toString().trim();
 console.log('Binding local addresses to minikube IP ', minikubeIp);
 
 if (!minikubeIp) throw Error('Could not get minikube IP');

@@ -1,4 +1,4 @@
-from helper import getConfigName, getServiceName, getVolumeClaimName
+from helper import getConfigName, getServiceName, getVolumeClaimName, getSecretName
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -108,8 +108,7 @@ def ride_the_lightning(config, cluster_types):
                         kube_type_name,
                         getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
                     ] + ([
-                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
-                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3)
+                        getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2)
                         ] if config["env"] != "production" else [])
                 },
                 "properties": {
@@ -133,7 +132,17 @@ def ride_the_lightning(config, cluster_types):
                                     {
                                         "name": base_name,
                                         "image": "shahanafarooqui/rtl:0.13.1",
-                                        "command": ["/sbin/tini", "-g", "--", "sh", "-c", "ls && cp RTL-Config-Read-Only.json RTL-Config.json && node rtl"],
+                                        "command": ["/sbin/tini", "-g", "--", "sh", "-c", 'cp RTL-Config-Read-Only.json RTL-Config.json && sed "s/testing/$RTL_PASS/g" -i RTL-Config.json && node rtl'],
+                                        "env": [{
+                                            "name": "RTL_PASS",
+                                            "valueFrom": {
+                                                "secretKeyRef": {
+                                                    "name": config["env"] + "-ride-the-lightning-secret",
+                                                    "key": "pass",
+                                                    "optional": False
+                                                }
+                                            }
+                                        }],
                                         "volumeMounts": [
                                             {
                                                 "mountPath": "RTL/RTL-Config-Read-Only.json",
@@ -174,6 +183,18 @@ def ride_the_lightning(config, cluster_types):
                     },
                 },
             },
-        ],
+        ] + ([ {
+                "name": getSecretName(base_name),
+                "type": cluster_types["Secret"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Secret",
+                    "namespace": "default",
+                    "metadata": {"name": base_name + "-secret"},
+                    "type": "Opaque",
+                    "data": {"pass": "dGVzdGluZw=="},
+                },
+            },] if config["env"] == "development" else []),
         "base_name": base_name,
     }

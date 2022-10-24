@@ -8,3 +8,6 @@ gcloud secrets describe $ENV-cert-resolver
 gcloud secrets add-iam-policy-binding $ENV-cert-resolver \
     --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
     --role=roles/secretmanager.secretAccessor
+
+# Create a random password for RTL lightning node admin if it does not yet exist
+echo '{"pass": "'$(openssl rand -base64 12)'"}' | gcloud secrets create $ENV-ride-the-lightning-secret --data-file=-
