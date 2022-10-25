@@ -151,7 +151,7 @@ workflows:
       - *getpackages
       - name: "build"
         script: |
-          BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name 'com.sudonym.sudonym') + 1)
+          BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name 'com.sudonym.sudonym') + 1))
           cd app
           echo $BUILD_NUMBER
           flutter build appbundle --build-number=$BUILD_NUMBER -t lib/main-prod.dart --release
