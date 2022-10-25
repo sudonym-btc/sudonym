@@ -31,7 +31,10 @@ class AmountTextState extends State<AmountText> {
     val = FormatCurrency().format(widget.fromCurrency, widget.amount);
     getIt<CurrencyRepository>()
         .getRate(
-            widget.fromCurrency, widget.toCurrency, widget.amount, widget.date)
+            fromCurrency: widget.fromCurrency,
+            toCurrency: widget.toCurrency,
+            amount: widget.amount,
+            time: widget.date)
         .then((value) => setState(() =>
             {val = FormatCurrency().format(widget.toCurrency, value.amount)}));
     super.initState();

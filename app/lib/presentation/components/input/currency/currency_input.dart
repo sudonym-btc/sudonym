@@ -50,33 +50,74 @@ class CurrencyInputOutput {
 
 class _CurrencyInputState extends State<CurrencyInput> {
   StreamController<num> streamController = StreamController();
-  final MoneyMaskedTextController _controller = MoneyMaskedTextController(
-      initialValue: 0.0, decimalSeparator: '.', thousandSeparator: ',');
+  MoneyMaskedTextController _controller = MoneyMaskedTextController(
+      initialValue: 0.0,
+      decimalSeparator: '.',
+      thousandSeparator: ',',
+      precision: 2);
+
+  num bounceValueBase = 1;
+  num bounceValue = 1;
+
   num altValue = 0;
   int currCurrency = 0;
   int altCurrency = 1;
+
   bool altValueLoading = false;
   late Future<CurrencyResponse> output;
   late Future<CurrencyResponse> alt;
+
+  setCurrentCurrency(int i) {
+    setState(() {
+      currCurrency = i >= widget.currencies.length ? 0 : i;
+      altCurrency =
+          currCurrency + 1 >= widget.currencies.length ? 0 : currCurrency + 1;
+
+      bool switchedToBTC = widget.currencies[currCurrency] == 'BTC';
+      if (switchedToBTC) {
+        _controller = MoneyMaskedTextController(
+            initialValue: altValue.toDouble() * SATOSHIS,
+            decimalSeparator: '',
+            thousandSeparator: ',',
+            precision: 0);
+      } else {
+        _controller = MoneyMaskedTextController(
+            initialValue: altValue.toDouble(),
+            decimalSeparator: '.',
+            thousandSeparator: ',',
+            precision: 2);
+      }
+      listeners();
+      streamController.add(_controller.numberValue);
+    });
+  }
+
+  getBounceValue() {}
+
+  setNextCurrency() {
+    setCurrentCurrency(currCurrency + 1);
+  }
+
+  listeners() {
+    _controller
+        .addListener(() => streamController.add(_controller.numberValue));
+  }
 
   @override
   void initState() {
     super.initState();
     getIt<CurrencyRepository>()
         .getRate(
-            widget.initialValueCurrency,
-            widget.currencies[currCurrency],
-            widget.initialValue != null
+            fromCurrency: widget.initialValueCurrency,
+            toCurrency: widget.currencies[currCurrency],
+            amount: widget.initialValue != null
                 ? widget.initialValue!
-                : (widget.min ?? 0),
-            null)
+                : (widget.min ?? 0))
         .then((value) {
       _controller.updateValue(value.amount.toDouble());
     });
 
-    _controller.addListener(() {
-      streamController.add(_controller.numberValue);
-    });
+    listeners();
 
     streamController.stream
         .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
@@ -90,35 +131,29 @@ class _CurrencyInputState extends State<CurrencyInput> {
           print(event);
           print("output");
         });
-    // .pipe((element) {
-    //   print(element);
-    //   setState(() {
-    //     altValueLoading = true;
-    //   });
-    //   return element;
-    // })
-    // .asStream()
-    // .forEach((element) {
-    //   print(element);
-    // })
-    // .asStream()
-    // .asyncMap((e) async => await getValues(e))
-    // .listen((event) {
-    //   print(event);
-    // });
+
+    // runs every 1 second
+    Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      if (bounceValue > bounceValueBase) {
+        bounceValue = bounceValue / 10;
+      }
+    });
   }
 
   getValues(value) {
     output = getIt<CurrencyRepository>().getRate(
-        widget.currencies[currCurrency],
-        widget.outputCurrency,
-        _controller.numberValue,
-        null);
+        fromCurrency: widget.currencies[currCurrency],
+        toCurrency: widget.outputCurrency,
+        amount: _controller.numberValue *
+            (widget.currencies[currCurrency] == 'BTC' ? 1 / SATOSHIS : 1));
 
     alt = widget.currencies[altCurrency] == widget.outputCurrency
         ? output
-        : getIt<CurrencyRepository>().getRate(widget.currencies[currCurrency],
-            widget.currencies[altCurrency], _controller.numberValue, null);
+        : getIt<CurrencyRepository>().getRate(
+            fromCurrency: widget.currencies[currCurrency],
+            toCurrency: widget.currencies[altCurrency],
+            amount: _controller.numberValue *
+                (widget.currencies[currCurrency] == 'BTC' ? 1 / SATOSHIS : 1));
 
     output.then((value) {
       widget
@@ -135,27 +170,72 @@ class _CurrencyInputState extends State<CurrencyInput> {
         });
   }
 
+  updateValue(num v) {
+    bounceValue = bounceValue * 10;
+    if (_controller.numberValue + v < (widget.min ?? 0)) {
+      return _controller.updateValue((widget.min ?? 0).toDouble());
+    }
+    _controller.updateValue(_controller.numberValue + v);
+  }
+
   @override
   Widget build(BuildContext context) {
-    updateValue(num v) {
-      if (_controller.numberValue <= 0 && v <= 0) return;
-      _controller.updateValue(_controller.numberValue + v);
-    }
-
     bool negativeEnabled = _controller.numberValue > (widget.min ?? 0);
-    bool positiveEnabled = true;
+    bool positiveEnabled = _controller.numberValue < (widget.max ?? 99999999);
 
     List<MaterialState> negativeButtonState =
         negativeEnabled ? [] : [MaterialState.disabled];
     List<MaterialState> positiveButtonState =
         positiveEnabled ? [] : [MaterialState.disabled];
 
-    return Row(children: <Widget>[
+    Ink negativeButton = Ink(
+        decoration: buttonDecoration(context, negativeEnabled),
+        child: IconButton(
+          onPressed: negativeEnabled
+              ? () => updateValue(-bounceValueBase * bounceValue)
+              : null,
+          color: Theme.of(context)
+              .elevatedButtonTheme
+              .style!
+              .foregroundColor!
+              .resolve(Set.of(negativeButtonState)),
+          icon: const Icon(Icons.remove),
+        ));
+    Ink positiveButton = Ink(
+        decoration: buttonDecoration(context, positiveEnabled),
+        child: IconButton(
+          onPressed: positiveEnabled
+              ? () => updateValue(bounceValue * bounceValue)
+              : null,
+          color: Theme.of(context)
+              .elevatedButtonTheme
+              .style!
+              .foregroundColor!
+              .resolve(Set.of(positiveButtonState)),
+          icon: const Icon(Icons.add),
+        ));
+
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
       Expanded(
         child: TextField(
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           decoration: InputDecoration(
-              prefixText: '\$',
-              labelText: AppLocalizations.of(context)!.amount,
+              // constraints: BoxConstraints(minHeight: 60, maxHeight: 60),
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              prefixText:
+                  '${getCurrencySymbol(widget.currencies[currCurrency])}  ',
+              prefixStyle: TextStyle(),
+              // suffixText: widget.currencies[altCurrency],
+              // suffixStyle: const TextStyle(fontSize: 10),
+              suffixIcon: IconButton(
+                iconSize: 24,
+                onPressed: setNextCurrency,
+                icon: Icon(
+                  Icons.swap_vert,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
               helperText: altValueLoading
                   ? '...'
                   : FormatCurrency()
@@ -168,31 +248,11 @@ class _CurrencyInputState extends State<CurrencyInput> {
       const SizedBox(
         width: padding / 2,
       ),
-      Ink(
-          decoration: buttonDecoration(context, negativeEnabled),
-          child: IconButton(
-            onPressed: negativeEnabled ? () => updateValue(-1) : null,
-            color: Theme.of(context)
-                .elevatedButtonTheme
-                .style!
-                .foregroundColor!
-                .resolve(Set.of(negativeButtonState)),
-            icon: const Icon(Icons.remove),
-          )),
+      negativeButton,
       const SizedBox(
         width: padding / 2,
       ),
-      Ink(
-          decoration: buttonDecoration(context, positiveEnabled),
-          child: IconButton(
-            onPressed: positiveEnabled ? () => updateValue(1) : null,
-            color: Theme.of(context)
-                .elevatedButtonTheme
-                .style!
-                .foregroundColor!
-                .resolve(Set.of(positiveButtonState)),
-            icon: const Icon(Icons.add),
-          ))
+      positiveButton
     ]);
   }
 }

@@ -44,4 +44,20 @@ class Button extends StatelessWidget {
         text: text,
         icon: icon,
       );
+  factory Button.round(
+          {Color foregroundColor = Colors.white,
+          Color backgroudColor = Colors.transparent,
+          required String text,
+          Function()? onPressed,
+          Widget? icon}) =>
+      Button(
+        style: raisedButtonStyle.copyWith(
+            minimumSize: MaterialStateProperty.resolveWith(
+                (states) => const Size(48, 48)),
+            maximumSize: MaterialStateProperty.resolveWith(
+                (states) => const Size(48, 48))),
+        onPressed: onPressed,
+        text: text,
+        icon: icon,
+      );
 }

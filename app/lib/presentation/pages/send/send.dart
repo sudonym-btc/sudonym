@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
@@ -74,19 +75,38 @@ class _SendPageState extends State<SendPage> {
                     children: [
                       const SizedBox(height: padding),
                       invoiceInput,
-                      const SizedBox(height: padding),
+                      const SizedBox(height: padding * 2),
                       Expanded(
-                          child: ListWidget(
-                        emptyText: 'No contacts',
-                        list: () => listCubit,
-                        builder: (el) {
-                          return ContactListItem(
-                              contact: el,
-                              onPressed: () => getIt<ActionTriggerService>()
-                                  .trigger(el.ContactAddresses[0].address,
-                                      context, widget.potId));
-                        },
-                      ))
+                          child: Column(children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Header('Contacts'),
+                              Button(
+                                  text: 'Add',
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EditContact(
+                                                  entity: Contact.fromJson({
+                                                'ContactAddresses': [
+                                                  {'address': ''}
+                                                ]
+                                              })))))
+                            ]),
+                        Expanded(
+                            child: ListWidget(
+                          emptyText: 'No contacts',
+                          list: () => listCubit,
+                          builder: (el) {
+                            return ContactListItem(
+                                contact: el,
+                                onPressed: () => getIt<ActionTriggerService>()
+                                    .trigger(el.ContactAddresses[0].address,
+                                        context, widget.potId));
+                          },
+                        ))
+                      ]))
                     ],
                   ))),
         ));

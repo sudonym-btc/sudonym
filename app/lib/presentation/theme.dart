@@ -67,7 +67,7 @@ ThemeData getTheme({bool light = true}) {
 }
 
 const padding = 12.0;
-const buttonRadius = 44 / 2;
+const buttonRadius = 48 / 2;
 
 //colors
 const primary = Colors.indigo;

@@ -23,6 +23,7 @@ dependencies:
   get_it: ^7.2.0
   dio: ^4.0.4
   native_flutter_proxy: ^0.1.15
+  dio_cache_interceptor: ^3.3.1
   sudonym.models:
     path: ../models/dart
   firebase_auth: ^3.4.1
@@ -67,7 +68,7 @@ dev_dependencies:
     sdk: flutter
   firebase_auth_mocks: ^0.8.4
   google_sign_in_mocks: ^0.2.1
-  widgetbook: ^2.3.0
+  widgetbook: ^2.4.1
   icons_launcher: ^2.0.5
   injectable_generator:
   # add build runner if not already added

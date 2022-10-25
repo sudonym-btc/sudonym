@@ -14,8 +14,11 @@ class MockCurrencyRepository implements CurrencyRepository {
   Dio dio;
 
   @override
-  Future<CurrencyResponse> getRate(String fromCurrency, String toCurrency,
-      num amount, DateTime? time) async {
+  Future<CurrencyResponse> getRate(
+      {required String fromCurrency,
+      required String toCurrency,
+      num amount = 1,
+      DateTime? time}) async {
     CurrencyResponse c = CurrencyResponse(Random().nextDouble() * amount);
     return c;
   }

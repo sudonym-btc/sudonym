@@ -18,7 +18,13 @@ class _QRPageState extends State<QRPage> {
         color: Theme.of(context).backgroundColor,
         child: Stack(children: [
           QRView(widget.potId),
-          SafeArea(child: Scaffold(appBar: AppBar()))
+          SafeArea(
+              child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+            ),
+            backgroundColor: Colors.transparent,
+          ))
         ]));
   }
 }
