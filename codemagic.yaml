@@ -154,8 +154,8 @@ workflows:
           BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'com.sudonym.sudonym')
           cd app
           echo $BUILD_NUMBER
-          flutter build appbundle -t lib/main-prod.dart --release --build-number=$BUILD_NUMBER
-          flutter build apk -t lib/main-prod.dart --release --build-number=$BUILD_NUMBER
+          flutter build appbundle --build-number=$BUILD_NUMBER -t lib/main-prod.dart --release
+          flutter build apk --build-number=$BUILD_NUMBER -t lib/main-prod.dart --release
       - *ghrelease
     publishing:
       google_play:
