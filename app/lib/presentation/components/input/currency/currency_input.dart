@@ -1,50 +1,50 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:rxdart/rxdart.dart';
 
 const List<String> defaultCurrencies = ['USD', 'BTC'];
 
-class CurrencyInput extends StatefulWidget {
+class CurrencyInput extends FormField<CurrencyInputOutput> {
   final Function(CurrencyInputOutput)? onChanged;
   final List<String> currencies;
-  final num? min;
-  final num? max;
-  final num? initialValue;
-  final String initialValueCurrency;
-  final String outputCurrency;
+  final num min;
+  late String? minCurrency;
+  final num max;
+  late String? maxCurrency;
 
-  const CurrencyInput(
-      {Key? key,
-      this.initialValueCurrency = 'BTC',
-      this.initialValue,
-      this.min,
-      this.max,
+  CurrencyInput(
+      {super.key,
+      this.minCurrency,
+      this.min = 0,
+      this.maxCurrency,
+      this.max = 999999999,
       this.onChanged,
-      this.outputCurrency = 'BTC',
-      this.currencies = defaultCurrencies})
-      : super(key: key);
+      this.currencies = defaultCurrencies}) : super(
+    builder: (FormFieldState<CurrencyInputOutput> state) {
+      return BlocProvider(
+      create: (_) => getIt<CurrencyInputCubit>(),
+      child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(builder: (context, state) {
 
-  @override
-  State<StatefulWidget> createState() {
-    return _CurrencyInputState();
-  }
+
+    }, ));
+    }) {
+        minCurrency ??= initialValue.currency;
+        maxCurrency ??= initialValue.currency;
+      }
 }
 
 class CurrencyInputOutput {
   num amount;
   String currency;
-
-  List<List<dynamic>> outputs = [];
-
   CurrencyInputOutput(this.amount, this.currency);
 }
 
@@ -92,8 +92,6 @@ class _CurrencyInputState extends State<CurrencyInput> {
     });
   }
 
-  getBounceValue() {}
-
   setNextCurrency() {
     setCurrentCurrency(currCurrency + 1);
   }
@@ -120,19 +118,13 @@ class _CurrencyInputState extends State<CurrencyInput> {
     listeners();
 
     streamController.stream
-        .transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
-          setState(() {
-            altValueLoading = true;
-          });
-          sink.add(data);
-        }))
+        .debounceTime(const Duration(milliseconds: 500))
         .asyncMap((e) async => await getValues(e))
         .listen((event) {
-          print(event);
-          print("output");
-        });
+      print(event);
+      print("output");
+    });
 
-    // runs every 1 second
     Timer.periodic(const Duration(milliseconds: 200), (timer) {
       if (bounceValue > bounceValueBase) {
         bounceValue = bounceValue / 10;
@@ -141,6 +133,9 @@ class _CurrencyInputState extends State<CurrencyInput> {
   }
 
   getValues(value) {
+    setState(() {
+      altValueLoading = true;
+    });
     output = getIt<CurrencyRepository>().getRate(
         fromCurrency: widget.currencies[currCurrency],
         toCurrency: widget.outputCurrency,
@@ -180,7 +175,7 @@ class _CurrencyInputState extends State<CurrencyInput> {
 
   @override
   Widget build(BuildContext context) {
-    bool negativeEnabled = _controller.numberValue > (widget.min ?? 0);
+    bool negativeEnabled = output. > (widget.min ?? 0);
     bool positiveEnabled = _controller.numberValue < (widget.max ?? 99999999);
 
     List<MaterialState> negativeButtonState =

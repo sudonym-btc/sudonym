@@ -8,6 +8,7 @@ export 'entity/user.cubit.dart';
 export 'list/list.cubit.dart';
 
 export 'auth.cubit.dart';
+export 'currency_input.cubit.dart';
 export 'action_trigger.service.dart';
 export 'pages/send.cubit.dart';
 export 'pages/withdraw.cubit.dart';

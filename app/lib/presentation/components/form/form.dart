@@ -6,8 +6,6 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
-class FormController {}
-
 class CustomForm<
     C extends EntityCubit<CrudRepository<T>, CS, T>,
     CS extends EntityCubitState<T>,
@@ -36,7 +34,6 @@ class _CustomFormState<
     CS extends EntityCubitState<T>,
     T extends BaseClass> extends State<CustomForm> {
   late FormGroup formGroup;
-  late FormController controller;
 
   @override
   void initState() {
