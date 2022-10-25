@@ -149,8 +149,13 @@ workflows:
     scripts:
       - *localproperties
       - *getpackages
-      - "cd app && flutter build appbundle -t lib/main-prod.dart --release"
-      - "cd app && flutter build apk -t lib/main-prod.dart --release"
+      - name: "build"
+        script: |
+          LATEST_BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'com.sudonym.sudonym')
+          cd app
+          echo $LATEST_BUILD_NUMBER
+          flutter build appbundle -t lib/main-prod.dart --release
+          flutter build apk -t lib/main-prod.dart --release
       - *ghrelease
     publishing:
       google_play:
@@ -178,6 +183,7 @@ workflows:
         script: xcode-project use-profiles
       - name: build
         script: |
+          echo $FLUTTER_BUILD_NAME
           BUILD_NUMBER=$(($(app-store-connect get-latest-test-flight-build-number "$APP_ID") + 1)) 
           cd app && flutter build ipa -t lib/main-prod.dart --release --export-options-plist=/Users/builder/export_options.plist --build-number=$BUILD_NUMBER
     publishing:

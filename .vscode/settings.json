@@ -49,7 +49,7 @@
             "driver": "MySQL",
             "name": "production",
             "database": "app",
-            "username": "app",
+            "username": "api",
             "password": "3H5T0&3p#zIp",
             "connectionTimeout": 10
         }
