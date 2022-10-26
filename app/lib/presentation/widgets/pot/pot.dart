@@ -30,7 +30,7 @@ class PotPage extends StatelessWidget {
           ];
           if (state.loading) {
             if (state.entity!.name != null) {
-              children.add(const LinearProgressIndicator());
+              // children.add(const LinearProgressIndicator());
             } else {
               return const Center(child: CircularProgressIndicator());
             }
