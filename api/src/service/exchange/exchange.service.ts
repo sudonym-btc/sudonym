@@ -47,6 +47,12 @@ export class ExchangeService {
 					0,
 					0
 				) : null;
+				console.log(
+					market.symbol,
+					'1m',
+					timestamp, // Subtract two minutes so there will always be a ticker
+					100
+				);
 		const response = await this.exchanges[0].fetchOHLCV(
 			market.symbol,
 			'1m',
