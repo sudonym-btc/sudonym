@@ -63,7 +63,10 @@ def api(config, cluster_types):
                         "labels": {"app": base_name},
                     },
                     "spec": {
-                        "strategy": {"type": "Recreate"},
+                        "strategy": {"type": "RollingUpdate"},
+                        "rollingUpdate": {
+                            "maxSurge": 1
+                        },
                         "replicas": 1,
                         "selector": {"matchLabels": {"app": base_name}},
                         "template": {

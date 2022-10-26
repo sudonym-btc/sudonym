@@ -126,7 +126,7 @@ export class LightningNodeService {
 		});
 	}
 	async listPeers() {
-		return this.rpc('listpeers', []);
+		return (await this.rpc('listpeers', [])).peers;
 	}
 
 	async listChannels() {
