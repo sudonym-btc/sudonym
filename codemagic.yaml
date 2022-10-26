@@ -152,6 +152,7 @@ workflows:
       - name: "build"
         script: |
           BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name 'com.sudonym.sudonym') + 1))
+          echo "Build number: $BUILD_NUMBER"
           cd app
           flutter build appbundle --build-number=$BUILD_NUMBER -t lib/main-prod.dart --release
           flutter build apk --build-number=$BUILD_NUMBER -t lib/main-prod.dart --release
@@ -182,7 +183,7 @@ workflows:
         script: xcode-project use-profiles
       - name: build
         script: |
-          BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APP_ID") + 2)) 
+          BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APP_ID") + 1)) 
           echo "Build number: $BUILD_NUMBER"
           cd app && flutter build ipa -t lib/main-prod.dart --release --export-options-plist=/Users/builder/export_options.plist --build-number=$BUILD_NUMBER
     publishing:

@@ -64,7 +64,7 @@
 			<string>com.sudonym.wallet</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>lightning:</string>
+				<string>lightning</string>
 			</array>
 		</dict>
 		<dict>

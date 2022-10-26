@@ -4,7 +4,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 
 @Injectable()
 class NFCCubit extends Cubit<NFCCubitState> {
-  NFCCubit() : super(NFCCubitState()) {}
+  NFCCubit() : super(NFCCubitState());
 
   write(Uri url) async {
     emit(NFCCubitState(writing: true));
@@ -23,7 +23,10 @@ class NFCCubit extends Cubit<NFCCubitState> {
             print(e);
           }
         },
-        alertMessage: 'Successfully wrote to NFC card');
+        onError: (e) async {
+          emit(NFCCubitState(writing: false, e: e, success: false));
+        },
+        alertMessage: 'Hold NFC tag to device');
   }
 }
 
@@ -31,7 +34,7 @@ class NFCCubitState {
   bool writing = false;
   bool reading = false;
   bool success = false;
-  Error? e;
+  dynamic e;
 
   NFCCubitState({
     this.writing = false,
