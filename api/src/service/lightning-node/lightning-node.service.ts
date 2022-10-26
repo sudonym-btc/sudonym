@@ -187,7 +187,7 @@ export class LightningNodeService {
 				'Routing local payment',
 				JSON.stringify(circleRoute),
 				inv.tagsObject.payment_hash,
-				inv.millisatoshis || amount,
+				circleRoute[0].msatoshi,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1
@@ -196,7 +196,7 @@ export class LightningNodeService {
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
-				inv.millisatoshis || amount,
+				circleRoute[0].msatoshi,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1
