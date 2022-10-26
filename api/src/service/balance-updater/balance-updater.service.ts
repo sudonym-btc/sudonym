@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { BalanceLowError } from 'helper/errors';
 import { PotService } from 'module/pot/pot.service';
 import { Transaction } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
-import * as admin from 'firebase-admin';
 import { CurrencyService } from 'module/currency/currency.service';
 import {
 	FIREBASE_ADMIN,
@@ -36,6 +36,10 @@ export class BalanceUpdaterService {
 			if (entity.outgoing) {
 				newBalance -= amountInPotCurrency;
 				newSpendableBalance -= amountInPotCurrency;
+
+				if(newBalance < 0) {
+					throw new BalanceLowError();
+				}
 			} else {
 				newBalance += amountInPotCurrency;
 				if (entity.status == true) {

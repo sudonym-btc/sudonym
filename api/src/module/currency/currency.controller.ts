@@ -18,7 +18,7 @@ export class CurrencyController {
 			from,
 			to,
 			amount,
-			time ? new Date(time) : new Date()
+			time ? new Date(time) : null
 		);
 	}
 }
