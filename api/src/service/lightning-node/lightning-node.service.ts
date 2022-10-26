@@ -91,7 +91,7 @@ export class LightningNodeService {
 			this.logger.error(this.info.warning_lightningd_sync);
 		}
 
-		this.logger.verbose(
+		this.logger.log(
 			`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`
 		);
 		if (this.connectedChannels.length == 0) {
