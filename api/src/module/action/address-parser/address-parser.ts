@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { IAddressParser, Action, ActionRemoteResponse } from '@sudonym/models';
 import { fetchHttpOpts } from './http-agent';
+import { validate as validateBitcoinAddress } from 'bitcoin-address-validation';
 
 @Injectable()
 export class AddressParser implements IAddressParser {
@@ -36,6 +37,15 @@ export class AddressParser implements IAddressParser {
 					remoteResponse,
 					isLnUrl: true,
 				});
+			case 'bitcoin':
+				return Action.from({
+					originalAddress: trimmedAddress,
+					type: remoteResponse.data.tag
+						? remoteResponse.data.tag.replace('Request', '')
+						: '',
+					remoteResponse: await this.fetchOnChain(trimmedAddress),
+					isOnChain: true,
+				});
 			case 'bolt11':
 				return Action.from({
 					originalAddress: trimmedAddress,
@@ -43,6 +53,12 @@ export class AddressParser implements IAddressParser {
 					isBolt11: true,
 					remoteResponse: await this.fetchBolt11(trimmedAddress),
 				});
+		}
+	}
+
+	fetchOnChain(address) {
+		return {
+			succcess: true
 		}
 	}
 
@@ -159,17 +175,22 @@ export class AddressParser implements IAddressParser {
 			address = address.slice(6, address.length);
 		}
 
-		// Parse LNURL or BOLT11
-		const isLnUrl = address.startsWith(LNURL_SCHEME);
+		// Parse LNURL bech32 or URL, or BOLT11
+		const isLnUrl = address.startsWith(LNURL_SCHEME) || validURL('https://' + address);
 
-		return [isLnUrl ? 'lnurl' : 'bolt11', address];
+		return [isLnUrl ? 'lnurl' : validateBitcoinAddress(address) ? 'onchain' : 'bolt11', address];
 	}
 
 	parseLnUrlString(str: string) {
 		if (str.includes('.')) {
-			return str
+			str = str
 				.replace('lnurlw://', 'https://')
 				.replace('lnurlp://', 'https://');
+
+			if(!str.includes('https://')) {
+				str = 'https://' + str;
+			}
+			return str;
 		} else {
 			const decodedLNURL = bech32.decode(str, 1500);
 			return Buffer.from(bech32.fromWords(decodedLNURL.words)).toString();
@@ -181,6 +202,16 @@ export const validateInternetIdentifier = (internetIdentifier) => {
 	const re = /\S+@\S+\.\S+/;
 	return re.test(internetIdentifier);
 };
+
+export const validURL = (str) => {
+	var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+	  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+	  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+	  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+	  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+	  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+	return !!pattern.test(str);
+  }
 
 const LIGHTNING_SCHEME = 'lightning';
 const BOLT11_SCHEME = 'lnbc';
