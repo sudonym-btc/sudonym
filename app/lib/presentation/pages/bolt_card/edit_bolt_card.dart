@@ -76,7 +76,7 @@ class WriteToNFCButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: entity!.Sender != null
+      child: entity?.Sender != null
           ? BlocProvider(
               create: ((context) => NFCCubit()),
               child: BlocBuilder<NFCCubit, NFCCubitState>(

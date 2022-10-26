@@ -24,7 +24,7 @@ export class LightningNodeService {
 	}
 
 	convertChannelsToRoute(millisatoshis) {
-		const circle = this.connectedChannels[0];
+		const circle = this.connectedChannels.find(i => i[0].short_channel_id == "759391x2070x0");
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
 		const fees = [];
 		let firstAmount = circle
