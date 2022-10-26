@@ -47,8 +47,26 @@ export class Contact extends BaseModel implements Models.Contact {
 	@HasMany(() => ContactAddress)
 	ContactAddresses: Models.ContactAddress[];
 
+	static accessors = {
+		canFind: (id) =>
+			Contact.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				where: {
+					id
+				}
+			}),
+	};
+
 	static scopes = {
 		find: () => ({
+			...(context.get('request')?.auth
+			? {
+				where: {
+					userId: context.get('request').auth.uid,
+				},
+			  }
+			: {}),
 			include: [
 				{
 					model: ContactAddress,

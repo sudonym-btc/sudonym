@@ -24,11 +24,13 @@ export class LightningNodeService {
 	}
 
 	convertChannelsToRoute(millisatoshis) {
+		const peer = this.peers
+		.find(p => p.channels[0].spendable_msatoshi >= millisatoshis);
+
+		console.log(peer);
 		// Get channel that is big enough to send
 		const circle = this.connectedChannels
-		.find(i => i[0].short_channel_id == this.peers
-			.find(p => p.channels[0].spendable_msatoshi >= millisatoshis)
-			.short_channel_id);
+		.find(i => i[0].short_channel_id == peer.channels[0].short_channel_id);
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
 		const fees = [];
 		let firstAmount = circle
@@ -149,15 +151,6 @@ export class LightningNodeService {
 
 	async createInvoice(amount, label = null, description = null, desc_hash = false, preimage = undefined) {
 		return this.rpc('invoice', [amount, label || uuid(), description || uuid(), null, null, preimage, null, null, desc_hash]);
-		return this.makeRequest({
-			path: '/v1/invoice/genInvoice',
-			method: 'POST',
-			data: {
-				amount,
-				label: label || uuid(),
-				description: description || 'test-description',
-			},
-		});
 	}
 
 	async getFees(pubkey, amount = 0) {
