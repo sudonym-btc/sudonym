@@ -24,7 +24,11 @@ export class LightningNodeService {
 	}
 
 	convertChannelsToRoute(millisatoshis) {
-		const circle = this.connectedChannels.find(i => i[0].short_channel_id == "759391x2070x0");
+		// Get channel that is big enough to send
+		const circle = this.connectedChannels
+		.find(i => i[0].short_channel_id == this.peers
+			.find(p => p.channels[0].spendable_msatoshi >= millisatoshis)
+			.short_channel_id);
 		this.logger.debug('Circular payment along route', JSON.stringify(circle));
 		const fees = [];
 		let firstAmount = circle
@@ -122,9 +126,7 @@ export class LightningNodeService {
 		});
 	}
 	async listPeers() {
-		return this.makeRequest({
-			path: '/v1/peer/listPeers',
-		});
+		return this.rpc('listpeers', []);
 	}
 
 	async listChannels() {
