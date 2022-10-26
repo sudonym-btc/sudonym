@@ -85,6 +85,7 @@ export class LightningNodeService {
 		);
 		this.logger.debug("channels", JSON.stringify(this.connectedChannels));
 		this.peers = await this.listPeers();
+		this.logger.debug("peers", JSON.stringify(this.peers));
 
 		if (this.info.warning_lightningd_sync) {
 			this.logger.error(this.info.warning_lightningd_sync);
