@@ -8,8 +8,9 @@ import 'package:sudonym/presentation/pages/withdraw_confirm.dart';
 
 class AmountPage extends StatefulWidget with AmountLogger {
   final dynamic action;
-
-  const AmountPage(this.action, {Key? key}) : super(key: key);
+  final Pot? pot;
+  const AmountPage({required this.action, this.pot, Key? key})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +23,11 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
 
   @override
   void initState() {
+    List<String> currencies = [];
+    currencies.addAll(widget.pot != null ? [widget.pot!.currency] : []);
+    currencies.addAll(['USD', 'BTC']);
     options = CurrencyInputOptions(
+        currencies: currencies,
         max: widget.action?.maxAmount,
         min: widget.action?.minAmount,
         initialValue: CurrencyInputOutput(

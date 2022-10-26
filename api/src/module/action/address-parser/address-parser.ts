@@ -134,7 +134,8 @@ export class AddressParser implements IAddressParser {
 	};
 
 	getType(address: string): [string, string] {
-		address = address.trim().toLowerCase();
+		// Trim whitespace and remove protocol
+		address = address.trim().toLowerCase().replace(/(^\w+:|^)\/\//, '');
 		if (!address || address === '') {
 			return null;
 		}

@@ -12,38 +12,42 @@ class ActionTriggerService with ActionLogger {
 
   ActionTriggerService(this._actionRepository);
 
-  trigger(String link, BuildContext context, [int? potId]) async {
+  trigger(String link, BuildContext context, [Pot? pot]) async {
     ActionParseResponse response = await _actionRepository.parse(link);
     if (response.payment != null) {
       loggy.i(response.payment.toJson());
-      handlePayment(response.payment!, context, potId);
+      handlePayment(response.payment!, context, pot);
     }
     if (response.withdraw != null) {
       loggy.i(response.withdraw.toJson());
-      handleWithdraw(response.withdraw!, context, potId);
+      handleWithdraw(response.withdraw!, context, pot);
     }
   }
 
-  handlePayment(Payment p, BuildContext c, [int? potId]) {
-    p.potId = potId;
+  handlePayment(Payment p, BuildContext c, [Pot? pot]) {
+    p.potId = pot?.id;
 
     if (p.remoteResponse.success) {
       if (canChangeAmount(p)) {
         return Navigator.push(
-            c, MaterialPageRoute(builder: (context) => AmountPage(p)));
+            c,
+            MaterialPageRoute(
+                builder: (context) => AmountPage(action: p, pot: pot)));
       }
       return Navigator.pushNamed(c, '/confirmSend', arguments: p);
     }
     handleError(c, p.remoteResponse);
   }
 
-  handleWithdraw(Withdraw w, BuildContext c, [int? potId]) {
-    w.potId = potId;
+  handleWithdraw(Withdraw w, BuildContext c, [Pot? pot]) {
+    w.potId = pot?.id;
 
     if (w.remoteResponse.success) {
       if (canChangeAmountWithdraw(w)) {
         return Navigator.push(
-            c, MaterialPageRoute(builder: (context) => AmountPage(w)));
+            c,
+            MaterialPageRoute(
+                builder: (context) => AmountPage(action: w, pot: pot)));
       }
       return Navigator.pushNamed(c, '/confirmWithdraw', arguments: w);
     }

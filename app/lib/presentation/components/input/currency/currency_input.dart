@@ -29,14 +29,6 @@ class CurrencyInputOutput {
   CurrencyInputOutput(this.amount, this.currency);
 }
 
-MoneyMaskedTextController createController() {
-  return MoneyMaskedTextController(
-      initialValue: 0.0,
-      decimalSeparator: '.',
-      thousandSeparator: ',',
-      precision: 2);
-}
-
 class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
   Widget constructWidget(BuildContext context, CurrencyInputOptions options) {
     return BlocProvider(
@@ -86,8 +78,8 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      style:
-                          TextStyle(fontSize: 44, fontWeight: FontWeight.bold),
+                      textAlignVertical: TextAlignVertical.center,
+                      style: Theme.of(context).textTheme.displayLarge,
                       decoration: InputDecoration(
                           isDense: true,
                           contentPadding: EdgeInsets.zero,
@@ -95,7 +87,15 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                           focusedBorder: InputBorder.none,
                           prefixText:
                               '${getCurrencySymbol(options.currencies[state.currCurrency])}  ',
-                          prefixStyle: TextStyle(),
+                          prefixStyle: Theme.of(context)
+                              .textTheme
+                              .displayLarge!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge!
+                                      .color!
+                                      .withAlpha(70)),
                           suffixIcon: IconButton(
                             iconSize: 24,
                             onPressed:

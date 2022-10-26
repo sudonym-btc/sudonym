@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart' hide ButtonBar;
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 class QRPage extends StatefulWidget {
-  final int? potId;
-  const QRPage(this.potId, {Key? key}) : super(key: key);
+  final Pot? pot;
+  const QRPage(this.pot, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -17,7 +18,7 @@ class _QRPageState extends State<QRPage> {
     return Container(
         color: Theme.of(context).backgroundColor,
         child: Stack(children: [
-          QRView(widget.potId),
+          QRView(widget.pot),
           SafeArea(
               child: Scaffold(
             appBar: AppBar(

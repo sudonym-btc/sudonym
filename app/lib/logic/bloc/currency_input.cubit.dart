@@ -27,7 +27,7 @@ class CurrencyInputController {
 
 class CurrencyInputOptions {
   CurrencyInputController? controller;
-  final List<String> currencies;
+  List<String> currencies;
   final num min;
   final num max;
   late String? minCurrency;
@@ -45,6 +45,7 @@ class CurrencyInputOptions {
     minCurrency ??= initialValue.currency;
     maxCurrency ??= initialValue.currency;
     controller ??= CurrencyInputController();
+    currencies = currencies.toSet().toList();
   }
 }
 

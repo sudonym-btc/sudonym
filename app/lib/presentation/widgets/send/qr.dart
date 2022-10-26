@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 
 class QRView extends StatelessWidget {
-  final int? potId;
+  final Pot? pot;
 
-  const QRView(this.potId, {Key? key}) : super(key: key);
+  const QRView(this.pot, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class QRView extends StatelessWidget {
         allowDuplicates: false,
         onDetect: (barcode, args) {
           final String? code = barcode.rawValue;
-          getIt<ActionTriggerService>().trigger(code!, context, potId);
+          getIt<ActionTriggerService>().trigger(code!, context, pot);
         });
   }
 }

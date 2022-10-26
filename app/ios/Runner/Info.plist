@@ -37,17 +37,57 @@
 				<string>com.googleusercontent.apps.697957405888-lhtel39f27h5igsil1fnkftp84sht4rh</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.sudonym.wallet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lnurlw</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.sudonym.wallet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lnurlp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.sudonym.wallet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lightning:</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.sudonym.wallet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>bitcoin</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Why is my app authenticating using face id?</string>
 	<key>NFCReaderUsageDescription</key>
 	<string>Need NFC capabilities to read BOLT cards</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to scan QR codes</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Why is my app authenticating using face id?</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

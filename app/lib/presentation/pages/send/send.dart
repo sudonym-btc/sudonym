@@ -10,9 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SendPage extends StatefulWidget {
-  final dynamic potId;
+  final Pot pot;
 
-  const SendPage({this.potId, Key? key}) : super(key: key);
+  const SendPage({required this.pot, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -62,7 +62,7 @@ class _SendPageState extends State<SendPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => QRPage(widget.potId)));
+                                builder: (context) => QRPage(widget.pot)));
                       },
                       icon: const FaIcon(FontAwesomeIcons.camera))
                 ],
@@ -91,7 +91,7 @@ class _SendPageState extends State<SendPage> {
                                 onPressed: form.valid
                                     ? () => getIt<ActionTriggerService>()
                                         .trigger(form.control('address').value,
-                                            context, widget.potId)
+                                            context, widget.pot)
                                     : null,
                                 text: 'OK',
                               );
@@ -127,7 +127,7 @@ class _SendPageState extends State<SendPage> {
                                 contact: el,
                                 onPressed: () => getIt<ActionTriggerService>()
                                     .trigger(el.ContactAddresses[0].address,
-                                        context, widget.potId));
+                                        context, widget.pot));
                           },
                         ))
                       ]))

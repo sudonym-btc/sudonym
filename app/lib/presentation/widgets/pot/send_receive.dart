@@ -63,7 +63,7 @@ class SendReceive extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SendPage(
-                                              potId: entity.id,
+                                              pot: entity,
                                             )));
                               },
                             )
