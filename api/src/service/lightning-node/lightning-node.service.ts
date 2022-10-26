@@ -25,7 +25,7 @@ export class LightningNodeService {
 
 	convertChannelsToRoute(millisatoshis) {
 		const peer = this.peers
-		.find(p => p.channels[0].spendable_msatoshi >= millisatoshis);
+		.find(p => p.route.length == 1 && p.channels[0].spendable_msatoshi >= millisatoshis);
 
 		console.log(peer);
 		// Get channel that is big enough to send
@@ -128,7 +128,11 @@ export class LightningNodeService {
 		});
 	}
 	async listPeers() {
-		return (await this.rpc('listpeers', [])).peers;
+		const peers = (await this.rpc('listpeers', [])).peers;
+		for(const peer of peers) {
+			peer.route = await this.getRoute(peer.id);
+		}
+		return peers;
 	}
 
 	async listChannels() {
