@@ -1,12 +1,9 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:sudonym.models/types/currency.dart';
-import 'package:sudonym/data/dio/cache.interceptor.dart';
-
 import 'package:sudonym/injection.dart';
 
 @LazySingleton(as: CurrencyRepository, env: Env.allButMock)
@@ -19,6 +16,9 @@ class CurrencyRepositoryImpl extends CurrencyRepository {
       required String toCurrency,
       num amount = 1,
       DateTime? time}) {
+    if (fromCurrency == toCurrency) {
+      return Future.sync(() => CurrencyResponse(amount));
+    }
     return dio.get('/currency', queryParameters: {
       'fromCurrency': fromCurrency,
       'toCurrency': toCurrency,

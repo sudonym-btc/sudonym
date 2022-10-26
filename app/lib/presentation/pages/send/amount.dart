@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/withdraw_confirm.dart';
 
@@ -17,19 +18,21 @@ class AmountPage extends StatefulWidget with AmountLogger {
 }
 
 class _AmountPageState extends State<AmountPage> with AmountLogger {
-  TextEditingController controller = TextEditingController();
+  late CurrencyInputOptions options;
+
+  @override
+  void initState() {
+    options = CurrencyInputOptions(
+        max: widget.action?.maxAmount,
+        min: widget.action?.minAmount,
+        initialValue: CurrencyInputOutput(
+            widget.action?.minAmount, widget.action.currency));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    CurrencyInput currencyInput = CurrencyInput(
-        max: widget.action?.maxAmount,
-        min: widget.action?.minAmount,
-        initialValue: widget.action?.minAmount,
-        initialValueCurrency: 'BTC',
-        onChanged: (val) {
-          widget.action.amount = val.amount;
-          widget.action.currency = val.currency;
-        });
+    CurrencyInput currencyInput = CurrencyInput(options: options);
 
     return Container(
         color: Theme.of(context).backgroundColor,
@@ -52,6 +55,10 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                           icon: const FaIcon(FontAwesomeIcons.paperPlane,
                               size: 14),
                           onPressed: () {
+                            widget.action.amount =
+                                options.controller!.value.amount;
+                            widget.action.currency =
+                                options.controller!.value.currency;
                             if (widget.action is Payment) {
                               Navigator.pushNamed(context, '/confirmSend',
                                   arguments: widget.action);
