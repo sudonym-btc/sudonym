@@ -13,9 +13,9 @@ def db(config, cluster_types):
             "properties": {
                 "region": "us-central1",
                 "settings": {
-                  "tier": "db-custom-1-3840",
+                  "tier": config["db"]["tier"],
                     "backupConfiguration": {
-                        "enabled": True
+                        "enabled": config["db"]["backup"]
                     }
                 }
             }

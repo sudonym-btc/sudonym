@@ -26,6 +26,10 @@ config = {
             "machineType": "e2-standard-2",
             "diskSizeGb": 100
         },
+        "db": {
+            "tier": "db-f1-micro",
+            "backup": False
+        },
         "backup": False,
         "loglevel": "debug"
     },
@@ -34,7 +38,11 @@ config = {
         "env": "production",
         "domain": "sudonym.app",
         "network": "mainnet",
-        "loglevel": "info"
+        "loglevel": "info",
+        "db": {
+            "tier": "db-f1-micro",
+            "backup": True
+        },
     },
     "staging": {
         "project": "sudonym-lightning-staging",
@@ -63,6 +71,7 @@ config = {
         "project": "sudonym-lightning-test",
         "env": "development",
         "domain": "local.development",
+        "loglevel": "debug",
         "network": "regtest",
         "backup": False,
     }
