@@ -7,10 +7,5 @@ export const configDevelopment = () => ({
 		username: 'root',
 		password: 'testing',
 		database: 'test',
-	},
-	// database: {
-	// 	name: 'app',
-	// 	dialect: 'sqlite',
-	// 	storage: './database.sqlite',
-	// },
+	}
 });

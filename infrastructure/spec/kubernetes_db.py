@@ -83,7 +83,7 @@ def kubernetes_db(config, cluster_types):
                                 "containers": [
                                     {
                                         "name": base_name,
-                                        "image": "mysql:5.7",
+                                        "image": "mysql:8",
                                         "args": ["-h", "0.0.0.0"],
                                         "env": [
                                             {

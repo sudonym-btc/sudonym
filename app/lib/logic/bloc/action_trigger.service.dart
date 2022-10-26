@@ -75,7 +75,7 @@ class ActionTriggerService with ActionLogger {
             builder: (context) => StatusPage(
                 title: 'Error',
                 subtitle: 'Could not get an OK response from remote server',
-                content: Text("${a.data['statusCode']}: ${a.data['message']}"),
+                content: Text("${a.data['status']}: ${a.message.toString()}"),
                 color: Theme.of(context).errorColor)));
   }
 }
