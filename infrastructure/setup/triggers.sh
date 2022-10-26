@@ -4,5 +4,4 @@ gcloud beta builds triggers create github \
     --repo-owner=sudonym-btc \
     --branch-pattern=$ENV \
     --build-config=/cloudbuild.yaml \
-    --included-files=api/** \
-    --included-files=models/**
+    --included-files=api/**,models/** \
