@@ -31,6 +31,6 @@ export class ReceiverController extends BaseController(
 
 	@Get('invoice')
 	getInvoice(@Query() query: ReceiveQuery) {
-		return this.receiveService.getInvoice(query);
+		return this.receiveService.create(query);
 	}
 }

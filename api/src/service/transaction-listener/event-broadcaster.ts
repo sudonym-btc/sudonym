@@ -14,7 +14,7 @@ export class EventBroadcaster {
 	@Inject() receiverService: ReceiverService;
 
 	listen() {
-		this.transactionService.onAfterCreated.subscribe(async (e: any) => {
+		this.transactionService.onAfterCreated.listen(async (e: any) => {
 			if (e.senderId) {
 			} else if (e.receiverId) {
 				const receiver = await this.receiverService.findOne(

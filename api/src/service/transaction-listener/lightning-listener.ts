@@ -43,55 +43,55 @@ export class LightningListener extends TransactionListener {
 	}
 
 	listenOutgoing() {
-		this.transactionService.onAfterCreated.subscribe(
-			async (transaction) => {
+		this.transactionService.onAfterCreated.listen(
+			async (entity) => {
+				try {
 				if (
-					transaction.outgoing &&
+					entity.outgoing &&
 					['lnurl', 'lightningaddress', 'bolt11', 'bolt12'].includes(
-						transaction.type
+						entity.type
 					)
 				) {
 					this.logger.debug(
 						'Lightning outgoing: ',
-						transaction.get({ plain: true })
+						entity.get({ plain: true })
 					);
 					let invoice;
-					switch (transaction.type) {
+					switch (entity.type) {
 						case 'bolt11':
-							invoice = transaction.address;
+							invoice = entity.address;
 							break;
 						case 'bolt12':
 							invoice =
 								await this.lightningNodeService.fetchOfferInvoice(
-									transaction.address
+									entity.address
 								);
 							break;
 						case 'lnurl':
 						case 'lightningaddress':
-							invoice = transaction.address;
+							invoice = entity.address;
 							break;
 					}
-					await this.transactionService.update(transaction.id, {
+					await this.transactionService.update(entity.id, {
 						txid: invoice,
 					});
 
 					// Attempt to trigger payment
 					(async () => {
 						try {
-							this.logger.debug("Amount", transaction.amount, transaction.amount * MSATOSHIS)
+							this.logger.debug("Amount", entity.amount, entity.amount * MSATOSHIS)
 							const response =
-								await this.lightningNodeService.pay(invoice, Math.round(transaction.amount * MSATOSHIS));
+								await this.lightningNodeService.pay(invoice, Math.round(entity.amount * MSATOSHIS));
 							this.logger.debug('Lightning pay', response);
 							let partId = !isNaN(response.partid) ? response.partid : undefined;
 							this.logger.verbose('PartId', partId);
 							if (!partId && response.payment_hash) {
-								const sendpays = (await this.lightningNodeService.rpc('listsendpays', [null, response.payment_hash])).payments;
+								const sendpays = await this.lightningNodeService.listSendPays(null, response.payment_hash);
 								this.logger.verbose('Sendpays', sendpays);
 								partId = sendpays[0].partid;
 							}
 							this.logger.verbose('PartId', partId);
-							await this.lightningNodeService
-								.rpc('waitsendpay', [response.payment_hash, null, partId])
+							await this.lightningNodeService.waitSendPay(response.payment_hash, null, partId)
 								.catch((e) => {
 									if (e.response) {
 										this.logger.error(
@@ -130,6 +130,7 @@ export class LightningListener extends TransactionListener {
 						}
 					})();
 				}
+				} catch(e) {}
 			}
 		);
 

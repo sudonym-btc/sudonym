@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { getConfig } from 'config/config';
+import { Config, getConfig } from 'config/config';
 import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import { Subject } from 'rxjs';
@@ -8,21 +8,27 @@ import { Bolt11Received } from '@sudonym/models';
 
 @Injectable()
 export class LightningEvents {
+	@Inject(Config) private readonly config: Config;
+
 	private readonly logger = new Logger(LightningEvents.name);
 
 	@Inject() LightningNodeService: LightningNodeService;
-	private macaroon;
-	private url = getConfig().lightningREST.replace('http', 'ws');
 	public onEvent = new Subject<LightningEvent>();
+
+	getUrl() {
+		return this.config.lightningREST.replace('http', 'ws');
+	}
 
 	reconnect() {
 		this.logger.verbose(
-			'Connecting to lightning message queue at ' + this.url
+			'Connecting to lightning message queue at ' + this.getUrl()
 		);
-		const ws = new WebSocket(this.url + '/v1/ws', ['json'], {
+		const ws = new WebSocket(this.getUrl() + '/v1/ws', ['json'], {
 			rejectUnauthorized: false,
 			headers: {
-				'sec-websocket-protocol': this.macaroon,
+				'sec-websocket-protocol': Buffer.from(
+					fs.readFileSync(getConfig().macaroonFile)
+				).toString('base64'),
 			},
 		});
 		ws.on('message', (data) => {
@@ -49,9 +55,6 @@ export class LightningEvents {
 	}
 
 	onModuleInit() {
-		this.macaroon = Buffer.from(
-			fs.readFileSync(getConfig().macaroonFile)
-		).toString('base64');
 		// const ws = new WebSocket(this.url + "/v1/ws", [this.macaroon, 'json'], {
 		this.reconnect();
 

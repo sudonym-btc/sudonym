@@ -1,5 +1,4 @@
 import { scaffoldGroup } from './mock/scaffold-group';
-import * as request from 'supertest';
 
 scaffoldGroup('Security', (scaffold) => {
 

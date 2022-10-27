@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { getConfig } from 'config/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { Config, getConfig } from 'config/config';
 import { BaseService } from 'module/base.service';
 import { LnUrl } from './lnurl.model';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
@@ -10,11 +10,13 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
+	@Inject(Config) private readonly config: Config;
+
 	onModuleInit() {
 		this.beforeCreate.hook(async (params) => {
 			params.id = crypto.randomUUID();
 			params.params.callback =
-				getConfig().selfUrl + '/lnurl/handle/' + params.id;
+				this.config.selfUrl + '/lnurl/handle/' + params.id;
 		});
 	}
 	async serve(id: string): Promise<WithdrawRequest | PaymentRequest> {
@@ -25,7 +27,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 		const tag = await this.create({
 			params: {
 				tag: 'payRequest',
-				domain: getConfig().selfUrl,
+				domain: this.config.selfUrl,
 				minSendable: Math.max(mSatoshiAmount, 1),
 				maxSendable: 0.01 * MSATOSHIS,
 				metadata: JSON.stringify([
@@ -56,7 +58,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 		const tag = await this.create({
 			params: {
 				tag: 'withdrawRequest',
-				domain: getConfig().selfUrl,
+				domain: this.config.selfUrl,
 				minWithdrawable: 0,
 				maxWithdrawable: 0.001 * MSATOSHIS,
 				k1: uuid(),

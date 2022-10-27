@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { PotUser } from '../module/pot-user/pot-user.model';
 import { Pot } from '../module/pot/pot.model';
 import { Receiver } from '../module/receiver/receiver.model';
-import { getConfig } from '../config/config';
+import { Config } from '../config/config';
 import { User } from '../module/user/user.model';
 import { Transaction } from '../module/transaction/transaction.model';
 import { Logger } from '@nestjs/common';
@@ -23,15 +23,29 @@ Sequelize.useCLS(sequelizeCls);
 export const databaseProviders = [
 	{
 		provide: 'SEQUELIZE',
-		useFactory: async () => {
-
+		inject: [Config],
+		useFactory: async (config: Config) => {
 			const logger = new Logger('DB');
-			logger.log('Initializing db:', getConfig().database);
+			logger.log('Initializing db:', {
+				...config.database,
+				username: null,
+				password: null
+			});
 
-			const sequelize = new Sequelize({
-				...getConfig().database,
+			const dbInit =  new Sequelize({
+				...config.database,
+				database: null,
 				logging: (e) => {
-					// logger.verbose(e)
+					logger.verbose(e)
+				},
+			});
+			await dbInit.query(`CREATE DATABASE IF NOT EXISTS \`${config.database.database}\`;`);
+			dbInit.close();
+			
+			const sequelize = new Sequelize({
+				...config.database,
+				logging: (e) => {
+					logger.verbose(e)
 				},
 				models: [
 					Pot,

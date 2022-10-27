@@ -45,12 +45,10 @@ scaffoldGroup('Receive', (scaffold) => {
 				}),
 			]);
 		});
-	});
 
-	describe('Onchain', () => {
-		it('should add unspendable from onchain payment', () => {});
+		// it('should add unspendable from onchain payment', () => {});
 
-		it('should make spendable after onchain confirmation', async () => {
+		it('should make spendable after received', async () => {
 			const satoshi = 500;
 			scaffold.app.get(BitcoinEvents).onTransaction.next({
 				outs: [
@@ -84,7 +82,5 @@ scaffoldGroup('Receive', (scaffold) => {
 				}),
 			]);
 		});
-
-		it('should make spendable after onchain confirmation', () => {});
 	});
 });

@@ -12,20 +12,16 @@ scaffoldGroup('Validation', (scaffold) => {
 		expect(data.statusCode).toBe(400);
 		expect(data.body)
 
-		console.log(data.body);
-
-		try {
-			console.log(await scaffold.app.get(ReceiverService).getInvoice({
+		const response = scaffold.app.get(ReceiverService).create({
 				potId: scaffold.entities.pot[0].id,
 				type: 'lnurl',
 				amount: 'str'
-			} as any));
-		} catch (e) {
-			console.error(e);
-		}
+			} as any);
+
+		await expect(response).rejects.toThrowError();
 
 
-		// @todo: Compare that errors are returned the same way
+		// todo: Compare that errors are returned the same way
 	});
 
 	it('create or update unique keys', async () => {
@@ -49,8 +45,6 @@ scaffoldGroup('Validation', (scaffold) => {
 				}
 			]
 		} as any);
-
-		console.log(await (await scaffold.app.get(ContactService).list({})).data[0]);
 
 		expect(first.id).toBe(second.id);
 		expect(second.ContactAddresses.length).toBe(1);

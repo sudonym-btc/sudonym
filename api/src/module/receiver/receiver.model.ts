@@ -13,6 +13,7 @@ import {
 	IsIn,
 	IsInt,
 	BelongsTo,
+	Validate,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import {
@@ -25,7 +26,6 @@ import { BaseModel } from '../base.model';
 import { Pot } from 'module/pot/pot.model';
 import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
-import { IsNumber } from 'class-validator';
 
 @Table({
 	scopes: Receiver.scopes,
@@ -58,7 +58,14 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column(DataType.STRING(1024))
 	data: string;
 
-	@IsNumber()
+	@AllowNull
+	@Validate({
+		isNumOrNull(val) {
+			if(val && isNaN(val)) {
+				throw 'Amount must be empty or a number'
+			}
+		}
+	})
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 

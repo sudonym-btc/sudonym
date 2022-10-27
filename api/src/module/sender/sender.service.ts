@@ -7,12 +7,13 @@ import { RequestType } from 'helper/parse-request.decorator';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import { MSATOSHIS } from '@sudonym/models';
 import * as lnurl from 'lnurl';
-import { getConfig } from 'config/config';
+import { Config, getConfig } from 'config/config';
 
 @Injectable()
 export class SenderService extends BaseService(Sender) {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
+	@Inject(Config) private readonly config: Config;
 
 	onModuleInit() {
 		this.beforeCreate.hook(async (params) => {
@@ -35,7 +36,7 @@ export class SenderService extends BaseService(Sender) {
 					}
 					);
 					// todo: replace with max account balance
-					params.data = getConfig().selfUrl + '/lnurl/' + tag.id
+					params.data = this.config.selfUrl + '/lnurl/' + tag.id
 					params.lnurlId = tag.id;
 					break;
 			}

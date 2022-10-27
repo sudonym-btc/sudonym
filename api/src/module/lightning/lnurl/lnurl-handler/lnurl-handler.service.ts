@@ -18,7 +18,7 @@ export class LnUrlHandlerService {
 
 	// Function that is called when someone else triggers OUR callbacks.
 	async handle(id, query) {
-		this.logger.warn("handling lnurl", id, query);
+		this.logger.log("Handling lnurl", id, query);
 		const tag = await this.lnUrlService.findOne(id);
 		switch (tag.params.tag) {
 			case 'payRequest':
@@ -27,8 +27,6 @@ export class LnUrlHandlerService {
 						lnurlId: tag.id,
 					},
 				});
-				console.log(id, query, 'parent');
-
 
 				// Create a new receiver, this time bolt11 not lnurl
 				const receiver = await this.receiveService.create({
@@ -39,7 +37,6 @@ export class LnUrlHandlerService {
 					amount: query.amount / MSATOSHIS,
 					amountCurrency: 'BTC',
 				});
-				console.log('here');
 				return {
 					// disposable: false,
 					pr: receiver.data,

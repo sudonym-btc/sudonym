@@ -4,7 +4,7 @@ import { LnUrlService } from '../lightning/lnurl/lnurl.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { BaseService } from '../base.service';
 import * as lnurl from 'lnurl';
-import { getConfig } from 'config/config';
+import { Config, getConfig } from 'config/config';
 import { CurrencyCode, MSATOSHIS, PaymentRequest, TAddressType } from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
 import { ReceiveQuery } from './receiver.controller';
@@ -13,35 +13,23 @@ import * as bolt11 from 'bolt11';
 
 @Injectable()
 export class ReceiverService extends BaseService(Receiver) {
+	@Inject(Config) private readonly config: Config;
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(PotService) potService: PotService;
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 
-	async getInvoice(query: ReceiveQuery) {
-		return this.create(query);
-	}
-
 	async onModuleInit() {
 		super.onModuleInit();
 
 		this.beforeCreate.hook(async (params) => {
-			const amountInBTC =
-				params.amountCurrency == 'BTC'
-					? params.amount
-					: (
-						await this.currencyService.convert(
+			const amountInBTC = params.amount ?
+						(await this.currencyService.convert(
 							params.amountCurrency,
 							'BTC',
 							params.amount
-						)
-					).amount;
-			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
-
-			params.potId =
-				params.potId || (await this.potService.findForUser()).id;
-			params.amountCurrency = 'BTC';
-			params.amount = Number(amountInBTC);
+						)).amount : null;
+			params.potId = params.potId || (await this.potService.findForUser()).id;
 
 			switch (params.type) {
 				case 'bolt11':
@@ -52,7 +40,7 @@ export class ReceiverService extends BaseService(Receiver) {
 					}
 					params.data = (
 						await this.lightningNodeService.createInvoice(
-							mSatoshiAmount,
+							Math.round(amountInBTC * MSATOSHIS),
 							undefined,
 							description,
 							!!description
@@ -62,16 +50,16 @@ export class ReceiverService extends BaseService(Receiver) {
 				case 'bolt12':
 					params.data = (
 						await this.lightningNodeService.createOffer(
-							mSatoshiAmount
+							amountInBTC * MSATOSHIS
 						)
 					).bolt12;
 					break;
 				case 'lnurl':
 					const tag = await this.lnUrlService.createPayRequest(
-						mSatoshiAmount
+						Math.floor(amountInBTC * MSATOSHIS)
 					);
 					params.data = lnurl.encode(
-						getConfig().selfUrl + '/lnurl/' + tag.id
+						this.config.selfUrl + '/lnurl/' + tag.id
 					);
 					params.lnurlId = tag.id;
 					break;

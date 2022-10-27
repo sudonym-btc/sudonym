@@ -1,7 +1,7 @@
-export const config = () => ({
+export const configTest = () => ({
 	domain: 'test.sudonym.app',
 	database: {
-		name: 'app',
+		database: 'app',
 		dialect: 'sqlite',
 	},
 });

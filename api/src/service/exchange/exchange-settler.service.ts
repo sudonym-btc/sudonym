@@ -17,7 +17,7 @@ export class ExchangeSettler {
 	}
 
 	listenIncoming() {
-		this.transactionService.onAfterCreated.subscribe(
+		this.transactionService.onAfterCreated.listen(
 			async (transaction) => {
 				if (!transaction.outgoing) {
 					const pot = await this.potService.findOne(
@@ -37,7 +37,7 @@ export class ExchangeSettler {
 	}
 
 	listenOutgoing() {
-		this.transactionService.onAfterCreated.subscribe(
+		this.transactionService.onAfterCreated.listen(
 			async (transaction) => {
 				if (transaction.outgoing) {
 					const pot = await this.potService.findOne(

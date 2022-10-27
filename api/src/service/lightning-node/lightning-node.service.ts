@@ -1,20 +1,27 @@
 import * as https from 'https';
 import * as fs from 'fs';
 import axios from 'axios';
-import { getConfig } from '../../config/config';
-import { Injectable, Logger } from '@nestjs/common';
+import { Config } from '../../config/config';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import * as bolt11 from 'bolt11';
 
 @Injectable()
 export class LightningNodeService {
 	private readonly logger = new Logger(LightningNodeService.name);
+	@Inject(Config) private readonly config: Config;
 
 	private macaroon;
-	private url = getConfig().lightningREST;
 	private info;
 	private peers;
 	private connectedChannels;
+
+	private interval;
+
+	onModuleDestroy() {
+		if(this.interval)
+			clearInterval(this.interval);
+	}
 
 	calcHopFee(chann, amount) {
 		const fee = Number(chann.base_fee_millisatoshi) +
@@ -27,7 +34,6 @@ export class LightningNodeService {
 		const peer = this.peers
 		.find(p => p.route.length == 1 && p.channels[0].spendable_msatoshi >= millisatoshis);
 
-		console.log(peer);
 		// Get channel that is big enough to send
 		const circle = this.connectedChannels
 		.find(i => i[0].short_channel_id == peer.channels[0].short_channel_id);
@@ -109,11 +115,11 @@ export class LightningNodeService {
 
 		try {
 			this.macaroon = Buffer.from(
-				fs.readFileSync(getConfig().macaroonFile)
+				fs.readFileSync(this.config.macaroonFile)
 			).toString('base64');
 
 			await this.loadInfo();
-			setInterval(() => {
+			this.interval = setInterval(() => {
 				this.loadInfo();
 			}, 5 * 60 * 1000); // refresh every 5 minutes
 
@@ -220,6 +226,16 @@ export class LightningNodeService {
 		});
 	}
 
+	waitSendPay(payment_hash: string, timeout: number | null, partId: any) {
+		return this.rpc('waitsendpay', [payment_hash, null, partId])
+	}
+
+	async listSendPays(bolt11, payment_hash) {
+		return (await this.rpc('listsendpays', [null, payment_hash])).payments;
+	}
+
+	
+
 	async createOffer(amount, description = null) {
 		return this.makeRequest({
 			path: '/v1/offers/offer',
@@ -281,7 +297,7 @@ export class LightningNodeService {
 
 	async makeRequest(options) {
 		const response = await axios({
-			url: this.url + options.path,
+			url: this.config.lightningREST + options.path,
 			method: 'GET',
 			httpsAgent: new https.Agent({
 				rejectUnauthorized: false,

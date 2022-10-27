@@ -20,7 +20,6 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
             address: 'lnurl123',
             amount: 1,
         });
-
         expect(transaction.contactAddressId).toBe(contact.ContactAddresses[0].id);
     });
 
@@ -47,5 +46,4 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
         expect(transaction.contactAddressId).toBe(contact.ContactAddresses[0].id);
 
     })
-
 });

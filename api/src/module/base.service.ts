@@ -10,6 +10,7 @@ import { FindOptions, Op, UniqueConstraintError } from 'sequelize';
 import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from './base.model';
 import { Subject } from 'rxjs';
+import { sequelizeCls } from 'database/database.providers';
 
 type ModelType<T> = Constructor<T> & typeof BaseModel;
 
@@ -28,10 +29,10 @@ export interface TControllerAndService<TModel> {
 export interface TBaseService<TModel> extends TControllerAndService<TModel> {
 	beforeCreate: Callback<TModel>;
 	afterCreate: Callback<CreatedOrUpdated<TModel>>;
-	onAfterCreated: Subject<TModel>;
+	onAfterCreated: Callback<TModel>;
 	beforeUpdate: Callback<TModel>;
 	afterUpdate: Callback<CreatedOrUpdated<TModel>>;
-	onAfterUpdated: Subject<TModel>;
+	onAfterUpdated: Callback<TModel>;
 	getUserIds: (id: number | string, scope?: string) => Promise<string[]>;
 	createOrUpdate: (params) => Promise<TModel>;
 }
@@ -47,14 +48,14 @@ export const BaseService = <TModel extends BaseModel>(
 	class X {
 		beforeCreate = new Callback<TModel>();
 		afterCreate = new Callback<CreatedOrUpdated<TModel>>();
-		onAfterCreated = new Subject<TModel>();
+		onAfterCreated = new Callback<TModel>();
 		beforeUpdate = new Callback<TModel>();
 		afterUpdate = new Callback<CreatedOrUpdated<TModel>>();
-		onAfterUpdated = new Subject<TModel>();
+		onAfterUpdated = new Callback<TModel>();
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
 
-		async onModuleInit() {}
+		async onModuleInit() { }
 
 		async findOne(id: string | number | FindOptions) {
 			const obj = (
@@ -62,94 +63,119 @@ export const BaseService = <TModel extends BaseModel>(
 					typeof id == 'object'
 						? id
 						: {
-								where: {
-									id: id as any,
-								},
-						  },
-						  {
-							scopes: [
-								repository.scopes.findOne ? repository.scopes.findOne() : null,
-							]
-						  })
+							where: {
+								id: id as any,
+							},
+						},
+					{
+						scopes: [
+							repository.scopes.findOne ? repository.scopes.findOne() : null,
+						]
+					})
 			).data[0];
-			if(!obj) { 
+			if (!obj) {
 				throw new NotFoundException();
 			}
 			return obj;
 		}
 
-		async list(params: FindOptions, options: ListOptions = {scopes: []}) {
-			const scopes = [
-				...(options.scopes || []),
-				this.repo.scopes.find ? this.repo.scopes.find() : null,
-			].filter((i) => !!i);
+		async list(params: FindOptions, options: ListOptions = { scopes: [] }) {
 
-			const data = await this.repo
-				.scope(scopes as any)
-				.findAndCountAll(parseFindParams(params));
+				const scopes = [
+					...(options.scopes || []),
+					this.repo.scopes.find ? this.repo.scopes.find() : null,
+				].filter((i) => !!i);
 
-			return {
-				data: data.rows,
-				metadata: {
-					count: data.count,
-				},
-			};
+				const data = await this.repo
+					.scope(scopes as any)
+					.findAndCountAll(parseFindParams(params));
+
+				return {
+					data: data.rows,
+					metadata: {
+						count: data.count,
+					},
+				};
 		}
 
 		async getUserIds(id: string | number, scope = 'find') {
+
 			if (repository.accessors.canFind) {
-				const query = await repository.accessors.canFind(id);
-				const ids = query.map((i: any) => i.id) as string[];
+				const users = await repository.accessors.canFind(id);
+				const ids = users.map((i: any) => i.id) as string[];
 				return ids;
 			}
 			return [];
+			
 		}
 
 		async update(id, params) {
-			const scopes = [
-				repository.scopes.edit ? repository.scopes.edit() : null,
-				repository.scopes.find ? repository.scopes.find() : null,
-			].filter((i) => !!i);
-			const record = await this.repo.scope(scopes as any).findByPk(id);
-			let entity = await record.set(params).save();
-			entity = await this.findOne(entity.id);
+			return await this.repo.sequelize.transaction({transaction: sequelizeCls.get('transaction')}, async t => {
+				const scopes = [
+					repository.scopes.edit ? repository.scopes.edit() : null,
+					repository.scopes.find ? repository.scopes.find() : null,
+				].filter((i) => !!i);
+				const record = await this.repo.scope(scopes as any).findByPk(id);
+				let entity = await record.set(params).save();
+				entity = await this.findOne(entity.id);
 
-			await this.afterUpdate.execute({ entity, params });
-			await this.onAfterUpdated.next(entity);
+				await this.afterUpdate.execute({ entity, params });
 
-			await this.eventsService.trigger(
-				new TriggeredEvent(
-					new Event(
-						this.repo.name.toLowerCase() + '.updated',
-						entity
-					),
-					await this.getUserIds(entity.id)
-				)
-			);
+				t.afterCommit(async () => {
+				// 	sequelizeCls.run(async () => {
+				// 		sequelizeCls.set('transaction', undefined);
+						this.onAfterUpdated.execute(entity);
 
-			return entity;
+				// 		// await this.eventsService.trigger(
+				// 		// 	new TriggeredEvent(
+				// 		// 		new Event(
+				// 		// 			this.repo.name.toLowerCase() + '.updated',
+				// 		// 			entity
+				// 		// 		),
+				// 		// 		await this.getUserIds(entity.id)
+				// 		// 	)
+				// 		// );
+				// 	})
+				});
+
+				return entity;
+			});
+
 		}
 
 		async create(params) {
+			return await this.repo.sequelize.transaction({transaction: sequelizeCls.get('transaction')}, async t => {
+
 			await this.beforeCreate.execute(params);
-			let entity = await this.repo.create(params);
+				let entity = await this.repo.create(params);
 
-			entity = await this.findOne(entity.id);
+				entity = await this.findOne(entity.id);
 
-			await this.afterCreate.execute({ entity, params });
-			await this.onAfterCreated.next(entity);
+				await this.afterCreate.execute({ entity, params });
 
-			await this.eventsService.trigger(
-				new TriggeredEvent(
-					new Event(
-						this.repo.name.toLowerCase() + '.created',
-						entity
-					),
-					await this.getUserIds(entity.id)
-				)
-			);
+				t.afterCommit(() => {
+					sequelizeCls.run(async () => {
+						// sequelizeCls.set('transaction', undefined);
+						// try {
+							this.onAfterCreated.execute(entity);
+							this.eventsService.trigger(
+								new TriggeredEvent(
+									new Event(
+										this.repo.name.toLowerCase() + '.created',
+										entity
+									),
+									await this.getUserIds(entity.id)
+								)
+							);
+						// } catch (e) {
 
-			return entity;
+						// }
+					});
+				});
+
+				return entity;
+			});
+
 		}
 
 		async createOrUpdate(params) {
