@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "seed": "ts-node src/database/seeder.ts",
-    "pretest": "docker start mysql || docker run --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -d -p 3306:3306 mysql:8",
+    "pretest": "docker start mysql:8 || docker run --name mysql:8 -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -d -p 3306:3306 mysql:8",
     "pretest:watch": "npm run pretest",
     "pretest:cov": "npm run pretest",
     "pretest:debug": "npm run pretest",
