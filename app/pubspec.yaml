@@ -95,6 +95,7 @@ flutter:
   assets:
     - assets/mastercardLogo.png
     - assets/visaLogo.png
+    - assets/currencies/
 
 icons_launcher:
   image_path: 'assets/logo.png'

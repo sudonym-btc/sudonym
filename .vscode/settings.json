@@ -8,12 +8,6 @@
     "dart.shareDevToolsWithFlutter": false,
     "sqltools.connections": [
         {
-            "previewLimit": 50,
-            "driver": "SQLite",
-            "name": "local",
-            "database": "${workspaceFolder:sudonym}/api/database.sqlite"
-        },
-        {
             "mysqlOptions": {
                 "authProtocol": "default"
             },
@@ -50,7 +44,19 @@
             "name": "production",
             "database": "app",
             "username": "api",
-            "password": "3H5T0&3p#zIp",
+            "connectionTimeout": 10
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "local",
+            "database": "app",
+            "username": "root",
             "connectionTimeout": 10
         }
     ],

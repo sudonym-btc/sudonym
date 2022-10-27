@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart' hide PotPage;
 
@@ -64,6 +62,7 @@ class EditPotFormState extends State<EditPotForm> {
                     labelText: 'Pot name',
                   ),
                 ),
+                const SizedBox(height: padding),
                 ReactiveDropdownField(
                   formControlName: 'currency',
                   decoration: const InputDecoration(
@@ -73,7 +72,15 @@ class EditPotFormState extends State<EditPotForm> {
                   items: listOfValue
                       .map((currency) => DropdownMenuItem(
                             value: currency,
-                            child: Row(children: [Text(currency)]),
+                            child: Row(children: [
+                              Image.asset(
+                                'assets/currencies/${currency.toLowerCase()}.png',
+                                width: 20,
+                                height: 20,
+                              ),
+                              const SizedBox(width: padding),
+                              Text(currency)
+                            ]),
                           ))
                       .toList(),
                 )
