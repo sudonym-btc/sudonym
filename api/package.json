@@ -13,14 +13,15 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "seed": "ts-node src/database/seeder.ts",
-    "pretest": "docker start mysql:8 || docker run --name mysql:8 -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -d -p 3306:3306 mysql:8",
+    "pretest": "npm run docker:test",
     "pretest:watch": "npm run pretest",
     "pretest:cov": "npm run pretest",
     "pretest:debug": "npm run pretest",
     "test": "NODE_ENV=mock jest --detectOpenHandles --forceExit",
     "test:watch": "NODE_ENV=mock jest --watch",
     "test:cov": "NODE_ENV=mock jest --coverage",
-    "test:debug": "NODE_ENV=mock node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "NODE_ENV=mock node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "docker:test": "docker start $(docker inspect --format='{{.Id}}' mysql) || docker run --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -d -p 3306:3306 mysql:8"
   },
   "author": "",
   "license": "ISC",
