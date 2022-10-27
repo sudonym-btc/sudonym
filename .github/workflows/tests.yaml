@@ -28,12 +28,11 @@ jobs:
     env:
         DB_HOST: mysql
         DB_PORT: 3306 # DB_PORT: ${{ job.services.mysql.ports[3306] }}
-    # services:
-    #   mysql:
-    #     image: mysql:8
-    #     options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
-    #     ports:
-    #     - 3306:3306
-    #     env:
-    #       MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    #       MYSQL_DATABASE: app
+    services:
+      mysql:
+        image: mysql:8
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+        ports:
+        - 3306:3306
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 1
