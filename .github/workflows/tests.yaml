@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: docker container ls 
       - run: npm install 
       - run: npm run -w api build
       - run: npm run -w api test
