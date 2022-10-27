@@ -25,3 +25,15 @@ jobs:
       - run: npm install 
       - run: npm run -w api build
       - run: npm run -w api test
+    env:
+        DB_HOST: mysql
+        DB_PORT: ${{ job.services.mysql.ports[3306] }}
+    services:
+      mysql:
+        image: mysql:8
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+        ports:
+        - 3306:3306
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 1
+          MYSQL_DATABASE: app
