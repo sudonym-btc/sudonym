@@ -23,10 +23,10 @@ export class CurrencyService {
 		);
 	}
 
-	format(amount, currency) {
+	format(amount: number, currency: string) {
 		if (currency == "BTC") {
 			if (amount > 0.1) {
-				return `${amount.toStringAsPrecision(4)} BTC`;
+				return `${amount.toPrecision(4)} BTC`;
 			} else {
 				return `${new Intl.NumberFormat('en-US').format(amount * SATOSHIS)} sats`;
 			}

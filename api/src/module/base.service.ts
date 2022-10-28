@@ -109,6 +109,13 @@ export const BaseService = <TModel extends BaseModel>(
 			
 		}
 
+		newTransaction(cb) {
+			sequelizeCls.run(async () => {
+				sequelizeCls.set('transaction', undefined);
+				await cb();
+			});
+		}
+
 		async update(id, params) {
 			return await this.repo.sequelize.transaction({transaction: sequelizeCls.get('transaction')}, async t => {
 				const scopes = [
@@ -116,26 +123,26 @@ export const BaseService = <TModel extends BaseModel>(
 					repository.scopes.find ? repository.scopes.find() : null,
 				].filter((i) => !!i);
 				const record = await this.repo.scope(scopes as any).findByPk(id);
-				let entity = await record.set(params).save();
-				entity = await this.findOne(entity.id);
+				let updatedEntity = await record.set(params).save();
+				let entity = await this.findOne(updatedEntity.id);
+				entity.changed = updatedEntity.changed;
 
 				await this.afterUpdate.execute({ entity, params });
 
-				t.afterCommit(async () => {
-				// 	sequelizeCls.run(async () => {
-				// 		sequelizeCls.set('transaction', undefined);
+				t.afterCommit(() => {
+					this.newTransaction(async () => {
 						this.onAfterUpdated.execute(entity);
 
-				// 		// await this.eventsService.trigger(
-				// 		// 	new TriggeredEvent(
-				// 		// 		new Event(
-				// 		// 			this.repo.name.toLowerCase() + '.updated',
-				// 		// 			entity
-				// 		// 		),
-				// 		// 		await this.getUserIds(entity.id)
-				// 		// 	)
-				// 		// );
-				// 	})
+						await this.eventsService.trigger(
+							new TriggeredEvent(
+								new Event(
+									this.repo.name.toLowerCase() + '.updated',
+									entity
+								),
+								await this.getUserIds(entity.id)
+							)
+						);
+					})
 				});
 
 				return entity;
@@ -147,30 +154,27 @@ export const BaseService = <TModel extends BaseModel>(
 			return await this.repo.sequelize.transaction({transaction: sequelizeCls.get('transaction')}, async t => {
 
 			await this.beforeCreate.execute(params);
-				let entity = await this.repo.create(params);
+				let newEntity = await this.repo.create(params);
 
-				entity = await this.findOne(entity.id);
+				let entity = await this.findOne(newEntity.id);
+				entity.isNewRecord = true;
 
 				await this.afterCreate.execute({ entity, params });
 
-				t.afterCommit(() => {
-					sequelizeCls.run(async () => {
-						// sequelizeCls.set('transaction', undefined);
-						// try {
-							this.onAfterCreated.execute(entity);
-							this.eventsService.trigger(
-								new TriggeredEvent(
-									new Event(
-										this.repo.name.toLowerCase() + '.created',
-										entity
-									),
-									await this.getUserIds(entity.id)
-								)
-							);
-						// } catch (e) {
-
-						// }
+				t.afterCommit(async () => {
+					this.newTransaction(async () => {
+						this.onAfterCreated.execute(entity);
+						this.eventsService.trigger(
+							new TriggeredEvent(
+								new Event(
+									this.repo.name.toLowerCase() + '.created',
+									entity
+								),
+								await this.getUserIds(entity.id)
+							)
+						);
 					});
+					
 				});
 
 				return entity;

@@ -99,7 +99,7 @@ class WithdrawConfirm extends StatelessWidget {
                     TableRow(children: [
                       const Text('Address'),
                       Text(
-                        r.originalAddress ?? '',
+                        r.originalAddress,
                         style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                         ),

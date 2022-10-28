@@ -37,6 +37,7 @@ export class FirebaseNotificationService {
 			body: "Click to check transaction",
 		};
 
+
 		const formattedAmount = this.currencyService.format((await this.currencyService.convert(entity.currencyCode, pot.currency, entity.amount)).amount, pot.currency);
 
 		if (entity.outgoing) {

@@ -142,6 +142,7 @@ export class LightningListener extends TransactionListener {
 						outgoing: true
 					},
 				});
+
 				if (transactions.metadata.count) {
 					await this.transactionService.update(
 						transactions.data[0].id,

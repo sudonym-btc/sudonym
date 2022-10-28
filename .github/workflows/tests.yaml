@@ -28,7 +28,7 @@ jobs:
       - run: npm run -w api test
     env:
         DB_HOST: mysql
-        DB_PORT: 3306 # DB_PORT: ${{ job.services.mysql.ports[3306] }}
+        DB_PORT: 3306
     services:
       mysql:
         image: mysql:8
