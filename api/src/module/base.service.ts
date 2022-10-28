@@ -81,21 +81,21 @@ export const BaseService = <TModel extends BaseModel>(
 
 		async list(params: FindOptions, options: ListOptions = { scopes: [] }) {
 
-				const scopes = [
-					...(options.scopes || []),
-					this.repo.scopes.find ? this.repo.scopes.find() : null,
-				].filter((i) => !!i);
+			const scopes = [
+				...(options.scopes || []),
+				this.repo.scopes.find ? this.repo.scopes.find() : null,
+			].filter((i) => !!i);
 
-				const data = await this.repo
-					.scope(scopes as any)
-					.findAndCountAll(parseFindParams(params));
+			const data = await this.repo
+				.scope(scopes as any)
+				.findAndCountAll(parseFindParams(params));
 
-				return {
-					data: data.rows,
-					metadata: {
-						count: data.count,
-					},
-				};
+			return {
+				data: data.rows,
+				metadata: {
+					count: data.count,
+				},
+			};
 		}
 
 		async getUserIds(id: string | number, scope = 'find') {
@@ -106,7 +106,7 @@ export const BaseService = <TModel extends BaseModel>(
 				return ids;
 			}
 			return [];
-			
+
 		}
 
 		newTransaction(cb) {
@@ -117,15 +117,17 @@ export const BaseService = <TModel extends BaseModel>(
 		}
 
 		async update(id, params) {
-			return await this.repo.sequelize.transaction({transaction: sequelizeCls.get('transaction')}, async t => {
+			return await this.repo.sequelize.transaction({ transaction: sequelizeCls.get('transaction') }, async t => {
 				const scopes = [
 					repository.scopes.edit ? repository.scopes.edit() : null,
 					repository.scopes.find ? repository.scopes.find() : null,
 				].filter((i) => !!i);
 				const record = await this.repo.scope(scopes as any).findByPk(id);
-				let updatedEntity = await record.set(params).save();
-				let entity = await this.findOne(updatedEntity.id);
-				entity.changed = updatedEntity.changed;
+				let changed = record.set(params).changed();
+				await record.save();
+				let entity = await this.findOne(record.id);
+				if (changed)
+					(entity as any)._changed = new Set(changed);
 
 				await this.afterUpdate.execute({ entity, params });
 
@@ -151,9 +153,9 @@ export const BaseService = <TModel extends BaseModel>(
 		}
 
 		async create(params) {
-			return await this.repo.sequelize.transaction({transaction: sequelizeCls.get('transaction')}, async t => {
+			return await this.repo.sequelize.transaction({ transaction: sequelizeCls.get('transaction') }, async t => {
 
-			await this.beforeCreate.execute(params);
+				await this.beforeCreate.execute(params);
 				let newEntity = await this.repo.create(params);
 
 				let entity = await this.findOne(newEntity.id);
@@ -174,7 +176,7 @@ export const BaseService = <TModel extends BaseModel>(
 							)
 						);
 					});
-					
+
 				});
 
 				return entity;

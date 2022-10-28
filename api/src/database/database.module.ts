@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Inject, Module } from '@nestjs/common';
 import { ConfigModule } from 'config/config.module';
 import { databaseProviders } from './database.providers';
 
@@ -7,4 +7,11 @@ import { databaseProviders } from './database.providers';
 	providers: [...databaseProviders],
 	exports: [...databaseProviders],
 })
-export class DatabaseModule {}
+export class DatabaseModule {
+
+	@Inject('SEQUELIZE') sequelize;
+
+	async onModuleDestroy() {
+		await this.sequelize.close();
+	}
+}

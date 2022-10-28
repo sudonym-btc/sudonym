@@ -17,7 +17,7 @@
     "pretest:watch": "npm run pretest",
     "pretest:cov": "npm run pretest",
     "pretest:debug": "npm run pretest",
-    "test": "NODE_ENV=mock jest --detectOpenHandles --forceExit",
+    "test": "NODE_ENV=mock jest --forceExit",
     "test:watch": "NODE_ENV=mock jest --watch",
     "test:cov": "NODE_ENV=mock jest --coverage",
     "test:debug": "NODE_ENV=mock node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",

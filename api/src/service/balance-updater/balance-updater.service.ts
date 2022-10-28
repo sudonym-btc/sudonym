@@ -71,11 +71,14 @@ export class BalanceUpdaterService {
 				)
 			).amount;
 
+
 			if (entity.changed('status')) {
 				// Increase spendable balance when outgoing fails
 				if (entity.outgoing) {
-					if (entity.status == false)
+					if (entity.status == false) {
 						newSpendableBalance += amountInPotCurrency;
+						newBalance += amountInPotCurrency;
+					}
 				} else {
 					if (entity.status == true) {
 						newSpendableBalance += amountInPotCurrency;

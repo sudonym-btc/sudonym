@@ -4,6 +4,9 @@ import {
 	createMockEntities,
 	mockScaffold,
 } from './create-mock-entities';
+process.on('exit', function() {
+	console.log((process as any)._getActiveHandles());
+  });
 export const scaffoldGroup = (
 	description,
 	callback: (scaffold: mockScaffold) => any
