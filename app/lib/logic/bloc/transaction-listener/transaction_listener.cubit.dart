@@ -1,4 +1,3 @@
-import 'package:app_links/app_links.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/config/logger.dart';
@@ -50,10 +49,11 @@ class TransactionListenerCubitState {
   String? address;
   List<String> ignoredAddresses = [];
   TransactionListenerCubitState(
-      {this.ignoredAddresses = const [], this.address = null});
+      {this.ignoredAddresses = const [], this.address});
 }
 
 class TransactionReady extends TransactionListenerCubitState {
+  @override
   String? address;
   TransactionReady({required this.address, ignoredAddresses})
       : super(ignoredAddresses: ignoredAddresses);

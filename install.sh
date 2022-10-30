@@ -9,6 +9,11 @@ if [ "$(uname)" = "Darwin" ] || [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; 
 
         brew tap homebrew/cask
         brew install --cask flutter docker google-cloud-sdk
+        # Minikube on Mac doesn't expose minikube IP on host (only tunnel)
+        # This package exposes the containers on the host directly.
+        brew install chipmk/tap/docker-mac-net-connect
+        sudo brew services start chipmk/tap/docker-mac-net-connect
+        
         open -a Docker
         gcloud components install kubectl
         # Oly necessary for M1 chips

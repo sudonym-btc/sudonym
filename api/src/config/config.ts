@@ -40,6 +40,9 @@ export class Config {
 		: 'tcp://' +
 		  env +
 		  '-bitcoin-zeromq-service.default.svc.cluster.local:5555';
+	bitcoin: {
+		network: 'mainnet'
+	}
 	macaroonFile = './certs/access.macaroon';
 	database: SequelizeOptions = {
 		dialect: 'sqlite',

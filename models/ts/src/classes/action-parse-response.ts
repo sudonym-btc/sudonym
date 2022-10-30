@@ -1,6 +1,5 @@
 import { Withdraw } from './withdraw';
 import { Payment } from './payment';
-import { Action } from './action';
 
 export class ActionParseResponse {
 

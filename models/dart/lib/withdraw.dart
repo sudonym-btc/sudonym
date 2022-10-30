@@ -1,9 +1,9 @@
-import "action-type.dart" show ActionType;
+import "action-type.dart" show ActionTypeWithAmount;
 import "action-remote-response.dart" show ActionRemoteResponse;
 import "withdraw-request.dart" show WithdrawRequest;
 import "types/index.dart" show MSATOSHIS;
 
-class Withdraw extends ActionType {
+class Withdraw extends ActionTypeWithAmount {
   dynamic /* num | null */ potId;
   String originalAddress;
   dynamic /* String | null */ currency;
@@ -25,8 +25,19 @@ class Withdraw extends ActionType {
       this.isBolt12 = false,
       this.isOnChain = false,
       this.comment = ""])
-      : super("withdraw", originalAddress, isLnUrl, isLnAddress, isBolt11,
-            isBolt12, isOnChain, comment) {
+      : super(
+            "withdraw",
+            originalAddress,
+            isLnUrl,
+            isLnAddress,
+            isBolt11,
+            isBolt12,
+            isOnChain,
+            comment,
+            minAmount,
+            maxAmount,
+            amount,
+            currency) {
     /* super call moved to initializer */;
   }
   static Withdraw fromJson(Map<String, dynamic> json) {

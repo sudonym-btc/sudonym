@@ -47,7 +47,7 @@ export class BitcoinEvents {
 				const rawTx = message.toString('hex');
 				const tx = bitcoin.Transaction.fromHex(rawTx) as BitcoinEvent;
 				const txid = tx.getId();
-				tx.ins = tx.ins.map(function (inn) {
+				tx.ins = tx.ins.map((inn) => {
 					try {
 						inn.address = bitcoin.address.fromOutputScript(
 							inn.script,
@@ -56,7 +56,7 @@ export class BitcoinEvents {
 					} catch (e) {}
 					return inn;
 				});
-				tx.outs = tx.outs.map(function (out) {
+				tx.outs = tx.outs.map((out) => {
 					try {
 						out.fromAddress =
 							tx.ins.length > 0

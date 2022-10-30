@@ -6,7 +6,7 @@ void main() {
     configureInjection(Env.mock);
   });
 
-  testWidgets("Auth page routes to sign in and homepage",
+  testWidgets('Auth page routes to sign in and homepage',
       (WidgetTester tester) async {
     // await tester.pumpWidget(const App());
     // // var authGate = find.byType(AuthGate);

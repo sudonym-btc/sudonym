@@ -1,81 +1,106 @@
+import 'dart:async';
+import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym/config/logger.dart';
-import 'package:sudonym/data/index.dart';
+import 'package:sudonym/config/index.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 @lazySingleton
 @injectable
 class ActionTriggerService with ActionLogger {
-  final ActionRepository _actionRepository;
-
-  ActionTriggerService(this._actionRepository);
-
-  trigger(String link, BuildContext context, [Pot? pot]) async {
-    ActionParseResponse response = await _actionRepository.parse(link);
-    if (response.payment != null) {
-      loggy.i(response.payment.toJson());
-      handlePayment(response.payment!, context, pot);
-    }
-    if (response.withdraw != null) {
-      loggy.i(response.withdraw.toJson());
-      handleWithdraw(response.withdraw!, context, pot);
-    }
+  Stream<R> step<R>(
+      BuildContext context, dynamic data, Function(Sink s) action) {
+    StreamController<R> controller = StreamController<R>();
+    action(controller.sink);
+    return controller.stream;
   }
 
-  handlePayment(Payment p, BuildContext c, [Pot? pot]) {
-    p.potId = pot?.id;
-
-    if (p.remoteResponse.success) {
-      if (canChangeAmount(p)) {
-        return Navigator.push(
-            c,
-            MaterialPageRoute(
-                builder: (context) => AmountPage(action: p, pot: pot)));
+  trigger(String link, BuildContext context, [Pot? pot]) {
+    final subject = PublishSubject();
+    subject.switchMap<ActionParseResponse>((value) {
+      return step<ActionParseResponse>(
+          context,
+          value,
+          (sink) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ActionPage(address: link, onDone: sink.add))));
+    }).switchMap((event) {
+      if (event.payment != null) {
+        return handlePayment(context)(event);
+      } else if (event.withdraw != null) {
+        return handleWithdraw(context)(event);
       }
-      return Navigator.pushNamed(c, '/confirmSend', arguments: p);
-    }
-    handleError(c, p.remoteResponse);
+      return handleUnknown(context)(event);
+    }).listen((event) {});
+
+    subject.add(link);
   }
 
-  handleWithdraw(Withdraw w, BuildContext c, [Pot? pot]) {
-    w.potId = pot?.id;
-
-    if (w.remoteResponse.success) {
-      if (canChangeAmountWithdraw(w)) {
-        return Navigator.push(
-            c,
-            MaterialPageRoute(
-                builder: (context) => AmountPage(action: w, pot: pot)));
-      }
-      return Navigator.pushNamed(c, '/confirmWithdraw', arguments: w);
-    }
-    handleError(c, w.remoteResponse);
+  handlePayment(
+    BuildContext context,
+  ) {
+    bool firstPageAmount = false;
+    return (ActionParseResponse a) => Stream.fromIterable([a])
+        .map<Payment>((event) => event.payment)
+        .switchMap<Payment>((value) {
+          if (PayManager.canChangeAmount(value)) {
+            firstPageAmount = true;
+            return step<Payment>(
+                context,
+                value,
+                (sink) => Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (context) => AmountPage<Payment>(
+                            action: value, onDone: sink.add))));
+          }
+          return () async* {
+            yield value;
+          }();
+        })
+        .switchMap<Payment>((value) => step(context, value, (sink) {
+              final route = MaterialPageRoute(
+                  builder: (context) =>
+                      PayInfoPage(action: value, onDone: sink.add));
+              if (firstPageAmount) {
+                Navigator.push(
+                  context,
+                  route,
+                );
+              } else {
+                Navigator.pushReplacement(context, route);
+              }
+            }))
+        .switchMap<Transaction>((value) => step(
+            context,
+            value,
+            (sink) => Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                    transitionDuration: const Duration(seconds: 0),
+                    pageBuilder: (context, animation1, animation2) =>
+                        PayExecutePage(action: value, onDone: sink.add)))))
+        .switchMap((value) => step(
+            context,
+            value,
+            (sink) => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TransactionPage(entity: value)),
+                (route) => route.isFirst)));
   }
 
-  canChangeAmountWithdraw(Withdraw p) {
-    if (p.minAmount != p.maxAmount || p.amount == 0 || p.amount == null) {
-      return true;
-    }
-    return false;
+  handleWithdraw(BuildContext context) {
+    return (ActionParseResponse a) =>
+        Stream.fromIterable([a]).map((event) => event.withdraw);
   }
 
-  canChangeAmount(Payment p) {
-    if (p.minAmount != p.maxAmount || p.amount == 0 || p.amount == null) {
-      return true;
-    }
-    return false;
-  }
-
-  handleError(BuildContext c, ActionRemoteResponse a) {
-    return Navigator.push(
-        c,
-        MaterialPageRoute(
-            builder: (context) => StatusPage(
-                title: 'Error',
-                subtitle: 'Could not get an OK response from remote server',
-                content: Text("${a.data['status']}: ${a.message.toString()}"),
-                color: Theme.of(context).errorColor)));
+  handleUnknown(BuildContext context) {
+    return (ActionParseResponse a) => Stream.fromIterable([a])
+        .where((event) => event.withdraw != null)
+        .map((event) => event.withdraw);
   }
 }

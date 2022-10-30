@@ -23,7 +23,7 @@ class SigninPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Subtitle(AppLocalizations.of(context)!.welcomeTo),
-                              const Header("Sudonym")
+                              const Header('Sudonym')
                             ],
                           )),
                       Expanded(
@@ -35,13 +35,13 @@ class SigninPage extends StatelessWidget {
                           Text(AppLocalizations.of(context)!.signInWith),
                           Container(height: padding * 2),
                           Button(
-                            text: "Google",
+                            text: 'Google',
                             onPressed:
                                 context.read<AuthCubit>().loginWithGoogle,
                           ),
                           Container(height: padding),
                           Button(
-                            text: "Facebook",
+                            text: 'Facebook',
                             onPressed:
                                 context.read<AuthCubit>().loginWithFacebook,
                           )

@@ -8,7 +8,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'firebase_options.dart';
+import 'package:sudonym/firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main(List<String> args) {
@@ -42,22 +42,18 @@ void mainCommon(String? env) async {
       appRunner: () => runZonedGuarded(() async {
             runApp(const App());
           }, (error, stackTrace) {
-            print("Error FROM OUT_SIDE FRAMEWORK ");
-            print("--------------------------------");
-            print("Error :  $error");
-            print("StackTrace :  $stackTrace");
+            print('Error FROM OUT_SIDE FRAMEWORK ');
+            print('--------------------------------');
+            print('Error :  $error');
+            print('StackTrace :  $stackTrace');
           }));
 
   FlutterError.onError = (details) => print(details);
 }
 
-class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
-  @override
-  _AppState createState() => _AppState();
-}
+class App extends StatelessWidget {
+  const App({super.key});
 
-class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,22 +62,21 @@ class _AppState extends State<App> {
       theme: getTheme(),
       darkTheme: getTheme(light: false),
       home: const AuthGate(),
-      builder: (BuildContext context, Widget? widget) {
-        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-          return StatusPage(
-              title: 'Error',
-              subtitle: 'Encountered an unrecoverable error',
-              content: Text(errorDetails.toString()),
-              color: Theme.of(context).errorColor);
-        };
+      // builder: (BuildContext context, Widget? widget) {
+      //   ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+      //     return StatusPage(
+      //         title: 'Error',
+      //         subtitle: 'Encountered an unrecoverable error',
+      //         content: Text(errorDetails.toString()),
+      //         color: Colors.red);
+      //   };
 
-        return widget!;
-      },
+      //   return widget!;
+      // },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routes: {
         '/receive': (context) => const ReceivePage(),
-        '/confirmSend': (context) => const SendConfirmPage(),
         '/settings': (context) => const SettingsPage(),
         '/contact': (context) => const ContactPage(),
         '/transaction': (context) => const TransactionPage()

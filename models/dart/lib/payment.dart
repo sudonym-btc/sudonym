@@ -1,9 +1,9 @@
-import "action-type.dart" show ActionType;
+import "action-type.dart" show ActionTypeWithAmount;
 import "action-remote-response.dart" show ActionRemoteResponse;
 import "payment-request.dart" show PaymentRequest;
 import "types/index.dart" show MSATOSHIS, SATOSHIS;
 
-class Payment extends ActionType {
+class Payment extends ActionTypeWithAmount {
   dynamic /* num | null */ potId;
   String originalAddress;
   dynamic /* String | null */ address;
@@ -38,7 +38,7 @@ class Payment extends ActionType {
       this.isOnChain = false,
       this.comment = ""])
       : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
-            isOnChain, comment) {
+            isOnChain, comment, minAmount, maxAmount, amount, currency) {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {

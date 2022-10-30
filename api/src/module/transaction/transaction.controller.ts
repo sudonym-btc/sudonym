@@ -4,7 +4,7 @@ import { BaseController } from '../base.controller';
 import { TransactionService } from './transaction.service';
 
 @Controller('transaction')
-export class TransactionController extends BaseController(
-	TransactionService,
-	Transaction
-) {}
+export class TransactionController extends BaseController({
+	service: TransactionService,
+	model: Transaction
+}) {}

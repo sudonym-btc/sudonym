@@ -17,6 +17,7 @@ export class TransactionContactLinkerService {
 
 	onModuleInit() {
 		this.transactionService.beforeCreate.hook(async params => {
+			if(!params.originalAddress) return;
 			try {
 				params.contactAddressId = (await this.contactAddressService.findOne({
 					where: {

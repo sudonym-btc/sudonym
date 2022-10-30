@@ -4,7 +4,6 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
-import 'crud_repository.dart';
 
 @LazySingleton(as: ReceiverRepository, env: [Env.mock])
 class MockReceiveRepository extends MockCrudRepository<Receiver>
@@ -18,7 +17,7 @@ class MockReceiveRepository extends MockCrudRepository<Receiver>
   @override
   getInvoice(potId, type, amount, currency) async {
     await Future.delayed(requestDelay);
-    var data;
+    String? data;
     if (type == 'bolt12') {
       data =
           'lno1pg257enxv4ezqcneype82um50ynhxgrwdajx283qfwdpl28qqmc78ymlvhmxcsywdk5wrjnj36jryg488qwlrnzyjczs';

@@ -29,7 +29,8 @@ export class BalanceUpdaterService {
 				newSpendableBalance -= amountInPotCurrency;
 
 				if(newBalance < 0) {
-					throw new BalanceLowError();
+					// throw new BalanceLowError();
+					// todo: uncommed
 				}
 			} else {
 				newBalance += amountInPotCurrency;

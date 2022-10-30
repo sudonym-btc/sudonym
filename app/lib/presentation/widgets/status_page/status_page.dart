@@ -48,11 +48,12 @@ class StatusPage extends StatelessWidget {
         // foregroundColor: MaterialStateProperty.all(textColor))),
         );
 
-    var children = [
-      Header(title),
-      Subtitle(subtitle),
-      const SizedBox(height: padding * 2),
-    ];
+    List<Widget> children = [];
+    if (title != null) children.add(Header(title));
+    if (subtitle != null) children.add(Subtitle(subtitle));
+    if (title != null || subtitle != null) {
+      children.add(const SizedBox(height: padding * 2));
+    }
     if (content == null && icon == null) {
       children.add(Expanded(child: Container()));
     } else {

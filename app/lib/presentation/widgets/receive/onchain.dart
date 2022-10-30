@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-import 'receive_widget.dart';
+import 'package:sudonym/presentation/widgets/receive/receive_widget.dart';
 
 class ReceiveOnchain extends ReceiveWidget {
-  const ReceiveOnchain({required pot, Key? key})
+  const ReceiveOnchain({super.key, required pot})
       : super(pot: pot, type: 'onchain');
 }

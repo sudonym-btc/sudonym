@@ -37,19 +37,8 @@ class _LoggedInWidget extends StatelessWidget {
         bloc: BlocProvider.of<TransactionListenerCubit>(context),
         listener: (BuildContext context, state) async {
           if (state.address != null) {
-            try {
-              await getIt<ActionTriggerService>()
-                  .trigger(state.address.toString(), context);
-            } catch (e) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => StatusPage(
-                          title: 'Error',
-                          subtitle: 'Encountered an unrecoverable error',
-                          content: Text(e.toString()),
-                          color: Theme.of(context).errorColor)));
-            }
+            getIt<ActionTriggerService>()
+                .trigger(state.address.toString(), context);
           }
         },
         child: const MessageHandler(

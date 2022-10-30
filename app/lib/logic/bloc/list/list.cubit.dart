@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym.models/types/list.dart';
 import 'package:sudonym/data/index.dart';
+import 'package:sudonym/logic/index.dart';
 
-class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
+class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   final CrudRepository _repository;
   Map<String, dynamic> where;
   String order = 'DESC';
@@ -14,8 +15,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   StreamSubscription? onUpdated;
 
   ListCubit(this._repository, {this.where = const {}})
-      : super(ListCubitState(
-            data: const [], metadata: const {}, loading: false)) {
+      : super(const ListCubitState(data: [], metadata: {}, loading: false)) {
     if (onCreated == null) {
       loggy.d('Subscribing to ${_repository.endpoint}');
     }
@@ -46,11 +46,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   }
 
   loadNext() async {
-    if (isClosed) return;
     if (!state.loading) {
       loggy.d('Loading next ${_repository.endpoint}');
 
-      emit(ListCubitState(
+      safeEmit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
 
       var response = await _repository.list(where: {
@@ -60,20 +59,16 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
       List filtered = filter(response.data);
       List elements = [...state.data, ...filtered];
 
-      if (!isClosed) {
-        emit(ListCubitState(
-            data: elements, metadata: response.metadata, loading: false));
-      }
+      safeEmit(ListCubitState(
+          data: elements, metadata: response.metadata, loading: false));
     }
   }
 
   loadPrevious() async {
-    if (isClosed) return;
-
     if (!state.loading) {
       loggy.d('Loading previous ${_repository.endpoint}');
 
-      emit(ListCubitState(
+      safeEmit(ListCubitState(
           data: state.data, metadata: state.metadata, loading: true));
 
       var response = await _repository.list(where: {
@@ -84,10 +79,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
       List filtered = filter(response.data);
       List elements = [...filtered, ...state.data];
 
-      if (!isClosed) {
-        emit(ListCubitState(
-            data: elements, metadata: response.metadata, loading: false));
-      }
+      safeEmit(ListCubitState(
+          data: elements, metadata: response.metadata, loading: false));
     }
   }
 
@@ -114,20 +107,18 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger {
   }
 
   reset() {
-    if (!isClosed) {
-      emit(ListCubitState(data: [], metadata: {}, loading: false));
-    }
+    safeEmit(const ListCubitState(data: [], metadata: {}, loading: false));
   }
 }
 
 class ListCubitState<T> extends Equatable implements ListState<T> {
   @override
-  List<T> data;
+  final List<T> data;
   @override
-  dynamic metadata;
-  bool loading;
+  final dynamic metadata;
+  final bool loading;
 
-  ListCubitState(
+  const ListCubitState(
       {required this.data, required this.metadata, this.loading = false});
 
   @override

@@ -20,6 +20,9 @@ class TransactionListItem extends StatelessWidget {
             opacity: entity.status == true ? 1 : 0.6,
             child: Container(
                 padding: const EdgeInsets.all(padding),
+                color: entity.status == false
+                    ? Theme.of(context).errorColor.withAlpha(40)
+                    : Colors.transparent,
                 child: Row(
                   children: [
                     SizedBox(

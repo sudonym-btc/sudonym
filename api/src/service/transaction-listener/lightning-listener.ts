@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { LightningEvents } from './lightning-events';
 import { MSATOSHIS } from '@sudonym/models';
 import { TransactionListener } from './transaction-listener.interface';
-import { LightningNodeService } from '../lightning-node/lightning-node.service';
+import { LightningError, LightningNodeService } from '../lightning-node/lightning-node.service';
 
 @Injectable()
 export class LightningListener extends TransactionListener {
@@ -84,28 +84,15 @@ export class LightningListener extends TransactionListener {
 								await this.lightningNodeService.pay(invoice, Math.round(entity.amount * MSATOSHIS));
 							this.logger.debug('Lightning pay', response);
 							let partId = !isNaN(response.partid) ? response.partid : undefined;
-							this.logger.verbose('PartId', partId);
 							if (!partId && response.payment_hash) {
 								const sendpays = await this.lightningNodeService.listSendPays(null, response.payment_hash);
 								this.logger.verbose('Sendpays', sendpays);
 								partId = sendpays[0].partid;
 							}
 							this.logger.verbose('PartId', partId);
-							await this.lightningNodeService.waitSendPay(response.payment_hash, null, partId)
-								.catch((e) => {
-									if (e.response) {
-										this.logger.error(
-											'Wait send pay error',
-											e.response.data
-										);
-										if (e.response.data?.error?.data) {
-											this.lightningEvents.onEvent.next({
-												event: 'invoice',
-												data: e.response.data.error.data,
-											});
-										}
-									}
-								}).then(e => {
+							const waitSendPay = async () => {
+								await this.lightningNodeService.waitSendPay(response.payment_hash, null, partId)
+								.then(e => {
 									if (e) {
 										this.lightningEvents.onEvent.next({
 											event: 'sendpay',
@@ -115,16 +102,40 @@ export class LightningListener extends TransactionListener {
 												msatoshi: e.msatoshi_sent
 											}
 										});
+									} 
+									if(e.status == "pending") {
+										waitSendPay()
+									}
+								})
+								.catch((e) => {
+									if (e.error) {
+										this.logger.error(
+											'Wait send pay error',
+											e.error
+										);
+										if (e.error?.data) {
+											this.lightningEvents.onEvent.next({
+												event: 'sendpay',
+												data: e.error.data,
+											});
+											if(e.error.data.status == "pending") {
+												waitSendPay()
+											}
+										}
 									}
 								});
+							}
+
+							waitSendPay();
+							
 						} catch (e) {
 							this.logger.error(
 								'Pay error', e);
-							if (e.response) {
-								this.logger.warn('Pay error', e.response.data);
+							if (e instanceof LightningError) {
+								this.logger.warn('Pay error', e);
 								this.lightningEvents.onEvent.next({
 									event: 'invoice',
-									data: e.response.data.error.data,
+									data: e.error.data,
 								});
 							}
 						}
@@ -143,17 +154,23 @@ export class LightningListener extends TransactionListener {
 					},
 				});
 
+				
+
+				const status = e.data.status == 'pending'
+				? null
+				: ['paid', 'complete'].includes(e.data.status)
+					? true
+					: false;
+
 				if (transactions.metadata.count) {
 					await this.transactionService.update(
 						transactions.data[0].id,
 						{
-							status:
-								e.data.status == 'pending'
-									? null
-									: ['paid', 'complete'].includes(e.data.status)
-										? true
-										: false,
-						}
+							status,
+							...(!status && (e.data as any).failcodename ? {
+								errorMessage: (e.data as any).failcodename
+							} : {})
+						},
 					);
 				}
 			}

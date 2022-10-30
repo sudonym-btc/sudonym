@@ -11,12 +11,15 @@ export interface BaseControllerOptions<TModel> {
 	model?: TModel;
 }
 
-export const BaseController = <TService extends TBaseService<TModel>, TModel>(
+export const BaseController = <TService extends TBaseService<TModel>, TModel>(options: {
 	service: Constructor<TService>,
-	model: Constructor<TModel>
-): Constructor<TBaseController<TService, TModel>> => {
+	model: Constructor<TModel>,
+	create?: {
+		update: true
+	}
+}): Constructor<TBaseController<TService, TModel>> => {
 	class X {
-		@Inject(service) service: TService;
+		@Inject(options.service) service: TService;
 
 		async onModuleInit() {}
 
@@ -32,6 +35,9 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 
 		@Post('')
 		create(@Body() data) {
+			if(options.create?.update) {
+				return this.service.createOrUpdate(data);
+			}
 			return this.service.create(data);
 		}
 

@@ -5,10 +5,12 @@ import fetch from 'node-fetch';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { IAddressParser, Action, ActionRemoteResponse } from '@sudonym/models';
 import { fetchHttpOpts } from './http-agent';
-import { validate as validateBitcoinAddress } from 'bitcoin-address-validation';
+import { Network, validate as validateBitcoinAddress } from 'bitcoin-address-validation';
+import { Config } from 'config/config';
 
 @Injectable()
 export class AddressParser implements IAddressParser {
+	@Inject(Config) private readonly config: Config;
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	private readonly logger = new Logger(AddressParser.name);
 
@@ -37,12 +39,10 @@ export class AddressParser implements IAddressParser {
 					remoteResponse,
 					isLnUrl: true,
 				});
-			case 'bitcoin':
+			case 'onchain':
 				return Action.from({
 					originalAddress: trimmedAddress,
-					type: remoteResponse.data.tag
-						? remoteResponse.data.tag.replace('Request', '')
-						: '',
+					type: 'pay',
 					remoteResponse: await this.fetchOnChain(trimmedAddress),
 					isOnChain: true,
 				});
@@ -177,8 +177,7 @@ export class AddressParser implements IAddressParser {
 
 		// Parse LNURL bech32 or URL, or BOLT11
 		const isLnUrl = address.startsWith(LNURL_SCHEME) || validURL('https://' + address);
-
-		return [isLnUrl ? 'lnurl' : validateBitcoinAddress(address) ? 'onchain' : 'bolt11', address];
+		return [isLnUrl ? 'lnurl' : validateBitcoinAddress(address, Network[this.config.bitcoin.network]) ? 'onchain' : 'bolt11', address];
 	}
 
 	parseLnUrlString(str: string) {
@@ -204,14 +203,9 @@ export const validateInternetIdentifier = (internetIdentifier) => {
 };
 
 export const validURL = (str) => {
-	var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-	  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-	  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-	  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-	  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-	  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-	return !!pattern.test(str);
-  }
+	var res = str.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+	return (res !== null)
+}
 
 const LIGHTNING_SCHEME = 'lightning';
 const BOLT11_SCHEME = 'lnbc';

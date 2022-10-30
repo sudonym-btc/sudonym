@@ -75,6 +75,7 @@ class _OutgoingFailed extends _TransactionStatusPage {
         title: 'Payment failed',
         subtitle:
             'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.originalAddress}',
+        content: Text(transaction.errorMessage ?? ''),
         color: Theme.of(context).errorColor);
   }
 }
@@ -93,7 +94,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _ContactSection(transaction),
-              SizedBox(
+              const SizedBox(
                 height: padding * 2,
               ),
               Table(children: [
@@ -160,7 +161,7 @@ class _IncomingComplete extends _TransactionStatusPage {
             TableRow(children: [
               Text(AppLocalizations.of(context)!.address),
               Text(
-                transaction.originalAddress,
+                transaction.originalAddress ?? '',
                 style: const TextStyle(
                   overflow: TextOverflow.ellipsis,
                 ),

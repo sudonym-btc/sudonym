@@ -18,9 +18,6 @@ abstract class UserDeviceRepository extends CrudRepository<UserDevice>
 }
 
 class UserDeviceRepositoryProps {
-  @override
-  String get endpoint => "userDevice";
-
-  @override
+  String get endpoint => 'userDevice';
   Function converter = (e) => UserDevice.fromJson(e);
 }

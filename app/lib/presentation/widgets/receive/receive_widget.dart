@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:sudonym.models/types/currency.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
@@ -42,8 +41,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) {
-            ReceiverCubit c = getIt<ReceiverCubit>()
-              ..getInvoice(widget.pot.id, widget.type, 1 / SATOSHIS, 'BTC');
+            ReceiverCubit c = getIt<ReceiverCubit>();
 
             inputOptions.controller!.outputStream.stream
                 .debounceTime(const Duration(milliseconds: 500))
@@ -58,7 +56,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
         child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
           Widget image = const Center(child: CircularProgressIndicator());
-          if (!state.loading) {
+          if (!state.loading && state.entity?.data != null) {
             image = QrImage(
               data: state.entity!.data,
               foregroundColor:

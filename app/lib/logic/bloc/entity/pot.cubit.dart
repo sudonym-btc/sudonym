@@ -2,7 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/pot.dart';
 import 'package:sudonym/data/index.dart';
 
-import 'entity_cubit_state.dart';
+import 'package:sudonym/logic/bloc/entity/entity_cubit_state.dart';
 
 @injectable
 class PotCubit extends EntityCubit<PotRepository, PotCubitState, Pot> {

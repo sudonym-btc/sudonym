@@ -23,10 +23,10 @@ export class ReceiveQuery {
 	amountCurrency: CurrencyCode = 'BTC';
 }
 @Controller('receiver')
-export class ReceiverController extends BaseController(
-	ReceiverService,
-	Receiver
-) {
+export class ReceiverController extends BaseController({
+	service: ReceiverService,
+	model: Receiver
+}) {
 	@Inject(ReceiverService) receiveService: ReceiverService;
 
 	@Get('invoice')

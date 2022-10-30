@@ -7,5 +7,8 @@ export const configDevelopment = () => ({
 		username: 'root',
 		password: 'testing',
 		database: 'test',
+	},
+	bitcoin: {
+		network: 'regtest'
 	}
 });

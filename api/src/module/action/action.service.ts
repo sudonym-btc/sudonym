@@ -6,6 +6,7 @@ import {
 	Payment,
 	Withdraw,
 	TAddressType,
+	SATOSHIS,
 } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
@@ -124,7 +125,12 @@ export class ActionService {
 						feeCurrency: 'BTC',
 					});
 				case 'onchain':
-					return action;
+					const fees = (await this.lightningNodeService.onChainFees());
+					return Action.from({
+						...action,
+						fee: fees.opening/SATOSHIS,
+						feeCurrency: 'BTC'
+					});
 			}
 		} else if (action instanceof Withdraw) {
 			return action;

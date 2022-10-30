@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/user.dart';
-import 'package:firebase_auth/firebase_auth.dart' as FB;
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:sudonym/data/index.dart';
 
 @singleton
@@ -51,7 +51,7 @@ class AuthCubit extends Cubit<AuthState> {
     await _authRepository.loginWithFacebook();
   }
 
-  setUser(User? u, FB.User? fbUser) {
+  setUser(User? u, fb.User? fbUser) {
     emit(LoadedState(u, fbUser));
   }
 
@@ -70,7 +70,7 @@ class AuthCubit extends Cubit<AuthState> {
 
 abstract class AuthState {
   final User? user;
-  final FB.User? firebaseUser;
+  final fb.User? firebaseUser;
   AuthState(this.user, this.firebaseUser);
 }
 
@@ -79,9 +79,8 @@ class LoadingState extends AuthState {
 }
 
 class LoadedState extends AuthState {
-  LoadedState(User? user, FB.User? firebaseUser) : super(user, firebaseUser);
+  LoadedState(User? user, fb.User? firebaseUser) : super(user, firebaseUser);
 
-  @override
   List<User?> get props => [user];
 }
 

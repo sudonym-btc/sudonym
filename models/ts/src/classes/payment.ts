@@ -1,9 +1,9 @@
-import { ActionType } from './action-type';
+import { ActionTypeWithAmount } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
 import { PaymentRequest } from './payment-request';
 import { MSATOSHIS, SATOSHIS } from './types/index';
 
-export class Payment extends ActionType {
+export class Payment extends ActionTypeWithAmount {
 	constructor(
 		public potId: number | null,
 		public originalAddress: string,
@@ -30,7 +30,11 @@ export class Payment extends ActionType {
 			isBolt11,
 			isBolt12,
 			isOnChain,
-			comment
+			comment,
+			minAmount,
+			maxAmount,
+			amount,
+			currency
 		);
 	}
 

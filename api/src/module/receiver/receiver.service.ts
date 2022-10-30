@@ -64,6 +64,7 @@ export class ReceiverService extends BaseService(Receiver) {
 					params.lnurlId = tag.id;
 					break;
 				case 'onchain':
+					console.log(await this.lightningNodeService.generateOnChainAddress());
 					params.data = (
 						await this.lightningNodeService.generateOnChainAddress()
 					).address;

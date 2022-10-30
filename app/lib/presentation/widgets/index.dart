@@ -7,7 +7,7 @@ export 'list/horizontal_list.dart';
 export 'list/list.dart';
 export 'pot/edit_pot.dart';
 export 'pot/pot.dart';
-export 'pot/pot_settings/credit_card/creditcard.dart';
+export 'pot/credit_card/creditcard.dart';
 export 'receive/receive_widget.dart';
 export 'receive/lnurl.dart';
 export 'receive/bolt11.dart';

@@ -22,6 +22,7 @@ export class Transaction extends BaseClass {
 		public transactionId: number | null,
 		public amount: number,
 		public status: boolean | null,
+		public errorMessage: string | null,
 		public currencyCode: string,
 		public createdAt: Date
 	) {
@@ -48,6 +49,7 @@ export class Transaction extends BaseClass {
 			json['transactionId'],
 			json['amount'],
 			json['status'],
+			json['errorMessage'],
 			json['currencyCode'],
 			json['createdAt']
 		);
@@ -73,6 +75,7 @@ export class Transaction extends BaseClass {
 			transactionId: this.transactionId,
 			amount: this.amount,
 			status: this.status,
+			errorMessage: this.errorMessage,
 			currencyCode: this.currencyCode,
 			createdAt: this.createdAt,
 		};

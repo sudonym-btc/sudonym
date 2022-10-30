@@ -2,7 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/contact.dart';
 import 'package:sudonym/data/index.dart';
 
-import 'entity_cubit_state.dart';
+import 'package:sudonym/logic/bloc/entity/entity_cubit_state.dart';
 
 @injectable
 class ContactCubit

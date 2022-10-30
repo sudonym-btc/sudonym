@@ -16,7 +16,7 @@ export class CreatePot {
 	currency: String;
 }
 @Controller('pot')
-export class PotController extends BaseController(PotService, Pot) {
+export class PotController extends BaseController({service: PotService, model: Pot}) {
 	@Post('')
 	creater(@Body() params: CreatePot): Promise<Pot> {
 		return super.create(params as any);

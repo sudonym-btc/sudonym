@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
@@ -19,7 +18,7 @@ class ReceiverCubit
   @override
   listenChanges() {
     receiveSubscription ??= repository.events.stream.listen((dynamic event) {
-      if (state.entity != null && event.name == "receiver.received") {
+      if (state.entity != null && event.name == 'receiver.received') {
         if (event.data['id'] == state.entity!.id ||
             event.data['parentId'] == state.entity!.id) {
           // TODO: Reload the invoice after usage

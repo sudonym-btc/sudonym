@@ -4,6 +4,7 @@ import 'package:sudonym.models/base-class.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/index.dart';
 
 class EntityCubitState<T> {
   T? entity;
@@ -12,10 +13,9 @@ class EntityCubitState<T> {
   EntityCubitState({this.entity, this.loading = false});
 }
 
-abstract class EntityCubit<
-    EntityRepo extends CrudRepository<EntityType>,
-    StateType extends EntityCubitState,
-    EntityType extends BaseClass> extends Cubit<StateType> with CubitLogger {
+abstract class EntityCubit<EntityRepo extends CrudRepository<EntityType>,
+        StateType extends EntityCubitState, EntityType extends BaseClass>
+    extends Cubit<StateType> with CubitLogger, SafeEmit {
   EntityRepo repository = getIt<EntityRepo>();
   late Function stateClass;
   StreamSubscription? updater;
@@ -38,7 +38,7 @@ abstract class EntityCubit<
   }
 
   fetch(dynamic id) async {
-    emit(stateClass(entity: state.entity, loading: true));
+    safeEmit(stateClass(entity: state.entity, loading: true));
     set(await repository.fetch(id));
   }
 
@@ -50,20 +50,18 @@ abstract class EntityCubit<
   }
 
   create(EntityType params) async {
-    emit(stateClass(entity: null, loading: true));
+    safeEmit(stateClass(entity: null, loading: true));
     set(await repository.create(params.toJson()));
   }
 
   update(EntityType params) async {
-    emit(stateClass(entity: null, loading: true));
+    safeEmit(stateClass(entity: null, loading: true));
     set(await repository.update(params.toJson()));
   }
 
   set(EntityType entity) {
-    if (!isClosed) {
-      emit(stateClass(entity: entity, loading: false));
-      listenChanges();
-    }
+    safeEmit(stateClass(entity: entity, loading: false)) &&
+        (listenChanges() ?? true);
   }
 
   @override

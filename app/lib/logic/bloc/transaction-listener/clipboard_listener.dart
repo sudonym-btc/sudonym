@@ -19,6 +19,7 @@ class ClipboardListener extends TransactionListenerSubtype {
         streamController.add(value.text as String);
         return value.text;
       }
+       return null;
     });
   }
 

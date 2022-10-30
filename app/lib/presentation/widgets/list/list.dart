@@ -75,8 +75,9 @@ class _ListWidgetState extends State<ListWidget> with ListLogger {
             }
 
             return LiveList(
-              showItemInterval: Duration(milliseconds: 100),
-              showItemDuration: Duration(milliseconds: 100),
+              showItemInterval: const Duration(milliseconds: 50),
+              showItemDuration: const Duration(milliseconds: 50),
+              shrinkWrap: true,
               controller: controller,
               itemBuilder: (context, index, animation) {
                 if (index < state.data.length) {

@@ -5,8 +5,6 @@ import 'package:sudonym/config/config.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 
-import 'crud_repository.dart';
-
 @LazySingleton(as: UserDeviceRepository, env: [Env.mock])
 class MockUserDeviceRepository extends MockCrudRepository<UserDevice>
     with UserDeviceRepositoryProps

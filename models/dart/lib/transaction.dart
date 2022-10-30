@@ -21,6 +21,7 @@ class Transaction extends BaseClass {
   dynamic /* num | null */ transactionId;
   num amount;
   dynamic /* bool | null */ status;
+  dynamic /* String | null */ errorMessage;
   String currencyCode;
   DateTime createdAt;
   Transaction(
@@ -42,6 +43,7 @@ class Transaction extends BaseClass {
       this.transactionId,
       this.amount,
       this.status,
+      this.errorMessage,
       this.currencyCode,
       this.createdAt)
       : super() {
@@ -69,6 +71,7 @@ class Transaction extends BaseClass {
         json["transactionId"],
         json["amount"],
         json["status"],
+        json["errorMessage"],
         json["currencyCode"],
         DateTime.parse(json["createdAt"]));
   }
@@ -93,6 +96,7 @@ class Transaction extends BaseClass {
       "transactionId": this.transactionId,
       "amount": this.amount,
       "status": this.status,
+      "errorMessage": this.errorMessage,
       "currencyCode": this.currencyCode,
       "createdAt": this.createdAt
     };

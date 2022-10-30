@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'receive_widget.dart';
+import 'package:sudonym/presentation/widgets/receive/receive_widget.dart';
 
 class ReceiveLnUrl extends ReceiveWidget {
   const ReceiveLnUrl({required pot, Key? key})

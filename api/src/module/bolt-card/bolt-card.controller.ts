@@ -4,7 +4,8 @@ import { BoltCard } from './bolt-card.model';
 import { BoltCardService } from './bolt-card.service';
 
 @Controller('boltCard')
-export class BoltCardController extends BaseController(
-	BoltCardService,
-	BoltCard
-) {}
+export class BoltCardController extends BaseController({
+	service: BoltCardService,
+	model: BoltCard
+}
+) { }

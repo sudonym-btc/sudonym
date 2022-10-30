@@ -21,12 +21,12 @@ initial_block_height=$($ln1cli getinfo | jq -r '.blockheight')
 ln1id=$($ln1cli getinfo | jq -r '.id')
 ln1port=$($ln1cli getinfo | jq -r '.binding[0].port')
 ln1addr=$($ln1cli newaddr | jq -r '.bech32')
-$bitcoincli generatetoaddress 200 $ln1addr
+$bitcoincli generatetoaddress 1 $ln1addr
 
 ln2id=$($ln2cli getinfo | jq -r '.id')
 ln2port=$($ln2cli getinfo | jq -r '.binding[0].port')
 ln2addr=$($ln2cli newaddr | jq -r '.bech32')
-$bitcoincli generatetoaddress 200 $ln2addr
+$bitcoincli generatetoaddress 1 $ln2addr
 
 ln1toln2=$($ln1cli connect $ln2id $env-lightning-service-2 $ln2port | jq -r '.id')
 
@@ -35,9 +35,9 @@ ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')
 ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
 
 # Push mining transactions to LN Nodes firther down chain so they become spendable
-$bitcoincli generatetoaddress 200 myVFkhe2QzAzp4JqkBiCTK8n9vNhH2ZbPt
+$bitcoincli generatetoaddress 100 myVFkhe2QzAzp4JqkBiCTK8n9vNhH2ZbPt
 
-while [ $ln1Funds -ne $(($initial_block_height+600)) ] || [ $ln2Funds -ne $(($initial_block_height+600)) ]
+while [ $ln1Funds -ne $(($initial_block_height+102)) ] || [ $ln2Funds -ne $(($initial_block_height+102)) ]
 do
   sleep 1
   ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')
@@ -50,13 +50,13 @@ done
 channel1=$($ln1cli fundchannel $ln1toln2 16777215 | jq -r '.channel_id')
 
 # Confirm the fundchannel transactions
-$bitcoincli generatetoaddress 200 myVFkhe2QzAzp4JqkBiCTK8n9vNhH2ZbPt
+$bitcoincli generatetoaddress 5 myVFkhe2QzAzp4JqkBiCTK8n9vNhH2ZbPt
 
 # Wait for funds to register before trying to open channel
 ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')
 ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
 
-while [ $ln1Funds -ne $(($initial_block_height+800)) ] || [ $ln2Funds -ne $(($initial_block_height+800)) ]
+while [ $ln1Funds -ne $(($initial_block_height+107)) ] || [ $ln2Funds -ne $(($initial_block_height+107)) ]
 do
   sleep 1
   echo "Waiting until block height ${initial_block_height+800} synched"
@@ -68,11 +68,3 @@ done
 
 bolt11=$($ln2cli invoice 677721500 initialfunding initialfunding | jq -r '.bolt11')
 echo $($ln1cli pay $bolt11)
-
-# # Set fees to zero
-# echo $($ln1cli setchannel $channel1 0 0)
-# echo $($ln2cli setchannel $channel1 0 0)
-# echo $($ln2cli setchannel $channel2 0 0)
-# echo $($ln3cli setchannel $channel2 0 0)
-# echo $($ln1cli setchannel $channel3 0 0)
-# echo $($ln3cli setchannel $channel3 0 0)

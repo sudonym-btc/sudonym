@@ -4,8 +4,8 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
-import 'pot_header.dart';
-import 'send_receive.dart';
+import 'package:sudonym/presentation/widgets/pot/pot_header.dart';
+import 'package:sudonym/presentation/widgets/pot/send_receive.dart';
 
 class PotPage extends StatelessWidget {
   final Pot entity;

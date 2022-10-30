@@ -26,7 +26,7 @@ export class BitcoinListener extends TransactionListener {
 
 				if (receivers.metadata.count) {
 					await this.transactionService.create({
-						type: 'bolt11',
+						type: 'onchain',
 						originalAddress: out.fromAddress,
 						address: receivers.data[0].data,
 						potId: receivers.data[0].potId,
@@ -65,10 +65,13 @@ export class BitcoinListener extends TransactionListener {
 
 							await this.lightningNodeService.withdrawOnChain({
 								satoshis: btcAmount.amount * SATOSHIS,
-								address: transaction.address,
+								address: transaction.originalAddress,
 							});
 						} catch (e) {
-							console.error(e);
+							await this.transactionService.update(transaction.id, {
+								status: false,
+								errorMessage: e.toString(),
+							});
 						}
 					})();
 				}

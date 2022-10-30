@@ -20,7 +20,7 @@
             "name": "flutter - mock",
             "cwd": "app",
             "request": "launch",
-            "program": "lib/main-mock.dart",
+            "program": "lib/main_mock.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -31,7 +31,7 @@
             "name": "flutter - development",
             "cwd": "app",
             "request": "launch",
-            "program": "lib/main-dev.dart",
+            "program": "lib/main_dev.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -42,7 +42,7 @@
             "name": "flutter - test",
             "cwd": "app",
             "request": "launch",
-            "program": "lib/main-test.dart",
+            "program": "lib/main_test.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -53,7 +53,7 @@
             "name": "flutter - staging",
             "cwd": "app",
             "request": "launch",
-            "program": "lib/main-staging.dart",
+            "program": "lib/main_staging.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -64,7 +64,7 @@
             "name": "flutter - production",
             "cwd": "app",
             "request": "launch",
-            "program": "lib/main-prod.dart",
+            "program": "lib/main_prod.dart",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",

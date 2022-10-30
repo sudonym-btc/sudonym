@@ -4,7 +4,7 @@ import { Contact } from './contact.model';
 import { ContactService } from './contact.service';
 
 @Controller('contact')
-export class ContactController extends BaseController(
-	ContactService,
-	Contact
-) {}
+export class ContactController extends BaseController({
+	service: ContactService,
+	model: Contact
+}) {}

@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym/logic/bloc/action.cubit.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
+
+import 'package:sudonym/presentation/pages/action/action_flow.dart';
+
+class ActionPage extends StatelessWidget {
+  final String address;
+  final void Function(ActionParseResponse) onDone;
+
+  const ActionPage({required this.address, required this.onDone, Key? key})
+      : super(key: key);
+
+  StatusPage loadingPage(BuildContext context, dynamic succ) {
+    return StatusPage(content: loader, color: Colors.indigo.shade800);
+  }
+
+  StatusPage errorPage(BuildContext context, Object err) {
+    return StatusPage(
+        title: 'Error',
+        subtitle: 'Encountered an unrecoverable error',
+        content: Text(err.toString()),
+        color: Theme.of(context).errorColor);
+  }
+
+  needsAmount(ActionParseResponse parse) {
+    return parse.payment != null
+        ? PayManager.canChangeAmount(parse.payment)
+        : WithdrawManager.canChangeAmount(parse.withdraw);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TaskBuilder(
+      future: () {
+        return ActionLoader(address).parse().then((value) {
+          value.fold((l) => null, (r) => onDone(r));
+          return value;
+        });
+      },
+      onSuccess: loadingPage,
+      onError: errorPage,
+    );
+  }
+}

@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/pot.dart';
-import 'package:sudonym/config/config.dart';
-import 'package:sudonym/data/repository/websocket.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym/config/index.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
-import 'crud_repository.dart';
 
 @LazySingleton(as: PotRepository, env: Env.allButMock)
 class PotRepositoryImpl extends PotRepository {
@@ -19,8 +18,6 @@ abstract class PotRepository extends CrudRepository<Pot>
 }
 
 class PotRepositoryProps {
-  @override
-  String get endpoint => "pot";
-  @override
+  String get endpoint => 'pot';
   Function converter = (e) => Pot.fromJson(e);
 }

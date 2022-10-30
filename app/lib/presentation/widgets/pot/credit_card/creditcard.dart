@@ -1,20 +1,20 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CreditCard extends StatefulWidget {
+  const CreditCard({super.key});
+
   @override
-  _CreditCardState createState() => _CreditCardState();
+  CreditCardState createState() => CreditCardState();
 }
 
-class _CreditCardState extends State<CreditCard> {
+class CreditCardState extends State<CreditCard> {
   double horizontalDrag = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: GestureDetector(
+    return GestureDetector(
       onHorizontalDragUpdate: (horizontal) {
         setState(() {
           horizontalDrag += horizontal.delta.dx;
@@ -50,7 +50,7 @@ class _CreditCardState extends State<CreditCard> {
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget cardFront() {

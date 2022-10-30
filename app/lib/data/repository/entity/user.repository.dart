@@ -18,8 +18,6 @@ abstract class UserRepository extends CrudRepository<User>
 }
 
 class UserRepositoryProps {
-  @override
-  String get endpoint => "user";
-  @override
+  String get endpoint => 'user';
   Function converter = (e) => User.fromJson(e);
 }

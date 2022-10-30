@@ -31,8 +31,6 @@ abstract class ReceiverRepository extends CrudRepository<Receiver>
 }
 
 class ReceiverRepositoryProps {
-  @override
-  String get endpoint => "receiver";
-  @override
+  String get endpoint => 'receiver';
   Function converter = (e) => Receiver.fromJson(e);
 }

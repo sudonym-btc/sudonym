@@ -13,7 +13,7 @@ ThemeData getTheme({bool light = true}) {
         labelColor: textColor,
         indicator: BoxDecoration(
             color: backgroundColor,
-            border: Border(bottom: BorderSide(color: primary, width: 2))),
+            border: const Border(bottom: BorderSide(color: primary, width: 2))),
       ),
       appBarTheme: AppBarTheme(
           foregroundColor: textColor,

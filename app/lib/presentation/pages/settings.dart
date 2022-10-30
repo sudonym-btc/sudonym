@@ -24,15 +24,20 @@ class SettingsPage extends StatelessWidget {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     const LightningSection(),
                     const CardSection(),
-                    Button.flat(
-                      text: 'Logout',
-                      foregroundColor: Colors.red,
-                      onPressed: (() async {
+                    const ExpansionTile(
+                      title: Text('App Info'),
+                      children: <Widget>[
+                        AboutSection(),
+                      ],
+                    ),
+                    ListTile(
+                      title: const Text('Logout'),
+                      // foregroundColor: Colors.red,
+                      onTap: (() async {
                         await getIt<AuthCubit>().logout();
                         Navigator.popUntil(context, (route) => route.isFirst);
                       }),
                     ),
-                    const AboutSection()
                   ]),
                 ))));
   }
@@ -43,7 +48,8 @@ class CardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: EdgeInsets.all(padding), child: BoltCardList());
+    return const Padding(
+        padding: EdgeInsets.all(padding), child: BoltCardList());
   }
 }
 
@@ -60,7 +66,7 @@ class LightningSectionState extends State<LightningSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Header('Lightning'),
           const SizedBox(
@@ -126,7 +132,7 @@ class AboutSectionState extends State<AboutSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(padding),
         child: Table(children: [
           TableRow(children: [
             const TableCell(child: Info('App name')),

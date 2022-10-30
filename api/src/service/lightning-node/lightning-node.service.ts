@@ -2,7 +2,7 @@ import * as https from 'https';
 import * as fs from 'fs';
 import axios from 'axios';
 import { Config } from '../../config/config';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import * as bolt11 from 'bolt11';
 
@@ -160,6 +160,7 @@ export class LightningNodeService {
 	}
 
 	async createInvoice(amount, label = null, description = null, desc_hash = false, preimage = undefined) {
+		if(amount == 0) amount = "any";
 		return this.rpc('invoice', [amount, label || uuid(), description || uuid(), null, null, preimage, null, null, desc_hash]);
 	}
 
@@ -268,7 +269,17 @@ export class LightningNodeService {
 		return this.makeRequest({
 			path: '/v1/withdraw',
 			method: 'POST',
-			data,
+			data: {
+				address: data.address,
+				satoshis: Math.floor(data.satoshis)
+			},
+		});
+	}
+
+	async onChainFees() {
+		return await this.makeRequest({
+			path: '/v1/network/estimateFees',
+			method: 'GET'
 		});
 	}
 
@@ -307,9 +318,16 @@ export class LightningNodeService {
 			},
 			...options,
 		}).catch((e) => {
-			this.logger.error('Lightning error', e, e.data);
-			throw e;
+			this.logger.error('Lightning error', e, e.response?.data);
+			if(e.response?.data?.error) throw new LightningError(e.response.data.error, e.response.data.error.message, 500, e.response.data.error.code);
+			throw new LightningError(e, e, e.statusCode, e);
 		});
 		return response.data;
+	}
+}
+
+export class LightningError extends HttpException {
+	constructor(public error, message, statusCode, public lightingErrorCode) {
+		super(message, statusCode);
 	}
 }

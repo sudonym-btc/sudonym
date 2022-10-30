@@ -4,12 +4,15 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/presentation/pages/withdraw_confirm.dart';
 
-class AmountPage extends StatefulWidget with AmountLogger {
-  final dynamic action;
+class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
+    with AmountLogger {
+  final T action;
   final Pot? pot;
-  const AmountPage({required this.action, this.pot, Key? key})
+  final void Function(T) onDone;
+
+  const AmountPage(
+      {required this.action, this.pot, required this.onDone, Key? key})
       : super(key: key);
 
   @override
@@ -28,10 +31,10 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
     currencies.addAll(['USD', 'BTC']);
     options = CurrencyInputOptions(
         currencies: currencies,
-        max: widget.action?.maxAmount,
-        min: widget.action?.minAmount,
+        max: widget.action.maxAmount,
+        min: widget.action.minAmount,
         initialValue: CurrencyInputOutput(
-            widget.action?.minAmount, widget.action.currency));
+            widget.action.minAmount ?? 0, widget.action.currency));
     super.initState();
   }
 
@@ -64,17 +67,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                                 options.controller!.value.amount;
                             widget.action.currency =
                                 options.controller!.value.currency;
-                            if (widget.action is Payment) {
-                              Navigator.pushNamed(context, '/confirmSend',
-                                  arguments: widget.action);
-                            }
-                            if (widget.action is Withdraw) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          WithdrawConfirm(widget.action)));
-                            }
+                            widget.onDone(widget.action);
                           },
                         )
                       ])

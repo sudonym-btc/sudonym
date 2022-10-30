@@ -64,6 +64,9 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	status: boolean;
 
+	@Column(DataType.STRING(1024))
+	errorMessage: string;
+
 	@ForeignKey(() => Transaction)
 	@AllowNull(true)
 	@Column

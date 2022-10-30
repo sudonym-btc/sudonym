@@ -159,7 +159,7 @@ class MockActionRepository implements ActionRepository {
   }
 
   fetchRemoteLnUrl(String invoice) {
-    if (invoice.contains("lnurlw")) {
+    if (invoice.contains('lnurlw')) {
       return ActionRemoteResponse.fromJson({
         'success': true,
         'data': {

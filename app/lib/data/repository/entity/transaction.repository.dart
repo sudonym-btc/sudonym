@@ -18,8 +18,6 @@ abstract class TransactionRepository extends CrudRepository<Transaction>
 }
 
 class TransactionRepositoryProps {
-  @override
-  String get endpoint => "transaction";
-  @override
+  String get endpoint => 'transaction';
   Function converter = (e) => Transaction.fromJson(e);
 }

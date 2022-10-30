@@ -28,8 +28,8 @@ class CurrencyInputController {
 class CurrencyInputOptions {
   CurrencyInputController? controller;
   List<String> currencies;
-  final num min;
-  final num max;
+  final num? min;
+  final num? max;
   late String? minCurrency;
   late String? maxCurrency;
   CurrencyInputOutput initialValue;
@@ -59,13 +59,14 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
   num clickValueBase = 1;
   DateTime? lastClick;
 
-  CurrencyInputCubit(this.options) : super(CurrencyInputCubitState()) {
+  CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
     options.controller!.outputStream.stream
         .map((event) => event.amount)
-        .debounceTime(const Duration(milliseconds: 500))
         .distinct()
-        .asyncMap((e) async => await resolveValues(e))
-        .listen((event) {});
+        .debounceTime(const Duration(milliseconds: 500))
+        .switchMap((e) async* {
+      yield await resolveValues(e);
+    }).listen((event) {});
 
     Timer.periodic(const Duration(milliseconds: 400), (timer) {
       if (clickMultiplier > 0 &&
@@ -85,7 +86,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
 
     if (controller?.precision != wantedPrecision) {
       controller = MoneyMaskedTextController(
-          initialValue: 0.0,
+          initialValue: state.currVal.toDouble() ?? 0.0,
           decimalSeparator: wantedPrecision > 0 ? '.' : '',
           thousandSeparator: ',',
           precision: wantedPrecision)
@@ -132,7 +133,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
             amount: val)
         .then((value) {
       emit(state.copyWith(
-          negativeEnabled: value.amount > options.min, minLoading: false));
+          negativeEnabled: value.amount > options.min!, minLoading: false));
     });
 
     _currencyRespository
@@ -142,7 +143,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
             amount: val)
         .then((value) {
       emit(state.copyWith(
-          positiveEnabled: value.amount < options.max, maxLoading: false));
+          positiveEnabled: options.max == null || value.amount < options.max!,
+          maxLoading: false));
     });
   }
 

@@ -137,7 +137,7 @@ def ride_the_lightning(config, cluster_types):
                                             "name": "RTL_PASS",
                                             "valueFrom": {
                                                 "secretKeyRef": {
-                                                    "name": config["env"] + "-ride-the-lightning-secret",
+                                                    "name": getSecretName(base_name),
                                                     "key": "key.txt",
                                                     "optional": False
                                                 }
@@ -193,7 +193,7 @@ def ride_the_lightning(config, cluster_types):
                     "namespace": "default",
                     "metadata": {"name": base_name + "-secret"},
                     "type": "Opaque",
-                    "data": {"pass": "dGVzdGluZw=="}, # Default development password "testing"
+                    "data": {"key.txt": "dGVzdGluZw=="}, # Default development password "testing"
                 },
             },] if config["env"] == "development" else []),
         "base_name": base_name,

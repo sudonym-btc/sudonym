@@ -62,7 +62,7 @@ def bitcoin(config, cluster_types):
                     "metadata": {"name": getVolumeClaimName(base_name)},
                     "spec": {
                         "accessModes": ["ReadWriteOnce"],
-                        "resources": {"requests": {"storage": "600Gi"}},
+                        "resources": {"requests": {"storage": "20Gi" if config["env"] == "development" else "600Gi" }},
                     },
                 },
             },

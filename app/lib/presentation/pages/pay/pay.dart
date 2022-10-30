@@ -105,7 +105,7 @@ class _SendPageState extends State<SendPage> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Header('Contacts'),
+                              const Header('Contacts'),
                               Button(
                                   text: 'Add',
                                   onPressed: () => Navigator.push(

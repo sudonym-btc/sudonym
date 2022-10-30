@@ -22,7 +22,7 @@ class PasteNotification extends StatelessWidget {
             ),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: greyTint,
+                backgroundColor: greyTint,
               ),
               child: const Text(
                 'Tap here to paste address!',

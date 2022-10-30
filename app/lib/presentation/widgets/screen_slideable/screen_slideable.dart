@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sudonym/presentation/index.dart';
 
-import 'measurable.dart';
+import 'package:sudonym/presentation/widgets/screen_slideable/measurable.dart';
 
 class ScreenSlideable extends StatefulWidget {
   final Widget top;
@@ -54,10 +54,10 @@ class BottomSlideable extends StatefulWidget {
       : super(key: key);
 
   @override
-  _BottomSlideableState createState() => _BottomSlideableState();
+  BottomSlideableState createState() => BottomSlideableState();
 }
 
-class _BottomSlideableState extends State<BottomSlideable>
+class BottomSlideableState extends State<BottomSlideable>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 

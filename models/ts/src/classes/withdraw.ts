@@ -1,9 +1,9 @@
-import { ActionType } from './action-type';
+import { ActionTypeWithAmount } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
 import { WithdrawRequest } from './withdraw-request';
 import { MSATOSHIS } from './types/index';
 
-export class Withdraw extends ActionType {
+export class Withdraw extends ActionTypeWithAmount {
 	constructor(
 		public potId: number | null,
 		public originalAddress: string,
@@ -27,7 +27,11 @@ export class Withdraw extends ActionType {
 			isBolt11,
 			isBolt12,
 			isOnChain,
-			comment
+			comment,
+			minAmount,
+			maxAmount,
+			amount,
+			currency
 		);
 	}
 

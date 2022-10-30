@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/presentation/index.dart';
 
 //Recieved Notification
 
