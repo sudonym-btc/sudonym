@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym.models/base-class.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';

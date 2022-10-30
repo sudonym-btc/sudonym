@@ -32,9 +32,16 @@ export class ActionService {
 	private readonly logger = new Logger(this.constructor.name);
 
 	async parse(invoice): Promise<ActionParseResponse> {
-		return ActionParseResponse.from(
-			await this.addressParser.parse(invoice)
+		const parse: any = await this.addressParser.parse(invoice);
+		const a = ActionParseResponse.from(
+			parse
 		);
+
+		if(parse.remoteResponse && parse.remoteResponse.success ==false) {
+			throw a;
+		}
+
+		return a;
 	}
 
 	async getInfo(action: Payment | Withdraw): Promise<Action> {

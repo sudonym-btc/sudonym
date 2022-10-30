@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/types/index.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/injection.dart';

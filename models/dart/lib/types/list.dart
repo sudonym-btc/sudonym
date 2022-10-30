@@ -1,5 +1,5 @@
 class ListState<T> {
-  final List<T> data;
-  final dynamic metadata;
-  final ListState(this.data, this.metadata) {}
+  List<T> data;
+  dynamic metadata;
+  ListState(this.data, this.metadata) {}
 }

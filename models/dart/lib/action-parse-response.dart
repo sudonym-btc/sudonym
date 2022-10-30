@@ -1,6 +1,5 @@
 import "withdraw.dart" show Withdraw;
 import "payment.dart" show Payment;
-import "action.dart" show Action;
 
 class ActionParseResponse {
   dynamic /* Payment | null */ payment;

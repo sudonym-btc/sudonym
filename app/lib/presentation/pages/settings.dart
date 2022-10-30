@@ -7,7 +7,7 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:sudonym/config/config.dart';
+import 'package:sudonym/config/index.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
 export "event.dart";
-export "types/address-parser.dart";
+export "types/index.dart";
 export "action.dart";
 export "action-parse-response.dart";
 export "action-type.dart";
@@ -11,6 +11,7 @@ export "lnurl.dart";
 export "bolt11.dart";
 export "action-remote-response.dart";
 export "withdraw.dart";
+export "base-class.dart";
 export "contact.dart";
 export "contact-address.dart";
 export "transaction.dart";

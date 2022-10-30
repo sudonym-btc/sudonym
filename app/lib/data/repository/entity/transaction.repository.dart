@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/transaction.dart';
-import 'package:sudonym/config/config.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 

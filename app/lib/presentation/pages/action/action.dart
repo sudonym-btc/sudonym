@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/bloc/action.cubit.dart';
@@ -17,7 +18,16 @@ class ActionPage extends StatelessWidget {
     return StatusPage(content: loader, color: Colors.indigo.shade800);
   }
 
-  StatusPage errorPage(BuildContext context, Object err) {
+  StatusPage errorPage(BuildContext context, dynamic err) {
+    print(err);
+    // Error came from remote service
+    if (err.response?.statusCode == 503) {
+      return StatusPage(
+          title: 'Error',
+          subtitle: 'Could not get ok response from remote server',
+          content: Text(err.toString()),
+          color: Theme.of(context).errorColor);
+    }
     return StatusPage(
         title: 'Error',
         subtitle: 'Encountered an unrecoverable error',

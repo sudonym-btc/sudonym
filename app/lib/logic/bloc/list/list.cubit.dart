@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym/config/logger.dart';
-import 'package:sudonym.models/types/list.dart';
+import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 
@@ -111,7 +110,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   }
 }
 
-class ListCubitState<T> extends Equatable implements ListState<T> {
+class ListCubitState<T> extends Equatable {
   @override
   final List<T> data;
   @override

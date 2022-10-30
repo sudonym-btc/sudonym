@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:sudonym.models/types/currency.dart';
+import 'package:sudonym.models/index.dart';
 
 String formatBTC(num amount) {
   if (amount > 0.1) {

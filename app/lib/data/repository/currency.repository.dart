@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
-import 'package:sudonym.models/types/currency.dart';
+import 'package:sudonym.models/index.dart';
 import 'package:sudonym/injection.dart';
 
 @LazySingleton(as: CurrencyRepository, env: Env.allButMock)

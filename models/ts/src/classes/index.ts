@@ -1,5 +1,5 @@
 export * from './event';
-export * from './types/address-parser';
+export * from './types/index';
 export * from './action';
 export * from './action-parse-response';
 export * from './action-type';
@@ -12,6 +12,7 @@ export * from './bolt11';
 export * from './action-remote-response';
 export * from './withdraw';
 
+export * from './base-class';
 export * from './contact';
 export * from './contact-address';
 export * from './transaction';
