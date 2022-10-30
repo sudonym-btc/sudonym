@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:sudonym/logic/bloc/transaction-listener/clipboard_listener.dart';
+import 'package:sudonym/logic/index.dart';
 
 @injectable
 class LinkListener extends TransactionListenerSubtype {

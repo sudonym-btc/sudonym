@@ -1,4 +1,4 @@
-import 'package:sudonym/presentation/widgets/receive/receive_widget.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class ReceiveOnchain extends ReceiveWidget {
   const ReceiveOnchain({super.key, required pot})
