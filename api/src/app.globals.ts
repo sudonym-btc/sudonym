@@ -19,4 +19,9 @@ export const applyGlobals = (app: INestApplication) => {
     app.useWebSocketAdapter(new WsAdapter(app));
     app.use(requestLogger);
     app.use(contextRequest(app.get(AuthService)));
+    app.enableCors({
+        origin: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+    });
 }

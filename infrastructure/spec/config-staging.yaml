@@ -9,6 +9,7 @@ imports:
 - path: kubernetes_api.py
 - path: kubernetes_db.py
 - path: kubernetes_homepage.py
+- path: kubernetes_web.py
 - path: common.py
 - path: helper.py
 - path: dns.py

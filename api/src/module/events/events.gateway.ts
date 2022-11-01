@@ -11,9 +11,7 @@ import { AuthService } from 'module/auth/auth.service';
 import { EventsService } from './events.service';
 
 @WebSocketGateway(getConfig().wsPort, {
-	cors: {
-		origin: '*',
-	},
+	cors: true,
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	private readonly logger = new Logger(EventsGateway.name);
@@ -51,8 +49,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleConnection(client, ...args: any[]) {
 		const headers = args[0].headers;
+		const token = new URL('https://example.com' + args[0].url).searchParams.get('x-access-token') || headers['x-access-token'];
 		const user = await this.authService.auth({
-			token: headers['x-access-token'],
+			token,
 		});
 		if (user.uid) {
 			this.logger.verbose('Websocket client connected');

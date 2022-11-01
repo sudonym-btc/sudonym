@@ -6,10 +6,13 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
 
-class WithdrawExecutePage extends ActionFlow<Withdraw> {
+class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
   final Withdraw action;
   const WithdrawExecutePage(
-      {super.key, required super.onDone, required this.action});
+      {super.key,
+      required super.onDone,
+      required super.onError,
+      required this.action});
 
   StatusPage errorPage(BuildContext context, Object err) {
     return StatusPage(

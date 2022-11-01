@@ -11,6 +11,7 @@ from kubernetes_bitcoin import bitcoin
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_api import api
 from kubernetes_homepage import homepage
+from kubernetes_web import web
 
 
 def ingress(config, cluster_types):
@@ -24,6 +25,7 @@ def ingress(config, cluster_types):
     lightning_rest_base_name = lightning_rest(config, cluster_types)["base_name"]
     api_base_name = api(config, cluster_types)["base_name"]
     homepage_base_name = homepage(config, cluster_types)["base_name"]
+    web_base_name = web(config, cluster_types)["base_name"]
     bitcoin_base_name = bitcoin(config, cluster_types)["base_name"]
     db_base_name = kubernetes_db(config, cluster_types)["base_name"]
 
@@ -231,6 +233,27 @@ def ingress(config, cluster_types):
                                                 "service": {
                                                     "name": getServiceName(
                                                         homepage_base_name
+                                                    ),
+                                                    "port": {
+                                                        "number": 80
+                                                    },
+                                                }
+                                            },
+                                        },
+                                    ]
+                                },
+                            },
+                            {
+                                "host": "app." + config["domain"],
+                                "http": {
+                                    "paths": [
+                                        {
+                                            "path": "/",
+                                            "pathType": "Prefix",
+                                            "backend": {
+                                                "service": {
+                                                    "name": getServiceName(
+                                                        web_base_name
                                                     ),
                                                     "port": {
                                                         "number": 80

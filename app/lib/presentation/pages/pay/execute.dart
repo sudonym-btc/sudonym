@@ -8,15 +8,22 @@ import 'package:sudonym/presentation/index.dart';
 
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
 
-class PayExecutePage extends ActionFlow<Payment> {
+class PayExecutePage extends ActionFlow<Payment, Transaction> {
   final Payment action;
   const PayExecutePage(
-      {super.key, required super.onDone, required this.action});
+      {super.key,
+      required super.onDone,
+      required super.onError,
+      required this.action});
 
   @override
   Widget build(BuildContext context) {
     return TaskBuilder(
-        future: () => PayManager().execute(action), onError: errorPage);
+        future: () => PayManager().execute(action).then((data) {
+              data.fold((l) => onError(l), (r) => onDone(r));
+              return data;
+            }),
+        onError: errorPage);
   }
 
   StatusPage errorPage(BuildContext context, Object err) {

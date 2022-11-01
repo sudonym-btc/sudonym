@@ -40,8 +40,10 @@ class TaskBuilder<T> extends StatelessWidget {
   }
 }
 
-abstract class ActionFlow<Model extends ActionType> extends StatelessWidget {
-  const ActionFlow({required this.onDone, super.key});
+abstract class ActionFlow<Model extends ActionType, Response>
+    extends StatelessWidget {
+  const ActionFlow({required this.onDone, super.key, required this.onError});
 
-  final void Function(dynamic obj) onDone;
+  final void Function(Response obj) onDone;
+  final Function(Object obj) onError;
 }

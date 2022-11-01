@@ -17,6 +17,7 @@ from kubernetes_lightning import lightning
 from kubernetes_lightning_rest import lightning_rest
 from kubernetes_api import api
 from kubernetes_homepage import homepage
+from kubernetes_web import web
 
 
 def GenerateConfig(context):
@@ -84,6 +85,7 @@ def GenerateConfig(context):
         + dns(config, cluster_types)["resources"]
         + storage(config, cluster_types)["resources"]
         + homepage(config, cluster_types)["resources"]
+        + web(config, cluster_types)["resources"]
     ) + (
         kubernetes_db(config, cluster_types)["resources"] if config["env"] in ["development", "test"] else db(config, cluster_types)["resources"] 
     )

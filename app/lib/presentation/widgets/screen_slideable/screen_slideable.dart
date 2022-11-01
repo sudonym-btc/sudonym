@@ -4,8 +4,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sudonym/presentation/index.dart';
 
-import 'package:sudonym/presentation/widgets/screen_slideable/measurable.dart';
-
 class ScreenSlideable extends StatefulWidget {
   final Widget top;
   final Widget bottom;

@@ -37,8 +37,8 @@ class _LoggedInWidget extends StatelessWidget {
         bloc: BlocProvider.of<TransactionListenerCubit>(context),
         listener: (BuildContext context, state) async {
           if (state.address != null) {
-            getIt<ActionTriggerService>()
-                .trigger(state.address.toString(), context);
+            getIt<ActionTriggerService>().trigger(
+                ActionStream(context: context, link: state.address.toString()));
           }
         },
         child: const MessageHandler(

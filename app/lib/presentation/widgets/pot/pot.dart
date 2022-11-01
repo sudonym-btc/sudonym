@@ -14,17 +14,6 @@ class PotPage extends StatelessWidget {
     return CubitWrapper<PotCubit, PotCubitState, Pot>(
         entity: entity,
         builder: (BuildContext context, state) {
-          List<Widget> children = [
-            SlidingUpPanel(
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [const PotHeader(), SendReceive(entity: entity)],
-              ),
-              minHeight: 150,
-              boxShadow: null,
-              panel: TransactionList(pot: entity),
-            )
-          ];
           if (state.loading) {
             if (state.entity!.name != null) {
               // children.add(const LinearProgressIndicator());
@@ -32,8 +21,64 @@ class PotPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
           }
-
-          return Stack(children: children);
+          return LayoutBuilder(builder: (context, constraints) {
+            if (constraints.maxWidth > 500) {
+              return WideLayout(
+                entity: entity,
+              );
+            }
+            return NarrowLayout(
+              entity: entity,
+            );
+          });
         });
+  }
+}
+
+class NarrowLayout extends StatelessWidget {
+  final Pot entity;
+  const NarrowLayout({required this.entity, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [
+      SlidingUpPanel(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [PotHeader(entity: entity), SendReceive(entity: entity)],
+        ),
+        minHeight: 150,
+        boxShadow: null,
+        panel: TransactionList(pot: entity),
+      )
+    ];
+
+    return Stack(children: children);
+  }
+}
+
+class WideLayout extends StatelessWidget {
+  final Pot entity;
+  const WideLayout({required this.entity, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PotHeader(
+              entity: entity,
+            ),
+            SendReceive(entity: entity)
+          ],
+        )),
+        Expanded(child: TransactionList(pot: entity))
+      ],
+    );
   }
 }

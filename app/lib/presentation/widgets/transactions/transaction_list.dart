@@ -15,7 +15,6 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).scaffoldBackgroundColor,
-        constraints: const BoxConstraints.expand(),
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Header(AppLocalizations.of(context)!.transactions),

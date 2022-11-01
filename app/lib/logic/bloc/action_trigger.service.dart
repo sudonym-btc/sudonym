@@ -1,106 +1,139 @@
 import 'dart:async';
+import 'package:dartz/dartz.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/index.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+
+extension EitherX<L, R> on Either<L, R> {
+  R asRight() => (this as Right).value; //
+  L asLeft() => (this as Left).value;
+}
+
+extension SwitchMapExtension<T> on Stream<T> {
+  // // Switches to a new stream if predicate matches
+  // Stream<S> mapWhen<S>(
+  //         bool Function(T value) pred, S Function(T val) map) =>
+  //     map((value) => pred(value)
+  //         ? map(value)
+  //         : (() async* {
+  //             yield value as S;
+  //           })());
+  // Switches to a new stream if predicate matches
+  // Stream<S> switchMapWhen<S>(
+  //         bool Function(T value) pred, Stream<S> Function(T val) map) =>
+  //     switchMap((value) => pred(value)
+  //         ? map(value)
+  //         : (() async* {
+  //             yield value as S;
+  //           })());
+
+  // Switches to new observable, where mapper takes a callback
+  Stream<S> switchMapCallback<S>(
+      Function(T value, Function(S event) next, dynamic Function(Object) err)
+          callback) {
+    return switchMap((value) {
+      StreamController<S> controller = StreamController();
+      callback(value, controller.sink.add, controller.sink.addError);
+      return controller.stream;
+    });
+  }
+}
+
+class ActionStream {
+  BuildContext context;
+  String link;
+  Pot? pot;
+  ActionStream({required this.context, required this.link, this.pot});
+}
 
 @lazySingleton
 @injectable
 class ActionTriggerService with ActionLogger {
-  Stream<R> step<R>(
-      BuildContext context, dynamic data, Function(Sink s) action) {
-    StreamController<R> controller = StreamController<R>();
-    action(controller.sink);
-    return controller.stream;
-  }
+  trigger(ActionStream action) {
+    final triggerStream = PublishSubject<ActionStream>();
 
-  trigger(String link, BuildContext context, [Pot? pot]) {
-    final subject = PublishSubject();
-    subject.switchMap<ActionParseResponse>((value) {
-      return step<ActionParseResponse>(
-          context,
-          value,
-          (sink) => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ActionPage(address: link, onDone: sink.add))));
-    }).switchMap((event) {
-      if (event.payment != null) {
-        return handlePayment(context)(event);
-      } else if (event.withdraw != null) {
-        return handleWithdraw(context)(event);
-      }
-      return handleUnknown(context)(event);
-    }).listen((event) {});
+    loggy.i('triggering action ${action.link}');
+    if (!isValidAddress(action.link)) {
+      loggy.e('invalid link ${action.link}');
+      throw Error();
+    }
+    triggerStream
+        .switchMapCallback(
+            (value, void Function(ActionParseResponse x) next, err) =>
+                Navigator.push(
+                    action.context,
+                    MaterialPageRoute(
+                        builder: (context) => ActionPage(
+                            address: value.link, onDone: next, onError: err))))
+        .switchMap((value) => value.payment != null
+            ? handlePayment(action.context)(value.payment)
+            : handleWithdraw(action.context)(value.withdraw))
+        .handleError(
+      (err) {
+        loggy.e(err);
+      },
+      // test: (error) => error instanceof DioErr,
+    ).listen((event) {
+      loggy.i('Payment flow completed');
+    });
 
-    subject.add(link);
+    triggerStream.add(action);
   }
 
   handlePayment(
     BuildContext context,
   ) {
     bool firstPageAmount = false;
-    return (ActionParseResponse a) => Stream.fromIterable([a])
-        .map<Payment>((event) => event.payment)
-        .switchMap<Payment>((value) {
+    return (Payment a) => Stream.fromIterable([a])
+        .switchMapCallback((value, Function(Payment) next, err) {
           if (PayManager.canChangeAmount(value)) {
             firstPageAmount = true;
-            return step<Payment>(
-                context,
-                value,
-                (sink) => Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) => AmountPage<Payment>(
-                            action: value, onDone: sink.add))));
+            return Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) =>
+                    AmountPage<Payment>(action: value, onDone: next)));
           }
-          return () async* {
-            yield value;
-          }();
+          return next(value);
         })
-        .switchMap<Payment>((value) => step(context, value, (sink) {
-              final route = MaterialPageRoute(
-                  builder: (context) =>
-                      PayInfoPage(action: value, onDone: sink.add));
-              if (firstPageAmount) {
-                Navigator.push(
-                  context,
-                  route,
-                );
-              } else {
-                Navigator.pushReplacement(context, route);
-              }
-            }))
-        .switchMap<Transaction>((value) => step(
-            context,
-            value,
-            (sink) => Navigator.pushReplacement(
+        .switchMapCallback((value, Function(Payment) next, err) {
+          final route = MaterialPageRoute(
+              builder: (context) =>
+                  PayInfoPage(action: value, onDone: next, onError: err));
+          if (firstPageAmount) {
+            Navigator.push(
+              context,
+              route,
+            );
+          } else {
+            Navigator.pushReplacement(context, route);
+          }
+        })
+        .switchMapCallback((value, Function(Transaction) next, err) =>
+            Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
                     transitionDuration: const Duration(seconds: 0),
                     pageBuilder: (context, animation1, animation2) =>
-                        PayExecutePage(action: value, onDone: sink.add)))))
-        .switchMap((value) => step(
+                        PayExecutePage(
+                            action: value, onDone: next, onError: err))))
+        .doOnData((value) => Navigator.pushAndRemoveUntil(
             context,
-            value,
-            (sink) => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TransactionPage(entity: value)),
-                (route) => route.isFirst)));
+            MaterialPageRoute(
+                builder: (context) => TransactionPage(entity: value)),
+            (route) => route.isFirst));
   }
 
   handleWithdraw(BuildContext context) {
-    return (ActionParseResponse a) =>
-        Stream.fromIterable([a]).map((event) => event.withdraw);
+    return (Withdraw a) => Stream.fromIterable([a]);
   }
 
-  handleUnknown(BuildContext context) {
-    return (ActionParseResponse a) => Stream.fromIterable([a])
-        .where((event) => event.withdraw != null)
-        .map((event) => event.withdraw);
-  }
+//   handleUnknown(BuildContext context) {
+//     return (ActionParseResponse a) => Stream.fromIterable([a])
+//         .where((event) => event.withdraw != null)
+//         .map((event) => event.withdraw);
+//   }
 }

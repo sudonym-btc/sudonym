@@ -9,9 +9,14 @@ import 'package:sudonym/presentation/index.dart';
 
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
 
-class PayInfoPage extends ActionFlow<Payment> {
+class PayInfoPage extends ActionFlow<Payment, Payment> {
   final Payment action;
-  const PayInfoPage({super.key, required super.onDone, required this.action});
+
+  const PayInfoPage(
+      {super.key,
+      required super.onDone,
+      required super.onError,
+      required this.action});
 
   @override
   Widget build(BuildContext context) {

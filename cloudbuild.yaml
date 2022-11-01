@@ -1,17 +1,6 @@
 steps:
-  - id: 'api'
-    name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
-  
-  - id: 'push api'
-    name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA']
 
-  - id: 'Setting API image tag'
-    waitFor:
-      - "-"
-    name: ubuntu
-    args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
+  # MAKE SURE BUILDER IMAGES ARE LOADED
 
   - id: 'helm'
     name: 'gcr.io/cloud-builders/gcloud'
@@ -29,6 +18,59 @@ steps:
       else
         echo "Image existed"
       fi
+
+  - id: 'flutter'
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    waitFor:
+      - "-"
+    args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      if [[ -z `gcloud container images list-tags --format='get(tags)' gcr.io/$PROJECT_ID/flutter | grep latest` ]]
+      then
+        gcloud builds submit infrastructure/cloud-builders-community/flutter --config=infrastructure/cloud-builders-community/flutter/cloudbuild.yaml
+      else
+        echo "Image existed"
+      fi
+
+  # BUILD THE APP COMPONENTS
+
+  - id: 'api'
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
+    
+  - id: 'push api'
+    waitFor:
+      - 'api'
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA']
+
+  - id: 'Setting API image tag'
+    waitFor:
+      - "-"
+    name: ubuntu
+    args: ['bash','-c','sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py']
+  - id: 'Setting Web App image tag'
+    waitFor:
+      - "-"
+    name: ubuntu
+    args: ['bash','-c','sed "s/web:latest/web:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_web.py']
+
+  - id: 'webapp'
+    waitFor:
+      - 'flutter'
+    name: 'gcr.io/$PROJECT_ID/flutter'
+    args: [ 'build', 'web']
+  
+  - id: 'webappdocker'
+    waitFor:
+      - 'webapp'
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['gcr.io/$PROJECT_ID/web:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/web:latest', '-f', 'infrastructure/web.Dockerfile', 'app']
+  
 
   - id: 'deploy'
     name: 'gcr.io/$PROJECT_ID/helm'

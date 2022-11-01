@@ -11,12 +11,12 @@ class PayManager extends ActionManager<Payment> {
   }
 
   @override
-  info(Payment action) {
+  Future<Either<Object, Payment>> info(Payment action) {
     return Task(() => actionRepository.getPaymentInfo(action)).attempt().run();
   }
 
   @override
-  execute(Payment action) {
+  Future<Either<Object, Transaction>> execute(Payment action) {
     return Task(() => actionRepository.pay(action)).attempt().run();
   }
 }

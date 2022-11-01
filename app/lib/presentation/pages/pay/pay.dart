@@ -90,8 +90,10 @@ class _SendPageState extends State<SendPage> {
                               return Button(
                                 onPressed: form.valid
                                     ? () => getIt<ActionTriggerService>()
-                                        .trigger(form.control('address').value,
-                                            context, widget.pot)
+                                        .trigger(ActionStream(
+                                            context: context,
+                                            link: form.control('address').value,
+                                            pot: widget.pot))
                                     : null,
                                 text: 'OK',
                               );
@@ -126,8 +128,10 @@ class _SendPageState extends State<SendPage> {
                             return ContactListItem(
                                 contact: el,
                                 onPressed: () => getIt<ActionTriggerService>()
-                                    .trigger(el.ContactAddresses[0].address,
-                                        context, widget.pot));
+                                    .trigger(ActionStream(
+                                        context: context,
+                                        link: el.ContactAddresses[0].address,
+                                        pot: widget.pot)));
                           },
                         ))
                       ]))
