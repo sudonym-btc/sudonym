@@ -72,7 +72,7 @@ steps:
     args: 
       - '-c'
       - |
-        cd app && flutter build web
+        cd app && flutter build web -t lib/main_$BRANCH_NAME.dart
   
   - id: 'webappdocker'
     waitFor:

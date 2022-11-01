@@ -154,8 +154,8 @@ workflows:
           BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name 'com.sudonym.sudonym') + 1))
           echo "Build number: $BUILD_NUMBER"
           cd app
-          flutter build appbundle --build-number=$BUILD_NUMBER -t lib/main_prod.dart --release
-          flutter build apk --build-number=$BUILD_NUMBER -t lib/main_prod.dart --release
+          flutter build appbundle --build-number=$BUILD_NUMBER -t lib/main_production.dart --release
+          flutter build apk --build-number=$BUILD_NUMBER -t lib/main_production.dart --release
       - *ghrelease
     publishing:
       google_play:
@@ -185,7 +185,7 @@ workflows:
         script: |
           BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APP_ID") + 1)) 
           echo "Build number: $BUILD_NUMBER"
-          cd app && flutter build ipa -t lib/main_prod.dart --release --export-options-plist=/Users/builder/export_options.plist --build-number=$BUILD_NUMBER
+          cd app && flutter build ipa -t lib/main_production.dart --release --export-options-plist=/Users/builder/export_options.plist --build-number=$BUILD_NUMBER
     publishing:
       app_store_connect:
         # Use referenced App Store Connect API key to authenticate binary upload
