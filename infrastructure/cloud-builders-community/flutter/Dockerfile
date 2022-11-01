@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM dart:2.18
 
 # Install Dependencies.
 RUN apt update -y
