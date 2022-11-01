@@ -20,7 +20,7 @@ then
     kubectl annotate serviceaccount --overwrite api iam.gke.io/gcp-service-account=$ENV-api@$PROJECT_ID.iam.gserviceaccount.com
 
     helm repo add jetstack https://charts.jetstack.io
-    help repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
     
     loadBalancerIP=$(gcloud compute addresses describe $1-ip --region=us-central1 --format='get(address)')

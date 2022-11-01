@@ -92,7 +92,7 @@ def kubernetes_db(config, cluster_types):
                                             },
                                             {
                                                 "name": "MYSQL_DATABASE",
-                                                "value": "test"
+                                                "value": "app"
                                             },
                                         ],
                                         "ports": [

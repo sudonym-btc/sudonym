@@ -42,7 +42,7 @@ do
   sleep 1
   ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')
   ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
-  echo "Waiting until block height ${initial_block_height+600} synched"
+  echo "Waiting until block height ${initial_block_height+102} synched"
   echo $ln1Funds
   echo $ln2Funds
 done
@@ -59,7 +59,7 @@ ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
 while [ $ln1Funds -ne $(($initial_block_height+107)) ] || [ $ln2Funds -ne $(($initial_block_height+107)) ]
 do
   sleep 1
-  echo "Waiting until block height ${initial_block_height+800} synched"
+  echo "Waiting until block height ${initial_block_height+107} synched"
   echo $ln1Funds
   echo $ln2Funds
   ln1Funds=$($ln1cli getinfo | jq -r '.blockheight')

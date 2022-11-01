@@ -6,7 +6,7 @@ export const configDevelopment = () => ({
 		host: 'development-db-service',
 		username: 'root',
 		password: 'testing',
-		database: 'test',
+		database: 'app',
 	},
 	bitcoin: {
 		network: 'regtest'

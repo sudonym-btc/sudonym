@@ -42,15 +42,17 @@ class NarrowLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
-      SlidingUpPanel(
-        body: Column(
+      Column(children: [
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [PotHeader(entity: entity), SendReceive(entity: entity)],
         ),
-        minHeight: 150,
-        boxShadow: null,
-        panel: TransactionList(pot: entity),
-      )
+        SlidingUpPanel(
+            body: Container(),
+            minHeight: 150,
+            boxShadow: null,
+            panel: TransactionList(pot: entity))
+      ])
     ];
 
     return Stack(children: children);
