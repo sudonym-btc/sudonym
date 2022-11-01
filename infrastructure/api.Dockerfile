@@ -8,7 +8,7 @@ COPY ./package*.json ./
 
 RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip 
 RUN npm config set fetch-retry-mintimeout 100000
-RUN npm config set fetch-retry-maxtimeout 600000
+RUN npm config set fetch-retry-maxtimeout 6000000
 RUN npm install --unsafe-perm
 RUN apk del build-dependencies
 

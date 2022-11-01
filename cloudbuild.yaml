@@ -1,5 +1,5 @@
 steps:
-
+# todo: split into different triggers
   # MAKE SURE BUILDER IMAGES ARE LOADED
 
   - id: 'helm'
@@ -55,7 +55,7 @@ steps:
   # BUILD API
   - id: 'api'
     name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'api/Dockerfile', '.']
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/api:latest', '--target', 'development', '-f', 'infrastructure/api.Dockerfile', '.']
     
   - id: 'push api'
     waitFor:
