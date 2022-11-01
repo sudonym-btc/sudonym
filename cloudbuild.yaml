@@ -78,7 +78,7 @@ steps:
     waitFor:
       - 'webapp'
     name: 'gcr.io/cloud-builders/docker'
-    args: ['gcr.io/$PROJECT_ID/web:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/web:latest', '-f', 'infrastructure/web.Dockerfile', 'app']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/web:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/web:latest', '-f', 'infrastructure/web.Dockerfile', 'app']
   
   - id: 'push web app'
     waitFor:
