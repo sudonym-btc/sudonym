@@ -49,7 +49,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       loggy.d('Loading next ${_repository.endpoint}');
 
       safeEmit(ListCubitState(
-          data: state.data, metadata: state.metadata, loading: true));
+          data: state.data,
+          metadata: state.metadata,
+          loading: true,
+          loadingNext: true));
 
       var response = await _repository.list(where: {
         ...where,
@@ -59,7 +62,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       List elements = [...state.data, ...filtered];
 
       safeEmit(ListCubitState(
-          data: elements, metadata: response.metadata, loading: false));
+          data: elements,
+          metadata: response.metadata,
+          loading: false,
+          loadingNext: false));
     }
   }
 
@@ -68,7 +74,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       loggy.d('Loading previous ${_repository.endpoint}');
 
       safeEmit(ListCubitState(
-          data: state.data, metadata: state.metadata, loading: true));
+          data: state.data,
+          metadata: state.metadata,
+          loading: true,
+          loadingPrevious: true));
 
       var response = await _repository.list(where: {
         ...where,
@@ -79,7 +88,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       List elements = [...filtered, ...state.data];
 
       safeEmit(ListCubitState(
-          data: elements, metadata: response.metadata, loading: false));
+          data: elements,
+          metadata: response.metadata,
+          loading: false,
+          loadingPrevious: false));
     }
   }
 
@@ -116,9 +128,15 @@ class ListCubitState<T> extends Equatable {
   @override
   final dynamic metadata;
   final bool loading;
+  final bool loadingPrevious;
+  final bool loadingNext;
 
   const ListCubitState(
-      {required this.data, required this.metadata, this.loading = false});
+      {required this.data,
+      required this.metadata,
+      this.loading = false,
+      this.loadingPrevious = false,
+      this.loadingNext = false});
 
   @override
   List<Object?> get props => [data, metadata, loading];

@@ -28,8 +28,6 @@ class AmountTextState extends State<AmountText> {
   String val = '';
   @override
   void initState() {
-    print(widget.fromCurrency);
-    print(widget.toCurrency);
     val = FormatCurrency().format(widget.fromCurrency, widget.amount);
     getIt<CurrencyRepository>()
         .getRate(

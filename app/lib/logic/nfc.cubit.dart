@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:sudonym/config/index.dart';
 
 @Injectable()
-class NFCCubit extends Cubit<NFCCubitState> {
+class NFCCubit extends Cubit<NFCCubitState> with NFCLogger {
   NFCCubit() : super(NFCCubitState());
 
   write(Uri url) async {
@@ -20,7 +21,7 @@ class NFCCubit extends Cubit<NFCCubitState> {
           } on Error catch (e) {
             emit(NFCCubitState(writing: false, success: false, e: e));
           } catch (e) {
-            print(e);
+            loggy.e(e);
           }
         },
         onError: (e) async {

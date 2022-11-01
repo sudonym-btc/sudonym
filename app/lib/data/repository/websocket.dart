@@ -45,7 +45,6 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
     socketSubscription = channel!.stream.listen((event) {
       stream.sink.add(event);
     }, onError: (e) async {
-      print(e);
       loggy.e(e);
       await Future.delayed(const Duration(seconds: 1));
       await connect();

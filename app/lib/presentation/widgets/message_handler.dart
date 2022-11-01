@@ -22,10 +22,6 @@ class _MessageHandlerState extends State<MessageHandler>
   final AuthCubit _authCubit = getIt<AuthCubit>();
 
   handleToken(String token) {
-    // _authCubit.stream.listen(((event) {
-    //   print(event);
-    //   event.user;
-    // }));
     _userDeviceRepo.create({'uid': _authCubit.state.user!.id, 'token': token});
     loggy.d('Got new notification token $token');
   }
