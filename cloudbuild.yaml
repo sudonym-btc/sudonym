@@ -68,11 +68,10 @@ steps:
     waitFor:
       - 'flutter'
     name: 'gcr.io/$PROJECT_ID/flutter'
-    entrypoint: bash
+    entrypoint: /bin/sh
       - '-c'
       - |
-        ls && cd app && \
-        flutter build web 
+        ls
   
   - id: 'webappdocker'
     waitFor:
