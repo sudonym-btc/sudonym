@@ -63,7 +63,11 @@ steps:
     waitFor:
       - 'flutter'
     name: 'gcr.io/$PROJECT_ID/flutter'
-    args: [ 'build', 'web']
+    entrypoint: /bin/sh
+      - '-c'
+      - |
+        cd app && \
+        flutter build web 
   
   - id: 'webappdocker'
     waitFor:
