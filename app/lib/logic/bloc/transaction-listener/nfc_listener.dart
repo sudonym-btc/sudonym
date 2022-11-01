@@ -5,7 +5,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 
-@injectable
+@singleton
 class NFCListener extends TransactionListenerSubtype with NFCLogger {
   init() async {
     if (!Platform.isIOS) {

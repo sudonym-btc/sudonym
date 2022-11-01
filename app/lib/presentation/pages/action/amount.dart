@@ -49,14 +49,14 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
               appBar: AppBar(
                 title: const Text('Amount'),
               ),
-              body: Padding(
+              body: (Padding(
                   padding: const EdgeInsets.all(padding),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      const SizedBox(height: padding),
-                      currencyInput,
-                      Expanded(child: Container()),
+                      Expanded(child: Center(child: currencyInput)),
                       ButtonBar(children: [
                         Button(
                           text: 'Confirm',
@@ -72,7 +72,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                         )
                       ])
                     ],
-                  ))),
+                  )))),
         ));
   }
 }

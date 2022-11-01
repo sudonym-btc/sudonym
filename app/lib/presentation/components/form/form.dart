@@ -1,3 +1,5 @@
+import 'package:dartz/dartz_unsafe.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -80,7 +82,19 @@ class _CustomFormState<
                                             widget.onSave!();
                                           }
                                         } catch (e) {
-                                          rethrow;
+                                          if (e is DioError &&
+                                              e.response?.statusCode == 400) {
+                                            for (final obj in e
+                                                .response?.data?['message']) {
+                                              form
+                                                  .control(obj['property'])
+                                                  .setErrors(
+                                                      {obj['message']: true});
+                                            }
+                                            form.markAllAsTouched();
+                                          } else {
+                                            rethrow;
+                                          }
                                         }
                                       }
                                     : null,

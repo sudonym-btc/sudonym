@@ -2,24 +2,30 @@ import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sudonym/data/index.dart';
 
-@injectable
+@singleton
 class ClipboardListener extends TransactionListenerSubtype {
-
   Timer? clipboardTriggerTime;
+
+  StreamController controller = StreamController();
 
   init() {
     clipboardTriggerTime =
-        Timer.periodic(const Duration(seconds: 5), (timer) => check());
+        Timer.periodic(const Duration(seconds: 1), (timer) => check());
+
+    controller.stream.distinct().listen((event) {
+      streamController.add(event);
+    });
   }
 
   Future<String?> check() {
     return FlutterClipboard.controlV().then((value) {
-       if (value!.text != null) {
-        streamController.add(value.text as String);
+      if (value?.text != null && isValidAddress(value.text)) {
+        controller.add(value.text as String);
         return value.text;
       }
-       return null;
+      return null;
     });
   }
 
@@ -29,5 +35,6 @@ class ClipboardListener extends TransactionListenerSubtype {
 }
 
 class TransactionListenerSubtype {
-  StreamController<String> streamController = StreamController<String>.broadcast(); 
+  StreamController<String> streamController =
+      StreamController<String>.broadcast();
 }

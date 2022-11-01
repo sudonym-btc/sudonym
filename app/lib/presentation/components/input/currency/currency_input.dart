@@ -6,7 +6,7 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 class CurrencyInput extends FormField<CurrencyInputOutput> {
-  CurrencyInputOptions options;
+  final CurrencyInputOptions options;
   final void Function(CurrencyInputOutput)? onChanged;
 
   CurrencyInput({

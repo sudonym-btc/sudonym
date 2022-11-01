@@ -24,6 +24,9 @@ class SettingsPage extends StatelessWidget {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     const LightningSection(),
                     const CardSection(),
+                    const SizedBox(
+                      height: padding * 2,
+                    ),
                     const ExpansionTile(
                       title: Text('App Info'),
                       children: <Widget>[
@@ -49,7 +52,7 @@ class CardSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-        padding: EdgeInsets.all(padding), child: BoltCardList());
+        padding: EdgeInsets.all(padding * 2), child: BoltCardList());
   }
 }
 
@@ -63,6 +66,22 @@ class LightningSection extends StatefulWidget {
 }
 
 class LightningSectionState extends State<LightningSection> {
+  FormGroup g = FormGroup({
+    'lightningAddress': FormControl<String>(
+        value: getIt<AuthCubit>().user!.lightningAddress,
+        validators: [
+          Validators.required,
+          Validators.pattern(r'^[A-Za-z0-9_.-]+$')
+        ]),
+  });
+  @override
+  void initState() {
+    g.setErrors({
+      'lightningAddress': {'required': true}
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -76,26 +95,24 @@ class LightningSectionState extends State<LightningSection> {
               'This is the email address that other wallets that support lightning addresses are able to send money to.'),
           CustomForm<UserCubit, UserCubitState, User>(
               entity: getIt<AuthCubit>().user!,
-              formGroup: () => FormGroup({
-                    'lightningAddress': FormControl<String>(
-                        value: getIt<AuthCubit>().user!.lightningAddress,
-                        validators: [
-                          Validators.required,
-                          Validators.pattern(r'^[A-Za-z0-9_.-]+$')
-                        ]),
-                  }),
-              builder: (context, state) => Column(
-                    children: [
-                      ReactiveTextField(
-                          formControlName: 'lightningAddress',
-                          onEditingComplete: null,
-                          decoration: InputDecoration(
-                              hintText: 'satoshi',
-                              labelText: AppLocalizations.of(context)!
-                                  .lightningAddress,
-                              suffixText: '@${getIt<Config>().domain}')),
-                    ],
-                  ))
+              formGroup: () => g,
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    ReactiveTextField(
+                        formControlName: 'lightningAddress',
+                        onEditingComplete: null,
+                        validationMessages: {
+                          'unique': (error) => 'The name is already taken'
+                        },
+                        decoration: InputDecoration(
+                            hintText: 'satoshi',
+                            labelText:
+                                AppLocalizations.of(context)!.lightningAddress,
+                            suffixText: '@${getIt<Config>().domain}')),
+                  ],
+                );
+              })
         ]));
   }
 }

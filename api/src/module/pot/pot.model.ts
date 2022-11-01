@@ -12,6 +12,7 @@ import {
 	NotNull,
 	AllowNull,
 	DataType,
+	Validate,
 } from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
@@ -23,6 +24,7 @@ import { User } from 'module/user/user.model';
 import { Transaction } from 'module/transaction/transaction.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
+import { ValidationError, ValidationErrorItem } from 'sequelize';
 const { Op } = require('sequelize');
 
 @Table({

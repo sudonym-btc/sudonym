@@ -47,11 +47,12 @@ class NarrowLayout extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [PotHeader(entity: entity), SendReceive(entity: entity)],
         ),
-        SlidingUpPanel(
-            body: Container(),
-            minHeight: 150,
-            boxShadow: null,
-            panel: TransactionList(pot: entity))
+        Expanded(child: TransactionList(pot: entity))
+        //  SlidingUpPanel(
+        //     body: Container(),
+        //     minHeight: 150,
+        //     boxShadow: null,
+        //     panel:
       ])
     ];
 

@@ -11,11 +11,12 @@ import 'package:sudonym/presentation/pages/action/action_flow.dart';
 
 class PayInfoPage extends ActionFlow<Payment, Payment> {
   final Payment action;
-
+  final Pot? pot;
   const PayInfoPage(
       {super.key,
       required super.onDone,
       required super.onError,
+      this.pot,
       required this.action});
 
   @override
@@ -34,7 +35,10 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
         color: Colors.indigo.shade800,
         title: AppLocalizations.of(context)!.paymentInfo,
         subtitle: AppLocalizations.of(context)!.gatheredPaymentInformation,
-        content: PaymentInfoPreview(entity: r),
+        content: PaymentInfoPreview(
+          entity: r,
+          pot: pot,
+        ),
         actions: ButtonBar(children: [
           ElevatedButton.icon(
             label: Text(AppLocalizations.of(context)!.send),
@@ -67,8 +71,8 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
 
 class PaymentInfoPreview extends StatelessWidget {
   final Payment entity;
-
-  const PaymentInfoPreview({required this.entity, super.key});
+  final Pot? pot;
+  const PaymentInfoPreview({required this.entity, this.pot, super.key});
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -76,13 +80,19 @@ class PaymentInfoPreview extends StatelessWidget {
         children: [
           TableRow(children: [
             Text(AppLocalizations.of(context)!.amount),
-            Text(FormatCurrency()
-                .format(entity.currency ?? 'BTC', entity.amount ?? 0))
+            AmountText(
+                amount: entity.amount,
+                fromCurrency: entity.currency,
+                toCurrency: pot?.currency ?? entity.currency,
+                builder: (state) => Text(state))
           ]),
           TableRow(children: [
             Text(AppLocalizations.of(context)!.fee),
-            Text(FormatCurrency()
-                .format(entity.feeCurrency ?? 'BTC', entity.fee ?? 0))
+            AmountText(
+                amount: entity.fee,
+                fromCurrency: entity.feeCurrency,
+                toCurrency: pot?.currency ?? entity.feeCurrency,
+                builder: (state) => Text(state))
           ]),
           TableRow(children: [
             Text(AppLocalizations.of(context)!.address),

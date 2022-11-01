@@ -29,7 +29,28 @@ class AuthGate extends StatelessWidget {
   }
 }
 
-class _LoggedInWidget extends StatelessWidget {
+class _LoggedInWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _LoggedInWidgetState();
+}
+
+class _LoggedInWidgetState extends State<_LoggedInWidget> {
+  @override
+  void initState() {
+    getIt<ClipboardListener>().init();
+    getIt<ClipboardListener>().streamController.stream.listen((event) {
+      showCustomSnackbar(
+        context: context,
+        contentText: 'Address found in clipboard.',
+        actionText: 'Use',
+        onPressed: () => getIt<ActionTriggerService>()
+            .trigger(ActionStream(context: context, link: event)),
+        second: 5, // default value 4 second
+      );
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<TransactionListenerCubit,

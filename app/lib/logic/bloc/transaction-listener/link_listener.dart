@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:sudonym/logic/index.dart';
 
-@injectable
+@singleton
 class LinkListener extends TransactionListenerSubtype {
   StreamSubscription? _s;
 

@@ -11,6 +11,7 @@ scaffoldGroup('Validation', (scaffold) => {
 
 		expect(data.statusCode).toBe(400);
 		expect(data.body)
+		console.log(data.body);
 
 		const response = scaffold.app.get(ReceiverService).create({
 				potId: scaffold.entities.pot[0].id,

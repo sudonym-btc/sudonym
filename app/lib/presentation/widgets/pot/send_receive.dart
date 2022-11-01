@@ -19,20 +19,6 @@ class SendReceive extends StatelessWidget {
         child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
           return LayoutBuilder(builder: (context, constraints) {
-            // Widget image = state.loading
-            //     ? CircularProgressIndicator()
-            //     : QrImage(
-            //         data: state.data!.data,
-            //         version: QrVersions.auto,
-            //         // embeddedImage: NetworkImage(
-            //         //     'https://www.kindpng.com/picc/m/73-733879_lightning-bolt-emoji-png-electricity-emoji-transparent-png.png'),
-            //         embeddedImageStyle: QrEmbeddedImageStyle(
-            //           size: Size(40, 40),
-            //         ),
-            //       );
-
-            // print(constraints);
-
             return Center(
                 child: FractionallySizedBox(
                     widthFactor: 0.7,

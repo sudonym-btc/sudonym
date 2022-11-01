@@ -71,8 +71,8 @@ class ActionTriggerService with ActionLogger {
                         builder: (context) => ActionPage(
                             address: value.link, onDone: next, onError: err))))
         .switchMap((value) => value.payment != null
-            ? handlePayment(action.context)(value.payment)
-            : handleWithdraw(action.context)(value.withdraw))
+            ? handlePayment(action)(value.payment)
+            : handleWithdraw(action)(value.withdraw))
         .handleError(
       (err) {
         loggy.e(err);
@@ -86,49 +86,60 @@ class ActionTriggerService with ActionLogger {
   }
 
   handlePayment(
-    BuildContext context,
+    ActionStream actionStream,
   ) {
     bool firstPageAmount = false;
     return (Payment a) => Stream.fromIterable([a])
+        .map((event) {
+          event.potId = actionStream.pot?.id;
+          return event;
+        })
         .switchMapCallback((value, Function(Payment) next, err) {
           if (PayManager.canChangeAmount(value)) {
             firstPageAmount = true;
-            return Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) =>
-                    AmountPage<Payment>(action: value, onDone: next)));
+            return Navigator.of(actionStream.context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AmountPage<Payment>(action: value, onDone: next)));
           }
           return next(value);
         })
         .switchMapCallback((value, Function(Payment) next, err) {
           final route = MaterialPageRoute(
-              builder: (context) =>
-                  PayInfoPage(action: value, onDone: next, onError: err));
+              builder: (context) => PayInfoPage(
+                  action: value,
+                  pot: actionStream.pot,
+                  onDone: next,
+                  onError: err));
           if (firstPageAmount) {
             Navigator.push(
-              context,
+              actionStream.context,
               route,
             );
           } else {
-            Navigator.pushReplacement(context, route);
+            Navigator.pushReplacement(actionStream.context, route);
           }
         })
         .switchMapCallback((value, Function(Transaction) next, err) =>
             Navigator.pushReplacement(
-                context,
+                actionStream.context,
                 PageRouteBuilder(
                     transitionDuration: const Duration(seconds: 0),
                     pageBuilder: (context, animation1, animation2) =>
                         PayExecutePage(
                             action: value, onDone: next, onError: err))))
         .doOnData((value) => Navigator.pushAndRemoveUntil(
-            context,
+            actionStream.context,
             MaterialPageRoute(
                 builder: (context) => TransactionPage(entity: value)),
             (route) => route.isFirst));
   }
 
-  handleWithdraw(BuildContext context) {
-    return (Withdraw a) => Stream.fromIterable([a]);
+  handleWithdraw(ActionStream actionStream) {
+    return (Withdraw a) => Stream.fromIterable([a]).map((event) {
+          event.potId = actionStream.pot?.id;
+          return event;
+        });
   }
 
 //   handleUnknown(BuildContext context) {

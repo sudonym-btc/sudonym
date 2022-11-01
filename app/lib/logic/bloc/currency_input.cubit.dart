@@ -9,6 +9,7 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 const List<String> defaultCurrencies = ['USD', 'BTC'];
@@ -50,7 +51,7 @@ class CurrencyInputOptions {
 }
 
 @injectable
-class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
+class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
   final CurrencyRepository _currencyRespository = getIt<CurrencyRepository>();
   final CurrencyInputOptions options;
   MoneyMaskedTextController? controller;
@@ -60,14 +61,6 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
   DateTime? lastClick;
 
   CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
-    options.controller!.outputStream.stream
-        .map((event) => event.amount)
-        .distinct()
-        .debounceTime(const Duration(milliseconds: 500))
-        .switchMap((e) async* {
-      yield await resolveValues(e);
-    }).listen((event) {});
-
     Timer.periodic(const Duration(milliseconds: 400), (timer) {
       if (clickMultiplier > 0 &&
           (lastClick == null ||
@@ -75,8 +68,16 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
         clickMultiplier--;
       }
     });
+    options.controller!.outputStream.stream
+        .map((event) => event.amount)
+        .distinct()
+        .debounceTime(const Duration(milliseconds: 500))
+        .asyncMap(resolveValues)
+        .listen((event) {});
     setCurrentCurrency(
         options.currencies.indexOf(options.initialValue.currency));
+    controller!.updateValue(getDisplayValue(
+        options.currencies[state.currCurrency], options.initialValue.amount));
     setValue(options.initialValue.amount);
   }
 
@@ -92,7 +93,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
           precision: wantedPrecision)
         ..addListener(() => setValue(getRealValue(
             options.currencies[state.currCurrency], controller!.numberValue)));
-      emit(state.copyWith());
+      safeEmit(state.copyWith());
     }
   }
 
@@ -100,7 +101,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
     num newCurrVal =
         getDisplayValue(options.currencies[state.altCurrency], state.altVal);
     int newCurr = i >= state.currencies.length ? 0 : i;
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
         currCurrency: newCurr,
         altCurrency: newCurr + 1 >= state.currencies.length ? 0 : newCurr + 1,
         altVal: 0,
@@ -116,14 +117,15 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
   }
 
   resolveValues(num val) {
-    emit(state.copyWith(minLoading: true, maxLoading: true, altLoading: true));
+    safeEmit(
+        state.copyWith(minLoading: true, maxLoading: true, altLoading: true));
     _currencyRespository
         .getRate(
             fromCurrency: options.currencies[state.currCurrency],
             toCurrency: options.currencies[state.altCurrency],
             amount: val)
         .then((value) {
-      emit(state.copyWith(altVal: value.amount, altLoading: false));
+      safeEmit(state.copyWith(altVal: value.amount, altLoading: false));
     });
 
     _currencyRespository
@@ -132,7 +134,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
             toCurrency: options.minCurrency!,
             amount: val)
         .then((value) {
-      emit(state.copyWith(
+      safeEmit(state.copyWith(
           negativeEnabled: value.amount > options.min!, minLoading: false));
     });
 
@@ -142,7 +144,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
             toCurrency: options.maxCurrency!,
             amount: val)
         .then((value) {
-      emit(state.copyWith(
+      safeEmit(state.copyWith(
           positiveEnabled: options.max == null || value.amount < options.max!,
           maxLoading: false));
     });
@@ -151,7 +153,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
   setValue(num val) {
     options.controller!.outputStream
         .add(CurrencyInputOutput(val, options.currencies[state.currCurrency]));
-    emit(state.copyWith(currVal: val.toDouble()));
+    safeEmit(state.copyWith(currVal: val.toDouble()));
   }
 
   setClickValue(num val) {
@@ -185,8 +187,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> {
     return value / (curr == 'BTC' ? SATOSHIS : 1);
   }
 
-  getDisplayValue(String curr, num value) {
-    return value * (curr == 'BTC' ? SATOSHIS : 1);
+  double getDisplayValue(String curr, num value) {
+    return (value * (curr == 'BTC' ? SATOSHIS : 1)).toDouble();
   }
 }
 

@@ -24,3 +24,4 @@ export 'transactions/transaction_list_item.dart';
 export 'amount_text.dart';
 export 'incoming_transaction_handler.dart';
 export 'message_handler.dart';
+export 'snackbar/snackbar.dart';

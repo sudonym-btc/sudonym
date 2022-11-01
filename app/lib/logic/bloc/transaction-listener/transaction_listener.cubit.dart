@@ -12,6 +12,7 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState>
 
   TransactionListenerCubit() : super(TransactionListenerCubitState()) {
     listen();
+    clipboard.init();
     link.init();
     nfc.init();
   }
@@ -21,9 +22,9 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState>
       parseAddress(event);
     });
 
-    clipboard.streamController.stream.listen((event) {
-      parseAddress(event);
-    });
+    // clipboard.streamController.stream.listen((event) {
+    //   parseAddress(event);
+    // });
 
     nfc.streamController.stream.listen((event) {
       parseAddress(event);

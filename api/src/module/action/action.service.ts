@@ -121,6 +121,8 @@ export class ActionService {
 						)
 					).pr;
 
+					console.log(address);
+
 					return Action.from({
 						...action,
 						address,
