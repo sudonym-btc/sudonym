@@ -69,6 +69,7 @@ steps:
       - 'flutter'
     name: 'gcr.io/$PROJECT_ID/flutter'
     entrypoint: /bin/sh
+    args: 
       - '-c'
       - |
         ls
