@@ -68,7 +68,7 @@ steps:
     waitFor:
       - 'flutter'
     name: 'gcr.io/$PROJECT_ID/flutter'
-    entrypoint: /bin/sh
+    entrypoint: bash
       - '-c'
       - |
         ls && cd app && \
