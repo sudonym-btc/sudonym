@@ -3,6 +3,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditPot extends StatelessWidget {
   final Pot? entity;
@@ -15,7 +16,9 @@ class EditPot extends StatelessWidget {
         child: SafeArea(
             child: Scaffold(
                 appBar: AppBar(
-                  title: Text("${entity?.id == null ? "Create" : "Edit"} Pot"),
+                  title: Text(entity?.id == null
+                      ? AppLocalizations.of(context)!.createPot
+                      : AppLocalizations.of(context)!.editPot),
                 ),
                 body: Padding(
                     padding: const EdgeInsets.all(padding),
@@ -58,17 +61,17 @@ class EditPotFormState extends State<EditPotForm> {
               children: [
                 ReactiveTextField(
                   formControlName: 'name',
-                  decoration: const InputDecoration(
-                    labelText: 'Pot name',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.potName,
                   ),
                 ),
                 const SizedBox(height: padding),
                 ReactiveDropdownField(
                   formControlName: 'currency',
-                  decoration: const InputDecoration(
-                    labelText: 'Currency',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.currency,
                   ),
-                  hint: const Text('Select Currency'),
+                  hint: Text(AppLocalizations.of(context)!.selectCurrency),
                   items: listOfValue
                       .map((currency) => DropdownMenuItem(
                             value: currency,

@@ -27,14 +27,14 @@ class SettingsPage extends StatelessWidget {
                     const SizedBox(
                       height: padding * 2,
                     ),
-                    const ExpansionTile(
-                      title: Text('App Info'),
+                    ExpansionTile(
+                      title: Text(AppLocalizations.of(context)!.appInfo),
                       children: <Widget>[
                         AboutSection(),
                       ],
                     ),
                     ListTile(
-                      title: const Text('Logout'),
+                      title: Text(AppLocalizations.of(context)!.logout),
                       // foregroundColor: Colors.red,
                       onTap: (() async {
                         await getIt<AuthCubit>().logout();
@@ -87,12 +87,11 @@ class LightningSectionState extends State<LightningSection> {
     return Padding(
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Header('Lightning'),
+          Header(AppLocalizations.of(context)!.lightning),
           const SizedBox(
             height: padding,
           ),
-          const Info(
-              'This is the email address that other wallets that support lightning addresses are able to send money to.'),
+          Info(AppLocalizations.of(context)!.lightningAddressDescription),
           CustomForm<UserCubit, UserCubitState, User>(
               entity: getIt<AuthCubit>().user!,
               formGroup: () => g,
@@ -103,7 +102,8 @@ class LightningSectionState extends State<LightningSection> {
                         formControlName: 'lightningAddress',
                         onEditingComplete: null,
                         validationMessages: {
-                          'unique': (error) => 'The name is already taken'
+                          'unique': (error) =>
+                              AppLocalizations.of(context)!.nameAlreadyTaken
                         },
                         decoration: InputDecoration(
                             hintText: 'satoshi',

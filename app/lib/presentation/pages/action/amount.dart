@@ -4,6 +4,7 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
     with AmountLogger {
@@ -47,7 +48,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
         child: SafeArea(
           child: Scaffold(
               appBar: AppBar(
-                title: const Text('Amount'),
+                title: Text(AppLocalizations.of(context)!.amount),
               ),
               body: (Padding(
                   padding: const EdgeInsets.all(padding),
@@ -59,7 +60,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                       Expanded(child: Center(child: currencyInput)),
                       ButtonBar(children: [
                         Button(
-                          text: 'Confirm',
+                          text: AppLocalizations.of(context)!.confirm,
                           icon: const FaIcon(FontAwesomeIcons.paperPlane,
                               size: 14),
                           onPressed: () {

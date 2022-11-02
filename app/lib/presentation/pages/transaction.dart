@@ -58,7 +58,7 @@ class _OutgoingPending extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: (AppLocalizations.of(context)!.paymentPending),
+        title: (AppLocalizations.of(context)!.paymentInProgress),
         subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit),
         content: loader,
         color: Colors.indigo.shade800);
@@ -88,7 +88,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
-        subtitle: AppLocalizations.of(context)!.paymentHasSuccessfullyBeenSent,
+        subtitle: AppLocalizations.of(context)!.paymentOutgoingSuccess,
         content: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,

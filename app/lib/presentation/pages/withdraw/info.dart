@@ -43,7 +43,7 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
                   .format(action.currency ?? 'BTC', action.amount ?? 0))
             ]),
             TableRow(children: [
-              const Text('Address'),
+              Text(AppLocalizations.of(context)!.address),
               Text(
                 action.originalAddress,
                 style: const TextStyle(

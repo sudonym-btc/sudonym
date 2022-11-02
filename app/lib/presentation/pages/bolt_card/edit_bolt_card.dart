@@ -6,6 +6,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/logic/index.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditBoltCard extends StatelessWidget {
   final BoltCard? entity;
@@ -18,7 +19,9 @@ class EditBoltCard extends StatelessWidget {
         child: SafeArea(
             child: Scaffold(
           appBar: AppBar(
-            title: Text("${entity?.id == null ? "Create" : "Edit"} Bolt Card"),
+            title: Text(entity?.id == null
+                ? AppLocalizations.of(context)!.createBoltCard
+                : AppLocalizations.of(context)!.editBoltCard),
           ),
           body: Padding(
             padding: const EdgeInsets.all(padding),
@@ -59,8 +62,8 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
                   children: [
                 ReactiveTextField(
                   formControlName: 'name',
-                  decoration: const InputDecoration(
-                    labelText: 'Card name',
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.boltCardName,
                   ),
                 ),
                 Expanded(child: WriteToNFCButton(entity: state.entity))
@@ -86,8 +89,9 @@ class WriteToNFCButton extends StatelessWidget {
                         children: [
                           Button(
                             text: state.writing
-                                ? 'Hold device to phone'
-                                : 'Write to NFC Tag',
+                                ? AppLocalizations.of(context)!
+                                    .holdDeviceToPhone
+                                : AppLocalizations.of(context)!.linkNfcDevice,
                             onPressed: !state.writing
                                 ? () {
                                     context.read<NFCCubit>().write(Uri.parse(
@@ -98,7 +102,8 @@ class WriteToNFCButton extends StatelessWidget {
                                 : null,
                           ),
                           state.success && !Platform.isIOS
-                              ? const Text('Successfully wrote to card')
+                              ? Text(
+                                  AppLocalizations.of(context)!.nfcLinkSuccess)
                               : (state.e != null
                                   ? Text(state.e.toString())
                                   : Container())

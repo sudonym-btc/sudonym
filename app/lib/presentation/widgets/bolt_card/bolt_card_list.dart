@@ -19,7 +19,7 @@ class BoltCardList extends StatelessWidget {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Header(AppLocalizations.of(context)!.boltCards),
             Button(
-                text: 'Add Card',
+                text: AppLocalizations.of(context)!.addCard,
                 onPressed: () => {
                       Navigator.push(
                           context,
@@ -31,8 +31,7 @@ class BoltCardList extends StatelessWidget {
           const SizedBox(
             height: padding,
           ),
-          const Info(
-              'Write your account details to an NFC card so that you can tap them to a point of sales device to pay.'),
+          Info(AppLocalizations.of(context)!.boltCardDescription),
           const SizedBox(
             height: padding,
           ),
@@ -42,7 +41,7 @@ class BoltCardList extends StatelessWidget {
                   builder: (el) {
                     return BoltCardListItem(entity: el);
                   },
-                  emptyText: 'No cards added yet',
+                  emptyText: AppLocalizations.of(context)!.noBoltCardsFound,
                   list: () {
                     return ListCubit(getIt<BoltCardRepository>());
                   }))

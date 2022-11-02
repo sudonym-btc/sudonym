@@ -84,8 +84,9 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                           : () {
                               FlutterClipboard.copy(state.entity!.data)
                                   .then((value) {
-                                const snackBar = SnackBar(
-                                  content: Text('Copied to Clipboard'),
+                                SnackBar snackBar = SnackBar(
+                                  content: Text(AppLocalizations.of(context)!
+                                      .copiedToClipboard),
                                 );
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(snackBar);

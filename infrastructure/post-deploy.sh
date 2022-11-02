@@ -4,20 +4,20 @@ ENV=$1
 export ENV=${ENV:="development"}
 export PROJECT_NUM=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
-if [ "$1" != "development" ];
+if [ "$ENV" != "development" ];
 then
-    echo "$1"
+    echo "$ENV"
 
     # Convert Google secrets to kubernetes secrets
     gcloud container clusters get-credentials --zone "us-central1-c" "$1-cluster"
-    gcloud secrets versions access latest --secret="$1-cert-resolver" --out-file="key.json"  
-    kubectl create secret generic $1-cert-resolver --from-file=key.json
+    gcloud secrets versions access latest --secret="$ENV-cert-resolver" --out-file="key.json"  
+    kubectl create secret generic $ENV-cert-resolver --from-file=key.json
     rm key.json 
-    gcloud secrets versions access latest --secret="$1-ride-the-lightning-secret" --out-file="key.txt"  
-    kubectl create secret generic $1-ride-the-lightning-secret --from-file=key.txt
+    gcloud secrets versions access latest --secret="$ENV-ride-the-lightning-secret" --out-file="key.txt"  
+    kubectl create secret generic $ENV-ride-the-lightning-secret --from-file=key.txt
     rm key.txt
-    gcloud secrets versions access latest --secret="$1-db-secret" --out-file="key.txt"  
-    kubectl create secret generic $1-db-secret --from-file=key.txt
+    gcloud secrets versions access latest --secret="$ENV-db-secret" --out-file="key.txt"  
+    kubectl create secret generic $ENV-db-secret --from-file=key.txt
     rm key.txt
 
     # Attach kube user api to IAM service account
@@ -27,7 +27,7 @@ then
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
     
-    loadBalancerIP=$(gcloud compute addresses describe $1-ip --region=us-central1 --format='get(address)')
+    loadBalancerIP=$(gcloud compute addresses describe $ENV-ip --region=us-central1 --format='get(address)')
     echo "Setting load balancer IP $loadBalancerIP"
     helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --set controller.service.loadBalancerIP=$loadBalancerIP
     helm upgrade --install \
@@ -38,5 +38,5 @@ then
             --set installCRDs=true
 
     pip3 install -r infrastructure/minikube/requirements.txt
-    python3 infrastructure/spec/certificates.py $1 | kubectl apply -f -
+    python3 infrastructure/spec/certificates.py $ENV | kubectl apply -f -
 fi

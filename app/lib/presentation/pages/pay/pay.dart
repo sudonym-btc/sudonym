@@ -55,7 +55,7 @@ class _SendPageState extends State<SendPage> {
         child: SafeArea(
           child: Scaffold(
               appBar: AppBar(
-                title: const Text('Send'),
+                title: Text(AppLocalizations.of(context)!.send),
                 actions: [
                   IconButton(
                       onPressed: () {
@@ -82,7 +82,8 @@ class _SendPageState extends State<SendPage> {
                                   onEditingComplete: null,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
-                                      hintText: 'Lightning address, invoice...',
+                                      hintText: AppLocalizations.of(context)!
+                                          .addressInputHint,
                                       labelText: AppLocalizations.of(context)!
                                           .address))),
                           ReactiveFormConsumer(
@@ -107,9 +108,9 @@ class _SendPageState extends State<SendPage> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Header('Contacts'),
+                              Header(AppLocalizations.of(context)!.contacts),
                               Button(
-                                  text: 'Add',
+                                  text: AppLocalizations.of(context)!.add,
                                   onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -122,7 +123,8 @@ class _SendPageState extends State<SendPage> {
                             ]),
                         Expanded(
                             child: ListWidget(
-                          emptyText: 'No contacts',
+                          emptyText:
+                              AppLocalizations.of(context)!.noContactsFound,
                           list: () => listCubit,
                           builder: (el) {
                             return ContactListItem(
