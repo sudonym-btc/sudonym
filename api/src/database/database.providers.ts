@@ -27,8 +27,7 @@ export const databaseProviders = [
 		useFactory: async (config: Config) => {
 			const logger = new Logger('DB');
 			logger.log('Initializing db:', {
-				...config.database,
-				password: null
+				...config.database
 			});
 
 			const dbInit =  new Sequelize({
