@@ -16,7 +16,11 @@ then
     gcloud secrets versions access latest --secret="$1-ride-the-lightning-secret" --out-file="key.txt"  
     kubectl create secret generic $1-ride-the-lightning-secret --from-file=key.txt
     rm key.txt
+    gcloud secrets versions access latest --secret="$1-db-secret" --out-file="key.txt"  
+    kubectl create secret generic $1-db-secret --from-file=key.txt
+    rm key.txt
 
+    # Attach kube user api to IAM service account
     kubectl annotate serviceaccount --overwrite api iam.gke.io/gcp-service-account=$ENV-api@$PROJECT_ID.iam.gserviceaccount.com
 
     helm repo add jetstack https://charts.jetstack.io

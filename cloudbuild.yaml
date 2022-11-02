@@ -64,27 +64,27 @@ steps:
     args: [ 'push', 'gcr.io/$PROJECT_ID/api:$SHORT_SHA']
 
   # BUILD WEB APP 
-  - id: 'webapp'
-    waitFor:
-      - 'flutter'
-    name: 'gcr.io/$PROJECT_ID/flutter'
-    entrypoint: /bin/sh
-    args: 
-      - '-c'
-      - |
-        cd app && flutter build web -t lib/main_$BRANCH_NAME.dart
+  # - id: 'webapp'
+  #   waitFor:
+  #     - 'flutter'
+  #   name: 'gcr.io/$PROJECT_ID/flutter'
+  #   entrypoint: /bin/sh
+  #   args: 
+  #     - '-c'
+  #     - |
+  #       cd app && flutter build web -t lib/main_$BRANCH_NAME.dart
   
-  - id: 'webappdocker'
-    waitFor:
-      - 'webapp'
-    name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/web:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/web:latest', '-f', 'infrastructure/web.Dockerfile', 'app']
+  # - id: 'webappdocker'
+  #   waitFor:
+  #     - 'webapp'
+  #   name: 'gcr.io/cloud-builders/docker'
+  #   args: ['build', '-t', 'gcr.io/$PROJECT_ID/web:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/web:latest', '-f', 'infrastructure/web.Dockerfile', 'app']
   
-  - id: 'push web app'
-    waitFor:
-      - 'webappdocker'
-    name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'gcr.io/$PROJECT_ID/web:$SHORT_SHA']
+  # - id: 'push web app'
+  #   waitFor:
+  #     - 'webappdocker'
+  #   name: 'gcr.io/cloud-builders/docker'
+  #   args: [ 'push', 'gcr.io/$PROJECT_ID/web:$SHORT_SHA']
 
   - id: 'deploy'
     name: 'gcr.io/$PROJECT_ID/helm'

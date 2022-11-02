@@ -144,6 +144,19 @@ def kubernetes_db(config, cluster_types):
                 },
             },
             {
+                "name": getSecretName(base_name),
+                "type": cluster_types["Secret"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Secret",
+                    "namespace": "default",
+                    "metadata": {"name": base_name + "-secret"},
+                    "type": "Opaque",
+                    "data": {"key.txt": "testing"},
+                },
+            },
+            {
                 "name": getDeploymentName(base_name + '-phpmyadmin'),
                 "type": cluster_types["Deployment"],
                 "metadata": {

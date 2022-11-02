@@ -38,12 +38,12 @@
                 "authProtocol": "default"
             },
             "previewLimit": 50,
-            "server": "db.sudonym.app",
+            "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "production",
+            "name": "local",
             "database": "app",
-            "username": "api",
+            "username": "root",
             "connectionTimeout": 10
         },
         {
@@ -51,12 +51,13 @@
                 "authProtocol": "default"
             },
             "previewLimit": 50,
-            "server": "localhost",
+            "server": "db.sudonym.app",
             "port": 3306,
+            "askForPassword": true,
             "driver": "MySQL",
-            "name": "local",
+            "name": "production",
             "database": "app",
-            "username": "root",
+            "username": "test",
             "connectionTimeout": 10
         }
     ],

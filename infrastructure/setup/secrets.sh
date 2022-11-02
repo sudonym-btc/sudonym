@@ -15,3 +15,10 @@ openssl rand -hex 16 | gcloud secrets create $ENV-ride-the-lightning-secret --da
 gcloud secrets add-iam-policy-binding $ENV-ride-the-lightning-secret \
     --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
     --role=roles/secretmanager.secretAccessor
+
+# Create a random password for database if it does not yet exist
+openssl rand -hex 16 | gcloud secrets create $ENV-ride-the-lightning-secret --data-file=-
+# Cloud build needs access to write secret to config file
+gcloud secrets add-iam-policy-binding $ENV-db-secret \
+    --member="serviceAccount:$PROJECT_NUM@cloudbuild.gserviceaccount.com" \
+    --role=roles/secretmanager.secretAccessor
