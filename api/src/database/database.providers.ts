@@ -28,7 +28,6 @@ export const databaseProviders = [
 			const logger = new Logger('DB');
 			logger.log('Initializing db:', {
 				...config.database,
-				username: null,
 				password: null
 			});
 

@@ -57,7 +57,7 @@
             "driver": "MySQL",
             "name": "production",
             "database": "app",
-            "username": "test",
+            "username": "api",
             "connectionTimeout": 10
         }
     ],
