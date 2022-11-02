@@ -62,5 +62,6 @@
 	"nameAlreadyTaken": "Este nombre ya ha sido tomado",
 	"addCard": "Agregar tarjeta",
 	"boltCardDescription": "Escriba los detalles de su cuenta en una tarjeta NFC para que pueda tocarlos en un dispositivo de punto de venta para pagar.",
-	"createBoltCard": "Crear tarjeta"
+	"createBoltCard": "Crear tarjeta",
+	"submit": "OK"
 }

@@ -62,5 +62,6 @@
 	"nameAlreadyTaken": "Dieser Name ist bereits vergeben",
 	"addCard": "Karte hinzufügen",
 	"boltCardDescription": "Schreiben Sie Ihre Kontodaten auf eine NFC-Karte, damit Sie sie zum Bezahlen an ein Point-of-Sale-Gerät tippen können.",
-	"createBoltCard": "Boltkarte hinzufügen"
+	"createBoltCard": "Boltkarte hinzufügen",
+	"submit": "OK"
 }

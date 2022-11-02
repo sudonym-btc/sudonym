@@ -1,4 +1,3 @@
-import 'package:dartz/dartz_unsafe.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomForm<
     C extends EntityCubit<CrudRepository<T>, CS, T>,
@@ -98,7 +98,7 @@ class _CustomFormState<
                                         }
                                       }
                                     : null,
-                                text: 'Submit',
+                                text: AppLocalizations.of(context)!.submit,
                               )
                             : Container();
                       },
