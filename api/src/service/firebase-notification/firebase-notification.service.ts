@@ -1,16 +1,16 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Message } from 'firebase-admin/lib/messaging/messaging-api';
+import { CurrencyService } from 'module/currency/currency.service';
 import { PotService } from 'module/pot/pot.service';
 import { Transaction } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { CurrencyService } from 'module/currency/currency.service';
+import { UserDeviceService } from 'module/user-device/user-device.service';
+import { merge } from 'rxjs';
+import { Op } from 'sequelize';
 import {
 	FIREBASE_ADMIN,
 	T_FIREBASE_ADMIN,
 } from 'service/firebase-admin/firebase-admin';
-import { UserDeviceService } from 'module/user-device/user-device.service';
-import { Op } from 'sequelize';
-import { merge } from 'rxjs';
-import { Message } from 'firebase-admin/lib/messaging/messaging-api';
 
 @Injectable()
 export class FirebaseNotificationService {
@@ -35,7 +35,7 @@ export class FirebaseNotificationService {
 		const pot = await this.potService.findOne(entity.potId);
 
 		const notification: Message & any = {
-			data: { data: JSON.stringify(entity.toJSON()) },
+			// data: { data: JSON.stringify(entity.toJSON()) },
 			body: 'Click to check transaction',
 		};
 
