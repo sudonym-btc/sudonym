@@ -157,6 +157,7 @@ export class AddressParser implements IAddressParser {
 	};
 
 	getType(address: string): [string, string] {
+		console.log(this.config);
 		this.logger.debug('Parsing', address);
 
 		// Trim whitespace and remove protocol

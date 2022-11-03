@@ -1,10 +1,10 @@
+import { SequelizeOptions } from 'sequelize-typescript';
 import { options as cmdargs } from '../cmd-line-args';
 import { configDevelopment } from './config-development';
+import { configMock } from './config-mock';
 import { configProduction } from './config-production';
 import { configStaging } from './config-staging';
 import { configTest } from './config-test';
-import { configMock } from './config-mock';
-import { SequelizeOptions } from 'sequelize-typescript';
 
 const configs = {
 	mock: configMock,
@@ -40,8 +40,8 @@ export class Config {
 		: 'tcp://' +
 		  env +
 		  '-bitcoin-zeromq-service.default.svc.cluster.local:5555';
-	bitcoin: {
-		network: 'mainnet';
+	bitcoin = {
+		network: 'mainnet',
 	};
 	macaroonFile = './certs/access.macaroon';
 	database: SequelizeOptions = {
