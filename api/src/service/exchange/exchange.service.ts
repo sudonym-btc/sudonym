@@ -37,8 +37,8 @@ export class ExchangeService {
 	) {
 		if (fromCurrency == quoteCurrency) return 1;
 		const market = await this.fetchMarket(fromCurrency, quoteCurrency);
-		const timestamp = time ?
-				Date.UTC(
+		const timestamp = time
+			? Date.UTC(
 					time.getUTCFullYear(),
 					time.getUTCMonth(),
 					time.getUTCDate(),
@@ -46,13 +46,14 @@ export class ExchangeService {
 					time.getUTCMinutes(),
 					0,
 					0
-				) : null;
-				console.log(
-					market.symbol,
-					'1m',
-					timestamp, // Subtract two minutes so there will always be a ticker
-					100
-				);
+			  )
+			: null;
+		console.log(
+			market.symbol,
+			'1m',
+			timestamp, // Subtract two minutes so there will always be a ticker
+			100
+		);
 		const response = await this.exchanges[0].fetchOHLCV(
 			market.symbol,
 			'1m',

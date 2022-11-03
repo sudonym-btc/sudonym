@@ -9,7 +9,7 @@ import { SATOSHIS } from '@sudonym/models';
 
 scaffoldGroup('Payment', (scaffold) => {
 	describe('Bolt11', () => {
-		const successfulPayment = async()=> {
+		const successfulPayment = async () => {
 			const t = scaffold.app.get(TransactionService).create({
 				outgoing: true,
 				potId: scaffold.entities.pot[0].id,
@@ -32,50 +32,57 @@ scaffoldGroup('Payment', (scaffold) => {
 				}),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
-				).then((x) => expect(x).toMatchObject({
-					spendableBalance: scaffold.entities.pot[0].spendableBalance -1,
-					balance: scaffold.entities.pot[0].balance-1
-				})
+				).then((x) =>
+					expect(x).toMatchObject({
+						spendableBalance:
+							scaffold.entities.pot[0].spendableBalance - 1,
+						balance: scaffold.entities.pot[0].balance - 1,
+					})
 				),
 			]);
 			return await t;
-		}
+		};
 		it('should subtract balance from executed payment', async () => {
 			await successfulPayment();
 		});
 		it('should re-add balance from failed payment', async () => {
-			scaffold.app.get(LightningNodeService).waitSendPay = jest.fn(async (hash, timeout, part) => {
-				await new Promise(resolve => setTimeout(resolve, 100));
-				return {
-					payment_preimage: 'mock',
-					payment_hash: '543543543543543543534534543543',
-					created_at : Date.now().valueOf() / 1000,
-					parts: 1,
-					partid: 1,
-					amount_msat: 123,
-					amount_sent_msat: 123,
-					status: "failed",
-					destination: "randomnode"
-				};
-			});
+			scaffold.app.get(LightningNodeService).waitSendPay = jest.fn(
+				async (hash, timeout, part) => {
+					await new Promise((resolve) => setTimeout(resolve, 100));
+					return {
+						payment_preimage: 'mock',
+						payment_hash: '543543543543543543534534543543',
+						created_at: Date.now().valueOf() / 1000,
+						parts: 1,
+						partid: 1,
+						amount_msat: 123,
+						amount_sent_msat: 123,
+						status: 'failed',
+						destination: 'randomnode',
+					};
+				}
+			);
 
 			await successfulPayment();
 
 			// Should re-add balance on failure
 			await Promise.all([
-				waitForExpect(() =>expect(
-						(scaffold.app.get(LightningNodeService) as any).waitSendPay.mock
-							.calls.length
-					).toBe(1)),
+				waitForExpect(() =>
+					expect(
+						(scaffold.app.get(LightningNodeService) as any)
+							.waitSendPay.mock.calls.length
+					).toBe(1)
+				),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
-				).then((x) => expect(x).toMatchObject({
-						spendableBalance: scaffold.entities.pot[0].spendableBalance,
-						balance: scaffold.entities.pot[0].balance
+				).then((x) =>
+					expect(x).toMatchObject({
+						spendableBalance:
+							scaffold.entities.pot[0].spendableBalance,
+						balance: scaffold.entities.pot[0].balance,
 					})
-					),
+				),
 			]);
-
 		});
 	});
 
@@ -121,10 +128,13 @@ scaffoldGroup('Payment', (scaffold) => {
 				}),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
-				).then((x) => expect(x).toMatchObject({
-					spendableBalance: scaffold.entities.pot[0].spendableBalance -1,
-					balance: scaffold.entities.pot[0].balance-1
-				})),
+				).then((x) =>
+					expect(x).toMatchObject({
+						spendableBalance:
+							scaffold.entities.pot[0].spendableBalance - 1,
+						balance: scaffold.entities.pot[0].balance - 1,
+					})
+				),
 			]);
 		});
 		it('should re-add balance from failed payment', () => {});

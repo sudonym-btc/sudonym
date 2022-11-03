@@ -8,7 +8,7 @@ import { LnUrlService } from './lnurl.service';
 @Controller('lnurl')
 export class LnUrlController extends BaseController({
 	service: LnUrlService,
-	model: LnUrl
+	model: LnUrl,
 }) {
 	@Get(':id')
 	async overwriteFindOne(@Param('id') id, req?: RequestType) {

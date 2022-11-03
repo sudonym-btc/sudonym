@@ -10,11 +10,13 @@ async function bootstrap() {
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule, {
 		logger: [
-			...(["mock", "development"].includes(getConfig().env) ? ['verbose'] : []),
+			...(['mock', 'development'].includes(getConfig().env)
+				? ['verbose']
+				: []),
 			'error',
 			'warn',
 			'log',
-			'debug'
+			'debug',
 		] as LogLevel[],
 	});
 	applyGlobals(app);

@@ -5,7 +5,7 @@ export const createUsers = () => {
 		{
 			id: '123',
 			firebaseId: '123',
-			lightningAddress: 'test'
+			lightningAddress: 'test',
 		},
 	]);
 };

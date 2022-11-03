@@ -5,6 +5,6 @@ export const configTest = () => ({
 		dialect: 'mysql',
 		host: 'test-db-service',
 		username: process.env.DB_USER || 'root',
-		password: process.env.DB_PASS || 'testing'
+		password: process.env.DB_PASS || 'testing',
 	},
 });

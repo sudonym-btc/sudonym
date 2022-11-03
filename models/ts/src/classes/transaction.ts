@@ -42,7 +42,9 @@ export class Transaction extends BaseClass {
 			json['outgoing'],
 			json['type'],
 			json['contactAddressId'],
-			json['ContactAddress'] != null ? Model.ContactAddress.fromJson(json['ContactAddress']) : null,
+			json['ContactAddress'] != null
+				? Model.ContactAddress.fromJson(json['ContactAddress'])
+				: null,
 			json['originalAddress'],
 			json['address'],
 			json['description'],

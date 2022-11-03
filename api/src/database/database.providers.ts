@@ -27,19 +27,21 @@ export const databaseProviders = [
 		useFactory: async (config: Config) => {
 			const logger = new Logger('DB');
 			logger.log('Initializing db:', {
-				...config.database
+				...config.database,
 			});
 
-			const dbInit =  new Sequelize({
+			const dbInit = new Sequelize({
 				...config.database,
 				database: null,
 				logging: (e) => {
-					logger.verbose(e)
+					logger.verbose(e);
 				},
 			});
-			await dbInit.query(`CREATE DATABASE IF NOT EXISTS \`${config.database.database}\`;`);
+			await dbInit.query(
+				`CREATE DATABASE IF NOT EXISTS \`${config.database.database}\`;`
+			);
 			dbInit.close();
-			
+
 			const sequelize = new Sequelize({
 				...config.database,
 				logging: (e) => {

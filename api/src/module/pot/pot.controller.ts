@@ -13,10 +13,13 @@ export class CreatePot {
 	name: number;
 
 	@IsString()
-	currency: String;
+	currency: string;
 }
 @Controller('pot')
-export class PotController extends BaseController({service: PotService, model: Pot}) {
+export class PotController extends BaseController({
+	service: PotService,
+	model: Pot,
+}) {
 	@Post('')
 	creater(@Body() params: CreatePot): Promise<Pot> {
 		return super.create(params as any);

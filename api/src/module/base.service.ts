@@ -19,7 +19,10 @@ export interface TControllerAndService<TModel> {
 	findOne(id): Promise<TModel>;
 	create(params: RecursivePartial<TModel>): Promise<TModel>;
 	update(id, params: RecursivePartial<TModel>): Promise<TModel>;
-	list(param: FindOptions, options?): Promise<{
+	list(
+		param: FindOptions,
+		options?
+	): Promise<{
 		data: TModel[];
 		metadata: {
 			count: number;
@@ -55,7 +58,7 @@ export const BaseService = <TModel extends BaseModel>(
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
 
-		async onModuleInit() { }
+		async onModuleInit() {}
 
 		async findOne(id: string | number | FindOptions) {
 			const obj = (
@@ -63,15 +66,18 @@ export const BaseService = <TModel extends BaseModel>(
 					typeof id == 'object'
 						? id
 						: {
-							where: {
-								id: id as any,
-							},
-						},
+								where: {
+									id: id as any,
+								},
+						  },
 					{
 						scopes: [
-							repository.scopes.findOne ? repository.scopes.findOne() : null,
-						]
-					})
+							repository.scopes.findOne
+								? repository.scopes.findOne()
+								: null,
+						],
+					}
+				)
 			).data[0];
 			if (!obj) {
 				throw new NotFoundException();
@@ -80,7 +86,6 @@ export const BaseService = <TModel extends BaseModel>(
 		}
 
 		async list(params: FindOptions, options: ListOptions = { scopes: [] }) {
-
 			const scopes = [
 				...(options.scopes || []),
 				this.repo.scopes.find ? this.repo.scopes.find() : null,
@@ -99,14 +104,12 @@ export const BaseService = <TModel extends BaseModel>(
 		}
 
 		async getUserIds(id: string | number, scope = 'find') {
-
 			if (repository.accessors.canFind) {
 				const users = await repository.accessors.canFind(id);
 				const ids = users.map((i: any) => i.id) as string[];
 				return ids;
 			}
 			return [];
-
 		}
 
 		newTransaction(cb) {
@@ -117,71 +120,80 @@ export const BaseService = <TModel extends BaseModel>(
 		}
 
 		async update(id, params) {
-			return await this.repo.sequelize.transaction({ transaction: sequelizeCls.get('transaction') }, async t => {
-				const scopes = [
-					repository.scopes.edit ? repository.scopes.edit() : null,
-					repository.scopes.find ? repository.scopes.find() : null,
-				].filter((i) => !!i);
-				const record = await this.repo.scope(scopes as any).findByPk(id);
-				let changed = record.set(params).changed();
-				await record.save();
-				let entity = await this.findOne(record.id);
-				if (changed)
-					(entity as any)._changed = new Set(changed);
+			return await this.repo.sequelize.transaction(
+				{ transaction: sequelizeCls.get('transaction') },
+				async (t) => {
+					const scopes = [
+						repository.scopes.edit
+							? repository.scopes.edit()
+							: null,
+						repository.scopes.find
+							? repository.scopes.find()
+							: null,
+					].filter((i) => !!i);
+					const record = await this.repo
+						.scope(scopes as any)
+						.findByPk(id);
+					const changed = record.set(params).changed();
+					await record.save();
+					const entity = await this.findOne(record.id);
+					if (changed) (entity as any)._changed = new Set(changed);
 
-				await this.afterUpdate.execute({ entity, params });
+					await this.afterUpdate.execute({ entity, params });
 
-				t.afterCommit(() => {
-					this.newTransaction(async () => {
-						this.onAfterUpdated.execute(entity);
+					t.afterCommit(() => {
+						this.newTransaction(async () => {
+							this.onAfterUpdated.execute(entity);
 
-						await this.eventsService.trigger(
-							new TriggeredEvent(
-								new Event(
-									this.repo.name.toLowerCase() + '.updated',
-									entity
-								),
-								await this.getUserIds(entity.id)
-							)
-						);
-					})
-				});
+							await this.eventsService.trigger(
+								new TriggeredEvent(
+									new Event(
+										this.repo.name.toLowerCase() +
+											'.updated',
+										entity
+									),
+									await this.getUserIds(entity.id)
+								)
+							);
+						});
+					});
 
-				return entity;
-			});
-
+					return entity;
+				}
+			);
 		}
 
 		async create(params) {
-			return await this.repo.sequelize.transaction({ transaction: sequelizeCls.get('transaction') }, async t => {
+			return await this.repo.sequelize.transaction(
+				{ transaction: sequelizeCls.get('transaction') },
+				async (t) => {
+					await this.beforeCreate.execute(params);
+					const newEntity = await this.repo.create(params);
 
-				await this.beforeCreate.execute(params);
-				let newEntity = await this.repo.create(params);
+					const entity = await this.findOne(newEntity.id);
+					entity.isNewRecord = true;
 
-				let entity = await this.findOne(newEntity.id);
-				entity.isNewRecord = true;
+					await this.afterCreate.execute({ entity, params });
 
-				await this.afterCreate.execute({ entity, params });
-
-				t.afterCommit(async () => {
-					this.newTransaction(async () => {
-						this.onAfterCreated.execute(entity);
-						this.eventsService.trigger(
-							new TriggeredEvent(
-								new Event(
-									this.repo.name.toLowerCase() + '.created',
-									entity
-								),
-								await this.getUserIds(entity.id)
-							)
-						);
+					t.afterCommit(async () => {
+						this.newTransaction(async () => {
+							this.onAfterCreated.execute(entity);
+							this.eventsService.trigger(
+								new TriggeredEvent(
+									new Event(
+										this.repo.name.toLowerCase() +
+											'.created',
+										entity
+									),
+									await this.getUserIds(entity.id)
+								)
+							);
+						});
 					});
 
-				});
-
-				return entity;
-			});
-
+					return entity;
+				}
+			);
 		}
 
 		async createOrUpdate(params) {
@@ -235,5 +247,5 @@ const parseFindParams = (params) => {
 };
 
 class ListOptions {
-	scopes
+	scopes;
 }

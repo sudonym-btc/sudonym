@@ -16,19 +16,21 @@ export class CurrencyService {
 			amount == 0
 				? 0
 				: (await this.exchangeService.fetchPriceAtTime(
-					from,
-					to,
-					time
-				)) * amount
+						from,
+						to,
+						time
+				  )) * amount
 		);
 	}
 
 	format(amount: number, currency: string) {
-		if (currency == "BTC") {
+		if (currency == 'BTC') {
 			if (amount > 0.1) {
 				return `${amount.toPrecision(4)} BTC`;
 			} else {
-				return `${new Intl.NumberFormat('en-US').format(amount * SATOSHIS)} sats`;
+				return `${new Intl.NumberFormat('en-US').format(
+					amount * SATOSHIS
+				)} sats`;
 			}
 		}
 		// Create our number formatter.

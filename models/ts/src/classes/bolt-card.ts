@@ -14,8 +14,16 @@ export class BoltCard extends BaseClass {
 	}
 
 	static fromJson(json: Object): BoltCard {
-
-		return new BoltCard(json['id'], json['userId'], json["senderId"], json["Sender"] != null ? Model.Sender.fromJson(json["Sender"]) : null, json['name'], json['written']);
+		return new BoltCard(
+			json['id'],
+			json['userId'],
+			json['senderId'],
+			json['Sender'] != null
+				? Model.Sender.fromJson(json['Sender'])
+				: null,
+			json['name'],
+			json['written']
+		);
 	}
 
 	toJson(): any {
@@ -25,7 +33,7 @@ export class BoltCard extends BaseClass {
 			senderId: this.senderId,
 			Sender: this.Sender != null ? this.Sender.toJson() : null,
 			name: this.name,
-			written: this.written
+			written: this.written,
 		};
 	}
 }

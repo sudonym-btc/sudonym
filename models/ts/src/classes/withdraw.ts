@@ -61,7 +61,7 @@ export class Withdraw extends ActionTypeWithAmount {
 			json['comment']
 		);
 
-		if(w.amount == null && (w.minAmount == w.maxAmount)) {
+		if (w.amount == null && w.minAmount == w.maxAmount) {
 			w.amount = w.minAmount;
 		}
 

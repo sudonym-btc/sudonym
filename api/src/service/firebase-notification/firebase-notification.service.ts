@@ -22,55 +22,66 @@ export class FirebaseNotificationService {
 	private readonly logger = new Logger(this.constructor.name);
 
 	onModuleInit() {
-		merge(this.transactionService.onAfterCreated, this.transactionService.onAfterUpdated).subscribe(this.triggerNotification.bind(this));
+		merge(
+			this.transactionService.onAfterCreated,
+			this.transactionService.onAfterUpdated
+		).subscribe(this.triggerNotification.bind(this));
 	}
 
 	async triggerNotification(entity: Transaction) {
-
 		if (!entity.isNewRecord && !entity.changed('status')) return;
 
 		const users = await this.transactionService.getUserIds(entity.id);
 		const pot = await this.potService.findOne(entity.potId);
 
-		let notification: Message & any = {
+		const notification: Message & any = {
 			data: { data: JSON.stringify(entity.toJSON()) },
-			body: "Click to check transaction",
+			body: 'Click to check transaction',
 		};
 
-
-		const formattedAmount = this.currencyService.format((await this.currencyService.convert(entity.currencyCode, pot.currency, entity.amount)).amount, pot.currency);
+		const formattedAmount = this.currencyService.format(
+			(
+				await this.currencyService.convert(
+					entity.currencyCode,
+					pot.currency,
+					entity.amount
+				)
+			).amount,
+			pot.currency
+		);
 
 		if (entity.outgoing) {
 			// Outgoing transactions
 			if (entity.status) {
-				notification.title = formattedAmount + ' were spent from your account';
+				notification.title =
+					formattedAmount + ' were spent from your account';
 			} else if (entity.status == false) {
-				notification.title = 'Failed to send ' + formattedAmount + ' from your account';
+				notification.title =
+					'Failed to send ' + formattedAmount + ' from your account';
 			} else {
 				return;
 			}
 		} else {
 			// Incoming transactions
 			if (entity.status) {
-				notification.title = formattedAmount + ' were sent to your account';
+				notification.title =
+					formattedAmount + ' were sent to your account';
 			} else {
 				return;
 			}
-
 		}
 
-		this.logger.debug("Sending notification to", users);
+		this.logger.debug('Sending notification to', users);
 
 		const userDevices = await this.userDeviceService.list({
 			where: {
 				uid: {
-					[Op.in]: users
-				}
-			}
+					[Op.in]: users,
+				},
+			},
 		});
 
 		for (const device of userDevices.data) {
-
 			const message = {
 				notification,
 				token: device.token,

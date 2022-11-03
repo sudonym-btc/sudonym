@@ -31,12 +31,15 @@ export class SenderService extends BaseService(Sender) {
 			switch (params.type) {
 				case 'lnurl':
 					const tag = await this.lnUrlService.createWithdrawRequest({
-						minWithdrawable: params.limitMin ? params.limitMin * MSATOSHIS : 0,
-						maxWithdrawable: params.limitMax ? params.limitMax * MSATOSHIS : 99999999
-					}
-					);
+						minWithdrawable: params.limitMin
+							? params.limitMin * MSATOSHIS
+							: 0,
+						maxWithdrawable: params.limitMax
+							? params.limitMax * MSATOSHIS
+							: 99999999,
+					});
 					// todo: replace with max account balance
-					params.data = this.config.selfUrl + '/lnurl/' + tag.id
+					params.data = this.config.selfUrl + '/lnurl/' + tag.id;
 					params.lnurlId = tag.id;
 					break;
 			}

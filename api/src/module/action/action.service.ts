@@ -1,14 +1,17 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
-	MSATOSHIS,
 	Action,
 	ActionParseResponse,
+	MSATOSHIS,
 	Payment,
-	Withdraw,
-	TAddressType,
 	SATOSHIS,
+	TAddressType,
+	Withdraw,
 } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
+import { Receiver } from 'module/receiver/receiver.model';
+import { ReceiverService } from 'module/receiver/receiver.service';
+import fetch from 'node-fetch';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
 import { CurrencyService } from '../currency/currency.service';
 import { Transaction } from '../transaction/transaction.model';
@@ -18,9 +21,6 @@ import {
 	validateInternetIdentifier,
 } from './address-parser/address-parser';
 import { fetchHttpOpts } from './address-parser/http-agent';
-import fetch from 'node-fetch';
-import { ReceiverService } from 'module/receiver/receiver.service';
-import { Receiver } from 'module/receiver/receiver.model';
 
 @Injectable()
 export class ActionService {
@@ -33,11 +33,9 @@ export class ActionService {
 
 	async parse(invoice): Promise<ActionParseResponse> {
 		const parse: any = await this.addressParser.parse(invoice);
-		const a = ActionParseResponse.from(
-			parse
-		);
-		
-		if(parse.remoteResponse && parse.remoteResponse.success ==false) {
+		const a = ActionParseResponse.from(parse);
+
+		if (parse.remoteResponse && parse.remoteResponse.success == false) {
 			throw a;
 		}
 
@@ -53,42 +51,39 @@ export class ActionService {
 				action.currency == 'BTC'
 					? action.amount
 					: (
-						await this.currencyService.convert(
-							action.currency,
-							'BTC',
-							action.amount
-						)
-					).amount;
+							await this.currencyService.convert(
+								action.currency,
+								'BTC',
+								action.amount
+							)
+					  ).amount;
 			const mSatoshiAmount = Math.round(btcAmount * MSATOSHIS);
 			let fee;
 
 			switch (t) {
 				case 'bolt11':
-					try {
-						fee = (await this.lightningNodeService.getFees(
+					fee =
+						(await this.lightningNodeService.getFees(
 							bolt11.decode(action.originalAddress).payeeNodeKey,
 							mSatoshiAmount
 						)) / MSATOSHIS;
-					} catch (e) {
 
-					}
 					return Action.from({
 						...action,
 						address: action.originalAddress,
 						fee,
 						feeCurrency: 'BTC',
 					});
-				case 'bolt12':
+				case 'bolt12': {
 					const offerInvoice =
 						await this.lightningNodeService.fetchOfferInvoice(
 							action.originalAddress
 						);
-					try {
-						fee = (await this.lightningNodeService.getFees(
+					fee =
+						(await this.lightningNodeService.getFees(
 							bolt11.decode(offerInvoice).payeeNodeKey,
 							mSatoshiAmount
-						)) / MSATOSHIS
-					} catch (e) { }
+						)) / MSATOSHIS;
 					return Action.from({
 						...action,
 						address: offerInvoice,
@@ -98,8 +93,9 @@ export class ActionService {
 							offerInvoice
 						),
 					});
+				}
 				case 'lightningaddress':
-				case 'lnurl':
+				case 'lnurl': {
 					const address = (
 						await this.getCallback(
 							(action.remoteResponse.data as any).callback,
@@ -133,13 +129,15 @@ export class ActionService {
 							)) / MSATOSHIS,
 						feeCurrency: 'BTC',
 					});
-				case 'onchain':
-					const fees = (await this.lightningNodeService.onChainFees());
+				}
+				case 'onchain': {
+					const fees = await this.lightningNodeService.onChainFees();
 					return Action.from({
 						...action,
-						fee: fees.opening/SATOSHIS,
-						feeCurrency: 'BTC'
+						fee: fees.opening / SATOSHIS,
+						feeCurrency: 'BTC',
 					});
+				}
 			}
 		} else if (action instanceof Withdraw) {
 			return action;

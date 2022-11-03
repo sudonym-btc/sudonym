@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Inject, Post, Query, Response } from '@nestjs/common';
-import { Action, ActionParseResponse, Payment, Withdraw } from '@sudonym/models';
+import {
+	Body,
+	Controller,
+	Get,
+	Inject,
+	Post,
+	Query,
+	Response,
+} from '@nestjs/common';
+import { Action, ActionParseResponse } from '@sudonym/models';
 import { ActionService } from './action.service';
 
 @Controller('action')
@@ -10,8 +18,8 @@ export class ActionController {
 	async parse(@Query('address') address, @Response() res) {
 		try {
 			return res.json(await this.actionService.parse(address));
-		} catch(e) {
-			if(e instanceof ActionParseResponse) {
+		} catch (e) {
+			if (e instanceof ActionParseResponse) {
 				res.status(503);
 				return res.json(e);
 			}

@@ -6,6 +6,7 @@ COPY ./api ./api
 COPY ./models ./models
 COPY ./package*.json ./
 
+RUN apk update
 RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip 
 RUN npm config set fetch-retry-mintimeout 100000
 RUN npm config set fetch-retry-maxtimeout 6000000

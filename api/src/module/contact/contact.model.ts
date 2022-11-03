@@ -53,20 +53,20 @@ export class Contact extends BaseModel implements Models.Contact {
 				attributes: [['userId', 'id']],
 				raw: true,
 				where: {
-					id
-				}
+					id,
+				},
 			}),
 	};
 
 	static scopes = {
 		find: () => ({
 			...(context.get('request')?.auth
-			? {
-				where: {
-					userId: context.get('request').auth.uid,
-				},
-			  }
-			: {}),
+				? {
+						where: {
+							userId: context.get('request').auth.uid,
+						},
+				  }
+				: {}),
 			include: [
 				{
 					model: ContactAddress,

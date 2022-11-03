@@ -8,13 +8,14 @@ import * as dotenv from 'dotenv';
 export async function downloadFiles(
 	force = false,
 	alreadyDone = () =>
-		["mock", "development"].includes(getConfig().env) && fs.existsSync(process.cwd() + '/src/config/service-account.json')
+		['mock', 'development'].includes(getConfig().env) &&
+		fs.existsSync(process.cwd() + '/src/config/service-account.json')
 ) {
-	console.log("Downloading files already done? " + alreadyDone());
+	console.log('Downloading files already done? ' + alreadyDone());
 	if (!alreadyDone() || force) {
 		const buckets = (await storage.getBuckets())[0];
-		const bucket = buckets.find((b) =>
-			b.name.includes('config') && b.name.includes(getConfig().env)
+		const bucket = buckets.find(
+			(b) => b.name.includes('config') && b.name.includes(getConfig().env)
 		);
 
 		if (!bucket) {
@@ -46,9 +47,9 @@ export async function downloadFiles(
 	 */
 	const envFile = `${process.cwd()}/src/config/.env`;
 	if (fs.existsSync(envFile)) {
-		console.log("Setting env");
+		console.log('Setting env');
 		dotenv.config({
-			path: envFile
+			path: envFile,
 		});
 	}
 }

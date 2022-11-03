@@ -55,7 +55,7 @@ export class LightningAddressController {
 		const receiver = await this.receiverService.create({
 			potId: pot.id,
 			type: 'lnurl',
-			amount: 1 / SATOSHIS
+			amount: 1 / SATOSHIS,
 		});
 
 		return (await this.lnUrlService.findOne(receiver.lnurlId)).params;

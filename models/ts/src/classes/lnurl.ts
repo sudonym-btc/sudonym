@@ -1,5 +1,5 @@
-import { WithdrawRequest } from "./withdraw-request";
-import { PaymentRequest } from "./payment-request";
+import { WithdrawRequest } from './withdraw-request';
+import { PaymentRequest } from './payment-request';
 
 export class Lnurl {
 	constructor(
@@ -8,16 +8,13 @@ export class Lnurl {
 	) {}
 
 	static fromJson(json: Object): Lnurl {
-		return new Lnurl(
-			json['id'],
-			json['params']
-		);
+		return new Lnurl(json['id'], json['params']);
 	}
 
 	toJson(): any {
 		return {
 			id: this.id,
-			params: this.params
+			params: this.params,
 		};
 	}
 }

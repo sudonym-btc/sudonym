@@ -6,5 +6,5 @@ import { ContactService } from './contact.service';
 @Controller('contact')
 export class ContactController extends BaseController({
 	service: ContactService,
-	model: Contact
+	model: Contact,
 }) {}

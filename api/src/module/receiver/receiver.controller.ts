@@ -1,4 +1,13 @@
-import { Controller, Get, Inject, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+	Controller,
+	Get,
+	Inject,
+	Param,
+	Post,
+	Query,
+	UsePipes,
+	ValidationPipe,
+} from '@nestjs/common';
 import { CurrencyCode, TAddressType } from '@sudonym/models';
 import { Type } from 'class-transformer';
 import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
@@ -16,7 +25,7 @@ export class ReceiveQuery {
 	potId: number;
 	@IsNumber()
 	@Type(() => Number)
-	amount: number = 0;
+	amount = 0;
 	@IsString()
 	type?: TAddressType;
 	@IsString()
@@ -25,7 +34,7 @@ export class ReceiveQuery {
 @Controller('receiver')
 export class ReceiverController extends BaseController({
 	service: ReceiverService,
-	model: Receiver
+	model: Receiver,
 }) {
 	@Inject(ReceiverService) receiveService: ReceiverService;
 

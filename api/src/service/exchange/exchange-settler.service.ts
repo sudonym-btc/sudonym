@@ -17,43 +17,35 @@ export class ExchangeSettler {
 	}
 
 	listenIncoming() {
-		this.transactionService.onAfterCreated.listen(
-			async (transaction) => {
-				if (!transaction.outgoing) {
-					const pot = await this.potService.findOne(
-						transaction.potId
+		this.transactionService.onAfterCreated.listen(async (transaction) => {
+			if (!transaction.outgoing) {
+				const pot = await this.potService.findOne(transaction.potId);
+				if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
+					await this.exchangeService.settle(
+						'BTC',
+						pot.currency,
+						transaction.amount,
+						'sell'
 					);
-					if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
-						await this.exchangeService.settle(
-							'BTC',
-							pot.currency,
-							transaction.amount,
-							'sell'
-						);
-					}
 				}
 			}
-		);
+		});
 	}
 
 	listenOutgoing() {
-		this.transactionService.onAfterCreated.listen(
-			async (transaction) => {
-				if (transaction.outgoing) {
-					const pot = await this.potService.findOne(
-						transaction.potId
+		this.transactionService.onAfterCreated.listen(async (transaction) => {
+			if (transaction.outgoing) {
+				const pot = await this.potService.findOne(transaction.potId);
+				if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
+					const order = await this.exchangeService.settle(
+						'BTC',
+						pot.currency,
+						transaction.amount,
+						'buy'
 					);
-					if (isBitcoin(transaction.type) && pot.currency != 'BTC') {
-						const order = await this.exchangeService.settle(
-							'BTC',
-							pot.currency,
-							transaction.amount,
-							'buy'
-						);
-					}
 				}
 			}
-		);
+		});
 	}
 }
 

@@ -153,7 +153,7 @@ def kubernetes_db(config, cluster_types):
                     "namespace": "default",
                     "metadata": {"name": base_name + "-secret"},
                     "type": "Opaque",
-                    "data": {"key.txt": "testing"},
+                    "data": {"key.txt": "dGVzdGluZw=="}, # testing is development password
                 },
             },
             {

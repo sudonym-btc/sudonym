@@ -2,7 +2,7 @@ export const configProduction = () => {
 	return {
 		domain: 'sudonym.app',
 		network: 'mainnet',
-		database: sqlCloudProxy
+		database: sqlCloudProxy,
 	};
 };
 

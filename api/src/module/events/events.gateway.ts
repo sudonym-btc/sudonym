@@ -40,7 +40,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleDisconnect(client: any) {
-		for (let i of Object.keys(this.users)) {
+		for (const i of Object.keys(this.users)) {
 			for (const key in this.users[i]) {
 				if (this.users[i][key] == client) delete this.users[i][key];
 			}
@@ -49,7 +49,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleConnection(client, ...args: any[]) {
 		const headers = args[0].headers;
-		const token = new URL('https://example.com' + args[0].url).searchParams.get('x-access-token') || headers['x-access-token'];
+		const token =
+			new URL('https://example.com' + args[0].url).searchParams.get(
+				'x-access-token'
+			) || headers['x-access-token'];
 		const user = await this.authService.auth({
 			token,
 		});

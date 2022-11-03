@@ -66,7 +66,7 @@ do
   ln2Funds=$($ln2cli getinfo | jq -r '.blockheight')
 done
 
-bolt11=$($ln2cli invoice 8000000000 initialfunding initialfunding | jq -r '.bolt11')
+bolt11=$($ln2cli invoice 1000000000 initialfunding initialfunding | jq -r '.bolt11')
 # $($ln2cli setchannel 8000000000 0 0 | jq -r '.bolt11')
 # todo: SET fees to zero or adjust routing calculation
 echo $($ln1cli pay $bolt11)

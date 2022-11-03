@@ -1,4 +1,3 @@
-
 export const MockFirebaseAdmin = {
 	auth: () => ({}),
 	messaging: () => ({

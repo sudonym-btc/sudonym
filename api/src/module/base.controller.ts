@@ -1,6 +1,19 @@
-import { Body, CanActivate, Get, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	CanActivate,
+	Get,
+	Inject,
+	Param,
+	Post,
+	Put,
+	Query,
+	UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'helper/auth.guard';
-import { Constructor, RecursivePartial } from 'sequelize-typescript/dist/shared/types';
+import {
+	Constructor,
+	RecursivePartial,
+} from 'sequelize-typescript/dist/shared/types';
 import { TBaseService, TControllerAndService } from './base.service';
 
 export interface TBaseController<TService, TModel>
@@ -8,16 +21,21 @@ export interface TBaseController<TService, TModel>
 	service: TService;
 }
 
-export interface BaseControllerOptions<TService extends TBaseService<TModel>, TModel> {
-	service: Constructor<TService>
+export interface BaseControllerOptions<
+	TService extends TBaseService<TModel>,
+	TModel
+> {
+	service: Constructor<TService>;
 	model?: Constructor<TModel>;
-	auth?: boolean
-	create?:  Partial<EndpointOptions & {
-		update: true
-	}>;
-	update?: Partial<EndpointOptions>
-	list?:  Partial<EndpointOptions>
-	get?:  Partial<EndpointOptions>
+	auth?: boolean;
+	create?: Partial<
+		EndpointOptions & {
+			update: true;
+		}
+	>;
+	update?: Partial<EndpointOptions>;
+	list?: Partial<EndpointOptions>;
+	get?: Partial<EndpointOptions>;
 }
 interface EndpointOptions {
 	model: any;
@@ -25,20 +43,23 @@ interface EndpointOptions {
 	guards: CanActivate[];
 }
 
-export const BaseController = <TService extends TBaseService<TModel>, TModel>(options: BaseControllerOptions<TService, TModel>): Constructor<TBaseController<TService, TModel>> => {
+export const BaseController = <TService extends TBaseService<TModel>, TModel>(
+	options: BaseControllerOptions<TService, TModel>
+): Constructor<TBaseController<TService, TModel>> => {
 	const defaultOptions: Partial<BaseControllerOptions<TService, TModel>> = {
-		auth: true
-	}
+		auth: true,
+	};
 	options = Object.assign(defaultOptions, options);
 	const defaultEndpointOptions: Partial<EndpointOptions> = {
-		auth: options.auth
+		auth: options.auth,
 	};
-	['get', 'list', 'update', 'create'].forEach(i => {
-		options[i] = Object.assign(defaultEndpointOptions, options[i] || {})
-	})
+	['get', 'list', 'update', 'create'].forEach((i) => {
+		options[i] = Object.assign(defaultEndpointOptions, options[i] || {});
+	});
 
 	console.log(options, AuthGuard);
-	const getGuards = obj => [...(obj.guards || []), obj.auth ? AuthGuard : null].filter(i => !!i)
+	const getGuards = (obj) =>
+		[...(obj.guards || []), obj.auth ? AuthGuard : null].filter((i) => !!i);
 	class X {
 		@Inject(options.service) service: TService;
 
@@ -59,7 +80,7 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(op
 		@UseGuards(...getGuards(options.create))
 		@Post('')
 		create(@Body() data) {
-			if(options.create?.update) {
+			if (options.create?.update) {
 				return this.service.createOrUpdate(data);
 			}
 			return this.service.create(data);

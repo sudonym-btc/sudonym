@@ -54,7 +54,9 @@ export class LnUrlService extends BaseService(LnUrl) {
 		return tag;
 	}
 
-	async createWithdrawRequest(params: RecursivePartial<WithdrawRequest> = {}) {
+	async createWithdrawRequest(
+		params: RecursivePartial<WithdrawRequest> = {}
+	) {
 		const tag = await this.create({
 			params: {
 				tag: 'withdrawRequest',

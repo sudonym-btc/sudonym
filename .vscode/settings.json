@@ -1,68 +1,67 @@
 {
-    "python.formatting.provider": "autopep8",
-    "dart.analysisExcludedFolders": [
-        "api",
-        "models",
-        "node_modules"
-    ],
-    "dart.shareDevToolsWithFlutter": false,
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "db.local.development",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "development",
-            "database": "test",
-            "username": "root",
-            "password": "testing"
-        },
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "db.test.sudonym.app",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "test",
-            "database": "test",
-            "username": "root",
-            "password": "testing"
-        },
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "local",
-            "database": "app",
-            "username": "root",
-            "connectionTimeout": 10
-        },
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "db.sudonym.app",
-            "port": 3306,
-            "askForPassword": true,
-            "driver": "MySQL",
-            "name": "production",
-            "database": "app",
-            "username": "api",
-            "connectionTimeout": 10
-        }
-    ],
-    "sqltools.useNodeRuntime": true,
-    "githubPullRequests.ignoredPullRequestBranches": [
-        "main"
-    ]
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"python.formatting.provider": "autopep8",
+	"dart.analysisExcludedFolders": ["api", "models", "node_modules"],
+	"dart.shareDevToolsWithFlutter": false,
+	"sqltools.connections": [
+		{
+			"mysqlOptions": {
+				"authProtocol": "default"
+			},
+			"previewLimit": 50,
+			"server": "db.local.development",
+			"port": 3306,
+			"driver": "MySQL",
+			"name": "development",
+			"database": "test",
+			"username": "root",
+			"password": "testing"
+		},
+		{
+			"mysqlOptions": {
+				"authProtocol": "default"
+			},
+			"previewLimit": 50,
+			"server": "db.test.sudonym.app",
+			"port": 3306,
+			"driver": "MySQL",
+			"name": "test",
+			"database": "test",
+			"username": "root",
+			"password": "testing"
+		},
+		{
+			"mysqlOptions": {
+				"authProtocol": "default"
+			},
+			"previewLimit": 50,
+			"server": "localhost",
+			"port": 3306,
+			"driver": "MySQL",
+			"name": "local",
+			"database": "app",
+			"username": "root",
+			"connectionTimeout": 10
+		},
+		{
+			"mysqlOptions": {
+				"authProtocol": "default"
+			},
+			"previewLimit": 50,
+			"server": "db.sudonym.app",
+			"port": 3306,
+			"askForPassword": true,
+			"driver": "MySQL",
+			"name": "production",
+			"database": "app",
+			"username": "api",
+			"connectionTimeout": 10
+		}
+	],
+	"sqltools.useNodeRuntime": true,
+	"githubPullRequests.ignoredPullRequestBranches": ["main"],
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": true
+	}
 }

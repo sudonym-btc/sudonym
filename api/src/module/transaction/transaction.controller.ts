@@ -6,5 +6,5 @@ import { TransactionService } from './transaction.service';
 @Controller('transaction')
 export class TransactionController extends BaseController({
 	service: TransactionService,
-	model: Transaction
+	model: Transaction,
 }) {}

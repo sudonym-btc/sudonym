@@ -23,13 +23,26 @@ export class User extends BaseModel implements Models.User {
 
 	@Validate({
 		unique: async (val) => {
-			if(await User.findOne({
-				where: {
-					lightningAddress: val
-				}
-			})) 
-				throw new ValidationError('unique', [new ValidationErrorItem('', 'unique violation', 'lightningAddress', val, this, '', '', [])])
-		}
+			if (
+				await User.findOne({
+					where: {
+						lightningAddress: val,
+					},
+				})
+			)
+				throw new ValidationError('unique', [
+					new ValidationErrorItem(
+						'',
+						'unique violation',
+						'lightningAddress',
+						val,
+						this,
+						'',
+						'',
+						[]
+					),
+				]);
+		},
 	})
 	@Column
 	lightningAddress: string;
@@ -38,6 +51,6 @@ export class User extends BaseModel implements Models.User {
 	Senders: Sender[];
 
 	static accessors = {
-		canFind: (id) => [{id}]
-	}
+		canFind: (id) => [{ id }],
+	};
 }

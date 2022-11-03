@@ -1,4 +1,11 @@
-import { CacheTTL, Controller, Get, Header, Inject, Query } from '@nestjs/common';
+import {
+	CacheTTL,
+	Controller,
+	Get,
+	Header,
+	Inject,
+	Query,
+} from '@nestjs/common';
 import { CurrencyService } from './currency.service';
 
 @Controller('currency')

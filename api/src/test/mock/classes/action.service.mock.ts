@@ -1,4 +1,4 @@
-import { ActionService } from "module/action/action.service";
+import { ActionService } from 'module/action/action.service';
 
 export class MockActionService extends ActionService {
 	async getCallback(callback: any, params: any) {

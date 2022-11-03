@@ -159,7 +159,6 @@ class CheckClipboard extends StatelessWidget {
         title: const Text('Check clipboard'),
         onTap: () => getIt<ClipboardListener>().check().then((value) {
           if (value != null) {
-            print("trillolol");
             getIt<ActionTriggerService>()
                 .trigger(ActionStream(context: context, link: value, pot: pot));
           }

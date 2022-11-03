@@ -1,5 +1,5 @@
-import { WithdrawRequest } from "@sudonym/models";
-import { AddressParser } from "module/action/address-parser/address-parser";
+import { WithdrawRequest } from '@sudonym/models';
+import { AddressParser } from 'module/action/address-parser/address-parser';
 
 export class MockAddressParser extends AddressParser {
 	fetchRemoteLnUrl = async (invoice: string) => {

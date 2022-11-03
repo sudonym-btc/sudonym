@@ -16,20 +16,20 @@ export class TransactionContactLinkerService {
 	@Inject() contactAddressService: ContactAddressService;
 
 	onModuleInit() {
-		this.transactionService.beforeCreate.hook(async params => {
-			if(!params.originalAddress) return;
+		this.transactionService.beforeCreate.hook(async (params) => {
+			if (!params.originalAddress) return;
 			try {
-				params.contactAddressId = (await this.contactAddressService.findOne({
-					where: {
-						address: params.originalAddress
-					}
-				}))?.id;
+				params.contactAddressId = (
+					await this.contactAddressService.findOne({
+						where: {
+							address: params.originalAddress,
+						},
+					})
+				)?.id;
 			} catch (e) {
-				if (e instanceof NotFoundException) { }
-				else
-					throw e;
+				if (e instanceof NotFoundException) {
+				} else throw e;
 			}
-
 		});
 
 		const transactionSearcher = async ({ entity }) => {
@@ -39,24 +39,26 @@ export class TransactionContactLinkerService {
 				where: {
 					originalAddress: entity.address,
 					potId: {
-						[Op.in]: (await PotUser.findAll({
-							attributes: ['potId'],
-							where: {
-								userId: contact.userId
-							}
-						})).map(i => i.potId)
-					}
-				}
+						[Op.in]: (
+							await PotUser.findAll({
+								attributes: ['potId'],
+								where: {
+									userId: contact.userId,
+								},
+							})
+						).map((i) => i.potId),
+					},
+				},
 			});
 
 			for (const transaction of transactions.data) {
 				if (transaction.contactAddressId == null) {
 					await this.transactionService.update(transaction.id, {
-						contactAddressId: entity.id
-					})
+						contactAddressId: entity.id,
+					});
 				}
 			}
-		}
+		};
 
 		this.contactAddressService.afterCreate.hook(transactionSearcher);
 		this.contactAddressService.afterUpdate.hook(transactionSearcher);

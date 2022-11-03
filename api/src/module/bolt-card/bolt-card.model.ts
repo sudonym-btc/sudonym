@@ -1,18 +1,17 @@
+import * as Models from '@sudonym/models';
+import { context } from 'helper/context-request';
+import { Sender } from 'module/sender/sender.model';
+import { User } from 'module/user/user.model';
 import {
-	Table,
+	AutoIncrement,
+	BeforeCreate,
+	BelongsTo,
 	Column,
 	ForeignKey,
 	PrimaryKey,
-	HasOne,
-	BelongsTo,
-	AutoIncrement,
-	BeforeCreate,
+	Table,
 } from 'sequelize-typescript';
-import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
-import { User } from 'module/user/user.model';
-import { Sender } from 'module/sender/sender.model';
-import { context } from 'helper/context-request';
 
 @Table({
 	scopes: BoltCard.scopes,

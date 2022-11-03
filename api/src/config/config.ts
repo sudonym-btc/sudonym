@@ -41,11 +41,11 @@ export class Config {
 		  env +
 		  '-bitcoin-zeromq-service.default.svc.cluster.local:5555';
 	bitcoin: {
-		network: 'mainnet'
-	}
+		network: 'mainnet';
+	};
 	macaroonFile = './certs/access.macaroon';
 	database: SequelizeOptions = {
 		dialect: 'sqlite',
-	}
+	};
 	wsPort = env == 'mock' ? Math.floor(Math.random() * 60000) + 1000 : 3001;
-};
+}

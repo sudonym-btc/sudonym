@@ -11,24 +11,24 @@ const fb = () => {
 	return ['mock'].includes(getConfig().env)
 		? {}
 		: (() => {
-			const serviceAccountPath =
-				process.cwd() + '/src/config/service-account.json';
-			const serviceAccount = fs.existsSync(serviceAccountPath)
-				? require(serviceAccountPath)
-				: null;
+				const serviceAccountPath =
+					process.cwd() + '/src/config/service-account.json';
+				const serviceAccount = fs.existsSync(serviceAccountPath)
+					? require(serviceAccountPath)
+					: null;
 
-			// Firebase Setup
-			admin.initializeApp(
-				serviceAccount
-					? {
-						credential: admin.credential.cert(
-							serviceAccount as ServiceAccount
-						),
-					}
-					: {}
-			);
-			return admin;
-		})();
+				// Firebase Setup
+				admin.initializeApp(
+					serviceAccount
+						? {
+								credential: admin.credential.cert(
+									serviceAccount as ServiceAccount
+								),
+						  }
+						: {}
+				);
+				return admin;
+		  })();
 };
 
 export const firebaseAdminProviders: Provider[] = [

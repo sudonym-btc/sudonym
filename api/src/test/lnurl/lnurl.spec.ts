@@ -23,7 +23,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 		});
 
 		describe('Pay', () => {
-			it('should limit based on pot spendable balance', () => { });
+			it('should limit based on pot spendable balance', () => {});
 		});
 	});
 
@@ -38,14 +38,14 @@ scaffoldGroup('LnUrl', (scaffold) => {
 					amountCurrency: 'BTC',
 				});
 
-				const tag = await scaffold.app
+				const tag = (await scaffold.app
 					.get(LnUrlService)
-					.serve(sender.lnurlId) as WithdrawRequest;
+					.serve(sender.lnurlId)) as WithdrawRequest;
 
 				expect(tag.minWithdrawable).toBe(sender.limitMin * MSATOSHIS);
 				expect(tag.maxWithdrawable).toBe(sender.limitMax * MSATOSHIS);
 			});
-			it('should limit based on min payment', () => { });
+			it('should limit based on min payment', () => {});
 		});
 		describe('Pay', () => {
 			it('should serve info endpoint', async () => {
@@ -78,15 +78,18 @@ scaffoldGroup('LnUrl', (scaffold) => {
 					.handle(receiver.lnurlId, {
 						amount: 1000,
 					});
-				
-				expect(bolt11.decode(tag.pr).millisatoshis).toBe("1000");
+
+				expect(bolt11.decode(tag.pr).millisatoshis).toBe('1000');
 			});
 
 			describe('lightningAddress', () => {
 				it('should serve info endpoint', async () => {
-					const p = await scaffold.app.get(LightningAddressController)
-						.lightningAddress(scaffold.entities.user[0].lightningAddress) as PaymentRequest;
-					
+					const p = (await scaffold.app
+						.get(LightningAddressController)
+						.lightningAddress(
+							scaffold.entities.user[0].lightningAddress
+						)) as PaymentRequest;
+
 					expect(p.minSendable).toBe(1000);
 					expect(p.tag).toBe('payRequest');
 				});

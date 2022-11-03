@@ -1,4 +1,4 @@
-import { LightningNodeService } from "service/lightning-node/lightning-node.service";
+import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import * as bolt11 from 'bolt11';
 import { randomBytes } from 'crypto';
 
@@ -39,7 +39,10 @@ export class MockLightningNodeService extends LightningNodeService {
 			},
 			true
 		);
-		return { ...obj, bolt11: bolt11.sign(obj, randomBytes(32)).paymentRequest };
+		return {
+			...obj,
+			bolt11: bolt11.sign(obj, randomBytes(32)).paymentRequest,
+		};
 	}
 	getFees(pubkey: any, amount?: number): Promise<number> {
 		throw new Error('Method not implemented.');
@@ -49,16 +52,16 @@ export class MockLightningNodeService extends LightningNodeService {
 	}
 
 	pay = jest.fn(async (invoice) => {
-		const pay =  {
+		const pay = {
 			payment_preimage: 'mock',
 			payment_hash: '543543543543543543534534543543',
-			created_at : Date.now().valueOf() / 1000,
+			created_at: Date.now().valueOf() / 1000,
 			parts: 1,
 			partid: 1,
 			amount_msat: 123,
 			amount_sent_msat: 123,
-			status: "pending",
-			destination: "randomnode"
+			status: 'pending',
+			destination: 'randomnode',
 		};
 		this.pays.push(pay);
 		return pay;
@@ -70,12 +73,10 @@ export class MockLightningNodeService extends LightningNodeService {
 		// amount_sent_msat (msat): Total amount we sent (including fees)
 		// status (string): status of payment (one of “complete”, “pending”, “failed”)
 		// destination (pubkey, optional): the final destination of the payment
-
-		
 	}) as any;
 
 	async listSendPays(bolt11, hash) {
-		return this.pays.filter(i => i.payment_hash == hash);
+		return this.pays.filter((i) => i.payment_hash == hash);
 	}
 
 	createOffer(amount: any, description?: any): Promise<any> {
@@ -87,9 +88,7 @@ export class MockLightningNodeService extends LightningNodeService {
 	generateOnChainAddress(): Promise<any> {
 		throw new Error('Method not implemented.');
 	}
-	withdrawOnChain = jest.fn(async (invoice) => {
-		
-	}) as any;
+	withdrawOnChain = jest.fn(async (invoice) => {}) as any;
 
 	rpc = jest.fn(
 		async (method: any, params: any) => 'Method not implemente'

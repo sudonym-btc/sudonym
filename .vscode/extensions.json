@@ -16,6 +16,9 @@
         "foxundermoon.shell-format",
         "eamodio.gitlens",
         "github.vscode-pull-request-github",
-        "mtxr.sqltools-driver-mysql"
+        "mtxr.sqltools-driver-mysql",
+        "rvest.vs-code-prettier-eslint",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
     ]
 }

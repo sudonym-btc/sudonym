@@ -8,6 +8,6 @@ export class UserDeviceController extends BaseController({
 	service: UserDeviceService,
 	model: UserDevice,
 	create: {
-		update: true
-	}
+		update: true,
+	},
 }) {}

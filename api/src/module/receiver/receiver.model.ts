@@ -61,10 +61,10 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@AllowNull
 	@Validate({
 		isNumOrNull(val) {
-			if(val && isNaN(val)) {
-				throw 'Amount must be empty or a number'
+			if (val && isNaN(val)) {
+				throw 'Amount must be empty or a number';
 			}
-		}
+		},
 	})
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;

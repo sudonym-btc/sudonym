@@ -28,7 +28,7 @@ export class BalanceUpdaterService {
 				newBalance -= amountInPotCurrency;
 				newSpendableBalance -= amountInPotCurrency;
 
-				if(newBalance < 0) {
+				if (newBalance < 0) {
 					// throw new BalanceLowError();
 					// todo: uncommed
 				}
@@ -45,7 +45,7 @@ export class BalanceUpdaterService {
 					balance: pot.balance,
 					spendableBalance: pot.spendableBalance,
 				},
-				`to`,
+				'to',
 				{
 					balance: newBalance,
 					spendableBalance: newSpendableBalance,
@@ -71,7 +71,6 @@ export class BalanceUpdaterService {
 					entity.amount
 				)
 			).amount;
-
 
 			if (entity.changed('status')) {
 				// Increase spendable balance when outgoing fails

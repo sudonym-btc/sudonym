@@ -5,11 +5,10 @@ import { FirebaseNotificationService } from 'service/firebase-notification/fireb
 import { UserDevice } from 'module/user-device/user-device.model';
 
 scaffoldGroup('Notifications', (scaffold) => {
-
 	it('should send success notification', async () => {
 		await UserDevice.create({
 			uid: scaffold.entities.user[0].id,
-			token: 'xyz'
+			token: 'xyz',
 		});
 		scaffold.app.get(TransactionService).create({
 			outgoing: false,
@@ -23,10 +22,11 @@ scaffoldGroup('Notifications', (scaffold) => {
 		});
 		await waitForExpect(() => {
 			expect(
-				(scaffold.app.get(FirebaseNotificationService).sendNotification as any).mock
-					.calls.length
+				(
+					scaffold.app.get(FirebaseNotificationService)
+						.sendNotification as any
+				).mock.calls.length
 			).toBe(1);
 		});
 	});
-
 });

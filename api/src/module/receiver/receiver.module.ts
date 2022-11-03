@@ -9,7 +9,13 @@ import { Receiver } from './receiver.model';
 import { PotModule } from 'module/pot/pot.module';
 
 @Module({
-	imports: [SharedModule, CurrencyModule, PotModule, LightningNodeModule, LnUrlModule],
+	imports: [
+		SharedModule,
+		CurrencyModule,
+		PotModule,
+		LightningNodeModule,
+		LnUrlModule,
+	],
 	controllers: [ReceiverController],
 	providers: [
 		ReceiverService,

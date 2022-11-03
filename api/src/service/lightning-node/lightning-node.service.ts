@@ -1,10 +1,10 @@
-import * as https from 'https';
-import * as fs from 'fs';
-import axios from 'axios';
-import { Config } from '../../config/config';
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 import * as bolt11 from 'bolt11';
+import * as fs from 'fs';
+import * as https from 'https';
+import { v4 as uuid } from 'uuid';
+import { Config } from '../../config/config';
 
 @Injectable()
 export class LightningNodeService {
@@ -19,54 +19,68 @@ export class LightningNodeService {
 	private interval;
 
 	onModuleDestroy() {
-		if(this.interval)
-			clearInterval(this.interval);
+		if (this.interval) clearInterval(this.interval);
 	}
 
 	calcHopFee(chann, amount) {
-		const fee = Number(chann.base_fee_millisatoshi) +
+		const fee =
+			Number(chann.base_fee_millisatoshi) +
 			Math.ceil((chann.fee_per_millionth / 1000000) * amount);
 		// this.logger.debug("Calculating fee", chann, amount, fee);
 		return fee;
 	}
 
 	convertChannelsToRoute(millisatoshis) {
-		const peer = this.peers
-		.find(p => p.route.length == 1 && p.channels[0].spendable_msatoshi >= millisatoshis);
+		const peer = this.peers.find(
+			(p) =>
+				p.route.length == 1 &&
+				p.channels[0].spendable_msatoshi >= millisatoshis &&
+				p.channels[0].receivable_msatoshi >= millisatoshis &&
+				p.channels[0].htlc_minimum_msat <= millisatoshis
+		);
 
+		if (!peer) {
+			throw new LightningError(
+				'No route found',
+				'No route found',
+				400,
+				400
+			); // todo: adjust error
+		}
 		// Get channel that is big enough to send
-		const circle = this.connectedChannels
-		.find(i => i[0].short_channel_id == peer.channels[0].short_channel_id);
-		this.logger.debug('Circular payment along route', JSON.stringify(circle));
+		const circle = this.connectedChannels.find(
+			(i) => i[0].short_channel_id == peer.channels[0].short_channel_id
+		);
+		this.logger.debug(
+			'Circular payment along route',
+			JSON.stringify(circle)
+		);
 		const fees = [];
-		let firstAmount = circle
-			.reverse()
-			.reduce(
-				(acc, curr) => {
-					fees.push(this.calcHopFee(curr, acc));
-					return acc + fees[fees.length - 1];
-				},
-				Number(millisatoshis)
-			);
+		const firstAmount = circle.reverse().reduce((acc, curr) => {
+			fees.push(this.calcHopFee(curr, acc));
+			return acc + fees[fees.length - 1];
+		}, Number(millisatoshis));
 		let totalDelay =
 			3 +
 			circle.reduce((acc, curr) => acc + Number(curr.delay), 0) +
 			circle[0].delay;
 
-		this.logger.debug("total delay", totalDelay);
-		this.logger.debug("total fee", firstAmount - millisatoshis);
-		this.logger.debug("fees", fees);
-		this.logger.debug("first amount", firstAmount, millisatoshis);
+		this.logger.debug('total delay', totalDelay);
+		this.logger.debug('total fee', firstAmount - millisatoshis);
+		this.logger.debug('fees', fees);
+		this.logger.debug('first amount', firstAmount, millisatoshis);
 
 		return circle.reduce((acc, curr, index) => {
 			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
 			const lastNodeId = lastRouteItem ? lastRouteItem?.id : this.info.id;
-			const lastAmount = lastRouteItem ? lastRouteItem.msatoshi : firstAmount;
+			const lastAmount = lastRouteItem
+				? lastRouteItem.msatoshi
+				: firstAmount;
 			const lastFee = fees[index];
 			const id =
 				curr.destination == lastNodeId ? curr.source : curr.destination;
 
-			this.logger.debug("lastAmount", lastAmount, "fee", lastFee)
+			this.logger.debug('lastAmount', lastAmount, 'fee', lastFee);
 
 			const amount_msat = lastAmount - lastFee;
 			return [
@@ -76,8 +90,8 @@ export class LightningNodeService {
 					channel: curr.short_channel_id,
 					direction: lastNodeId < id ? 0 : 1,
 					msatoshi: amount_msat,
-					amount_msat: amount_msat.toString() + "msat",
-					delay: totalDelay -= curr.delay,
+					amount_msat: amount_msat.toString() + 'msat',
+					delay: (totalDelay -= curr.delay),
 					style: 'tlv',
 				},
 			];
@@ -91,13 +105,13 @@ export class LightningNodeService {
 		this.connectedChannels = await Promise.all(
 			await this.listChannels().then((i) =>
 				i
-					.filter(ch => ch.short_channel_id)
+					.filter((ch) => ch.short_channel_id)
 					.map((ch) => this.getChannel(ch.short_channel_id))
 			)
 		);
-		this.logger.debug("channels", JSON.stringify(this.connectedChannels));
+		this.logger.debug('channels', JSON.stringify(this.connectedChannels));
 		this.peers = await this.listPeers();
-		this.logger.debug("peers", JSON.stringify(this.peers));
+		this.logger.debug('peers', JSON.stringify(this.peers));
 
 		if (this.info.warning_lightningd_sync) {
 			this.logger.error(this.info.warning_lightningd_sync);
@@ -112,7 +126,6 @@ export class LightningNodeService {
 	}
 
 	async onModuleInit() {
-
 		try {
 			this.macaroon = Buffer.from(
 				fs.readFileSync(this.config.macaroonFile)
@@ -122,7 +135,6 @@ export class LightningNodeService {
 			this.interval = setInterval(() => {
 				this.loadInfo();
 			}, 5 * 60 * 1000); // refresh every 5 minutes
-
 		} catch (e) {
 			this.logger.error(e);
 		}
@@ -135,7 +147,7 @@ export class LightningNodeService {
 	}
 	async listPeers() {
 		const peers = (await this.rpc('listpeers', [])).peers;
-		for(const peer of peers) {
+		for (const peer of peers) {
 			peer.route = await this.getRoute(peer.id);
 		}
 		return peers;
@@ -159,9 +171,25 @@ export class LightningNodeService {
 		});
 	}
 
-	async createInvoice(amount, label = null, description = null, desc_hash = false, preimage = undefined) {
-		if(amount == 0) amount = "any";
-		return this.rpc('invoice', [amount, label || uuid(), description || uuid(), null, null, preimage, null, null, desc_hash]);
+	async createInvoice(
+		amount,
+		label = null,
+		description = null,
+		desc_hash = false,
+		preimage = undefined
+	) {
+		if (amount == 0) amount = 'any';
+		return this.rpc('invoice', [
+			amount,
+			label || uuid(),
+			description || uuid(),
+			null,
+			null,
+			preimage,
+			null,
+			null,
+			desc_hash,
+		]);
 	}
 
 	async getFees(pubkey, amount = 0) {
@@ -185,15 +213,17 @@ export class LightningNodeService {
 
 	async pay(invoice, amount) {
 		const inv = bolt11.decode(invoice);
-		let hasAmount=false;
-		if(inv.millisatoshis || inv.satoshis) {
+		let hasAmount = false;
+		if (inv.millisatoshis || inv.satoshis) {
 			hasAmount = true;
 		}
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
-
-			const circleRoute = await this.getRoute(inv.payeeNodeKey, Number(inv.millisatoshis));
+			const circleRoute = await this.getRoute(
+				inv.payeeNodeKey,
+				Number(inv.millisatoshis)
+			);
 			this.logger.debug(
 				'Routing local payment',
 				JSON.stringify(circleRoute),
@@ -210,7 +240,7 @@ export class LightningNodeService {
 				circleRoute[0].msatoshi,
 				invoice,
 				inv.tagsObject.payment_secret,
-				1
+				1,
 			]);
 		}
 
@@ -228,14 +258,12 @@ export class LightningNodeService {
 	}
 
 	waitSendPay(payment_hash: string, timeout: number | null, partId: any) {
-		return this.rpc('waitsendpay', [payment_hash, null, partId])
+		return this.rpc('waitsendpay', [payment_hash, null, partId]);
 	}
 
 	async listSendPays(bolt11, payment_hash) {
 		return (await this.rpc('listsendpays', [null, payment_hash])).payments;
 	}
-
-	
 
 	async createOffer(amount, description = null) {
 		return this.makeRequest({
@@ -271,7 +299,7 @@ export class LightningNodeService {
 			method: 'POST',
 			data: {
 				address: data.address,
-				satoshis: Math.floor(data.satoshis)
+				satoshis: Math.floor(data.satoshis),
 			},
 		});
 	}
@@ -279,7 +307,7 @@ export class LightningNodeService {
 	async onChainFees() {
 		return await this.makeRequest({
 			path: '/v1/network/estimateFees',
-			method: 'GET'
+			method: 'GET',
 		});
 	}
 
@@ -319,7 +347,13 @@ export class LightningNodeService {
 			...options,
 		}).catch((e) => {
 			this.logger.error('Lightning error', e, e.response?.data);
-			if(e.response?.data?.error) throw new LightningError(e.response.data.error, e.response.data.error.message, 500, e.response.data.error.code);
+			if (e.response?.data?.error)
+				throw new LightningError(
+					e.response.data.error,
+					e.response.data.error.message,
+					500,
+					e.response.data.error.code
+				);
 			throw new LightningError(e, e, e.statusCode, e);
 		});
 		return response.data;

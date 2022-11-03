@@ -9,6 +9,6 @@ export const configDevelopment = () => ({
 		database: 'app',
 	},
 	bitcoin: {
-		network: 'regtest'
-	}
+		network: 'regtest',
+	},
 });

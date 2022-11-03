@@ -13,7 +13,10 @@ export class Contact extends BaseClass {
 
 	static fromJson(json: Object): Contact {
 		const addresses: ContactAddress[] = [];
-		(json['ContactAddresses'] != null ? json['ContactAddresses'] : []).forEach((e) => {
+		(json['ContactAddresses'] != null
+			? json['ContactAddresses']
+			: []
+		).forEach((e) => {
 			addresses.push(ContactAddress.fromJson(e));
 		});
 		return new Contact(json['id'], json['userId'], json['name'], addresses);

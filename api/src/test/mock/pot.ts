@@ -6,14 +6,14 @@ export const createPots = async () => {
 			name: 'test',
 			currency: 'BTC',
 			balance: 1,
-			spendableBalance: 1
+			spendableBalance: 1,
 		},
 	]);
 
 	for (const pot of pots) {
 		await PotUser.create({
 			potId: pot.id,
-			userId: '123'
+			userId: '123',
 		});
 	}
 

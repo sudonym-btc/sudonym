@@ -68,10 +68,13 @@ export class BitcoinListener extends TransactionListener {
 								address: transaction.originalAddress,
 							});
 						} catch (e) {
-							await this.transactionService.update(transaction.id, {
-								status: false,
-								errorMessage: e.toString(),
-							});
+							await this.transactionService.update(
+								transaction.id,
+								{
+									status: false,
+									errorMessage: e.toString(),
+								}
+							);
 						}
 					})();
 				}

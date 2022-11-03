@@ -6,6 +6,5 @@ import { BoltCardService } from './bolt-card.service';
 @Controller('boltCard')
 export class BoltCardController extends BaseController({
 	service: BoltCardService,
-	model: BoltCard
-}
-) { }
+	model: BoltCard,
+}) {}

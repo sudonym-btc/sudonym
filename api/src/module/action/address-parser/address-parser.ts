@@ -5,7 +5,10 @@ import fetch from 'node-fetch';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { IAddressParser, Action, ActionRemoteResponse } from '@sudonym/models';
 import { fetchHttpOpts } from './http-agent';
-import { Network, validate as validateBitcoinAddress } from 'bitcoin-address-validation';
+import {
+	Network,
+	validate as validateBitcoinAddress,
+} from 'bitcoin-address-validation';
 import { Config } from 'config/config';
 
 @Injectable()
@@ -58,8 +61,8 @@ export class AddressParser implements IAddressParser {
 
 	fetchOnChain(address) {
 		return {
-			succcess: true
-		}
+			succcess: true,
+		};
 	}
 
 	fetchRemoteLnUrl = async (invoice: string) => {
@@ -151,7 +154,10 @@ export class AddressParser implements IAddressParser {
 
 	getType(address: string): [string, string] {
 		// Trim whitespace and remove protocol
-		address = address.trim().toLowerCase().replace(/(^\w+:|^)\/\//, '');
+		address = address
+			.trim()
+			.toLowerCase()
+			.replace(/(^\w+:|^)\/\//, '');
 		if (!address || address === '') {
 			return null;
 		}
@@ -176,8 +182,19 @@ export class AddressParser implements IAddressParser {
 		}
 
 		// Parse LNURL bech32 or URL, or BOLT11
-		const isLnUrl = address.startsWith(LNURL_SCHEME) || validURL('https://' + address);
-		return [isLnUrl ? 'lnurl' : validateBitcoinAddress(address, Network[this.config.bitcoin.network]) ? 'onchain' : 'bolt11', address];
+		const isLnUrl =
+			address.startsWith(LNURL_SCHEME) || validURL('https://' + address);
+		return [
+			isLnUrl
+				? 'lnurl'
+				: validateBitcoinAddress(
+						address,
+						Network[this.config.bitcoin.network]
+				  )
+				? 'onchain'
+				: 'bolt11',
+			address,
+		];
 	}
 
 	parseLnUrlString(str: string) {
@@ -186,7 +203,7 @@ export class AddressParser implements IAddressParser {
 				.replace('lnurlw://', 'https://')
 				.replace('lnurlp://', 'https://');
 
-			if(!str.includes('https://')) {
+			if (!str.includes('https://')) {
 				str = 'https://' + str;
 			}
 			return str;
@@ -203,9 +220,11 @@ export const validateInternetIdentifier = (internetIdentifier) => {
 };
 
 export const validURL = (str) => {
-	var res = str.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-	return (res !== null)
-}
+	const res = str.match(
+		/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+	);
+	return res !== null;
+};
 
 const LIGHTNING_SCHEME = 'lightning';
 const BOLT11_SCHEME = 'lnbc';

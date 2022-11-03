@@ -5,7 +5,12 @@ import { LightningNodeService } from 'service/lightning-node/lightning-node.serv
 import { BaseService } from '../base.service';
 import * as lnurl from 'lnurl';
 import { Config, getConfig } from 'config/config';
-import { CurrencyCode, MSATOSHIS, PaymentRequest, TAddressType } from '@sudonym/models';
+import {
+	CurrencyCode,
+	MSATOSHIS,
+	PaymentRequest,
+	TAddressType,
+} from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
 import { ReceiveQuery } from './receiver.controller';
 import { PotService } from 'module/pot/pot.service';
@@ -23,19 +28,25 @@ export class ReceiverService extends BaseService(Receiver) {
 		super.onModuleInit();
 
 		this.beforeCreate.hook(async (params) => {
-			const amountInBTC = params.amount ?
-						(await this.currencyService.convert(
+			const amountInBTC = params.amount
+				? (
+						await this.currencyService.convert(
 							params.amountCurrency,
 							'BTC',
 							params.amount
-						)).amount : null;
-			params.potId = params.potId || (await this.potService.findForUser()).id;
+						)
+				  ).amount
+				: null;
+			params.potId =
+				params.potId || (await this.potService.findForUser()).id;
 
 			switch (params.type) {
 				case 'bolt11':
 					let description = (params as any).description;
-					if(params.lnurlId) {
-						const tag = await this.lnUrlService.findOne(params.lnurlId);
+					if (params.lnurlId) {
+						const tag = await this.lnUrlService.findOne(
+							params.lnurlId
+						);
 						description = (tag.params as PaymentRequest).metadata;
 					}
 					params.data = (
@@ -64,7 +75,9 @@ export class ReceiverService extends BaseService(Receiver) {
 					params.lnurlId = tag.id;
 					break;
 				case 'onchain':
-					console.log(await this.lightningNodeService.generateOnChainAddress());
+					console.log(
+						await this.lightningNodeService.generateOnChainAddress()
+					);
 					params.data = (
 						await this.lightningNodeService.generateOnChainAddress()
 					).address;
@@ -74,32 +87,66 @@ export class ReceiverService extends BaseService(Receiver) {
 	}
 }
 
-var sha256 = //BEGIN function as variable, like sha256.js. If this will be commented, comment ';' in the end of script.
+const sha256 = //BEGIN function as variable, like sha256.js. If this will be commented, comment ';' in the end of script.
 	//sha-256 function
-	function SHA256(s) { //s - string, unicode supporting.
-		var chrsz = 8;
-		var hexcase = 0;
+	function SHA256(s) {
+		//s - string, unicode supporting.
+		const chrsz = 8;
+		const hexcase = 0;
 		function safe_add(x, y) {
-			var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-			var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-			return (msw << 16) | (lsw & 0xFFFF);
+			const lsw = (x & 0xffff) + (y & 0xffff);
+			const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+			return (msw << 16) | (lsw & 0xffff);
 		}
-		function S(X, n) { return (X >>> n) | (X << (32 - n)); }
-		function R(X, n) { return (X >>> n); }
-		function Ch(x, y, z) { return ((x & y) ^ ((~x) & z)); }
-		function Maj(x, y, z) { return ((x & y) ^ (x & z) ^ (y & z)); }
-		function Sigma0256(x) { return (S(x, 2) ^ S(x, 13) ^ S(x, 22)); }
-		function Sigma1256(x) { return (S(x, 6) ^ S(x, 11) ^ S(x, 25)); }
-		function Gamma0256(x) { return (S(x, 7) ^ S(x, 18) ^ R(x, 3)); }
-		function Gamma1256(x) { return (S(x, 17) ^ S(x, 19) ^ R(x, 10)); }
+		function S(X, n) {
+			return (X >>> n) | (X << (32 - n));
+		}
+		function R(X, n) {
+			return X >>> n;
+		}
+		function Ch(x, y, z) {
+			return (x & y) ^ (~x & z);
+		}
+		function Maj(x, y, z) {
+			return (x & y) ^ (x & z) ^ (y & z);
+		}
+		function Sigma0256(x) {
+			return S(x, 2) ^ S(x, 13) ^ S(x, 22);
+		}
+		function Sigma1256(x) {
+			return S(x, 6) ^ S(x, 11) ^ S(x, 25);
+		}
+		function Gamma0256(x) {
+			return S(x, 7) ^ S(x, 18) ^ R(x, 3);
+		}
+		function Gamma1256(x) {
+			return S(x, 17) ^ S(x, 19) ^ R(x, 10);
+		}
 		function core_sha256(m, l) {
-			var K = new Array(0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5, 0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786, 0xFC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA, 0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147, 0x6CA6351, 0x14292967, 0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13, 0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85, 0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070, 0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3, 0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208, 0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2);
-			var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
-			var W = new Array(64);
+			const K = [
+				0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b,
+				0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01,
+				0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7,
+				0xc19bf174, 0xe49b69c1, 0xefbe4786, 0xfc19dc6, 0x240ca1cc,
+				0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152,
+				0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+				0x6ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc,
+				0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+				0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819,
+				0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08,
+				0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f,
+				0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+				0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+			];
+			const HASH = [
+				0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f,
+				0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+			];
+			const W = new Array(64);
 			var a, b, c, d, e, f, g, h, i, j;
-			var T1, T2;
-			m[l >> 5] |= 0x80 << (24 - l % 32);
-			m[((l + 64 >> 9) << 4) + 15] = l;
+			let T1, T2;
+			m[l >> 5] |= 0x80 << (24 - (l % 32));
+			m[(((l + 64) >> 9) << 4) + 15] = l;
 			for (var i: any = 0; i < m.length; i += 16) {
 				a = HASH[0];
 				b = HASH[1];
@@ -111,8 +158,21 @@ var sha256 = //BEGIN function as variable, like sha256.js. If this will be comme
 				h = HASH[7];
 				for (var j: any = 0; j < 64; j++) {
 					if (j < 16) W[j] = m[j + i];
-					else W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
-					T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+					else
+						W[j] = safe_add(
+							safe_add(
+								safe_add(Gamma1256(W[j - 2]), W[j - 7]),
+								Gamma0256(W[j - 15])
+							),
+							W[j - 16]
+						);
+					T1 = safe_add(
+						safe_add(
+							safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)),
+							K[j]
+						),
+						W[j]
+					);
 					T2 = safe_add(Sigma0256(a), Maj(a, b, c));
 					h = g;
 					g = f;
@@ -135,26 +195,25 @@ var sha256 = //BEGIN function as variable, like sha256.js. If this will be comme
 			return HASH;
 		}
 		function str2binb(str) {
-			var bin = Array();
-			var mask = (1 << chrsz) - 1;
-			for (var i = 0; i < str.length * chrsz; i += chrsz) {
-				bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i % 32);
+			const bin = [];
+			const mask = (1 << chrsz) - 1;
+			for (let i = 0; i < str.length * chrsz; i += chrsz) {
+				bin[i >> 5] |=
+					(str.charCodeAt(i / chrsz) & mask) << (24 - (i % 32));
 			}
 			return bin;
 		}
 		function Utf8Encode(string) {
-			string = string.replace(/\r\n/g, "\n");
-			var utftext = "";
-			for (var n = 0; n < string.length; n++) {
-				var c = string.charCodeAt(n);
+			string = string.replace(/\r\n/g, '\n');
+			let utftext = '';
+			for (let n = 0; n < string.length; n++) {
+				const c = string.charCodeAt(n);
 				if (c < 128) {
 					utftext += String.fromCharCode(c);
-				}
-				else if ((c > 127) && (c < 2048)) {
+				} else if (c > 127 && c < 2048) {
 					utftext += String.fromCharCode((c >> 6) | 192);
 					utftext += String.fromCharCode((c & 63) | 128);
-				}
-				else {
+				} else {
 					utftext += String.fromCharCode((c >> 12) | 224);
 					utftext += String.fromCharCode(((c >> 6) & 63) | 128);
 					utftext += String.fromCharCode((c & 63) | 128);
@@ -163,19 +222,23 @@ var sha256 = //BEGIN function as variable, like sha256.js. If this will be comme
 			return utftext;
 		}
 		function binb2hex(binarray) {
-			var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-			var str = "";
-			for (var i = 0; i < binarray.length * 4; i++) {
-				str += hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8 + 4)) & 0xF) +
-					hex_tab.charAt((binarray[i >> 2] >> ((3 - i % 4) * 8)) & 0xF);
+			const hex_tab = hexcase ? '0123456789ABCDEF' : '0123456789abcdef';
+			let str = '';
+			for (let i = 0; i < binarray.length * 4; i++) {
+				str +=
+					hex_tab.charAt(
+						(binarray[i >> 2] >> ((3 - (i % 4)) * 8 + 4)) & 0xf
+					) +
+					hex_tab.charAt(
+						(binarray[i >> 2] >> ((3 - (i % 4)) * 8)) & 0xf
+					);
 			}
 			return str;
 		}
 		s = Utf8Encode(s);
 		return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
-	}
-	//test sha256 from specified 'string', by call this as function, withut variable
-	//document.write(SHA256('test_string_with_text. Unicode: 守护村子')); //show sha256 hash 00ad1ffe387a8e277b81ffa0211c41a67e4580839ed785eea84b751a9e4be546
-	;	//END function as variable. Delete this ';' if variable not used.
+	};
+//test sha256 from specified 'string', by call this as function, withut variable
+//document.write(SHA256('test_string_with_text. Unicode: 守护村子')); //show sha256 hash 00ad1ffe387a8e277b81ffa0211c41a67e4580839ed785eea84b751a9e4be546 //END function as variable. Delete this ';' if variable not used.
 //test sha256 from specified 'string', by calling this as function binded to variable name
 //document.write(sha256('test_string_with_text. Unicode: 守护村子')); //show sha256 hash 00ad1ffe387a8e277b81ffa0211c41a67e4580839ed785eea84b751a9e4be546

@@ -60,7 +60,7 @@ class Withdraw extends ActionTypeWithAmount {
         json["isBolt12"],
         json["isOnChain"],
         json["comment"]);
-    if (w.amount == null && (w.minAmount == w.maxAmount)) {
+    if (w.amount == null && w.minAmount == w.maxAmount) {
       w.amount = w.minAmount;
     }
     return w;

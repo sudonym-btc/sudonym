@@ -18,11 +18,11 @@ export class LnUrlHandlerService {
 
 	// Function that is called when someone else triggers OUR callbacks.
 	async handle(id, query) {
-		this.logger.log("Handling lnurl", id, query);
+		this.logger.log('Handling lnurl', id, query);
 		const tag = await this.lnUrlService.findOne(id);
 		switch (tag.params.tag) {
 			case 'payRequest':
-				let parentReceiver = await this.receiveService.findOne({
+				const parentReceiver = await this.receiveService.findOne({
 					where: {
 						lnurlId: tag.id,
 					},
@@ -43,7 +43,6 @@ export class LnUrlHandlerService {
 					routes: [],
 				};
 			case 'withdrawRequest':
-
 				const sender = await this.senderService.findOne({
 					where: {
 						lnurlId: tag.id,
@@ -82,7 +81,7 @@ export class LnUrlHandlerService {
 					currencyCode: 'BTC',
 				});
 
-				return { status: 'OK' }
+				return { status: 'OK' };
 		}
 
 		throw new HttpException('Unhandleable lnurl request', 400);
