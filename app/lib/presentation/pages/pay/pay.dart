@@ -103,6 +103,7 @@ class _SendPageState extends State<SendPage> {
                         ]),
                       ),
                       const SizedBox(height: padding * 2),
+                      CheckClipboard(),
                       Expanded(
                           child: Column(children: [
                         Row(
@@ -140,5 +141,31 @@ class _SendPageState extends State<SendPage> {
                     ],
                   ))),
         ));
+  }
+}
+
+class CheckClipboard extends StatelessWidget {
+  final Pot? pot;
+  const CheckClipboard({this.pot, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (getIt<ClipboardListener>().canReadClipboardUndetected()) {
+      return Container();
+    }
+    return Column(children: [
+      ListTile(
+        leading: Icon(Icons.paste),
+        title: const Text('Check clipboard'),
+        onTap: () => getIt<ClipboardListener>().check().then((value) {
+          if (value != null) {
+            print("trillolol");
+            getIt<ActionTriggerService>()
+                .trigger(ActionStream(context: context, link: value, pot: pot));
+          }
+        }),
+      ),
+      const SizedBox(height: padding * 2),
+    ]);
   }
 }
