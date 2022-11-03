@@ -70,32 +70,39 @@ export class LightningNodeService {
 		this.logger.debug('fees', fees);
 		this.logger.debug('first amount', firstAmount, millisatoshis);
 
-		return circle.reduce((acc, curr, index) => {
-			const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
-			const lastNodeId = lastRouteItem ? lastRouteItem?.id : this.info.id;
-			const lastAmount = lastRouteItem
-				? lastRouteItem.msatoshi
-				: firstAmount;
-			const lastFee = fees[index];
-			const id =
-				curr.destination == lastNodeId ? curr.source : curr.destination;
+		return {
+			amount: firstAmount,
+			route: circle.reduce((acc, curr, index) => {
+				const lastRouteItem = acc.length ? acc[acc.length - 1] : null;
+				const lastNodeId = lastRouteItem
+					? lastRouteItem?.id
+					: this.info.id;
+				const lastAmount = lastRouteItem
+					? lastRouteItem.msatoshi
+					: firstAmount;
+				const lastFee = fees[index];
+				const id =
+					curr.destination == lastNodeId
+						? curr.source
+						: curr.destination;
 
-			this.logger.debug('lastAmount', lastAmount, 'fee', lastFee);
+				this.logger.debug('lastAmount', lastAmount, 'fee', lastFee);
 
-			const amount_msat = lastAmount - lastFee;
-			return [
-				...acc,
-				{
-					id,
-					channel: curr.short_channel_id,
-					direction: lastNodeId < id ? 0 : 1,
-					msatoshi: amount_msat,
-					amount_msat: amount_msat.toString() + 'msat',
-					delay: (totalDelay -= curr.delay),
-					style: 'tlv',
-				},
-			];
-		}, []);
+				const amount_msat = lastAmount - lastFee;
+				return [
+					...acc,
+					{
+						id,
+						channel: curr.short_channel_id,
+						direction: lastNodeId < id ? 0 : 1,
+						msatoshi: amount_msat,
+						amount_msat: amount_msat.toString() + 'msat',
+						delay: (totalDelay -= curr.delay),
+						style: 'tlv',
+					},
+				];
+			}, []),
+		};
 	}
 
 	async loadInfo() {
@@ -204,7 +211,7 @@ export class LightningNodeService {
 
 	async getRoute(pubkey, amount = 0) {
 		if (pubkey == this.info.id) {
-			return await this.convertChannelsToRoute(amount);
+			return await this.convertChannelsToRoute(amount).route;
 		}
 		return this.makeRequest({
 			path: '/v1/network/getRoute/' + pubkey + '/' + amount,
@@ -220,24 +227,23 @@ export class LightningNodeService {
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
-			const circleRoute = await this.getRoute(
-				inv.payeeNodeKey,
-				Number(inv.millisatoshis)
+			const circleRoute = this.convertChannelsToRoute(
+				hasAmount ? Number(inv.millisatoshis) : amount
 			);
 			this.logger.debug(
 				'Routing local payment',
 				JSON.stringify(circleRoute),
 				inv.tagsObject.payment_hash,
-				circleRoute[0].msatoshi,
+				circleRoute.route[0].msatoshi,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1
 			);
 			return this.rpc('sendpay', [
-				circleRoute,
+				circleRoute.route,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
-				circleRoute[0].msatoshi,
+				amount,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1,

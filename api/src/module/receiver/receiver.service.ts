@@ -1,20 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Receiver } from './receiver.model';
-import { LnUrlService } from '../lightning/lnurl/lnurl.service';
+import { MSATOSHIS, PaymentRequest } from '@sudonym/models';
+import { Config } from 'config/config';
+import * as lnurl from 'lnurl';
+import { PotService } from 'module/pot/pot.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { BaseService } from '../base.service';
-import * as lnurl from 'lnurl';
-import { Config, getConfig } from 'config/config';
-import {
-	CurrencyCode,
-	MSATOSHIS,
-	PaymentRequest,
-	TAddressType,
-} from '@sudonym/models';
 import { CurrencyService } from '../currency/currency.service';
-import { ReceiveQuery } from './receiver.controller';
-import { PotService } from 'module/pot/pot.service';
-import * as bolt11 from 'bolt11';
+import { LnUrlService } from '../lightning/lnurl/lnurl.service';
+import { Receiver } from './receiver.model';
 
 @Injectable()
 export class ReceiverService extends BaseService(Receiver) {
@@ -41,7 +34,7 @@ export class ReceiverService extends BaseService(Receiver) {
 				params.potId || (await this.potService.findForUser()).id;
 
 			switch (params.type) {
-				case 'bolt11':
+				case 'bolt11': {
 					let description = (params as any).description;
 					if (params.lnurlId) {
 						const tag = await this.lnUrlService.findOne(
@@ -58,6 +51,7 @@ export class ReceiverService extends BaseService(Receiver) {
 						)
 					).bolt11;
 					break;
+				}
 				case 'bolt12':
 					params.data = (
 						await this.lightningNodeService.createOffer(
@@ -65,7 +59,7 @@ export class ReceiverService extends BaseService(Receiver) {
 						)
 					).bolt12;
 					break;
-				case 'lnurl':
+				case 'lnurl': {
 					const tag = await this.lnUrlService.createPayRequest(
 						Math.floor(amountInBTC * MSATOSHIS)
 					);
@@ -74,10 +68,8 @@ export class ReceiverService extends BaseService(Receiver) {
 					);
 					params.lnurlId = tag.id;
 					break;
+				}
 				case 'onchain':
-					console.log(
-						await this.lightningNodeService.generateOnChainAddress()
-					);
 					params.data = (
 						await this.lightningNodeService.generateOnChainAddress()
 					).address;
@@ -143,11 +135,11 @@ const sha256 = //BEGIN function as variable, like sha256.js. If this will be com
 				0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
 			];
 			const W = new Array(64);
-			var a, b, c, d, e, f, g, h, i, j;
+			let a, b, c, d, e, f, g, h, i, j;
 			let T1, T2;
 			m[l >> 5] |= 0x80 << (24 - (l % 32));
 			m[(((l + 64) >> 9) << 4) + 15] = l;
-			for (var i: any = 0; i < m.length; i += 16) {
+			for (let i: any = 0; i < m.length; i += 16) {
 				a = HASH[0];
 				b = HASH[1];
 				c = HASH[2];
@@ -156,7 +148,7 @@ const sha256 = //BEGIN function as variable, like sha256.js. If this will be com
 				f = HASH[5];
 				g = HASH[6];
 				h = HASH[7];
-				for (var j: any = 0; j < 64; j++) {
+				for (let j: any = 0; j < 64; j++) {
 					if (j < 16) W[j] = m[j + i];
 					else
 						W[j] = safe_add(

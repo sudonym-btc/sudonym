@@ -21,8 +21,10 @@ class ActionPage extends StatelessWidget {
   }
 
   StatusPage errorPage(BuildContext context, dynamic err) {
+    print(err);
+    print("-------");
     // Error came from remote service
-    if (err.response?.statusCode == 503) {
+    if (err?.response?.statusCode == 503) {
       return StatusPage(
           title: 'Error',
           subtitle: 'Could not get OK response from remote server',

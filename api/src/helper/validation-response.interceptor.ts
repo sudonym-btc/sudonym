@@ -1,10 +1,9 @@
 import {
+	BadRequestException,
+	CallHandler,
+	ExecutionContext,
 	Injectable,
 	NestInterceptor,
-	ExecutionContext,
-	BadGatewayException,
-	CallHandler,
-	BadRequestException,
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { Observable, throwError } from 'rxjs';
@@ -20,7 +19,6 @@ export class ValidationErrorInterceptor implements NestInterceptor {
 						e.property = e.path;
 						return e;
 					});
-					console.log(JSON.parse(JSON.stringify(err.errors)));
 					return throwError(
 						() =>
 							new BadRequestException({
@@ -28,7 +26,6 @@ export class ValidationErrorInterceptor implements NestInterceptor {
 							})
 					);
 				}
-				console.log('nont ');
 				return throwError(() => err);
 			})
 		);

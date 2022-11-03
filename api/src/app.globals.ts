@@ -18,10 +18,8 @@ export const applyGlobals = (app: INestApplication) => {
 		new ValidationPipe({
 			whitelist: true,
 			transform: true,
-			exceptionFactory: (validationErrors: ValidationError[] = []) => {
-				console.log('here we are', validationErrors);
-				return new BadRequestException(validationErrors);
-			},
+			exceptionFactory: (validationErrors: ValidationError[] = []) =>
+				new BadRequestException(validationErrors),
 		})
 	);
 	app.useGlobalInterceptors(new ValidationErrorInterceptor());

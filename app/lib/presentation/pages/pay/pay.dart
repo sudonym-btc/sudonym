@@ -68,7 +68,7 @@ class _SendPageState extends State<SendPage> {
                 ],
               ),
               body: Padding(
-                  padding: const EdgeInsets.all(padding),
+                  padding: const EdgeInsets.all(padding * 2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -86,6 +86,9 @@ class _SendPageState extends State<SendPage> {
                                           .addressInputHint,
                                       labelText: AppLocalizations.of(context)!
                                           .address))),
+                          SizedBox(
+                            width: padding,
+                          ),
                           ReactiveFormConsumer(
                             builder: (context, form, child) {
                               return Button(
@@ -103,7 +106,9 @@ class _SendPageState extends State<SendPage> {
                         ]),
                       ),
                       const SizedBox(height: padding * 2),
-                      CheckClipboard(),
+                      CheckClipboard(
+                        pot: widget.pot,
+                      ),
                       Expanded(
                           child: Column(children: [
                         Row(
@@ -144,25 +149,59 @@ class _SendPageState extends State<SendPage> {
   }
 }
 
-class CheckClipboard extends StatelessWidget {
+class CheckClipboard extends StatefulWidget {
   final Pot? pot;
   const CheckClipboard({this.pot, super.key});
 
   @override
+  State<StatefulWidget> createState() => CheckClipboardState();
+}
+
+class CheckClipboardState extends State<CheckClipboard> {
+  String? address;
+  bool hasChecked = false;
+
+  @override
+  void initState() {
+    if (getIt<ClipboardListener>().canReadClipboardUndetected()) {
+      getIt<ClipboardListener>()
+          .check()
+          .then((value) => setState((() => address = value)));
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (getIt<ClipboardListener>().canReadClipboardUndetected()) {
+      if (address != null) {
+        return Column(children: [
+          ListTile(
+              leading: Icon(Icons.paste),
+              title: Text('Paste " $address "'),
+              onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
+                  context: context, link: address!, pot: widget.pot))),
+          const SizedBox(height: padding * 2),
+        ]);
+      }
       return Container();
     }
     return Column(children: [
       ListTile(
-        leading: Icon(Icons.paste),
+        leading: const Icon(Icons.paste),
         title: const Text('Check clipboard'),
         onTap: () => getIt<ClipboardListener>().check().then((value) {
+          setState(() {
+            hasChecked = true;
+          });
           if (value != null) {
-            getIt<ActionTriggerService>()
-                .trigger(ActionStream(context: context, link: value, pot: pot));
+            getIt<ActionTriggerService>().trigger(
+                ActionStream(context: context, link: value, pot: widget.pot));
           }
         }),
+        subtitle: hasChecked && address == null
+            ? const Text('No address to paste')
+            : null,
       ),
       const SizedBox(height: padding * 2),
     ]);

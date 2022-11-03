@@ -1,8 +1,8 @@
 import { Storage } from '@google-cloud/storage';
+import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import { getConfig } from '../config/config';
 const storage = new Storage();
-import * as dotenv from 'dotenv';
 
 // Downloads config files from google cloud project
 export async function downloadFiles(
@@ -47,7 +47,6 @@ export async function downloadFiles(
 	 */
 	const envFile = `${process.cwd()}/src/config/.env`;
 	if (fs.existsSync(envFile)) {
-		console.log('Setting env');
 		dotenv.config({
 			path: envFile,
 		});

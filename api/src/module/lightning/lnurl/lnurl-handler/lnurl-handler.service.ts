@@ -1,12 +1,12 @@
 import { HttpException, Inject, Logger } from '@nestjs/common';
-import { ReceiverService } from 'module/receiver/receiver.service';
-import { LnUrlService } from '../lnurl.service';
 import { MSATOSHIS } from '@sudonym/models';
-import { TransactionService } from 'module/transaction/transaction.service';
-import { SenderService } from 'module/sender/sender.service';
-import { getAddressType } from 'module/action/action.service';
 import * as bolt11 from 'bolt11';
+import { getAddressType } from 'module/action/action.service';
 import { PotService } from 'module/pot/pot.service';
+import { ReceiverService } from 'module/receiver/receiver.service';
+import { SenderService } from 'module/sender/sender.service';
+import { TransactionService } from 'module/transaction/transaction.service';
+import { LnUrlService } from '../lnurl.service';
 
 export class LnUrlHandlerService {
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
@@ -21,7 +21,7 @@ export class LnUrlHandlerService {
 		this.logger.log('Handling lnurl', id, query);
 		const tag = await this.lnUrlService.findOne(id);
 		switch (tag.params.tag) {
-			case 'payRequest':
+			case 'payRequest': {
 				const parentReceiver = await this.receiveService.findOne({
 					where: {
 						lnurlId: tag.id,
@@ -42,7 +42,8 @@ export class LnUrlHandlerService {
 					pr: receiver.data,
 					routes: [],
 				};
-			case 'withdrawRequest':
+			}
+			case 'withdrawRequest': {
 				const sender = await this.senderService.findOne({
 					where: {
 						lnurlId: tag.id,
@@ -50,8 +51,6 @@ export class LnUrlHandlerService {
 				});
 				this.logger.debug(sender.toJSON());
 				const parsed = bolt11.decode(query.pr);
-
-				console.log(sender);
 
 				const pot = await this.potService.findForUser(
 					sender.userId,
@@ -82,6 +81,7 @@ export class LnUrlHandlerService {
 				});
 
 				return { status: 'OK' };
+			}
 		}
 
 		throw new HttpException('Unhandleable lnurl request', 400);
