@@ -189,7 +189,9 @@ export class AddressParser implements IAddressParser {
 
 		this.logger.debug(
 			'just before bitcoin parse',
-			this.config.bitcoin.network,
+			this.config.bitcoin.network
+		);
+		this.logger.debug(
 			Network[this.config.bitcoin.network],
 			validURL('https://' + address)
 		);
