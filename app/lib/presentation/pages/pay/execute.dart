@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart' hide ButtonBar;
-import 'package:sudonym.models/index.dart';
-import 'package:sudonym/logic/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
+import 'package:sudonym.models/index.dart';
 
 class PayExecutePage extends ActionFlow<Payment, Transaction> {
   final Payment action;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart' hide ButtonBar;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:sudonym.models/index.dart';
-import 'package:sudonym/presentation/index.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class SendPage extends StatefulWidget {
   final Pot pot;

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/bloc/action.cubit.dart';
+import 'package:sudonym.models/index.dart';
 
 class WithdrawManager extends ActionManager<Withdraw> {
   static canChangeAmount(Withdraw w) {

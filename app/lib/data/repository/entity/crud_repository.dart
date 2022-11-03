@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
+import 'package:sudonym.models/index.dart';
 
 const List<List<String>> order = [
   ['id', 'DESC']

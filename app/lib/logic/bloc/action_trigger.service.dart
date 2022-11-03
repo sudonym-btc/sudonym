@@ -1,13 +1,14 @@
 import 'dart:async';
+
 import 'package:dartz/dartz.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/index.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym.models/index.dart';
 
 extension EitherX<L, R> on Either<L, R> {
   R asRight() => (this as Right).value; //

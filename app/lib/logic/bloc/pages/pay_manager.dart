@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/logic/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class PayManager extends ActionManager<Payment> {
   static canChangeAmount(Payment p) {

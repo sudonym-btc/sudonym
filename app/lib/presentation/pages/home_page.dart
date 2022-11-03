@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/data/index.dart';
-import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

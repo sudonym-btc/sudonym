@@ -2,8 +2,8 @@ import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/config/logger.dart';
-import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 
 const loadingCircle = Padding(
     padding: EdgeInsets.all(padding * 2),

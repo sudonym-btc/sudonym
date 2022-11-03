@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide ButtonBar;
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class QRPage extends StatefulWidget {
   final Pot? pot;

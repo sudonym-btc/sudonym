@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym.models/index.dart';
 
 @injectable
 class ActionLoader {

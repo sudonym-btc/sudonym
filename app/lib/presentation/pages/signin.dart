@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/logic/index.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sudonym/logic/index.dart';
+import 'package:sudonym/presentation/index.dart';
 
 class SigninPage extends StatelessWidget {
   const SigninPage({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class BoltCardListItem extends StatelessWidget {
   final BoltCard entity;

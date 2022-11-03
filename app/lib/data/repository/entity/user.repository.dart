@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym.models/index.dart';
 
 @LazySingleton(as: UserRepository, env: Env.allButMock)
 class UserRepositoryImpl extends UserRepository {

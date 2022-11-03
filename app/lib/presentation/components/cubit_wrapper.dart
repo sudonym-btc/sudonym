@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class CubitWrapper<
     C extends EntityCubit<CrudRepository<T>, CS, T>,

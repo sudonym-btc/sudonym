@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:native_flutter_proxy/native_proxy_reader.dart';
 import 'package:sudonym/config/index.dart';
-
 import 'package:sudonym/injection.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 

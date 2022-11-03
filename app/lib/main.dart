@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:loggy/loggy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sudonym/data/index.dart';
+import 'package:sudonym/firebase_options.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/firebase_options.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main(List<String> args) {
   mainCommon(null);

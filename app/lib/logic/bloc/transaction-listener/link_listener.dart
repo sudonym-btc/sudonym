@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:injectable/injectable.dart';
-
 import 'package:sudonym/logic/index.dart';
 
 @singleton
