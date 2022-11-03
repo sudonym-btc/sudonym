@@ -5,6 +5,7 @@ import {
 	Network,
 	validate as validateBitcoinAddress,
 } from 'bitcoin-address-validation';
+import * as bolt11 from 'bolt11';
 import { Buffer } from 'buffer';
 import { Config } from 'config/config';
 import fetch from 'node-fetch';
@@ -157,14 +158,10 @@ export class AddressParser implements IAddressParser {
 	};
 
 	getType(address: string): [string, string] {
-		console.log(this.config);
 		this.logger.debug('Parsing', address);
 
 		// Trim whitespace and remove protocol
-		address = address
-			.trim()
-			.toLowerCase()
-			.replace(/(^\w+:|^)\/\//, '');
+		address = address.trim().replace(/(^\w+:|^)\/\//, '');
 		if (!address || address === '') {
 			return null;
 		}
@@ -188,23 +185,14 @@ export class AddressParser implements IAddressParser {
 			address = address.slice(6, address.length);
 		}
 
-		this.logger.debug(
-			'just before bitcoin parse',
-			this.config.bitcoin.network
-		);
-		this.logger.debug(
-			Network[this.config.bitcoin.network],
-			validURL('https://' + address)
-		);
+		let isBolt11 = false;
 
-		this.logger.debug(
-			'Parsing',
-			validateBitcoinAddress(
-				address,
-				Network[this.config.bitcoin.network]
-			),
-			'false?'
-		);
+		try {
+			bolt11.decode(address);
+			isBolt11 = true;
+		} catch (e) {
+			isBolt11 = false;
+		}
 
 		// Parse LNURL bech32 or URL, or BOLT11
 		const isLnUrl =
@@ -214,10 +202,14 @@ export class AddressParser implements IAddressParser {
 				? 'lnurl'
 				: validateBitcoinAddress(
 						address,
-						Network[this.config.bitcoin.network]
+						['mock', 'development'].includes(this.config.env)
+							? null
+							: Network[this.config.bitcoin.network] // Don't check for valid network if in testing mode
 				  )
 				? 'onchain'
-				: 'bolt11',
+				: isBolt11
+				? 'bolt11'
+				: null,
 			address,
 		];
 	}

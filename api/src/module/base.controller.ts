@@ -10,10 +10,7 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'helper/auth.guard';
-import {
-	Constructor,
-	RecursivePartial,
-} from 'sequelize-typescript/dist/shared/types';
+import { Constructor } from 'sequelize-typescript/dist/shared/types';
 import { TBaseService, TControllerAndService } from './base.service';
 
 export interface TBaseController<TService, TModel>
@@ -57,7 +54,7 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 		options[i] = Object.assign(defaultEndpointOptions, options[i] || {});
 	});
 
-	console.log(options, AuthGuard);
+	// console.log(options, AuthGuard);
 	const getGuards = (obj) =>
 		[...(obj.guards || []), obj.auth ? AuthGuard : null].filter((i) => !!i);
 	class X {
