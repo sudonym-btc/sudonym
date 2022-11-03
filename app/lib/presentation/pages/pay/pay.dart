@@ -178,7 +178,10 @@ class CheckClipboardState extends State<CheckClipboard> {
         return Column(children: [
           ListTile(
               leading: Icon(Icons.paste),
-              title: Text('Paste " $address "'),
+              title: Text(
+                'Paste " $address "',
+                overflow: TextOverflow.ellipsis,
+              ),
               onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
                   context: context, link: address!, pot: widget.pot))),
           const SizedBox(height: padding * 2),

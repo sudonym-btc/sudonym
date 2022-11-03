@@ -1,15 +1,15 @@
-import { LightningNodeService } from '../../../service/lightning-node/lightning-node.service';
-import { bech32 } from 'bech32';
-import { Buffer } from 'buffer';
-import fetch from 'node-fetch';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { IAddressParser, Action, ActionRemoteResponse } from '@sudonym/models';
-import { fetchHttpOpts } from './http-agent';
+import { Action, ActionRemoteResponse, IAddressParser } from '@sudonym/models';
+import { bech32 } from 'bech32';
 import {
 	Network,
 	validate as validateBitcoinAddress,
 } from 'bitcoin-address-validation';
+import { Buffer } from 'buffer';
 import { Config } from 'config/config';
+import fetch from 'node-fetch';
+import { LightningNodeService } from '../../../service/lightning-node/lightning-node.service';
+import { fetchHttpOpts } from './http-agent';
 
 @Injectable()
 export class AddressParser implements IAddressParser {
@@ -19,6 +19,7 @@ export class AddressParser implements IAddressParser {
 
 	async parse(address): Promise<Action> {
 		const [type, trimmedAddress] = this.getType(address);
+		this.logger.debug('Parsing', trimmedAddress, type);
 		switch (type) {
 			case 'lightningaddress':
 				return Action.from({
@@ -30,7 +31,7 @@ export class AddressParser implements IAddressParser {
 					isLnUrl: true,
 					isLnAddress: true,
 				});
-			case 'lnurl':
+			case 'lnurl': {
 				const remoteResponse = await this.fetchRemoteLnUrl(
 					trimmedAddress
 				);
@@ -42,26 +43,29 @@ export class AddressParser implements IAddressParser {
 					remoteResponse,
 					isLnUrl: true,
 				});
-			case 'onchain':
+			}
+			case 'onchain': {
 				return Action.from({
 					originalAddress: trimmedAddress,
 					type: 'pay',
 					remoteResponse: await this.fetchOnChain(trimmedAddress),
 					isOnChain: true,
 				});
-			case 'bolt11':
+			}
+			case 'bolt11': {
 				return Action.from({
 					originalAddress: trimmedAddress,
 					type: 'pay',
 					isBolt11: true,
 					remoteResponse: await this.fetchBolt11(trimmedAddress),
 				});
+			}
 		}
 	}
 
 	fetchOnChain(address) {
 		return {
-			succcess: true,
+			success: true,
 		};
 	}
 
