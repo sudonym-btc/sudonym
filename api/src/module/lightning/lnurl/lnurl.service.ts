@@ -1,12 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Config, getConfig } from 'config/config';
-import { BaseService } from 'module/base.service';
-import { LnUrl } from './lnurl.model';
-import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { RequestType } from 'helper/parse-request.decorator';
-import * as crypto from 'crypto';
 import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
+import { Config } from 'config/config';
+import * as crypto from 'crypto';
+import { BaseService } from 'module/base.service';
+import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import { v4 as uuid } from 'uuid';
+import { LnUrl } from './lnurl.model';
 
 @Injectable()
 export class LnUrlService extends BaseService(LnUrl) {
@@ -28,7 +27,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 			params: {
 				tag: 'payRequest',
 				domain: this.config.selfUrl,
-				minSendable: Math.max(mSatoshiAmount, 1),
+				minSendable: Math.max(mSatoshiAmount, 1000),
 				maxSendable: 0.01 * MSATOSHIS,
 				metadata: JSON.stringify([
 					[

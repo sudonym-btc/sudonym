@@ -157,6 +157,8 @@ export class AddressParser implements IAddressParser {
 	};
 
 	getType(address: string): [string, string] {
+		this.logger.debug('Parsing', address);
+
 		// Trim whitespace and remove protocol
 		address = address
 			.trim()
@@ -184,6 +186,15 @@ export class AddressParser implements IAddressParser {
 			// Remove the `lightning` prefix
 			address = address.slice(6, address.length);
 		}
+
+		this.logger.debug(
+			'Parsing',
+			validateBitcoinAddress(
+				address,
+				Network[this.config.bitcoin.network]
+			),
+			'false?'
+		);
 
 		// Parse LNURL bech32 or URL, or BOLT11
 		const isLnUrl =
