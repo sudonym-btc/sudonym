@@ -9,4 +9,9 @@ export class LnUrlHandlerController {
 	async handle(@Param('id') id, @Query() query) {
 		return this.service.handle(id, query);
 	}
+
+	@Get('serve/:id')
+	async overwriteFindOne(@Param('id') id) {
+		return this.service.serve(id);
+	}
 }

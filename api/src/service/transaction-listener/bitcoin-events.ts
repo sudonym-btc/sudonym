@@ -1,11 +1,10 @@
-import * as bitcoin from 'bitcoinjs-lib';
-import * as zmq from 'zeromq';
-import { Inject, Injectable } from '@nestjs/common';
-import { Subject } from 'rxjs';
-import { Config, getConfig } from 'config/config';
-const sock = zmq.socket('sub');
-import { Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { RecursivePartial } from '@sudonym/models/src/recursive-partial';
+import * as bitcoin from 'bitcoinjs-lib';
+import { Config } from 'config/config';
+import { Subject } from 'rxjs';
+import * as zmq from 'zeromq';
+const sock = zmq.socket('sub');
 
 type TxOutput = bitcoin.TxOutput & {
 	txid: string;

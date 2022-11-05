@@ -1,6 +1,6 @@
+import { ContactService } from 'module/contact/contact.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { scaffoldGroup } from './mock/scaffold-group';
-import { ContactService } from 'module/contact/contact.service';
 
 scaffoldGroup('Payment Contacts', (scaffold) => {
 	it('should allocate contactAddress id to transaction if recognized', async () => {

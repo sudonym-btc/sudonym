@@ -137,10 +137,53 @@ class ActionTriggerService with ActionLogger {
   }
 
   handleWithdraw(ActionStream actionStream) {
-    return (Withdraw a) => Stream.fromIterable([a]).map((event) {
+    bool firstPageAmount = false;
+
+    return (Withdraw a) => Stream.fromIterable([a])
+        .map((event) {
           event.potId = actionStream.pot?.id;
           return event;
-        });
+        })
+        .switchMapCallback((value, Function(Withdraw) next, err) {
+          if (WithdrawManager.canChangeAmount(value)) {
+            firstPageAmount = true;
+            return Navigator.of(actionStream.context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AmountPage<Withdraw>(action: value, onDone: next)));
+          }
+          return next(value);
+        })
+        .switchMapCallback((value, Function(Withdraw) next, err) {
+          final route = MaterialPageRoute(
+              builder: (context) => WithdrawInfoPage(
+                  action: value,
+                  // pot: actionStream.pot,
+                  onDone: next,
+                  onError: err));
+          if (firstPageAmount) {
+            Navigator.push(
+              actionStream.context,
+              route,
+            );
+          } else {
+            Navigator.pushReplacement(actionStream.context, route);
+          }
+        })
+        .switchMapCallback((value, Function(Receiver) next, err) =>
+            Navigator.pushReplacement(
+                actionStream.context,
+                PageRouteBuilder(
+                    transitionDuration: const Duration(seconds: 0),
+                    pageBuilder: (context, animation1, animation2) =>
+                        WithdrawExecutePage(
+                            action: value, onDone: next, onError: err))))
+        .doOnData((value) => Navigator.pushAndRemoveUntil(
+            actionStream.context,
+            MaterialPageRoute(
+                builder: (context) => ReceiverPage(entity: value)),
+            (route) => route.isFirst));
+    ;
   }
 
 //   handleUnknown(BuildContext context) {

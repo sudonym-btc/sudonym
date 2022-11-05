@@ -1,5 +1,5 @@
-import { scaffoldGroup } from './mock/scaffold-group';
 import { TransactionService } from 'module/transaction/transaction.service';
+import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('CRUD', (scaffold) => {
 	it('should include scope single', async () => {

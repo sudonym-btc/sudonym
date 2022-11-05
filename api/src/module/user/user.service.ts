@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { PotService } from 'module/pot/pot.service';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { RequestType } from 'helper/parse-request.decorator';
+import { generateUsername } from 'unique-username-generator';
 import { BaseService } from '../base.service';
 import { User } from './user.model';
-import { PotService } from 'module/pot/pot.service';
-import { generateUsername } from 'unique-username-generator';
 @Injectable()
 export class UserService extends BaseService(User) {
 	@Inject(PotService) potService: PotService;

@@ -10,6 +10,8 @@ export class Receiver extends BaseClass {
 		public amountCurrency: string,
 		public data: string,
 		public lnurlId: string | null,
+		public description: string | null,
+		public payerData: any | null,
 		public received: number | null,
 		public createdAt: Date
 	) {
@@ -26,6 +28,8 @@ export class Receiver extends BaseClass {
 			json['amountCurrency'],
 			json['data'],
 			json['lnurlId'],
+			json['description'],
+			json['payerData'],
 			json['received'],
 			json['createdAt']
 		);
@@ -41,6 +45,8 @@ export class Receiver extends BaseClass {
 			amountCurrency: this.amountCurrency,
 			data: this.data,
 			lnurlId: this.lnurlId,
+			description: this.description,
+			payerData: this.payerData,
 			received: this.received,
 			createdAt: this.createdAt,
 		};

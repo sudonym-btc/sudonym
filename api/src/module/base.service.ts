@@ -1,16 +1,14 @@
 import { Inject, NotFoundException } from '@nestjs/common';
+import { Event } from '@sudonym/models';
+import { sequelizeCls } from 'database/database.providers';
+import { FindOptions, Op, UniqueConstraintError } from 'sequelize';
 import {
 	Constructor,
 	RecursivePartial,
 } from 'sequelize-typescript/dist/shared/types';
-import { EventsService, TriggeredEvent } from './events/events.service';
-import { Event } from '@sudonym/models';
 import { Callback } from '../helper/callback';
-import { FindOptions, Op, UniqueConstraintError } from 'sequelize';
-import { RequestType } from 'helper/parse-request.decorator';
 import { BaseModel } from './base.model';
-import { Subject } from 'rxjs';
-import { sequelizeCls } from 'database/database.providers';
+import { EventsService, TriggeredEvent } from './events/events.service';
 
 type ModelType<T> = Constructor<T> & typeof BaseModel;
 

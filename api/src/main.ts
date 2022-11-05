@@ -1,10 +1,10 @@
+import { LogLevel } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { downloadFiles } from './helper/config-loader';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { applyGlobals } from 'app.globals';
 import { getConfig } from 'config/config';
-import { LogLevel } from '@nestjs/common';
+import { AppModule } from './app.module';
+import { downloadFiles } from './helper/config-loader';
 
 async function bootstrap() {
 	await downloadFiles();

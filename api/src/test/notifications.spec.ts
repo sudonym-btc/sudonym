@@ -1,8 +1,8 @@
-import { scaffoldGroup } from './mock/scaffold-group';
 import { TransactionService } from 'module/transaction/transaction.service';
-import waitForExpect from 'wait-for-expect';
-import { FirebaseNotificationService } from 'service/firebase-notification/firebase-notification.service';
 import { UserDevice } from 'module/user-device/user-device.model';
+import { FirebaseNotificationService } from 'service/firebase-notification/firebase-notification.service';
+import waitForExpect from 'wait-for-expect';
+import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Notifications', (scaffold) => {
 	it('should send success notification', async () => {

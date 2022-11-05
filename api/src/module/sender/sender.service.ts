@@ -1,13 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LnUrlService } from '../lightning/lnurl/lnurl.service';
+import { MSATOSHIS } from '@sudonym/models';
+import { Config } from 'config/config';
 import { BaseService } from '../base.service';
 import { CurrencyService } from '../currency/currency.service';
+import { LnUrlService } from '../lightning/lnurl/lnurl.service';
 import { Sender } from './sender.model';
-import { RequestType } from 'helper/parse-request.decorator';
-import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { MSATOSHIS } from '@sudonym/models';
-import * as lnurl from 'lnurl';
-import { Config, getConfig } from 'config/config';
 
 @Injectable()
 export class SenderService extends BaseService(Sender) {

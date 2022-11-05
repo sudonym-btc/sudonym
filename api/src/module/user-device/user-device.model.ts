@@ -1,12 +1,5 @@
-import {
-	Table,
-	Column,
-	Model,
-	HasMany,
-	PrimaryKey,
-	AutoIncrement,
-} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
+import { Column, Table } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 
 @Table

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BaseService } from '../base.service';
 import { ContactAddress } from './contact-address.model';
 

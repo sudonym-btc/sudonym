@@ -1,13 +1,9 @@
-import * as WebSocket from 'ws';
-import {
-	WebSocketAdapter,
-	INestApplicationContext,
-	Inject,
-} from '@nestjs/common';
+import { INestApplicationContext, WebSocketAdapter } from '@nestjs/common';
 import { MessageMappingProperties } from '@nestjs/websockets';
-import { Observable, fromEvent, EMPTY } from 'rxjs';
-import { mergeMap, filter } from 'rxjs/operators';
 import { Config } from 'config/config';
+import { EMPTY, fromEvent, Observable } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
+import * as WebSocket from 'ws';
 
 export class WsAdapter implements WebSocketAdapter {
 	constructor(private app: INestApplicationContext) {}

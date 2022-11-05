@@ -1,18 +1,16 @@
-import { INestApplication, LogLevel } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { applyGlobals } from 'app.globals';
+import { ActionService } from 'module/action/action.service';
+import { AddressParser } from 'module/action/address-parser/address-parser';
 import { Pot } from 'module/pot/pot.model';
+import { Receiver } from 'module/receiver/receiver.model';
+import { FIREBASE_ADMIN } from 'service/firebase-admin/firebase-admin';
+import { FirebaseNotificationService } from 'service/firebase-notification/firebase-notification.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { LightningEvents } from 'service/transaction-listener/lightning-events';
 import { AppModule } from '../../app.module';
 import { User } from '../../module/user/user.model';
-import { createUsers } from './user';
-import { createPots } from './pot';
-import { Receiver } from 'module/receiver/receiver.model';
-import { FIREBASE_ADMIN } from 'service/firebase-admin/firebase-admin';
-import { AddressParser } from 'module/action/address-parser/address-parser';
-import { ActionService } from 'module/action/action.service';
-import { FirebaseNotificationService } from 'service/firebase-notification/firebase-notification.service';
-import { applyGlobals } from 'app.globals';
 import {
 	MockActionService,
 	MockAddressParser,
@@ -21,6 +19,8 @@ import {
 	MockLightningEvents,
 	MockLightningNodeService,
 } from './classes';
+import { createPots } from './pot';
+import { createUsers } from './user';
 
 export type mockScaffold = {
 	app: INestApplication;

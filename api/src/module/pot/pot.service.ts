@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { context } from 'helper/context-request';
+import { PotUser } from 'module/pot-user/pot-user.model';
+import { Sequelize } from 'sequelize';
 import { BaseService } from '../base.service';
 import { Pot } from './pot.model';
-import { Op, Sequelize } from 'sequelize';
-import { PotUser } from 'module/pot-user/pot-user.model';
-import { context } from 'helper/context-request';
 
 @Injectable()
 export class PotService extends BaseService(Pot) {

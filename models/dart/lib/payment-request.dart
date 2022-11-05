@@ -5,16 +5,24 @@ class PaymentRequest {
   dynamic /* num | null */ maxSendable;
   dynamic /* num | null */ minSendable;
   dynamic /* String | null */ metadata;
+  dynamic /* dynamic | null */ payerData;
   PaymentRequest(
       [this.tag = "payRequest",
       this.domain,
       this.callback,
       this.maxSendable,
       this.minSendable,
-      this.metadata]) {}
+      this.metadata,
+      this.payerData]) {}
   static PaymentRequest fromJson(Map<String, dynamic> json) {
-    return new PaymentRequest(json["tag"], json["domain"], json["callback"],
-        json["maxSendable"], json["minSendable"], json["metadata"]);
+    return new PaymentRequest(
+        json["tag"],
+        json["domain"],
+        json["callback"],
+        json["maxSendable"],
+        json["minSendable"],
+        json["metadata"],
+        json["payerData"]);
   }
 
   dynamic toJson() {
@@ -24,7 +32,8 @@ class PaymentRequest {
       "callback": this.callback,
       "maxSendable": this.maxSendable,
       "minSendable": this.minSendable,
-      "metadata": this.metadata
+      "metadata": this.metadata,
+      "payerData": this.payerData
     };
   }
 }

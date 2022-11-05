@@ -20,6 +20,7 @@ class Transaction extends BaseClass {
   dynamic /* String | null */ description;
   dynamic /* num | null */ transactionId;
   num amount;
+  num totalAmount;
   dynamic /* bool | null */ status;
   dynamic /* String | null */ errorMessage;
   String currencyCode;
@@ -42,6 +43,7 @@ class Transaction extends BaseClass {
       this.description,
       this.transactionId,
       this.amount,
+      this.totalAmount,
       this.status,
       this.errorMessage,
       this.currencyCode,
@@ -70,6 +72,7 @@ class Transaction extends BaseClass {
         json["description"],
         json["transactionId"],
         json["amount"],
+        json["totalAmount"],
         json["status"],
         json["errorMessage"],
         json["currencyCode"],
@@ -95,6 +98,7 @@ class Transaction extends BaseClass {
       "description": this.description,
       "transactionId": this.transactionId,
       "amount": this.amount,
+      "totalAmount": this.amount,
       "status": this.status,
       "errorMessage": this.errorMessage,
       "currencyCode": this.currencyCode,

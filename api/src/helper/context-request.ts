@@ -1,5 +1,5 @@
 import * as cls from 'cls-hooked';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthService } from 'module/auth/auth.service';
 
 export const context = cls.createNamespace('context');

@@ -5,7 +5,7 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { Event, User } from '@sudonym/models';
+import { Event } from '@sudonym/models';
 import { getConfig } from 'config/config';
 import { AuthService } from 'module/auth/auth.service';
 import { EventsService } from './events.service';

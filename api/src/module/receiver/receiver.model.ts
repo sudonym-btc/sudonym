@@ -1,20 +1,3 @@
-import {
-	Table,
-	Column,
-	Model,
-	CreatedAt,
-	PrimaryKey,
-	DataType,
-	AutoIncrement,
-	Default,
-	ForeignKey,
-	AllowNull,
-	IsNumeric,
-	IsIn,
-	IsInt,
-	BelongsTo,
-	Validate,
-} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import {
 	ADDRESS_TYPES,
@@ -22,10 +5,25 @@ import {
 	CurrencyCodes,
 	TAddressType,
 } from '@sudonym/models';
-import { BaseModel } from '../base.model';
-import { Pot } from 'module/pot/pot.model';
 import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
+import { Pot } from 'module/pot/pot.model';
+import {
+	AllowNull,
+	AutoIncrement,
+	BelongsTo,
+	Column,
+	CreatedAt,
+	DataType,
+	Default,
+	ForeignKey,
+	IsIn,
+	IsInt,
+	PrimaryKey,
+	Table,
+	Validate,
+} from 'sequelize-typescript';
+import { BaseModel } from '../base.model';
 
 @Table({
 	scopes: Receiver.scopes,
@@ -54,6 +52,12 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@ForeignKey(() => LnUrl)
 	@Column
 	lnurlId: string;
+
+	@Column(DataType.TEXT('medium')) // Must be enough data to hold payerData and metadata image base 64, to be hashed into bolt11 description
+	description: string;
+
+	@Column(DataType.JSON)
+	payerData: any;
 
 	@Column(DataType.STRING(1024))
 	data: string;

@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Bolt11Received } from '@sudonym/models';
 import { Config, getConfig } from 'config/config';
 import * as fs from 'fs';
-import * as WebSocket from 'ws';
 import { Subject } from 'rxjs';
+import * as WebSocket from 'ws';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
-import { Bolt11Received } from '@sudonym/models';
 
 @Injectable()
 export class LightningEvents {

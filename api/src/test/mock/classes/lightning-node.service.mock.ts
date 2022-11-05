@@ -1,6 +1,6 @@
-import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import * as bolt11 from 'bolt11';
 import { randomBytes } from 'crypto';
+import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 
 export class MockLightningNodeService extends LightningNodeService {
 	pays = [];

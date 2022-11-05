@@ -103,7 +103,7 @@ export class ActionService {
 								amount: mSatoshiAmount,
 								comment: action.comment,
 								payerData: {
-									// "name": string, // free form string
+									name: 'Sudonym wallet', // free form string
 									// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
 									// "auth": {
 									//   "key": string, // hex(<linkingKey>)

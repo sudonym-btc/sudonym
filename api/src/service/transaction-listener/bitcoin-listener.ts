@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { TransactionService } from 'module/transaction/transaction.service';
-import { TransactionListener } from './transaction-listener.interface';
-import { BitcoinEvents } from './bitcoin-events';
-import { LightningNodeService } from '../lightning-node/lightning-node.service';
 import { SATOSHIS } from '@sudonym/models';
 import { CurrencyService } from 'module/currency/currency.service';
+import { TransactionService } from 'module/transaction/transaction.service';
+import { LightningNodeService } from '../lightning-node/lightning-node.service';
+import { BitcoinEvents } from './bitcoin-events';
+import { TransactionListener } from './transaction-listener.interface';
 
 @Injectable()
 export class BitcoinListener extends TransactionListener {
@@ -63,10 +63,14 @@ export class BitcoinListener extends TransactionListener {
 									transaction.amount
 								);
 
-							await this.lightningNodeService.withdrawOnChain({
-								satoshis: btcAmount.amount * SATOSHIS,
-								address: transaction.originalAddress,
-							});
+							console.log(
+								await this.lightningNodeService.withdrawOnChain(
+									{
+										satoshis: btcAmount.amount * SATOSHIS,
+										address: transaction.originalAddress,
+									}
+								)
+							);
 						} catch (e) {
 							await this.transactionService.update(
 								transaction.id,

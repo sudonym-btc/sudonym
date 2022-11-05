@@ -1,13 +1,11 @@
-import { scaffoldGroup } from '../mock/scaffold-group';
-import { LightningEvents } from 'service/transaction-listener/lightning-events';
-import { TransactionService } from 'module/transaction/transaction.service';
-import { transaction as bolt11Mock } from '@sudonym/models/src/mock/bolt11.mock';
-import { transaction as onchainMock } from '@sudonym/models/src/mock/onchain.mock';
-import { firstValueFrom } from 'rxjs';
-import { ReceiverService } from 'module/receiver/receiver.service';
 import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
+import { transaction as bolt11Mock } from '@sudonym/models/src/mock/bolt11.mock';
 import { PotService } from 'module/pot/pot.service';
+import { TransactionService } from 'module/transaction/transaction.service';
+import { firstValueFrom } from 'rxjs';
 import { BitcoinEvents } from 'service/transaction-listener/bitcoin-events';
+import { LightningEvents } from 'service/transaction-listener/lightning-events';
+import { scaffoldGroup } from '../mock/scaffold-group';
 
 scaffoldGroup('Receive', (scaffold) => {
 	describe('Invoice', () => {
@@ -25,13 +23,15 @@ scaffoldGroup('Receive', (scaffold) => {
 			await Promise.all([
 				firstValueFrom(
 					scaffold.app.get(TransactionService).onAfterCreated
-				).then((x) => {
-					expect(x.status).toBe(true);
-					expect(x.currencyCode).toBe('BTC');
-					expect(x.amount).toBe(msatoshi / MSATOSHIS);
-					expect(x.potId).toBe(scaffold.entities.pot[0].id);
-					expect(x.outgoing).toBe(false);
-				}),
+				).then((x) =>
+					expect(x).toMatchObject({
+						status: true,
+						currencyCode: 'BTC',
+						amount: msatoshi / MSATOSHIS,
+						potId: scaffold.entities.pot[0].id,
+						outgoing: false,
+					})
+				),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
 				).then((x) => {

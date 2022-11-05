@@ -1,5 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { RequestType } from 'helper/parse-request.decorator';
+import { Controller } from '@nestjs/common';
 import { BaseController } from 'module/base.controller';
 import { LnUrl } from './lnurl.model';
 
@@ -9,9 +8,8 @@ import { LnUrlService } from './lnurl.service';
 export class LnUrlController extends BaseController({
 	service: LnUrlService,
 	model: LnUrl,
-}) {
-	@Get(':id')
-	async overwriteFindOne(@Param('id') id, req?: RequestType) {
-		return await this.service.serve(id);
-	}
-}
+	get: false,
+	create: false,
+	update: false,
+	list: false,
+}) {}

@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { Action, ActionRemoteResponse, IAddressParser } from '@sudonym/models';
 import { bech32 } from 'bech32';
 import {
@@ -62,6 +62,7 @@ export class AddressParser implements IAddressParser {
 				});
 			}
 		}
+		throw new HttpException('Invalid address', 400);
 	}
 
 	fetchOnChain(address) {

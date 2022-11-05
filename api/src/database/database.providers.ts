@@ -1,20 +1,20 @@
+import { Logger } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
+import { Config } from '../config/config';
+import { LnUrl } from '../module/lightning/lnurl/lnurl.model';
 import { PotUser } from '../module/pot-user/pot-user.model';
 import { Pot } from '../module/pot/pot.model';
 import { Receiver } from '../module/receiver/receiver.model';
-import { Config } from '../config/config';
-import { User } from '../module/user/user.model';
-import { Transaction } from '../module/transaction/transaction.model';
-import { Logger } from '@nestjs/common';
-import { LnUrl } from '../module/lightning/lnurl/lnurl.model';
-import { UserDevice } from '../module/user-device/user-device.model';
-import { Settlement } from '../module/settlement/settlement.model';
 import { SettlementTransaction } from '../module/settlement-transaction/settlement-transaction.model';
+import { Settlement } from '../module/settlement/settlement.model';
+import { Transaction } from '../module/transaction/transaction.model';
+import { UserDevice } from '../module/user-device/user-device.model';
+import { User } from '../module/user/user.model';
 
 import * as cls from 'cls-hooked';
+import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { Contact } from 'module/contact/contact.model';
-import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { Sender } from 'module/sender/sender.model';
 
 export const sequelizeCls = cls.createNamespace('sequelize');

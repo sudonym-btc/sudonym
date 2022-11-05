@@ -34,12 +34,6 @@ class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
   }
 
   StatusPage donePage(BuildContext context, action) {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => ReceiverPage(action)),
-        ModalRoute.withName('/'));
-
     return loadingPage(context);
   }
 
@@ -55,7 +49,10 @@ class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
   @override
   Widget build(BuildContext context) {
     return TaskBuilder(
-        future: () => WithdrawManager().execute(action),
+        future: () => WithdrawManager().execute(action).then((data) {
+              data.fold((l) => onError(l), (r) => onDone(r));
+              return data;
+            }),
         onSuccess: donePage,
         onError: errorPage);
   }

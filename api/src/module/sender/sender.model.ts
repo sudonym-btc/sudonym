@@ -1,25 +1,24 @@
-import {
-	Table,
-	Column,
-	Model,
-	CreatedAt,
-	PrimaryKey,
-	DataType,
-	AutoIncrement,
-	Default,
-	ForeignKey,
-	BeforeCreate,
-	BelongsTo,
-	HasOne,
-} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { ADDRESS_TYPES, CurrencyCode, TAddressType } from '@sudonym/models';
-import { BaseModel } from '../base.model';
-import { Pot } from 'module/pot/pot.model';
-import { LnUrl } from '../lightning/lnurl/lnurl.model';
-import { User } from '../user/user.model';
 import { context } from 'helper/context-request';
 import { BoltCard } from 'module/bolt-card/bolt-card.model';
+import { Pot } from 'module/pot/pot.model';
+import {
+	AutoIncrement,
+	BeforeCreate,
+	BelongsTo,
+	Column,
+	CreatedAt,
+	DataType,
+	Default,
+	ForeignKey,
+	HasOne,
+	PrimaryKey,
+	Table,
+} from 'sequelize-typescript';
+import { BaseModel } from '../base.model';
+import { LnUrl } from '../lightning/lnurl/lnurl.model';
+import { User } from '../user/user.model';
 
 @Table({
 	scopes: Sender.scopes,

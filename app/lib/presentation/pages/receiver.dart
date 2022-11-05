@@ -5,13 +5,13 @@ import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
 class ReceiverPage extends StatelessWidget {
-  final Receiver receiver;
-  const ReceiverPage(this.receiver, {Key? key}) : super(key: key);
+  final Receiver entity;
+  const ReceiverPage({required this.entity, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CubitWrapper<ReceiverCubit, ReceiverCubitState, Receiver>(
-        entity: receiver,
+        entity: entity,
         fetch: true,
         builder: (context, state) {
           if (state.entity == null) {

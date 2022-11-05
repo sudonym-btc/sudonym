@@ -1,18 +1,17 @@
+import * as Models from '@sudonym/models';
+import { Transaction } from 'module/transaction/transaction.model';
 import {
-	Table,
+	AllowNull,
+	AutoIncrement,
+	BelongsTo,
 	Column,
 	ForeignKey,
-	PrimaryKey,
-	AutoIncrement,
-	AllowNull,
-	BelongsTo,
-	HasOne,
 	HasMany,
+	PrimaryKey,
+	Table,
 } from 'sequelize-typescript';
-import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Contact } from '../contact/contact.model';
-import { Transaction } from 'module/transaction/transaction.model';
 
 @Table({
 	scopes: ContactAddress.scopes,

@@ -1,5 +1,3 @@
-import { EventsService } from 'module/events/events.service';
-import { TransactionService } from 'module/transaction/transaction.service';
 import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('CLS transactions', (scaffold) => {

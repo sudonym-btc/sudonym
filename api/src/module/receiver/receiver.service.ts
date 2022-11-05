@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MSATOSHIS, PaymentRequest } from '@sudonym/models';
+import { MSATOSHIS } from '@sudonym/models';
 import { Config } from 'config/config';
 import * as lnurl from 'lnurl';
 import { PotService } from 'module/pot/pot.service';
@@ -35,19 +35,19 @@ export class ReceiverService extends BaseService(Receiver) {
 
 			switch (params.type) {
 				case 'bolt11': {
-					let description = (params as any).description;
-					if (params.lnurlId) {
-						const tag = await this.lnUrlService.findOne(
-							params.lnurlId
-						);
-						description = (tag.params as PaymentRequest).metadata;
-					}
+					// let description = (params as any).description;
+					// if (params.lnurlId) {
+					// 	const tag = await this.lnUrlService.findOne(
+					// 		params.lnurlId
+					// 	);
+					// 	description = (tag.params as PaymentRequest).metadata;
+					// }
 					params.data = (
 						await this.lightningNodeService.createInvoice(
 							Math.round(amountInBTC * MSATOSHIS),
 							undefined,
-							description,
-							!!description
+							params.description,
+							!!params.description
 						)
 					).bolt11;
 					break;
@@ -64,7 +64,7 @@ export class ReceiverService extends BaseService(Receiver) {
 						Math.floor(amountInBTC * MSATOSHIS)
 					);
 					params.data = lnurl.encode(
-						this.config.selfUrl + '/lnurl/' + tag.id
+						this.config.selfUrl + '/lnurl/serve/' + tag.id
 					);
 					params.lnurlId = tag.id;
 					break;

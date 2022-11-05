@@ -5,7 +5,21 @@ export class PaymentRequest {
 		public callback: string | null, // The URL from LN SERVICE which will accept the pay request parameters
 		public maxSendable: number | null, // Max millisatoshi amount LN SERVICE is willing to receive
 		public minSendable: number | null, // Min millisatoshi amount LN SERVICE is willing to receive, can not be less than 1 or more than `maxSendable`
-		public metadata: string | null // Metadata json which must be presented as raw string here, this is required to pass signature verification at a later step
+		public metadata: string | null, // Metadata json which must be presented as raw string here, this is required to pass signature verification at a later step
+		public payerData: {
+			name?: {
+				mandatory: boolean;
+			};
+			pubkey?: {
+				mandatory: boolean;
+			};
+			identifier?: {
+				mandatory: boolean;
+			};
+			email?: {
+				mandatory: boolean;
+			};
+		} | null // When someone pays they can send the following fields to identify the payer
 	) {}
 
 	static fromJson(json: Object): PaymentRequest {
@@ -15,7 +29,8 @@ export class PaymentRequest {
 			json['callback'],
 			json['maxSendable'],
 			json['minSendable'],
-			json['metadata']
+			json['metadata'],
+			json['payerData']
 		);
 	}
 	toJson(): any {
@@ -26,6 +41,7 @@ export class PaymentRequest {
 			maxSendable: this.maxSendable,
 			minSendable: this.minSendable,
 			metadata: this.metadata,
+			payerData: this.payerData,
 		};
 	}
 }

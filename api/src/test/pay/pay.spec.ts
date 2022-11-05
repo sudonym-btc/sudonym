@@ -1,11 +1,10 @@
+import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
+import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { firstValueFrom } from 'rxjs';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
-import { scaffoldGroup } from '../mock/scaffold-group';
 import waitForExpect from 'wait-for-expect';
-import { PotService } from 'module/pot/pot.service';
-import { transaction } from '@sudonym/models/src/mock/bolt11.mock';
-import { SATOSHIS } from '@sudonym/models';
+import { scaffoldGroup } from '../mock/scaffold-group';
 
 scaffoldGroup('Payment', (scaffold) => {
 	describe('Bolt11', () => {
@@ -55,8 +54,8 @@ scaffoldGroup('Payment', (scaffold) => {
 						created_at: Date.now().valueOf() / 1000,
 						parts: 1,
 						partid: 1,
-						amount_msat: 123,
-						amount_sent_msat: 123,
+						amount_msat: 1 * MSATOSHIS,
+						amount_sent_msat: 1 * MSATOSHIS,
 						status: 'failed',
 						destination: 'randomnode',
 					};

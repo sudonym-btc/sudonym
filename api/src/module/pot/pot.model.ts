@@ -1,30 +1,22 @@
-import {
-	Table,
-	Column,
-	Model,
-	HasMany,
-	PrimaryKey,
-	AutoIncrement,
-	Sequelize,
-	BeforeCreate,
-	AfterCreate,
-	Default,
-	NotNull,
-	AllowNull,
-	DataType,
-	Validate,
-} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
-import { PotUser } from '../pot-user/pot-user.model';
-import { RequestType } from 'helper/parse-request.decorator';
-import { BaseModel } from '../base.model';
 import { context } from 'helper/context-request';
-import { User } from 'module/user/user.model';
-import { Transaction } from 'module/transaction/transaction.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
-import { ValidationError, ValidationErrorItem } from 'sequelize';
+import { Transaction } from 'module/transaction/transaction.model';
+import {
+	AfterCreate,
+	AllowNull,
+	AutoIncrement,
+	Column,
+	DataType,
+	Default,
+	HasMany,
+	PrimaryKey,
+	Table,
+} from 'sequelize-typescript';
+import { BaseModel } from '../base.model';
+import { PotUser } from '../pot-user/pot-user.model';
 const { Op } = require('sequelize');
 
 @Table({

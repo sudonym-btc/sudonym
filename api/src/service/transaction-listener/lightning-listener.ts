@@ -184,6 +184,9 @@ export class LightningListener extends TransactionListener {
 					await this.transactionService.update(
 						transactions.data[0].id,
 						{
+							totalAmount: (e.data as any).amount_sent_msat
+								? (e.data as any).amount_sent_msat / MSATOSHIS
+								: null,
 							status,
 							...(!status && (e.data as any).failcodename
 								? {

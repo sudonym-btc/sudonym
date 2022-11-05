@@ -1,19 +1,18 @@
+import * as Models from '@sudonym/models';
+import { authUserIdGetter, context } from 'helper/context-request';
 import {
-	Table,
-	Column,
-	PrimaryKey,
+	AllowNull,
 	AutoIncrement,
+	BeforeValidate,
+	Column,
 	ForeignKey,
 	HasMany,
-	BeforeCreate,
-	AllowNull,
-	BeforeValidate,
+	PrimaryKey,
+	Table,
 } from 'sequelize-typescript';
-import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
-import { User } from '../user/user.model';
 import { ContactAddress } from '../contact-address/contact-address.model';
-import { authUserIdGetter, context } from 'helper/context-request';
+import { User } from '../user/user.model';
 
 @Table({
 	scopes: Contact.scopes,

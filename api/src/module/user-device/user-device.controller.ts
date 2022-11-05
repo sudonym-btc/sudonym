@@ -1,4 +1,4 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { BaseController } from '../base.controller';
 import { UserDevice } from './user-device.model';
 import { UserDeviceService } from './user-device.service';

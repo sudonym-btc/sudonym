@@ -70,7 +70,10 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
   @override
   Widget build(BuildContext context) {
     return TaskBuilder(
-        future: () => WithdrawManager().info(action),
+        future: () => WithdrawManager().info(action).then((data) {
+              data.fold((l) => onError(l), (r) => onDone(r));
+              return data;
+            }),
         onSuccess: donePage,
         onError: errorPage);
   }

@@ -1,17 +1,15 @@
+import * as Models from '@sudonym/models';
+import { User } from 'module/user/user.model';
 import {
-	Table,
-	Column,
-	Model,
-	HasMany,
-	PrimaryKey,
 	AutoIncrement,
 	BelongsTo,
+	Column,
 	ForeignKey,
+	PrimaryKey,
+	Table,
 } from 'sequelize-typescript';
-import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Pot } from '../pot/pot.model';
-import { User } from 'module/user/user.model';
 
 @Table({
 	scopes: PotUser.scopes,

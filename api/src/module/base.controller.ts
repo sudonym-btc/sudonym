@@ -25,14 +25,16 @@ export interface BaseControllerOptions<
 	service: Constructor<TService>;
 	model?: Constructor<TModel>;
 	auth?: boolean;
-	create?: Partial<
-		EndpointOptions & {
-			update: true;
-		}
-	>;
-	update?: Partial<EndpointOptions>;
-	list?: Partial<EndpointOptions>;
-	get?: Partial<EndpointOptions>;
+	create?:
+		| false
+		| Partial<
+				EndpointOptions & {
+					update: true;
+				}
+		  >;
+	update?: false | Partial<EndpointOptions>;
+	list?: false | Partial<EndpointOptions>;
+	get?: false | Partial<EndpointOptions>;
 }
 interface EndpointOptions {
 	model: any;
@@ -77,7 +79,7 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 		@UseGuards(...getGuards(options.create))
 		@Post('')
 		create(@Body() data) {
-			if (options.create?.update) {
+			if (options.create && options.create?.update) {
 				return this.service.createOrUpdate(data);
 			}
 			return this.service.create(data);

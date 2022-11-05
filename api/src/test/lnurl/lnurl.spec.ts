@@ -1,12 +1,11 @@
 import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
+import * as bolt11 from 'bolt11';
 import { ActionService } from 'module/action/action.service';
 import { LightningAddressController } from 'module/lightning/lnurl/lightning-address/lightning-address.controller';
 import { LnUrlHandlerService } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
-import { LnUrlService } from 'module/lightning/lnurl/lnurl.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { SenderService } from 'module/sender/sender.service';
 import { scaffoldGroup } from '../mock/scaffold-group';
-import * as bolt11 from 'bolt11';
 
 scaffoldGroup('LnUrl', (scaffold) => {
 	describe('do', () => {
@@ -39,7 +38,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 				});
 
 				const tag = (await scaffold.app
-					.get(LnUrlService)
+					.get(LnUrlHandlerService)
 					.serve(sender.lnurlId)) as WithdrawRequest;
 
 				expect(tag.minWithdrawable).toBe(sender.limitMin * MSATOSHIS);
@@ -59,7 +58,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 					});
 
 				const tag = (await scaffold.app
-					.get(LnUrlService)
+					.get(LnUrlHandlerService)
 					.serve(receiver.lnurlId)) as PaymentRequest;
 				expect(tag.minSendable).toBe(receiver.amount * MSATOSHIS);
 			});
@@ -78,6 +77,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 					.handle(receiver.lnurlId, {
 						amount: 1000,
 					});
+				// todo: mock descrition hash
 
 				expect(bolt11.decode(tag.pr).millisatoshis).toBe('1000');
 			});

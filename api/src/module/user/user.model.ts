@@ -1,16 +1,14 @@
+import * as Models from '@sudonym/models';
+import { ValidationError, ValidationErrorItem } from 'sequelize';
 import {
-	Table,
 	Column,
-	Model,
 	HasMany,
 	PrimaryKey,
-	AutoIncrement,
+	Table,
 	Validate,
 } from 'sequelize-typescript';
-import * as Models from '@sudonym/models';
 import { BaseModel } from '../base.model';
 import { Sender } from '../sender/sender.model';
-import { ValidationError, ValidationErrorItem } from 'sequelize';
 
 @Table
 export class User extends BaseModel implements Models.User {

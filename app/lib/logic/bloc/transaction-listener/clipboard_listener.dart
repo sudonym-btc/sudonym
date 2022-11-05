@@ -10,6 +10,7 @@ class ClipboardListener extends TransactionListenerSubtype {
   Timer? clipboardTriggerTime;
 
   StreamController controller = StreamController();
+  StreamSubscription? sub;
 
   init() {
     // Only listen to clipboard constantly if doesn't trigger notification
@@ -18,7 +19,7 @@ class ClipboardListener extends TransactionListenerSubtype {
           (timer) => check().then((text) => controller.add(text)));
     }
 
-    controller.stream.distinct().listen((event) {
+    sub = controller.stream.distinct().listen((event) {
       streamController.add(event);
     });
   }
@@ -41,6 +42,9 @@ class ClipboardListener extends TransactionListenerSubtype {
 
   void dispose() {
     clipboardTriggerTime!.cancel();
+    if (sub != null) {
+      sub!.cancel();
+    }
   }
 }
 

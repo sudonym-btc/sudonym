@@ -1,28 +1,26 @@
-import {
-	Table,
-	Column,
-	CreatedAt,
-	PrimaryKey,
-	Default,
-	AutoIncrement,
-	AllowNull,
-	DataType,
-	ForeignKey,
-	Sequelize,
-	BelongsTo,
-} from 'sequelize-typescript';
 import * as Models from '@sudonym/models';
-import { BaseModel } from '../base.model';
-import { Receiver } from 'module/receiver/receiver.model';
-import { Sender } from 'module/sender/sender.model';
-import { Onchain } from './onchain.model';
-import { Invoice } from './invoice.model';
-import { User } from 'module/user/user.model';
-import { Pot } from 'module/pot/pot.model';
-import { PotUser } from 'module/pot-user/pot-user.model';
+import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { Contact } from 'module/contact/contact.model';
-import { BoltCard } from 'module/bolt-card/bolt-card.model';
+import { PotUser } from 'module/pot-user/pot-user.model';
+import { Pot } from 'module/pot/pot.model';
+import { Receiver } from 'module/receiver/receiver.model';
+import { Sender } from 'module/sender/sender.model';
+import {
+	AllowNull,
+	AutoIncrement,
+	BelongsTo,
+	Column,
+	CreatedAt,
+	DataType,
+	Default,
+	ForeignKey,
+	PrimaryKey,
+	Table,
+} from 'sequelize-typescript';
+import { BaseModel } from '../base.model';
+import { Invoice } from './invoice.model';
+import { Onchain } from './onchain.model';
 const { Op } = require('sequelize');
 
 @Table({
@@ -106,6 +104,10 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@AllowNull(false)
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
+
+	@AllowNull(true)
+	@Column(DataType.DOUBLE(21, 11))
+	totalAmount: number;
 
 	@AllowNull(false)
 	@Column

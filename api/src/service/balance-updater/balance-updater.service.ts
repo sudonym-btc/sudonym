@@ -1,8 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { BalanceLowError } from 'helper/errors';
+import { CurrencyService } from 'module/currency/currency.service';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { CurrencyService } from 'module/currency/currency.service';
 
 @Injectable()
 export class BalanceUpdaterService {
@@ -20,7 +19,7 @@ export class BalanceUpdaterService {
 				await this.currencyService.convert(
 					entity.currencyCode,
 					pot.currency,
-					entity.amount
+					entity.totalAmount || entity.amount
 				)
 			).amount;
 
@@ -68,7 +67,7 @@ export class BalanceUpdaterService {
 				await this.currencyService.convert(
 					entity.currencyCode,
 					pot.currency,
-					entity.amount
+					entity.totalAmount || entity.amount
 				)
 			).amount;
 
@@ -79,8 +78,10 @@ export class BalanceUpdaterService {
 						newSpendableBalance += amountInPotCurrency;
 						newBalance += amountInPotCurrency;
 					}
+					// If payment is incoming update balances
 				} else {
 					if (entity.status == true) {
+						console.log(amountInPotCurrency);
 						newSpendableBalance += amountInPotCurrency;
 					} else {
 						newBalance -= amountInPotCurrency;

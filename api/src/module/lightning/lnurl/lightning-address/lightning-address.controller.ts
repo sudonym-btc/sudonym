@@ -1,20 +1,10 @@
-import {
-	Controller,
-	Get,
-	HttpException,
-	Inject,
-	Param,
-	Query,
-} from '@nestjs/common';
-import { Op, Sequelize } from 'sequelize';
-import { PotUser } from 'module/pot-user/pot-user.model';
-import { Pot } from 'module/pot/pot.model';
+import { Controller, Get, HttpException, Inject, Param } from '@nestjs/common';
 import { User } from 'module/user/user.model';
 
-import { LnUrlService } from '../lnurl.service';
-import { ReceiverService } from 'module/receiver/receiver.service';
+import { SATOSHIS } from '@sudonym/models';
 import { PotService } from 'module/pot/pot.service';
-import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
+import { ReceiverService } from 'module/receiver/receiver.service';
+import { LnUrlService } from '../lnurl.service';
 
 @Controller('')
 export class LightningAddressController {

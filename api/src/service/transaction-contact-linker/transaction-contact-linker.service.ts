@@ -1,10 +1,8 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { ContactAddressService } from 'module/contact-address/contact-address.service';
 import { ContactService } from 'module/contact/contact.service';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { UserService } from 'module/user/user.service';
 import { Op } from 'sequelize';
 
 @Injectable()

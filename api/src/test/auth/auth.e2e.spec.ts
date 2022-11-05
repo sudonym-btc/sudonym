@@ -1,4 +1,3 @@
-import * as request from 'supertest';
 import { scaffoldGroup } from '../mock/scaffold-group';
 
 scaffoldGroup('AuthController (e2e)', (scaffold) => {

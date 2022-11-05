@@ -1,4 +1,3 @@
-import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { scaffoldGroup } from '../mock/scaffold-group';
 

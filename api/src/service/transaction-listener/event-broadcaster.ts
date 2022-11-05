@@ -1,9 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { LightningEvents } from './lightning-events';
-import { Event, MSATOSHIS } from '@sudonym/models';
-import { TransactionService } from 'module/transaction/transaction.service';
+import { Event } from '@sudonym/models';
 import { EventsService, TriggeredEvent } from 'module/events/events.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
+import { TransactionService } from 'module/transaction/transaction.service';
 
 @Injectable()
 export class EventBroadcaster {

@@ -1,4 +1,4 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { Transaction } from '@sudonym/models';
 import { BaseController } from '../base.controller';
 import { TransactionService } from './transaction.service';

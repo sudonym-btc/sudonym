@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
+import { MSATOSHIS, WithdrawRequest } from '@sudonym/models';
 import { Config } from 'config/config';
 import * as crypto from 'crypto';
 import { BaseService } from 'module/base.service';
@@ -18,9 +18,6 @@ export class LnUrlService extends BaseService(LnUrl) {
 				this.config.selfUrl + '/lnurl/handle/' + params.id;
 		});
 	}
-	async serve(id: string): Promise<WithdrawRequest | PaymentRequest> {
-		return (await this.findOne(id)).params as any;
-	}
 
 	async createPayRequest(mSatoshiAmount?: number) {
 		const tag = await this.create({
@@ -32,19 +29,11 @@ export class LnUrlService extends BaseService(LnUrl) {
 				metadata: JSON.stringify([
 					[
 						'text/plain', // mandatory,
-						'Short description sudo', // short description displayed when paying and in transaction log
-					],
-					[
-						'text/long-desc', // optional
-						'Long description sudo', // longer description of the payment, MAY contain newlines
+						'sudonym payment', // short description displayed when paying and in transaction log
 					],
 					// [
-					// 	"image/png;base64",
-					// 	string // base64 string, optional 512x512px PNG thumbnail which will represent this lnurl in a list or grid. Up to 136536 characters (100Kb of image data in base-64 encoding)
-					// ],
-					// [
-					// 	"image/jpeg;base64", // optional
-					// 	string // base64 string, 512x512px JPG thumbnail which will represent this lnurl in a list or grid. Up to 136536 characters (100Kb of image data in base-64 encoding)
+					// 	'text/long-desc', // optional
+					// 	'Long description sudo', // longer description of the payment, MAY contain newlines
 					// ],
 				]),
 			},
