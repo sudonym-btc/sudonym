@@ -10,6 +10,7 @@ class Receiver extends BaseClass {
   String data;
   dynamic /* String | null */ lnurlId;
   dynamic /* String | null */ description;
+  dynamic /* dynamic | null */ payerData;
   dynamic /* num | null */ received;
   DateTime createdAt;
   Receiver(
@@ -22,6 +23,7 @@ class Receiver extends BaseClass {
       this.data,
       this.lnurlId,
       this.description,
+      this.payerData,
       this.received,
       this.createdAt)
       : super() {
@@ -38,6 +40,7 @@ class Receiver extends BaseClass {
         json["data"],
         json["lnurlId"],
         json["description"],
+        json["payerData"],
         json["received"],
         DateTime.parse(json["createdAt"]));
   }
@@ -53,6 +56,7 @@ class Receiver extends BaseClass {
       "data": this.data,
       "lnurlId": this.lnurlId,
       "description": this.description,
+      "payerData": this.payerData,
       "received": this.received,
       "createdAt": this.createdAt
     };

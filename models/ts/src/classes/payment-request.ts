@@ -6,6 +6,7 @@ export class PaymentRequest {
 		public maxSendable: number | null, // Max millisatoshi amount LN SERVICE is willing to receive
 		public minSendable: number | null, // Min millisatoshi amount LN SERVICE is willing to receive, can not be less than 1 or more than `maxSendable`
 		public metadata: string | null, // Metadata json which must be presented as raw string here, this is required to pass signature verification at a later step
+		public commentAllowed: boolean | null, // Metadata json which must be presented as raw string here, this is required to pass signature verification at a later step
 		public payerData: {
 			name?: {
 				mandatory: boolean;
@@ -30,6 +31,7 @@ export class PaymentRequest {
 			json['maxSendable'],
 			json['minSendable'],
 			json['metadata'],
+			json['commentAllowed'],
 			json['payerData']
 		);
 	}
@@ -41,6 +43,7 @@ export class PaymentRequest {
 			maxSendable: this.maxSendable,
 			minSendable: this.minSendable,
 			metadata: this.metadata,
+			commentAllowed: this.commentAllowed,
 			payerData: this.payerData,
 		};
 	}

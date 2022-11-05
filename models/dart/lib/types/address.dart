@@ -3,5 +3,6 @@ final ADDRESS_TYPES = [
   "lightningaddress",
   "bolt11",
   "bolt12",
-  "onchain"
+  "onchain",
+  "pot"
 ];

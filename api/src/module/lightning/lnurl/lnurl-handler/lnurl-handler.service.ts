@@ -26,6 +26,7 @@ export class LnUrlHandlerService {
 		switch (tag.tag) {
 			case 'payRequest': {
 				// JSON.parse(urldecode(query.payerdata))
+				// JSON.parse(urldecode(query.comment))
 
 				const payerData = query.payerdata
 					? decodeURIComponent(query.payerdata)
@@ -57,6 +58,17 @@ export class LnUrlHandlerService {
 					// disposable: false,
 					pr: receiver.data,
 					routes: [],
+					// successAction: [
+					// {
+					// 	"tag": "message",
+					// 	"message": "Thank you for using bike-over-ln co! Your rental bike is unlocked now" // Up to 144 characters
+					//   }
+					//   {
+					// 	 "tag": "url",
+					// 	 "description": "Thank you for your purchase. Here is your order details", // Up to 144 characters
+					// 	 "url": "https://www.ln-service.com/order/<orderId>" // url domain must be the same as `callback` domain at step 3
+					//   }
+					// ]
 				};
 			}
 			case 'withdrawRequest': {

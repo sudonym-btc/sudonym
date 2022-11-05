@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { BalanceLowError } from 'helper/errors';
 import { CurrencyService } from 'module/currency/currency.service';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
@@ -27,9 +28,8 @@ export class BalanceUpdaterService {
 				newBalance -= amountInPotCurrency;
 				newSpendableBalance -= amountInPotCurrency;
 
-				if (newBalance < 0) {
-					// throw new BalanceLowError();
-					// todo: uncommed
+				if (newBalance < 0 || newSpendableBalance < 0) {
+					throw new BalanceLowError();
 				}
 			} else {
 				newBalance += amountInPotCurrency;

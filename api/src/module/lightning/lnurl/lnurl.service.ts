@@ -26,6 +26,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				domain: this.config.selfUrl,
 				minSendable: Math.max(mSatoshiAmount, 1000),
 				maxSendable: 0.01 * MSATOSHIS,
+				commentAllowed: true,
 				metadata: JSON.stringify([
 					[
 						'text/plain', // mandatory,
