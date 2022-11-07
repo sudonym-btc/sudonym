@@ -4,11 +4,13 @@ import { User } from 'module/user/user.model';
 import { SATOSHIS } from '@sudonym/models';
 import { PotService } from 'module/pot/pot.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
+import { LnUrlHandlerService } from '../lnurl-handler/lnurl-handler.service';
 import { LnUrlService } from '../lnurl.service';
 
 @Controller('')
 export class LightningAddressController {
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
+	@Inject(LnUrlHandlerService) lnUrlHandlerService: LnUrlHandlerService;
 	@Inject(PotService) potService: PotService;
 	@Inject(ReceiverService) receiverService: ReceiverService;
 
@@ -48,6 +50,6 @@ export class LightningAddressController {
 			amount: 1 / SATOSHIS,
 		});
 
-		return (await this.lnUrlService.findOne(receiver.lnurlId)).params;
+		return await this.lnUrlHandlerService.serve(receiver.lnurlId);
 	}
 }

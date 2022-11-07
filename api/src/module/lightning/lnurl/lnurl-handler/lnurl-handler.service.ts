@@ -159,6 +159,12 @@ export class LnUrlHandlerService {
 			(tag.params as PaymentRequest).metadata = JSON.stringify(
 				(tag.params as PaymentRequest).metadata
 			);
+			(tag.params as PaymentRequest).minSendable = Math.max(
+				(tag.params as PaymentRequest).minSendable,
+				1000
+			);
+			(tag.params as PaymentRequest).maxSendable = 0.01 * MSATOSHIS;
+			(tag.params as PaymentRequest).commentAllowed = 200;
 		} else if (tag.params.tag == 'withdrawRequest') {
 			// "payLink": string
 			(tag.params as WithdrawRequest).defaultDescription =
