@@ -26,7 +26,7 @@ export class SenderService extends BaseService(Sender) {
 			params.amount = Number(amountInBTC);
 
 			switch (params.type) {
-				case 'lnurl':
+				case 'lnurl': {
 					const tag = await this.lnUrlService.createWithdrawRequest({
 						minWithdrawable: params.limitMin
 							? params.limitMin * MSATOSHIS
@@ -36,9 +36,11 @@ export class SenderService extends BaseService(Sender) {
 							: 99999999,
 					});
 					// todo: replace with max account balance
-					params.data = this.config.selfUrl + '/lnurl/' + tag.id;
+					params.data =
+						this.config.selfUrl + '/lnurl/serve/' + tag.id;
 					params.lnurlId = tag.id;
 					break;
+				}
 			}
 		});
 	}
