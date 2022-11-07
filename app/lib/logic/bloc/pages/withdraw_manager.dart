@@ -11,12 +11,12 @@ class WithdrawManager extends ActionManager<Withdraw> {
   }
 
   @override
-  info(Withdraw action) {
+  Future<Either<Object, Withdraw>> info(Withdraw action) {
     return Task(() => actionRepository.getWithdrawInfo(action)).attempt().run();
   }
 
   @override
-  execute(Withdraw action) {
+  Future<Either<Object, Receiver>> execute(Withdraw action) {
     return Task(() => actionRepository.withdraw(action)).attempt().run();
   }
 }

@@ -5,7 +5,7 @@ class PaymentRequest {
   dynamic /* num | null */ maxSendable;
   dynamic /* num | null */ minSendable;
   dynamic /* String | null */ metadata;
-  dynamic /* bool | null */ commentAllowed;
+  dynamic /* num | null */ commentAllowed;
   dynamic /* dynamic | null */ payerData;
   PaymentRequest(
       [this.tag = "payRequest",
