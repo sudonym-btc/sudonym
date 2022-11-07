@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { IsString } from 'class-validator';
 import { BaseController } from '../base.controller';
 import { Pot } from './pot.model';
@@ -15,9 +15,16 @@ export class CreatePot {
 export class PotController extends BaseController({
 	service: PotService,
 	model: Pot,
-}) {
-	@Post('')
-	creater(@Body() params: CreatePot): Promise<Pot> {
-		return super.create(params as any);
-	}
-}
+	create: {
+		input: CreatePot,
+		validator: {
+			whitelist: true,
+		},
+	},
+	update: {
+		input: CreatePot,
+		validator: {
+			whitelist: true,
+		},
+	},
+}) {}

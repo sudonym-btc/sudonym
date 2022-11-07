@@ -8,7 +8,10 @@ import {
 	Put,
 	Query,
 	UseGuards,
+	UsePipes,
+	ValidationPipe,
 } from '@nestjs/common';
+import { conditional } from 'conditional-decorator';
 import { AuthGuard } from 'helper/auth.guard';
 import { Constructor } from 'sequelize-typescript/dist/shared/types';
 import { TBaseService, TControllerAndService } from './base.service';
@@ -20,7 +23,9 @@ export interface TBaseController<TService, TModel>
 
 export interface BaseControllerOptions<
 	TService extends TBaseService<TModel>,
-	TModel
+	TModel,
+	TCreate,
+	TUpdate
 > {
 	service: Constructor<TService>;
 	model?: Constructor<TModel>;
@@ -28,28 +33,39 @@ export interface BaseControllerOptions<
 	create?:
 		| false
 		| Partial<
-				EndpointOptions & {
+				EndpointOptions<Constructor<TCreate>, TModel> & {
 					update: true;
 				}
 		  >;
-	update?: false | Partial<EndpointOptions>;
-	list?: false | Partial<EndpointOptions>;
-	get?: false | Partial<EndpointOptions>;
+	update?: false | Partial<EndpointOptions<Constructor<TUpdate>, TModel>>;
+	list?: false | Partial<EndpointOptions<TModel, TModel>>;
+	get?: false | Partial<EndpointOptions<TModel, TModel>>;
 }
-interface EndpointOptions {
-	model: any;
+interface EndpointOptions<TIn, TOut> {
+	input: TIn;
+	model: TOut;
+	validator: {
+		whitelist: boolean;
+	};
 	auth: boolean;
 	guards: CanActivate[];
 }
 
-export const BaseController = <TService extends TBaseService<TModel>, TModel>(
-	options: BaseControllerOptions<TService, TModel>
+export const BaseController = <
+	TService extends TBaseService<TModel>,
+	TModel,
+	TCreate,
+	TUpdate
+>(
+	options: BaseControllerOptions<TService, TModel, TCreate, TUpdate>
 ): Constructor<TBaseController<TService, TModel>> => {
-	const defaultOptions: Partial<BaseControllerOptions<TService, TModel>> = {
+	const defaultOptions: Partial<
+		BaseControllerOptions<TService, TModel, TCreate, TUpdate>
+	> = {
 		auth: true,
 	};
 	options = Object.assign(defaultOptions, options);
-	const defaultEndpointOptions: Partial<EndpointOptions> = {
+	const defaultEndpointOptions: Partial<EndpointOptions<TModel, TModel>> = {
 		auth: options.auth,
 	};
 	['get', 'list', 'update', 'create'].forEach((i) => {
@@ -77,8 +93,14 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 		}
 
 		@UseGuards(...getGuards(options.create))
-		@Post('')
-		create(@Body() data) {
+		@UsePipes(
+			new ValidationPipe({
+				expectedType: options.create && options.create.input,
+				...(options.create ? options.create.validator : {}),
+			})
+		)
+		@conditional(!!options.create, Post(''))
+		create(@Body() data: TCreate) {
 			if (options.create && options.create?.update) {
 				return this.service.createOrUpdate(data);
 			}
@@ -86,8 +108,14 @@ export const BaseController = <TService extends TBaseService<TModel>, TModel>(
 		}
 
 		@UseGuards(...getGuards(options.update))
+		@UsePipes(
+			new ValidationPipe({
+				expectedType: options.update && options.update.input,
+				...(options.update ? options.update.validator : {}),
+			})
+		)
 		@Put(':id')
-		update(@Param('id') id, @Body() data) {
+		update(@Param('id') id, @Body() data: TUpdate) {
 			return this.service.update(id, data);
 		}
 	}

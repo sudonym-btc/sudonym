@@ -48,4 +48,5 @@ export class Config {
 		dialect: 'sqlite',
 	};
 	wsPort = env == 'mock' ? Math.floor(Math.random() * 60000) + 1000 : 3001;
+	jwtSecret = 'testing'; // jwtSecret used in testing
 }

@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { applyGlobals } from 'app.globals';
 import { ActionService } from 'module/action/action.service';
 import { AddressParser } from 'module/action/address-parser/address-parser';
+import { AuthService } from 'module/auth/auth.service';
 import { Pot } from 'module/pot/pot.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { FIREBASE_ADMIN } from 'service/firebase-admin/firebase-admin';
@@ -19,6 +20,7 @@ import {
 	MockLightningEvents,
 	MockLightningNodeService,
 } from './classes';
+import { MockAuthService } from './classes/auth.service.mock';
 import { createPots } from './pot';
 import { createUsers } from './user';
 
@@ -49,11 +51,13 @@ export const createMockApp = async () => {
 		.useClass(MockActionService)
 		.overrideProvider(FIREBASE_ADMIN)
 		.useValue(MockFirebaseAdmin)
+		.overrideProvider(AuthService)
+		.useClass(MockAuthService)
 		.compile();
-
 	const app = moduleFixture.createNestApplication(null, {
 		// logger: console,
 	});
+
 	applyGlobals(app);
 	await app.init();
 	return app;
