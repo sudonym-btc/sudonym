@@ -31,10 +31,11 @@ export class LnUrlHandlerService {
 				const payerData = query.payerdata
 					? decodeURIComponent(query.payerdata)
 					: '';
-				console.log(payerData);
-				const description =
-					JSON.stringify((tag as PaymentRequest).metadata) +
-					payerData;
+				const metadata =
+					typeof (tag as PaymentRequest).metadata == 'string'
+						? (tag as PaymentRequest).metadata
+						: JSON.parse((tag as PaymentRequest).metadata);
+				const description = JSON.stringify(metadata) + payerData;
 
 				const parentReceiver = await this.receiveService.findOne({
 					where: {
