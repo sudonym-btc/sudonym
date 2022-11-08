@@ -21,7 +21,7 @@ export class Transaction extends BaseClass {
 		public description: string | null,
 		public transactionId: number | null,
 		public amount: number,
-		public totalAmount: number,
+		public totalAmount: number | null,
 		public status: boolean | null,
 		public errorMessage: string | null,
 		public currencyCode: string,

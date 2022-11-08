@@ -63,5 +63,8 @@
 	"addCard": "Agregar tarjeta",
 	"boltCardDescription": "Escriba los detalles de su cuenta en una tarjeta NFC para que pueda tocarlos en un dispositivo de punto de venta para pagar.",
 	"createBoltCard": "Crear tarjeta",
-	"submit": "OK"
+	"submit": "OK",
+	"noAddressToPaste": "No hay dirección para pegar",
+	"checkClipboard": "Comprobar portapapeles",
+	"paste": "Pegar"
 }

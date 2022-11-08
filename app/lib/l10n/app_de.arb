@@ -63,5 +63,8 @@
 	"addCard": "Karte hinzufügen",
 	"boltCardDescription": "Schreiben Sie Ihre Kontodaten auf eine NFC-Karte, damit Sie sie zum Bezahlen an ein Point-of-Sale-Gerät tippen können.",
 	"createBoltCard": "Boltkarte hinzufügen",
-	"submit": "OK"
+	"submit": "OK",
+	"noAddressToPaste": "Keine Adresse zum Einfügen",
+	"checkClipboard": "Zwischenablage überprüfen",
+	"paste": "Einfügen"
 }

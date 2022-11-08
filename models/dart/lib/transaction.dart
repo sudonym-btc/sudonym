@@ -20,7 +20,7 @@ class Transaction extends BaseClass {
   dynamic /* String | null */ description;
   dynamic /* num | null */ transactionId;
   num amount;
-  num totalAmount;
+  dynamic /* num | null */ totalAmount;
   dynamic /* bool | null */ status;
   dynamic /* String | null */ errorMessage;
   String currencyCode;

@@ -179,7 +179,7 @@ class CheckClipboardState extends State<CheckClipboard> {
           ListTile(
               leading: Icon(Icons.paste),
               title: Text(
-                'Paste " $address "',
+                AppLocalizations.of(context)!.paste + ' " $address "',
                 overflow: TextOverflow.ellipsis,
               ),
               onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
@@ -192,18 +192,19 @@ class CheckClipboardState extends State<CheckClipboard> {
     return Column(children: [
       ListTile(
         leading: const Icon(Icons.paste),
-        title: const Text('Check clipboard'),
+        title: Text(AppLocalizations.of(context)!.checkClipboard),
         onTap: () => getIt<ClipboardListener>().check().then((value) {
           setState(() {
             hasChecked = true;
           });
           if (value != null) {
+            address = value;
             getIt<ActionTriggerService>().trigger(
                 ActionStream(context: context, link: value, pot: widget.pot));
           }
         }),
         subtitle: hasChecked && address == null
-            ? const Text('No address to paste')
+            ? Text(AppLocalizations.of(context)!.noAddressToPaste)
             : null,
       ),
       const SizedBox(height: padding * 2),

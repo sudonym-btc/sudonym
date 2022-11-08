@@ -63,5 +63,8 @@
 	"addCard": "Add card",
 	"boltCardDescription": "Write your account details to an NFC card so that you can tap them to a point of sales device to pay.",
 	"createBoltCard": "Create Bolt Card",
-	"submit": "Submit"
+	"submit": "Submit",
+	"noAddressToPaste": "No address to paste",
+	"checkClipboard": "Check clipboard",
+	"paste": "Paste"
 }
