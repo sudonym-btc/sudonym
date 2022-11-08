@@ -81,6 +81,7 @@ export class LnUrlHandlerService {
 				});
 				this.logger.debug(sender.toJSON());
 				const parsed = bolt11.decode(query.pr);
+				this.logger.debug('withdrawing to ', sender.toJSON());
 
 				const pot = await this.potService.findForUser(
 					sender.userId,
