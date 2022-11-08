@@ -72,7 +72,7 @@ class _OutgoingFailed extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: 'Payment failed',
+        title: AppLocalizations.of(context)!.paymentError,
         subtitle:
             'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.originalAddress}',
         content: Text(transaction.errorMessage ?? ''),

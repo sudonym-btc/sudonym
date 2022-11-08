@@ -59,7 +59,7 @@ export class MockLightningNodeService extends LightningNodeService {
 			parts: 1,
 			partid: 1,
 			amount_msat: 123,
-			amount_sent_msat: 123,
+			amount_sent_msat: '123',
 			status: 'pending',
 			destination: 'randomnode',
 		};
