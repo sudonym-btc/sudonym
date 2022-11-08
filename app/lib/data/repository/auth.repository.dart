@@ -7,17 +7,18 @@ import 'package:sudonym/injection.dart';
 @Injectable(as: AuthRepository, env: Env.allButMock)
 class AuthRepositoryImpl implements AuthRepository {
   @override
-  Future<UserCredential> loginWithGoogle() async {
+  Future<UserCredential?> loginWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return null;
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
 
     // Once signed in, return the UserCredential
@@ -25,10 +26,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserCredential> loginWithFacebook() async {
+  Future<UserCredential?> loginWithFacebook() async {
     // Trigger the sign-in flow
     final LoginResult loginResult = await FacebookAuth.instance.login();
-
+    if (loginResult.status != LoginStatus.success) return null;
     // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
@@ -49,8 +50,8 @@ class AuthRepositoryImpl implements AuthRepository {
 }
 
 abstract class AuthRepository {
-  Future<UserCredential> loginWithGoogle();
-  Future<UserCredential> loginWithFacebook();
+  Future<UserCredential?> loginWithGoogle();
+  Future<UserCredential?> loginWithFacebook();
   Future logout();
   Stream<User?> onStateChanged();
   // Future<UserCredential> loginWithTwitter();

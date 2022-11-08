@@ -1,12 +1,7 @@
-from helper import (
-    getBackupName,
-    getConfigName,
-    getDeploymentName,
-    getSecretName,
-    getServiceName,
-    getVolumeClaimName,
-)
+from helper import (getBackupName, getConfigName, getDeploymentName,
+                    getSecretName, getServiceName, getVolumeClaimName)
 from kubernetes_cluster import cluster
+
 
 def getBitcoinChainName(name) :
     if(name == "mainnet") : return "main"
@@ -62,7 +57,7 @@ def bitcoin(config, cluster_types):
                     "metadata": {"name": getVolumeClaimName(base_name)},
                     "spec": {
                         "accessModes": ["ReadWriteOnce"],
-                        "resources": {"requests": {"storage": "20Gi" if config["env"] == "development" else "600Gi" }},
+                        "resources": {"requests": {"storage": "20Gi" if config["env"] == "development" else "700Gi" }},
                     },
                 },
             },

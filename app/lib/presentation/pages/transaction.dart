@@ -59,7 +59,9 @@ class _OutgoingPending extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: (AppLocalizations.of(context)!.paymentInProgress),
-        subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit),
+        subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit(
+            FormatCurrency()
+                .format(transaction.currencyCode, transaction.amount))),
         content: loader,
         color: Colors.indigo.shade800);
   }
@@ -73,8 +75,10 @@ class _OutgoingFailed extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentError,
-        subtitle:
-            'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.originalAddress}',
+        subtitle: AppLocalizations.of(context)!.outgoingPaymentError(
+            FormatCurrency()
+                .format(transaction.currencyCode, transaction.amount),
+            transaction.originalAddress),
         content: Text(transaction.errorMessage ?? ''),
         color: Theme.of(context).errorColor);
   }
@@ -88,7 +92,9 @@ class _OutgoingComplete extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
-        subtitle: AppLocalizations.of(context)!.paymentOutgoingSuccess,
+        subtitle: AppLocalizations.of(context)!.paymentOutgoingSuccess(
+            FormatCurrency()
+                .format(transaction.currencyCode, transaction.amount)),
         content: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,8 +136,9 @@ class _IncomingPending extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentIncoming,
-        subtitle:
-            'Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} is currently in transit',
+        subtitle: AppLocalizations.of(context)!.paymentIsCurrentlyInTransit(
+            FormatCurrency()
+                .format(transaction.currencyCode, transaction.amount)),
         content: loader,
         color: Colors.indigo.shade800);
   }
@@ -145,8 +152,9 @@ class _IncomingComplete extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
-        subtitle:
-            'Payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} received',
+        subtitle: AppLocalizations.of(context)!.incomingPaymentSuccess(
+            FormatCurrency()
+                .format(transaction.currencyCode, transaction.amount)),
         content: Table(
           children: [
             TableRow(children: [
@@ -181,9 +189,11 @@ class _IncomingFailed extends _TransactionStatusPage {
   @override
   Widget build(BuildContext context) {
     return StatusPage(
-        title: 'Payment failed',
-        subtitle:
-            'Outgoing payment of ${FormatCurrency().format(transaction.currencyCode, transaction.amount)} failed to ${transaction.address}',
+        title: AppLocalizations.of(context)!.paymentError,
+        subtitle: AppLocalizations.of(context)!.incomingPaymentError(
+            FormatCurrency()
+                .format(transaction.currencyCode, transaction.amount),
+            transaction.address),
         color: Theme.of(context).errorColor);
   }
 }
@@ -202,7 +212,7 @@ class _ContactSection extends StatelessWidget {
     return ['lnurl', 'lightningaddress'].contains(entity.type)
         ? Button(
             icon: const Icon(Icons.add),
-            text: 'Create Contact',
+            text: AppLocalizations.of(context)!.createContact,
             onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(

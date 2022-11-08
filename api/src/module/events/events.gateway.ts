@@ -42,7 +42,14 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleDisconnect(client: any) {
 		for (const i of Object.keys(this.users)) {
 			for (const key in this.users[i]) {
-				if (this.users[i][key] == client) delete this.users[i][key];
+				if (this.users[i][key] == client) {
+					delete this.users[i][key];
+					this.logger.verbose(
+						'Websocket client disconnected',
+						i,
+						this.users[i]
+					);
+				}
 			}
 		}
 	}
@@ -57,9 +64,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			token,
 		});
 		if (user.uid) {
-			this.logger.verbose('Websocket client connected');
 			this.users[user.uid] = this.users[user.uid] || [];
 			this.users[user.uid].push(client);
+			this.logger.verbose(
+				'Websocket client connected',
+				this.users[user.uid]
+			);
 		} else {
 			this.logger.verbose('No id provided for bsocket');
 		}

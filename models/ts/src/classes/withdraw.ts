@@ -1,7 +1,6 @@
-import { ActionTypeWithAmount } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
-import { WithdrawRequest } from './withdraw-request';
-import { MSATOSHIS } from './types/index';
+import { ActionTypeWithAmount } from './action-type';
+import { MSATOSHIS, SATOSHIS } from './types/index';
 
 export class Withdraw extends ActionTypeWithAmount {
 	constructor(
@@ -60,7 +59,8 @@ export class Withdraw extends ActionTypeWithAmount {
 			json['isOnChain'],
 			json['comment']
 		);
-
+		// Minimum value of 1 satoshi to withdraw
+		w.minAmount = w.minAmount > 1 / SATOSHIS ? w.minAmount : 1 / SATOSHIS;
 		if (w.amount == null && w.minAmount == w.maxAmount) {
 			w.amount = w.minAmount;
 		}

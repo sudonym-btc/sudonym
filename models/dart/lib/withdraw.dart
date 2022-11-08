@@ -1,7 +1,6 @@
-import "action-type.dart" show ActionTypeWithAmount;
 import "action-remote-response.dart" show ActionRemoteResponse;
-import "withdraw-request.dart" show WithdrawRequest;
-import "types/index.dart" show MSATOSHIS;
+import "action-type.dart" show ActionTypeWithAmount;
+import "types/index.dart" show MSATOSHIS, SATOSHIS;
 
 class Withdraw extends ActionTypeWithAmount {
   dynamic /* num | null */ potId;
@@ -60,6 +59,8 @@ class Withdraw extends ActionTypeWithAmount {
         json["isBolt12"],
         json["isOnChain"],
         json["comment"]);
+    // Minimum value of 1 satoshi to withdraw
+    w.minAmount = w.minAmount > 1 / SATOSHIS ? w.minAmount : 1 / SATOSHIS;
     if (w.amount == null && w.minAmount == w.maxAmount) {
       w.amount = w.minAmount;
     }

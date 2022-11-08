@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -22,16 +23,16 @@ class ReceiverPage extends StatelessWidget {
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
           } else if (state.entity!.received > 0) {
-            return const StatusPage(
-                title: 'Received',
-                subtitle: 'Received payment.',
+            return StatusPage(
+                title: AppLocalizations.of(context)!.received,
+                subtitle: AppLocalizations.of(context)!.receivedPayment,
                 icon: FontAwesomeIcons.check,
                 color: Colors.green);
           }
 
           return StatusPage(
-              title: 'Receiving',
-              subtitle: 'Waiting for payment...',
+              title: AppLocalizations.of(context)!.receiving,
+              subtitle: AppLocalizations.of(context)!.waitingForPayment,
               content: const Center(
                   child: CircularProgressIndicator(color: Colors.white)),
               color: Colors.indigo.shade800);

@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PotService } from 'module/pot/pot.service';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { generateUsername } from 'unique-username-generator';
+import {
+	adjectives,
+	nouns,
+	uniqueUsernameGenerator,
+} from 'unique-username-generator';
 import { BaseService } from '../base.service';
 import { User } from './user.model';
 @Injectable()
@@ -21,7 +25,9 @@ export class UserService extends BaseService(User) {
 			const data = await this.findOne(params.id);
 			return this.update(data.id, params);
 		} catch (e) {
-			params.lightningAddress ??= generateUsername('', 0);
+			params.lightningAddress ??= uniqueUsernameGenerator({
+				dictionaries: [nouns, adjectives],
+			});
 			return super.create(params);
 		}
 	}

@@ -1,6 +1,5 @@
-import { ActionTypeWithAmount } from './action-type';
 import { ActionRemoteResponse } from './action-remote-response';
-import { PaymentRequest } from './payment-request';
+import { ActionTypeWithAmount } from './action-type';
 import { MSATOSHIS, SATOSHIS } from './types/index';
 
 export class Payment extends ActionTypeWithAmount {
@@ -77,6 +76,8 @@ export class Payment extends ActionTypeWithAmount {
 				p.maxAmount = a.data['maxSendable'] / MSATOSHIS;
 			}
 		}
+		// Minimum value of 1 satoshi to send
+		p.minAmount = p.minAmount > 1 / SATOSHIS ? p.minAmount : 1 / SATOSHIS;
 		if (p.amount == null && p.minAmount == p.maxAmount) {
 			p.amount = p.minAmount;
 		}

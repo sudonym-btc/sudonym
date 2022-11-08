@@ -2,9 +2,9 @@ name: sudonym
 version: 0.0.1+10
 publish_to: none
 description: Sudonym bitcoin wallet.
-environment: 
-  sdk: '>=2.18.0 <3.0.0'
-dependencies: 
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+dependencies:
   app_links: ^3.3.0
   auto_animated: ^3.1.0
   bech32: any
@@ -18,13 +18,13 @@ dependencies:
   firebase_auth: ^3.4.1
   firebase_core: ^1.19.1
   firebase_messaging: ^11.4.4
-  flutter: 
+  flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1
   flutter_facebook_auth: ^4.3.4+2
   flutter_form_builder: ^7.7.0
   flutter_local_notifications: ^9.6.1
-  flutter_localizations: 
+  flutter_localizations:
     sdk: flutter
   flutter_loggy_dio: ^2.0.0+3
   flutter_ringtone_player: ^3.2.0
@@ -46,19 +46,21 @@ dependencies:
   reactive_forms: ^14.1.0
   rxdart: ^0.27.5
   sentry_flutter: ^6.6.3
+  share_plus: ^6.2.0
   sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^1.0.0+2
-  sudonym.models: 
+  sudonym.models:
     path: ../models/dart
   timeago: ^3.3.0
+  timeago_flutter: ^1.2.0
   universal_io: ^2.0.4
   web_socket_channel: ^2.2.0
-dev_dependencies: 
+dev_dependencies:
   build_runner: any
   dependency_validator: ^3.2.2
   firebase_auth_mocks: ^0.8.4
   flutter_lints: ^2.0.1
-  flutter_test: 
+  flutter_test:
     sdk: flutter
   google_sign_in_mocks: ^0.2.1
   icons_launcher: ^2.0.5
@@ -66,17 +68,17 @@ dev_dependencies:
   pubspec_dependency_sorter: ^0.0.2
   test: ^1.21.4
   widgetbook: ^2.4.1
-flutter: 
-  assets: 
+flutter:
+  assets:
     - assets/mastercardLogo.png
     - assets/visaLogo.png
     - assets/currencies/
   generate: true
   uses-material-design: true
-icons_launcher: 
+icons_launcher:
   image_path: assets/logo.png
-  platforms: 
-    android: 
+  platforms:
+    android:
       enable: true
-    ios: 
+    ios:
       enable: true

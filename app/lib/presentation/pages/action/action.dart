@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -24,7 +25,9 @@ class ActionPage extends StatelessWidget {
     print(err);
     print("-------");
     // Error came from remote service
-    if (err?.response?.statusCode == 503) {
+    if (err is DioError &&
+        err.response != null &&
+        (err.response as dynamic).statusCode == 503) {
       return StatusPage(
           title: 'Error',
           subtitle: 'Could not get OK response from remote server',

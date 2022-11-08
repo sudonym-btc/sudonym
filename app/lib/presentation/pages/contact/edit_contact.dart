@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -16,7 +17,9 @@ class EditContact extends StatelessWidget {
         child: SafeArea(
             child: Scaffold(
           appBar: AppBar(
-            title: Text("${entity.id == null ? "Create" : "Edit"} Contact"),
+            title: Text(entity.id == null
+                ? AppLocalizations.of(context)!.createContact
+                : AppLocalizations.of(context)!.editContact),
           ),
           body: Padding(
             padding: const EdgeInsets.all(padding),

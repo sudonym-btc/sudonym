@@ -35,7 +35,11 @@ export class ActionService {
 		const parse: any = await this.addressParser.parse(invoice);
 		const a = ActionParseResponse.from(parse);
 
-		if (parse.remoteResponse && parse.remoteResponse.success == false) {
+		if (
+			parse.remoteResponse &&
+			(parse.remoteResponse.success == false ||
+				parse.remoteResponse.data?.status?.toLowerCase() == 'error')
+		) {
 			throw a;
 		}
 

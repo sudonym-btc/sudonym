@@ -39,12 +39,12 @@ class SigninPage extends StatelessWidget {
                             onPressed:
                                 context.read<AuthCubit>().loginWithGoogle,
                           ),
-                          Container(height: padding),
-                          Button(
-                            text: 'Facebook',
-                            onPressed:
-                                context.read<AuthCubit>().loginWithFacebook,
-                          )
+                          // Container(height: padding),
+                          // Button(
+                          //   text: 'Facebook',
+                          //   onPressed:
+                          //       context.read<AuthCubit>().loginWithFacebook,
+                          // )
                           // SignInButton(
                           //   Buttons.Google,
                           // ),

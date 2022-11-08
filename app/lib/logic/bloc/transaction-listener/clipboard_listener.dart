@@ -9,7 +9,7 @@ import 'package:universal_io/io.dart';
 class ClipboardListener extends TransactionListenerSubtype {
   Timer? clipboardTriggerTime;
 
-  StreamController controller = StreamController();
+  StreamController controller = StreamController.broadcast();
   StreamSubscription? sub;
 
   init() {
@@ -19,7 +19,7 @@ class ClipboardListener extends TransactionListenerSubtype {
           (timer) => check().then((text) => controller.add(text)));
     }
 
-    sub = controller.stream.distinct().listen((event) {
+    sub ??= controller.stream.distinct().listen((event) {
       streamController.add(event);
     });
   }

@@ -1,6 +1,5 @@
-import "action-type.dart" show ActionTypeWithAmount;
 import "action-remote-response.dart" show ActionRemoteResponse;
-import "payment-request.dart" show PaymentRequest;
+import "action-type.dart" show ActionTypeWithAmount;
 import "types/index.dart" show MSATOSHIS, SATOSHIS;
 
 class Payment extends ActionTypeWithAmount {
@@ -76,6 +75,8 @@ class Payment extends ActionTypeWithAmount {
         p.maxAmount = a.data["maxSendable"] / MSATOSHIS;
       }
     }
+    // Minimum value of 1 satoshi to send
+    p.minAmount = p.minAmount > 1 / SATOSHIS ? p.minAmount : 1 / SATOSHIS;
     if (p.amount == null && p.minAmount == p.maxAmount) {
       p.amount = p.minAmount;
     }

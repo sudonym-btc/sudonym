@@ -22,7 +22,14 @@
 	"paymentSent": "Payment sent",
 	"paymentReceived": "Payment received",
 	"paymentIncoming": "Payment incoming",
-	"paymentIsCurrentlyInTransit": "Payment is currently in transit",
+	"paymentIsCurrentlyInTransit": "Payment of {amount} is currently in transit",
+	"@paymentIsCurrentlyInTransit": {
+		"placeholders": {
+			"amount": {
+				"example": "$4.20"
+			}
+		}
+	},
 	"noContactsFound": "No contacts found",
 	"paymentInfo": "Payment info",
 	"gatheringPaymentInfomation": "Gathering payment information",
@@ -37,7 +44,16 @@
 	"name": "Name",
 	"fee": "Fee",
 	"noTransactionsFound": "No transactions found",
-	"paymentOutgoingSuccess": "Payment has successfully been sent",
+	"paymentOutgoingSuccess": "Payment of {amount} has successfully been sent",
+	"@paymentOutgoingSuccess": {
+		"description": "Payment successfull.",
+		"placeholders": {
+			"amount": {
+				"example": "£4.20",
+				"type": "String"
+			}
+		}
+	},
 	"paymentInProgress": "Payment is in progress",
 	"appInfo": "App info",
 	"confirm": "Confirm",
@@ -66,5 +82,46 @@
 	"submit": "Submit",
 	"noAddressToPaste": "No address to paste",
 	"checkClipboard": "Check clipboard",
-	"paste": "Paste"
+	"paste": "Paste",
+	"receiving": "Receiving",
+	"received": "Received",
+	"receivedPayment": "Received payment",
+	"waitingForPayment": "Waiting for payment...",
+	"createContact": "Create contact",
+	"editContact": "Edit contact",
+	"sentTo": "Sent to",
+	"spentViaLightning": "Spent via lightning",
+	"noDescription": "No description",
+	"spentOnChain": "Spent onchain",
+	"receivedViaLightning": "Received via lightning",
+	"receivedOnChain": "Received onchain",
+	"outgoingPaymentError": "Outgoing payment of {amount} failed to {address}",
+	"@outgoingPaymentError": {
+		"placeholders": {
+			"amount": {
+				"example": "£4.20",
+				"type": "String"
+			},
+			"address": {
+				"description": "address",
+				"example": "a@wos.com",
+				"type": "String"
+			}
+		}
+	},
+	"incomingPaymentError": "Incoming payment of {amount} failed",
+	"@incomingPaymentError": {
+		"placeholders": {
+			"amount": {},
+			"address": {}
+		}
+	},
+	"incomingPaymentSuccess": "Payment of {amount} received",
+	"@incomingPaymentSuccess": {
+		"placeholders": {
+			"amount": {
+				"type": "String"
+			}
+		}
+	}
 }

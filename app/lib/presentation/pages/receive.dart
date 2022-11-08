@@ -31,13 +31,18 @@ class ReceivePage extends StatelessWidget {
                         title: Text(AppLocalizations.of(context)!.receive),
                         bottom: const TabBar(
                           tabs: [
-                            Tab(icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
-                            Tab(icon: FaIcon(FontAwesomeIcons.link, size: 12)),
                             Tab(
+                                text: 'LNURL',
+                                icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
+                            Tab(
+                                text: 'ONCHAIN',
+                                icon: FaIcon(FontAwesomeIcons.link, size: 12)),
+                            Tab(
+                                text: 'BOLT11',
                                 icon: FaIcon(
-                              FontAwesomeIcons.bolt,
-                              size: 12,
-                            )),
+                                  FontAwesomeIcons.bolt,
+                                  size: 12,
+                                )),
                             // Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
                           ],
                         ),

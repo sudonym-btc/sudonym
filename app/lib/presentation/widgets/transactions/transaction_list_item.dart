@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:timeago_flutter/timeago_flutter.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction entity;
@@ -43,31 +45,38 @@ class TransactionListItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          getTitle(entity),
+                          getTitle(context, entity),
                           style:
                               const TextStyle(overflow: TextOverflow.ellipsis),
                         ),
-                        Info(getDescription(entity)),
+                        Info(getDescription(context, entity)),
                       ],
                     )),
                     SizedBox(
                         width: 50,
                         child: Center(
-                            child: Info(timeago.format(entity.createdAt,
-                                locale: 'en_short')))),
+                            child: Timeago(
+                          builder: ((context, value) => Text(timeago
+                              .format(entity.createdAt, locale: 'en_short'))),
+                          date: entity.createdAt,
+                        ))),
                   ],
                 ))));
   }
 }
 
-getTitle(Transaction entity) {
-  String networkName =
-      ['lnurl', 'bolt11', 'bolt12', 'lightningaddress'].contains(entity.type)
-          ? 'via lightning network'
-          : 'onchain';
-  return entity.outgoing ? 'Spent $networkName' : 'Received $networkName';
+getTitle(BuildContext context, Transaction entity) {
+  if (['lnurl', 'bolt11', 'bolt12', 'lightningaddress'].contains(entity.type)) {
+    if (entity.outgoing) return AppLocalizations.of(context)!.spentViaLightning;
+    return AppLocalizations.of(context)!.receivedViaLightning;
+  } else if (entity.type == 'onchain') {
+    if (entity.outgoing) return AppLocalizations.of(context)!.spentOnChain;
+    return AppLocalizations.of(context)!.receivedOnChain;
+  }
+
+  return '';
 }
 
-getDescription(Transaction entity) {
-  return entity.description ?? 'No description';
+getDescription(BuildContext context, Transaction entity) {
+  return entity.description ?? AppLocalizations.of(context)!.noDescription;
 }

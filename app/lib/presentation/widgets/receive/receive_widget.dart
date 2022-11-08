@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -100,8 +101,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                       onPressed: state.loading
                           ? null
                           : () {
-                              // Share.share('ln234wkfdoinfrwiofjirew',
-                              //     subject: 'Bitcoin invoice for \$5');
+                              Share.share(state.entity!.data);
                             },
                       text: (AppLocalizations.of(context)!.share),
                     ),
