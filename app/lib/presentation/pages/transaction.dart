@@ -20,8 +20,8 @@ class TransactionPage extends StatelessWidget {
         builder: ((context, state) {
           if (state.loading || state.entity == null) {
             return StatusPage(
-                title: '',
-                subtitle: '',
+                title: null,
+                subtitle: null,
                 content: loader,
                 color: Colors.indigo.shade800);
           } else if (state.entity!.outgoing) {

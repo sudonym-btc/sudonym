@@ -17,8 +17,8 @@ class ReceiverPage extends StatelessWidget {
         builder: (context, state) {
           if (state.entity == null) {
             return StatusPage(
-                title: '',
-                subtitle: '',
+                title: null,
+                subtitle: null,
                 content: const Center(
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
