@@ -42,6 +42,7 @@ export class ReceiverService extends BaseService(Receiver) {
 					// 	);
 					// 	description = (tag.params as PaymentRequest).metadata;
 					// }
+					console.log(params, !!params.description);
 					params.data = (
 						await this.lightningNodeService.createInvoice(
 							Math.round(amountInBTC * MSATOSHIS),

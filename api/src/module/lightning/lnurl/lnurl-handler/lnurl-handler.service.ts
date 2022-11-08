@@ -31,6 +31,7 @@ export class LnUrlHandlerService {
 				const payerData = query.payerdata
 					? decodeURIComponent(query.payerdata)
 					: '';
+				console.log(payerData);
 				const description =
 					JSON.stringify((tag as PaymentRequest).metadata) +
 					payerData;
