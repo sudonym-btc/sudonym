@@ -33,8 +33,8 @@ export class LnUrlHandlerService {
 					: '';
 				const metadata =
 					typeof (tag as PaymentRequest).metadata == 'string'
-						? (tag as PaymentRequest).metadata
-						: JSON.parse((tag as PaymentRequest).metadata);
+						? JSON.parse((tag as PaymentRequest).metadata)
+						: (tag as PaymentRequest).metadata;
 				const description = JSON.stringify(metadata) + payerData;
 
 				const parentReceiver = await this.receiveService.findOne({
