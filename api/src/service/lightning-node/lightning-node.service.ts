@@ -62,7 +62,7 @@ export class LightningNodeService {
 		}, Number(millisatoshis));
 		let totalDelay =
 			9 + // total cltv to be left with at end, this is default value for core-ln
-			circle.reduce((acc, curr) => acc + Number(curr.delay), 0);
+			circle.reduce((acc, curr) => acc + Number(curr.delay), - circle[0].delay);
 
 		this.logger.debug('total delay', totalDelay);
 		this.logger.debug('total fee', firstAmount - millisatoshis);

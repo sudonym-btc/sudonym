@@ -48,7 +48,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					this.logger.verbose(
 						'Websocket client disconnected',
 						i,
-						JSON.stringify(this.users[i])
+						this.users[i].length
 					);
 				}
 			}
@@ -64,16 +64,18 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const user = await this.authService.auth({
 			token,
 		});
+
 		if (user.uid) {
 			this.users[user.uid] = this.users[user.uid] || [];
 			this.users[user.uid].push(client);
 			this.logger.verbose(
 				'Websocket client connected',
 				user.uid,
-				JSON.stringify(this.users[user.uid])
+				this.users[user.uid].length
 			);
 		} else {
 			this.logger.verbose('No id provided for bsocket');
+			client.close();
 		}
 	}
 }

@@ -1,6 +1,6 @@
-export class AppError {}
+export class AppError extends Error {}
 
 export class BalanceLowError extends AppError {
-	code: 'BALANCE_LOW';
+	name: 'BALANCE_LOW';
 	data;
 }
