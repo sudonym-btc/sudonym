@@ -209,7 +209,7 @@ export class LightningNodeService {
 		return first.msatoshi - last.msatoshi;
 	}
 
-	async getRoute(pubkey, amount = 0) {
+	async getRoute(pubkey, amount = 1000) {
 		if (pubkey == this.info.id) {
 			return await this.convertChannelsToRoute(amount).route;
 		}
