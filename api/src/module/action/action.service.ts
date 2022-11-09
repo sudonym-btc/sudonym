@@ -6,7 +6,7 @@ import {
 	Payment,
 	SATOSHIS,
 	TAddressType,
-	Withdraw,
+	Withdraw
 } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { Receiver } from 'module/receiver/receiver.model';
@@ -18,7 +18,7 @@ import { Transaction } from '../transaction/transaction.model';
 import { TransactionService } from '../transaction/transaction.service';
 import {
 	AddressParser,
-	validateInternetIdentifier,
+	validateInternetIdentifier
 } from './address-parser/address-parser';
 import { fetchHttpOpts } from './address-parser/http-agent';
 
@@ -147,7 +147,17 @@ export class ActionService {
 	}
 
 	async execute(action: Action): Promise<Transaction | Receiver> {
+		
 		if (action instanceof Payment) {
+			console.log({
+				originalAddress: action.originalAddress,
+				address: action.address,
+				type: getAddressType(action.originalAddress),
+				amount: action.amount,
+				currencyCode: action.currency,
+				outgoing: true,
+				potId: action.potId,
+			});
 			return this.transactionService.create({
 				originalAddress: action.originalAddress,
 				address: action.address,

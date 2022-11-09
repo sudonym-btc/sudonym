@@ -3,7 +3,7 @@ import {
 	CallHandler,
 	ExecutionContext,
 	Injectable,
-	NestInterceptor,
+	NestInterceptor
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { Observable, throwError } from 'rxjs';
@@ -26,6 +26,7 @@ export class ValidationErrorInterceptor implements NestInterceptor {
 							})
 					);
 				}
+				console.log(err);
 				return throwError(() => err);
 			})
 		);

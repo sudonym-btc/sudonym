@@ -3,7 +3,7 @@ import {
 	OnGatewayConnection,
 	OnGatewayDisconnect,
 	WebSocketGateway,
-	WebSocketServer,
+	WebSocketServer
 } from '@nestjs/websockets';
 import { Event } from '@sudonym/models';
 import { getConfig } from 'config/config';
@@ -33,6 +33,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	broadcastToClients(uids, e: Event) {
 		this.logger.log('Emitting ' + e.name + ' to ' + uids.join(', '));
 		for (const uid of uids) {
+			this.logger.log('Sockets for user', uid, JSON.stringify(this.users[uid].length))
 			for (const sock of this.users[uid] || []) {
 				sock.send(JSON.stringify(e));
 			}
@@ -47,7 +48,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					this.logger.verbose(
 						'Websocket client disconnected',
 						i,
-						this.users[i]
+						JSON.stringify(this.users[i])
 					);
 				}
 			}
@@ -68,7 +69,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.users[user.uid].push(client);
 			this.logger.verbose(
 				'Websocket client connected',
-				this.users[user.uid]
+				user.uid,
+				JSON.stringify(this.users[user.uid])
 			);
 		} else {
 			this.logger.verbose('No id provided for bsocket');

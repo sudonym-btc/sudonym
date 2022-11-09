@@ -2,7 +2,7 @@ import {
 	BadRequestException,
 	INestApplication,
 	Logger,
-	ValidationPipe,
+	ValidationPipe
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { contextRequest } from 'helper/context-request';

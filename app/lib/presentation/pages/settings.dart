@@ -70,7 +70,8 @@ class LightningSectionState extends State<LightningSection> {
         value: getIt<AuthCubit>().user!.lightningAddress,
         validators: [
           Validators.required,
-          Validators.pattern(r'^[a-z0-9_.-]+$')
+          Validators.pattern(r'^[a-z0-9_.-]+$',
+              validationMessage: 'Must only include characters a-z0-9_.-')
         ]),
   });
   @override
