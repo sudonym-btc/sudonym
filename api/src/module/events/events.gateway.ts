@@ -33,7 +33,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	broadcastToClients(uids, e: Event) {
 		this.logger.log('Emitting ' + e.name + ' to ' + uids.join(', '));
 		for (const uid of uids) {
-			this.logger.log('Sockets for user', uid, JSON.stringify(this.users[uid].length))
+			this.logger.log('Sockets for user', uid, (this.users[uid] || []).length);
 			for (const sock of this.users[uid] || []) {
 				sock.send(JSON.stringify(e));
 			}
