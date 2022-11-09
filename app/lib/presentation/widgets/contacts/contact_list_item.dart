@@ -13,7 +13,7 @@ class ContactListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return CubitWrapper<ContactCubit, ContactCubitState, Contact>(
         entity: contact,
-        fetch: true,
+        fetch: false,
         builder: (context, state) => state.loading
             ? Container()
             : InkWell(

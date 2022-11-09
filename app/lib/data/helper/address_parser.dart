@@ -34,8 +34,9 @@ extension OnChainValidator on String {
 
 extension LnUrlValidator on String {
   bool isValidLnUrlAddress() {
-    print(split('://').last);
-    if (('https://${split('://').last}').isValidUrl()) return true;
+    if (contains('://') && ('https://${split('://').last}').isValidUrl()) {
+      return true;
+    }
     try {
       const Bech32Codec().decode(
         this,

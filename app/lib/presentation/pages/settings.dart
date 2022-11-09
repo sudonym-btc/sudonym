@@ -22,7 +22,7 @@ class SettingsPage extends StatelessWidget {
                 body: SingleChildScrollView(
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     const LightningSection(),
-                    const CardSection(),
+                    // const CardSection(),
                     const SizedBox(
                       height: padding * 2,
                     ),
@@ -70,7 +70,7 @@ class LightningSectionState extends State<LightningSection> {
         value: getIt<AuthCubit>().user!.lightningAddress,
         validators: [
           Validators.required,
-          Validators.pattern(r'^[A-Za-z0-9_.-]+$')
+          Validators.pattern(r'^[a-z0-9_.-]+$')
         ]),
   });
   @override

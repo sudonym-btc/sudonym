@@ -1,5 +1,5 @@
 import { BaseClass } from './base-class';
-
+export const LIGHTNINGADDRESSREGEX = '^[a-z0-9_\\-\\.]+';
 export class User extends BaseClass {
 	constructor(
 		public id: string,

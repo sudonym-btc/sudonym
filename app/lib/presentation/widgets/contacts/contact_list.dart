@@ -4,7 +4,6 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym.models/index.dart';
 
 class ContactList extends StatelessWidget {
   const ContactList({Key? key}) : super(key: key);
@@ -21,14 +20,10 @@ class ContactList extends StatelessWidget {
           ),
           Expanded(
               child: ListWidget(
-            builder: (el) =>
-                CubitWrapper<ContactCubit, ContactCubitState, Contact>(
-                    entity: el,
-                    fetch: false,
-                    builder: (context, state) => ContactListItem(
-                          contact: state.entity!,
-                          onPressed: () {},
-                        )),
+            builder: (el) => ContactListItem(
+              contact: el!,
+              onPressed: () {},
+            ),
             list: () => ListCubit(getIt<ContactRepository>()),
             emptyText: AppLocalizations.of(context)!.noContactsFound,
           ))

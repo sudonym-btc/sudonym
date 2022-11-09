@@ -1,5 +1,7 @@
 import "base-class.dart" show BaseClass;
 
+const LIGHTNINGADDRESSREGEX = "^[a-z0-9_\\-\\.]+";
+
 class User extends BaseClass {
   String id;
   String firebaseId;

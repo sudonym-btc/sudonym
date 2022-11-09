@@ -21,7 +21,7 @@
     "test:watch": "NODE_ENV=mock jest --watch",
     "test:cov": "NODE_ENV=mock jest --coverage",
     "test:debug": "NODE_ENV=mock node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "docker:test": "docker start $(docker container ls -f name=mysql --format='{{.ID}}') || docker run --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -d -p 3306:3306 mysql:8"
+    "docker:test": "eval $(minikube docker-env -u) && docker start $(docker container ls -a -f name=mysql --format='{{.ID}}') || docker run --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -d -p 3306:3306 mysql:8"
   },
   "author": "",
   "license": "ISC",

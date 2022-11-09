@@ -1,11 +1,12 @@
 import * as Models from '@sudonym/models';
+import { LIGHTNINGADDRESSREGEX } from '@sudonym/models';
 import { ValidationError, ValidationErrorItem } from 'sequelize';
 import {
 	Column,
 	HasMany,
 	PrimaryKey,
 	Table,
-	Validate,
+	Validate
 } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 import { Sender } from '../sender/sender.model';
@@ -20,6 +21,7 @@ export class User extends BaseModel implements Models.User {
 	firebaseId: string;
 
 	@Validate({
+		is: new RegExp(LIGHTNINGADDRESSREGEX),
 		unique: async (val) => {
 			if (
 				await User.findOne({

@@ -7,8 +7,8 @@ scaffoldGroup('Access Scopes', (scaffold) => {
 	// 	return request(scaffold.app.getHttpServer()).post('/auth').expect(401);
 	// });
 
-	it('should not be able to overwrite pot balance', () => {
-		return request(scaffold.app.getHttpServer())
+	it('should not be able to overwrite pot balance', async () => {
+		const data = await request(scaffold.app.getHttpServer())
 			.put('/pot/' + scaffold.entities.pot[0].id)
 			.set({
 				'x-access-token': scaffold.app
@@ -18,15 +18,14 @@ scaffoldGroup('Access Scopes', (scaffold) => {
 			.send({
 				balance: 1000,
 				spendableBalance: 1000,
-			})
-			.expect((d) => {
-				expect(d.body.balance).not.toBe(1000);
-				expect(d.body.spendableBalance).not.toBe(1000);
 			});
+
+			expect(data.body.balance).not.toBe(1000);
+			expect(data.body.spendableBalance).not.toBe(1000);
 	});
 
-	it('should not be able to create pot balance', () => {
-		return request(scaffold.app.getHttpServer())
+	it('should not be able to create pot balance', async () => {
+		const data = await request(scaffold.app.getHttpServer())
 			.post('/pot')
 			.set({
 				'x-access-token': scaffold.app
@@ -38,11 +37,10 @@ scaffoldGroup('Access Scopes', (scaffold) => {
 				currency: 'BTC',
 				balance: 1000,
 				spendableBalance: 1000,
-			})
-			.expect((d) => {
-				expect(d.body.balance).not.toBe(1000);
-				expect(d.body.spendableBalance).not.toBe(1000);
 			});
+
+			expect(data.body.balance).not.toBe(1000);
+			expect(data.body.spendableBalance).not.toBe(1000);
 	});
 
 	// it('should not be able to change transaction amount balance', () => {

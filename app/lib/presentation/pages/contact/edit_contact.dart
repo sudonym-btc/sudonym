@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -55,8 +56,10 @@ class EditContactFormState extends State<EditContactForm> {
           value: widget.entity?.name ?? '', validators: [Validators.required]),
       'ContactAddresses': FormArray(
           widget.entity!.ContactAddresses
-              .map((e) =>
-                  FormGroup({'address': FormControl<String>(value: e.address)}))
+              .map((e) => FormGroup({
+                    'address': FormControl<String>(
+                        value: e.address, validators: [isValidAddressValidator])
+                  }))
               .toList(),
           validators: [Validators.minLength(1)])
     });
@@ -65,8 +68,9 @@ class EditContactFormState extends State<EditContactForm> {
 
   addAddress() {
     addressList.add(FormGroup({
-      'address':
-          FormControl<String>(value: '', validators: [Validators.required]),
+      'address': FormControl<String>(
+          value: '',
+          validators: [Validators.required, isValidAddressValidator]),
     }));
     setState(() {});
   }
@@ -86,13 +90,13 @@ class EditContactFormState extends State<EditContactForm> {
                 ),
               ),
             ),
-            IconButton(
-                onPressed: () {
-                  // final index = addressList.controls.indexOf(f);
-                  addressList.remove(f);
-                  // addressList.removeAt(index);
-                },
-                icon: const Icon(Icons.delete)),
+            // IconButton(
+            //     onPressed: () {
+            //       // final index = addressList.controls.indexOf(f);
+            //       addressList.remove(f);
+            //       // addressList.removeAt(index);
+            //     },
+            //     icon: const Icon(Icons.delete)),
           ],
         ));
   }
@@ -128,7 +132,7 @@ class EditContactFormState extends State<EditContactForm> {
                     const SizedBox(
                       height: padding,
                     ),
-                    Button.flat(onPressed: addAddress, text: 'Add Address')
+                    // Button.flat(onPressed: addAddress, text: 'Add Address')
                   ]));
         }));
   }
