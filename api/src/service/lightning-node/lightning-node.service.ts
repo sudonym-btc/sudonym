@@ -62,7 +62,10 @@ export class LightningNodeService {
 		}, Number(millisatoshis));
 		let totalDelay =
 			9 + // total cltv to be left with at end, this is default value for core-ln
-			circle.reduce((acc, curr) => acc + Number(curr.delay), - circle[0].delay);
+			circle.reduce(
+				(acc, curr) => acc + Number(curr.delay),
+				-circle[0].delay
+			);
 
 		this.logger.debug('total delay', totalDelay);
 		this.logger.debug('total fee', firstAmount - millisatoshis);
@@ -198,7 +201,15 @@ export class LightningNodeService {
 		]);
 	}
 
-	async getFees(pubkey, amount = 0) {
+	async getFeesInvoice(payreq, amount = 1000) {
+		const inv = bolt11.decode(payreq);
+		const destination =
+			inv.tags.find((t) => t.tagName == 'routing_info')?.data[0].pubkey ||
+			inv.payeeNodeKey;
+		return this.getFees(destination, amount);
+	}
+
+	async getFees(pubkey, amount = 1000) {
 		const route = await this.getRoute(pubkey, amount);
 		const first = route[0];
 		const last = route.pop();

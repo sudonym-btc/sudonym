@@ -6,9 +6,8 @@ import {
 	Payment,
 	SATOSHIS,
 	TAddressType,
-	Withdraw
+	Withdraw,
 } from '@sudonym/models';
-import * as bolt11 from 'bolt11';
 import { Receiver } from 'module/receiver/receiver.model';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import fetch from 'node-fetch';
@@ -18,7 +17,7 @@ import { Transaction } from '../transaction/transaction.model';
 import { TransactionService } from '../transaction/transaction.service';
 import {
 	AddressParser,
-	validateInternetIdentifier
+	validateInternetIdentifier,
 } from './address-parser/address-parser';
 import { fetchHttpOpts } from './address-parser/http-agent';
 
@@ -67,8 +66,8 @@ export class ActionService {
 			switch (t) {
 				case 'bolt11':
 					fee =
-						(await this.lightningNodeService.getFees(
-							bolt11.decode(action.originalAddress).payeeNodeKey,
+						(await this.lightningNodeService.getFeesInvoice(
+							action.originalAddress,
 							mSatoshiAmount
 						)) / MSATOSHIS;
 
@@ -84,8 +83,8 @@ export class ActionService {
 							action.originalAddress
 						);
 					fee =
-						(await this.lightningNodeService.getFees(
-							bolt11.decode(offerInvoice).payeeNodeKey,
+						(await this.lightningNodeService.getFeesInvoice(
+							offerInvoice,
 							mSatoshiAmount
 						)) / MSATOSHIS;
 					return Action.from({
@@ -125,8 +124,8 @@ export class ActionService {
 						...action,
 						address,
 						fee:
-							(await this.lightningNodeService.getFees(
-								bolt11.decode(address).payeeNodeKey,
+							(await this.lightningNodeService.getFeesInvoice(
+								address,
 								mSatoshiAmount
 							)) / MSATOSHIS,
 						feeCurrency: 'BTC',
@@ -147,7 +146,6 @@ export class ActionService {
 	}
 
 	async execute(action: Action): Promise<Transaction | Receiver> {
-		
 		if (action instanceof Payment) {
 			console.log({
 				originalAddress: action.originalAddress,
