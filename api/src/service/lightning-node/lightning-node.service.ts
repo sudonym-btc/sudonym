@@ -31,18 +31,44 @@ export class LightningNodeService {
 	}
 
 	async circularRoute(millisatoshis) {
-
-		const outgoingChannel = this.connectedChannels.map(i => {
-			return i.find(c => c.destination != this.info.id && c.satoshis * 1000 >= millisatoshis)
-		}).find(i => !!i);
-		// console.log(outgoingChannel);
-		const restHops = await this.getRoute(this.info.id, millisatoshis, 0, null, outgoingChannel.destination, null, [outgoingChannel.short_channel_id+"/"+(this.info.id > outgoingChannel.destination ? "0" : "1")])
-		const firstHop = await this.getRoute(outgoingChannel.destination, restHops[0].msatoshi + this.calcHopFee(outgoingChannel, restHops[0].msatoshi ), 0, restHops[0].delay + outgoingChannel.delay);
+		const channelPair = this.connectedChannels.find((i) => {
+			return i.find(
+				(c) =>
+					c.destination != this.info.id &&
+					c.satoshis * 1000 >= millisatoshis
+			);
+		});
+		const outgoingChannel = channelPair.find(
+			(c) => c.destination != this.info.id
+		);
+		const incomingChannel = channelPair.find(
+			(c) => c.destination == this.info.id
+		);
+		console.log(outgoingChannel, incomingChannel);
+		const restHops = await this.getRoute(
+			this.info.id,
+			millisatoshis,
+			0,
+			null,
+			outgoingChannel.destination,
+			null,
+			[
+				outgoingChannel.short_channel_id +
+					'/' +
+					(this.info.id > outgoingChannel.destination ? '0' : '1'),
+			]
+		);
+		const firstHop = await this.getRoute(
+			outgoingChannel.destination,
+			restHops[0].msatoshi +
+				this.calcHopFee(outgoingChannel, restHops[0].msatoshi),
+			0,
+			restHops[0].delay + incomingChannel.delay
+		);
 		// console.log(!restHops.length || !firstHop.length);
 		// console.log(restHops, firstHop);
 
 		return [...firstHop, ...restHops];
-		
 	}
 
 	async loadInfo() {
@@ -97,9 +123,7 @@ export class LightningNodeService {
 		for (const peer of peers) {
 			try {
 				peer.route = await this.getRoute(peer.id);
-			} catch(e) {
-				
-			}
+			} catch (e) {}
 		}
 		return peers;
 	}
@@ -147,9 +171,9 @@ export class LightningNodeService {
 		const inv = bolt11.decode(payreq);
 		// Get route to route hint for private nodes, or node_id for public nodes
 		const destination =
-			inv.tags?.find((t) => t.tagName == 'routing_info')?.data[0].pubkey ||
-			inv.payeeNodeKey;
-			// todo: take into account all route hints and add the extra fee!
+			inv.tags?.find((t) => t.tagName == 'routing_info')?.data[0]
+				.pubkey || inv.payeeNodeKey;
+		// todo: take into account all route hints and add the extra fee!
 		return this.getFees(destination, amount);
 	}
 
@@ -164,21 +188,32 @@ export class LightningNodeService {
 		return first.msatoshi - last.msatoshi;
 	}
 
-	async getRoute(pubkey, amount = 1000, riskfactor = 0, cltv = null, from_id = null, fuzz = null, exclude = null, maxhops = null) {
+	async getRoute(
+		pubkey,
+		amount = 1000,
+		riskfactor = 0,
+		cltv = null,
+		from_id = null,
+		fuzz = null,
+		exclude = null,
+		maxhops = null
+	) {
 		if (pubkey == this.info.id && !from_id) {
 			return await this.circularRoute(amount);
 		}
 
-		return (await this.rpc('getroute', [
-			pubkey,
-			amount,
-			riskfactor,
-			cltv,
-			from_id,
-			fuzz,
-			exclude,
-			maxhops
-		])).route;
+		return (
+			await this.rpc('getroute', [
+				pubkey,
+				amount,
+				riskfactor,
+				cltv,
+				from_id,
+				fuzz,
+				exclude,
+				maxhops,
+			])
+		).route;
 	}
 
 	async pay(invoice, amount) {
@@ -190,8 +225,11 @@ export class LightningNodeService {
 
 		// Selfpayments must be routed manually for core-ln
 		if (inv.payeeNodeKey == this.info.id) {
-			const circleRoute = await this.getRoute(this.info.id, hasAmount ? Number(inv.millisatoshis) : amount);
-			
+			const circleRoute = await this.getRoute(
+				this.info.id,
+				hasAmount ? Number(inv.millisatoshis) : amount
+			);
+
 			this.logger.debug(
 				'Routing local payment',
 				JSON.stringify(circleRoute),
