@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:universal_io/io.dart';
 
@@ -9,17 +10,18 @@ import 'package:universal_io/io.dart';
 class ClipboardListener extends TransactionListenerSubtype {
   Timer? clipboardTriggerTime;
 
-  StreamController controller = StreamController.broadcast();
+  StreamController<String> controller = StreamController.broadcast();
   StreamSubscription? sub;
 
   init() {
     // Only listen to clipboard constantly if doesn't trigger notification
     if (canReadClipboardUndetected()) {
-      clipboardTriggerTime = Timer.periodic(const Duration(seconds: 1),
-          (timer) => check().then((text) => controller.add(text)));
+      clipboardTriggerTime = Timer.periodic(
+          const Duration(seconds: 1),
+          (timer) => check()
+              .then((text) => text != null ? controller.add(text) : null));
     }
-
-    sub ??= controller.stream.distinct().listen((event) {
+    sub ??= controller.stream.whereNotNull().distinct().listen((event) {
       streamController.add(event);
     });
   }

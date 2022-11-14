@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:native_flutter_proxy/native_proxy_reader.dart';
 import 'package:sudonym/config/index.dart';
@@ -10,26 +11,29 @@ import 'package:sudonym/injection.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 @Singleton(as: Websocket, env: Env.allButMock)
-class WebsocketImpl extends Websocket with WebsocketLogger {
+class WebsocketImpl extends Websocket
+    with WebsocketLogger, WidgetsBindingObserver {
   Config config;
   StreamController stream = StreamController.broadcast();
   StreamSubscription? socketSubscription;
   WebSocketChannel? channel;
 
-  WebsocketImpl(this.config) : super();
+  WebsocketImpl(this.config) : super() {
+    WidgetsFlutterBinding.ensureInitialized();
+    WidgetsBinding.instance?.addObserver(this);
+  }
 
   @override
   disconnect() {
     if (socketSubscription != null) {
+      loggy.i('Disconnecting websocket');
       socketSubscription!.cancel();
     }
   }
 
   @override
   connect() async {
-    if (socketSubscription != null) {
-      socketSubscription!.cancel();
-    }
+    disconnect();
     Uri url = Uri.parse(
             '${config.apiUrl.replaceAll('http', 'ws')}:${config.websocketPort}/socket.io')
         .replace(queryParameters: {
@@ -47,13 +51,24 @@ class WebsocketImpl extends Websocket with WebsocketLogger {
       await Future.delayed(const Duration(seconds: 1));
       await connect();
     }, onDone: () async {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 500));
       await connect();
     }, cancelOnError: true);
   }
 
   @override
   Stream getStream() => stream.stream;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // loggy.i('changed state');
+    if (state == AppLifecycleState.resumed) connect();
+  }
+
+  void dispose() {
+    loggy.i('Websocket disposed');
+    WidgetsBinding.instance?.removeObserver(this);
+  }
 }
 
 abstract class Websocket {
