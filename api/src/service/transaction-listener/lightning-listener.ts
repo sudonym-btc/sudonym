@@ -63,8 +63,13 @@ export class LightningListener extends TransactionListener {
 		this.logger.verbose('PartId', partId);
 
 		const waitSendPay = async () => {
-			this.logger.debug('Waiting for payment', invoice, payment_hash);
-			await this.lightningNodeService
+			this.logger.debug(
+				'Waiting for payment',
+				invoice,
+				payment_hash,
+				partId
+			);
+			this.lightningNodeService
 				.waitSendPay(payment_hash, null, partId)
 				.then((e) => {
 					if (e) {
@@ -82,8 +87,9 @@ export class LightningListener extends TransactionListener {
 					}
 				})
 				.catch((e) => {
+					this.logger.error('Wait send pay error', e, e?.error);
+
 					if (e.error) {
-						this.logger.error('Wait send pay error', e.error);
 						if (e.error?.data) {
 							this.lightningEvents.onEvent.next({
 								event: 'sendpay',
@@ -113,6 +119,13 @@ export class LightningListener extends TransactionListener {
 				Math.round(entity.amount * MSATOSHIS)
 			);
 			this.logger.debug('Lightning pay', response);
+
+			if (response.status) {
+				this.lightningEvents.onEvent.next({
+					event: 'sendpay',
+					data: response,
+				});
+			}
 			this.waitForPayment(
 				response.payment_hash,
 				invoice,
