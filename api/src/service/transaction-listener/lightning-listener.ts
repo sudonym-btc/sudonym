@@ -123,7 +123,10 @@ export class LightningListener extends TransactionListener {
 			if (response.status) {
 				this.lightningEvents.onEvent.next({
 					event: 'sendpay',
-					data: response,
+					data: {
+						bolt11: invoice,
+						...response,
+					},
 				});
 			}
 			this.waitForPayment(
@@ -136,10 +139,10 @@ export class LightningListener extends TransactionListener {
 			if (e instanceof LightningError) {
 				this.logger.warn('Pay error', e);
 				const data = e.error?.data || e.error;
-				data.bolt11 = invoice;
 				this.lightningEvents.onEvent.next({
 					event: 'sendpay',
 					data: {
+						bolt11: invoice,
 						...data,
 						...(data.attempts?.length ? data.attempts[0] : {}),
 					},
