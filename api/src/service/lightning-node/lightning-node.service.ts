@@ -26,8 +26,12 @@ export class LightningNodeService {
 		const fee =
 			Number(chann.base_fee_millisatoshi) +
 			Math.ceil((chann.fee_per_millionth / 1000000) * amount);
-		// this.logger.debug("Calculating fee", chann, amount, fee);
+		this.logger.debug('Calculating fee', chann, amount, fee);
 		return fee;
+	}
+
+	getDirection(from, to) {
+		return from < to ? '0' : '1';
 	}
 
 	async circularRoute(millisatoshis) {
@@ -45,28 +49,33 @@ export class LightningNodeService {
 			(c) => c.destination == this.info.id
 		);
 		console.log(outgoingChannel, incomingChannel);
+		// Get route to current node from first peer which excludes the direct route
 		const restHops = await this.getRoute(
 			this.info.id,
 			millisatoshis,
 			0,
-			null,
+			200,
 			outgoingChannel.destination,
 			null,
 			[
 				outgoingChannel.short_channel_id +
 					'/' +
-					(this.info.id > outgoingChannel.destination ? '0' : '1'),
+					this.getDirection(
+						outgoingChannel.destination,
+						this.info.id
+					),
 			]
+		);
+		const secondHop = (await this.getChannel(restHops[0].channel)).find(
+			(c) => c.destination == restHops[0].id
 		);
 		const firstHop = await this.getRoute(
 			outgoingChannel.destination,
 			restHops[0].msatoshi +
-				this.calcHopFee(outgoingChannel, restHops[0].msatoshi),
+				this.calcHopFee(secondHop, restHops[0].msatoshi),
 			0,
 			restHops[0].delay + incomingChannel.delay
 		);
-		// console.log(!restHops.length || !firstHop.length);
-		// console.log(restHops, firstHop);
 
 		return [...firstHop, ...restHops];
 	}
@@ -234,7 +243,7 @@ export class LightningNodeService {
 				'Routing local payment',
 				JSON.stringify(circleRoute),
 				inv.tagsObject.payment_hash,
-				circleRoute[0].msatoshi,
+				hasAmount ? amount : null,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1
@@ -243,7 +252,7 @@ export class LightningNodeService {
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
-				amount,
+				hasAmount ? amount : null,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1,
