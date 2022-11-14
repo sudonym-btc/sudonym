@@ -12,7 +12,7 @@ class QRView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MobileScanner(
-        fit: BoxFit.fill,
+        fit: BoxFit.cover,
         allowDuplicates: false,
         onDetect: (barcode, args) {
           final String? code = barcode.rawValue;
