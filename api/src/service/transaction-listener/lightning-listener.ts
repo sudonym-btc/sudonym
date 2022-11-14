@@ -35,7 +35,9 @@ export class LightningListener extends TransactionListener {
 						potId: receivers.data[0].potId,
 						receiverId: receivers.data[0].id,
 						outgoing: false,
-						amount: e.data.msatoshi / MSATOSHIS,
+						amount:
+							(e.data.msatoshi || e.data.msatoshi_received) / //depends if amount in invoice as to which key to access
+							MSATOSHIS,
 						status: true,
 						currencyCode: 'BTC',
 						txid: e.data.bolt11,
