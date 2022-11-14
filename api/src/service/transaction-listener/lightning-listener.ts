@@ -122,9 +122,14 @@ export class LightningListener extends TransactionListener {
 			this.logger.error('Pay error', e);
 			if (e instanceof LightningError) {
 				this.logger.warn('Pay error', e);
+				const data = e.error?.data || e.error;
+				data.bolt11 = invoice;
 				this.lightningEvents.onEvent.next({
-					event: 'invoice',
-					data: e.error.data,
+					event: 'sendpay',
+					data: {
+						...data,
+						...(data.attempts?.length ? data.attempts[0] : {}),
+					},
 				});
 			}
 		}
@@ -190,10 +195,13 @@ export class LightningListener extends TransactionListener {
 								? (e.data as any).msatoshi_sent / MSATOSHIS
 								: null,
 							status,
-							...(!status && (e.data as any).failcodename
+							...(!status &&
+							((e.data as any).failcodename ||
+								(e.data as any).failreason)
 								? {
-										errorMessage: (e.data as any)
-											.failcodename,
+										errorMessage:
+											(e.data as any).failcodename ||
+											(e.data as any).failreason,
 								  }
 								: {}),
 						}
