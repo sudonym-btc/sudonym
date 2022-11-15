@@ -23,6 +23,8 @@ export class ActionController {
 				res.status(503);
 				return res.json(e);
 			}
+			res.status(500);
+			return res.send(e);
 		}
 	}
 
