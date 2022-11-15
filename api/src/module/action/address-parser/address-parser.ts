@@ -20,9 +20,16 @@ export class AddressParser implements IAddressParser {
 
 	async parse(address): Promise<Action> {
 		const [type, trimmedAddress] = this.getType(address);
-		this.logger.debug('Parsing', trimmedAddress, type);
+		this.logger.debug(
+			'Parsing',
+			trimmedAddress,
+			type,
+			type == 'bolt11',
+			'bolt11'
+		);
+		console.log(type, 'bolt11', type == 'bolt11');
 		switch (type) {
-			case 'lightningaddress':
+			case 'lightningaddress': {
 				return Action.from({
 					originalAddress: trimmedAddress,
 					type: 'pay',
@@ -32,6 +39,7 @@ export class AddressParser implements IAddressParser {
 					isLnUrl: true,
 					isLnAddress: true,
 				});
+			}
 			case 'lnurl': {
 				const remoteResponse = await this.fetchRemoteLnUrl(
 					trimmedAddress
@@ -142,10 +150,11 @@ export class AddressParser implements IAddressParser {
 	};
 
 	fetchBolt11 = async (invoice: string) => {
+		console.log(invoice, invoice.includes(BOLT11_SCHEME));
 		// Check if Invoice starts with `lnbc` prefix
-		if (!invoice.includes(BOLT11_SCHEME)) {
-			return null;
-		}
+		// if (!invoice.includes(BOLT11_SCHEME)) {
+		// 	return null;
+		// }
 		try {
 			this.logger.log('parsing');
 			// Decoded BOLT11 Invoice
@@ -222,7 +231,7 @@ export class AddressParser implements IAddressParser {
 			: isBolt11
 			? 'bolt11'
 			: null;
-		return [type == 'onchain' ? address : address.toLowerCase(), type];
+		return [type, type == 'onchain' ? address : address.toLowerCase()];
 	}
 
 	parseLnUrlString(str: string) {
