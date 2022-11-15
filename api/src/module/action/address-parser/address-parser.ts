@@ -169,7 +169,7 @@ export class AddressParser implements IAddressParser {
 
 		// Check if this is a Lightning Address
 		if (validateInternetIdentifier(address)) {
-			return ['lightningaddress', address];
+			return ['lightningaddress', address.toLowerCase()];
 		}
 		// Check if Invoice has `lightning` or `lnurl` prefixes
 		// (9 chars + the `:` or `=` chars) --> 10 characters total
@@ -180,10 +180,12 @@ export class AddressParser implements IAddressParser {
 		}
 
 		// (5 chars + the `:` or `=` chars) --> 6 characters total
-		const hasLNURLPrefix = address.includes(`${LNURL_SCHEME}:`);
+		const hasLNURLPrefix = address
+			.toLowerCase()
+			.includes(`${LNURL_SCHEME}:`);
 		if (hasLNURLPrefix) {
 			// Remove the `lightning` prefix
-			address = address.slice(6, address.length);
+			address = address.slice(6, address.length).toLowerCase();
 		}
 
 		let isBolt11 = false;
@@ -197,22 +199,22 @@ export class AddressParser implements IAddressParser {
 
 		// Parse LNURL bech32 or URL, or BOLT11
 		const isLnUrl =
-			address.startsWith(LNURL_SCHEME) || validURL('https://' + address);
-		return [
-			isLnUrl
-				? 'lnurl'
-				: validateBitcoinAddress(
-						address,
-						['mock', 'development'].includes(this.config.env)
-							? null
-							: Network[this.config.bitcoin.network] // Don't check for valid network if in testing mode
-				  )
-				? 'onchain'
-				: isBolt11
-				? 'bolt11'
-				: null,
-			address,
-		];
+			address.toLowerCase().startsWith(LNURL_SCHEME) ||
+			validURL('https://' + address);
+
+		const type = isLnUrl
+			? 'lnurl'
+			: validateBitcoinAddress(
+					address,
+					['mock', 'development'].includes(this.config.env)
+						? null
+						: Network[this.config.bitcoin.network] // Don't check for valid network if in testing mode
+			  )
+			? 'onchain'
+			: isBolt11
+			? 'bolt11'
+			: null;
+		return [type == 'onchain' ? address : address.toLowerCase(), type];
 	}
 
 	parseLnUrlString(str: string) {
