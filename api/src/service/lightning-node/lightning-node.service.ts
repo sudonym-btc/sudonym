@@ -39,7 +39,8 @@ export class LightningNodeService {
 			return i.find(
 				(c) =>
 					c.destination != this.info.id &&
-					c.satoshis * 1000 >= millisatoshis
+					c.satoshis * 1000 >= millisatoshis &&
+					c.state == 'CHANNELD_NORMAL'
 			);
 		});
 		const outgoingChannel = channelPair.find(
