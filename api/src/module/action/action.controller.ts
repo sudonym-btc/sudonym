@@ -19,6 +19,7 @@ export class ActionController {
 		try {
 			return res.json(await this.actionService.parse(address));
 		} catch (e) {
+			console.error(e);
 			if (e instanceof ActionParseResponse) {
 				res.status(503);
 				return res.json(e);
