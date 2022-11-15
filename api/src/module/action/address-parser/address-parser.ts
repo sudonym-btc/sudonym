@@ -146,16 +146,24 @@ export class AddressParser implements IAddressParser {
 		if (!invoice.includes(BOLT11_SCHEME)) {
 			return null;
 		}
+		try {
+			this.logger.log('parsing');
+			// Decoded BOLT11 Invoice
+			const data = await this.lightningNodeService.decodeInvoice(invoice);
+			this.logger.log(data);
 
-		// Decoded BOLT11 Invoice
-		const data = await this.lightningNodeService.decodeInvoice(invoice);
-		this.logger.debug(data);
-
-		return ActionRemoteResponse.fromJson({
-			data,
-			message: null,
-			success: true,
-		}).toJson();
+			return ActionRemoteResponse.fromJson({
+				data,
+				message: null,
+				success: true,
+			}).toJson();
+		} catch (e) {
+			return {
+				success: false,
+				message: 'Could not parse lightning invoice',
+				...e,
+			};
+		}
 	};
 
 	getType(address: string): [string, string] {
