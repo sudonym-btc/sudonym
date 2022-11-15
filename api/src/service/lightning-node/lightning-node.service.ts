@@ -35,18 +35,15 @@ export class LightningNodeService {
 	}
 
 	async circularRoute(millisatoshis) {
-		const channelPair = this.connectedChannels.find((i) => {
-			return i.find(
-				(c) =>
-					c.destination != this.info.id &&
-					c.satoshis * 1000 >= millisatoshis &&
-					c.active
-			);
-		});
-		const outgoingChannel = channelPair.find(
+		const channel = this.connectedChannels.find(
+			(c) =>
+				c.spendable_msatoshi >= millisatoshis &&
+				c.state == 'CHANNELD_NORMAL'
+		);
+		const outgoingChannel = channel.channels.find(
 			(c) => c.destination != this.info.id
 		);
-		const incomingChannel = channelPair.find(
+		const incomingChannel = channel.channels.find(
 			(c) => c.destination == this.info.id
 		);
 		console.log(outgoingChannel, incomingChannel);
@@ -89,7 +86,12 @@ export class LightningNodeService {
 			await this.listChannels().then((i) =>
 				i
 					.filter((ch) => ch.short_channel_id)
-					.map((ch) => this.getChannel(ch.short_channel_id))
+					.map((ch) =>
+						this.getChannel(ch.short_channel_id).then((i) => ({
+							...ch,
+							channels: i,
+						}))
+					)
 			)
 		);
 		this.logger.debug('channels', JSON.stringify(this.connectedChannels));
