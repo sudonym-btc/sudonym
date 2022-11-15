@@ -40,7 +40,7 @@ export class LightningNodeService {
 				(c) =>
 					c.destination != this.info.id &&
 					c.satoshis * 1000 >= millisatoshis &&
-					c.state == 'CHANNELD_NORMAL'
+					c.active
 			);
 		});
 		const outgoingChannel = channelPair.find(
