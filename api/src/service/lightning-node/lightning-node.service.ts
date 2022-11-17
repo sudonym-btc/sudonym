@@ -264,15 +264,20 @@ export class LightningNodeService {
 
 		this.logger.verbose('Making payment to ' + invoice);
 
-		return this.makeRequest({
-			path: '/v1/pay',
-			method: 'POST',
-			data: {
-				invoice,
-				amount: !hasAmount ? Math.round(amount) : null,
-				retry_for: 20, //seconds
-			},
-		});
+		return this.rpc('pay', [
+			invoice,
+			!hasAmount ? Math.round(amount) : null,
+			null, //[label]
+			null, //[riskfactor]
+			null, // [maxfeepercent],
+			10, // [retry_for],
+			null, // [maxdelay]
+			null, //[exemptfee]
+			null, //[localinvreqid]
+			['758820x1587x1/0', '758820x1587x1/1'], //[exclude]
+			null, //[maxfee]
+			null, //[description]
+		]);
 	}
 
 	waitSendPay(payment_hash: string, timeout: number | null, partId: any) {

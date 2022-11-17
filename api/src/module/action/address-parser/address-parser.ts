@@ -1,5 +1,10 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { Action, ActionRemoteResponse, IAddressParser } from '@sudonym/models';
+import {
+	Action,
+	ActionRemoteResponse,
+	IAddressParser,
+	TAddressType,
+} from '@sudonym/models';
 import { bech32 } from 'bech32';
 import {
 	Network,
@@ -20,14 +25,7 @@ export class AddressParser implements IAddressParser {
 
 	async parse(address): Promise<Action> {
 		const [type, trimmedAddress] = this.getType(address);
-		this.logger.debug(
-			'Parsing',
-			trimmedAddress,
-			type,
-			type == 'bolt11',
-			'bolt11'
-		);
-		console.log(type, 'bolt11', type == 'bolt11');
+		this.logger.debug('Parsing', trimmedAddress, type);
 		switch (type) {
 			case 'lightningaddress': {
 				return Action.from({
@@ -175,7 +173,7 @@ export class AddressParser implements IAddressParser {
 		}
 	};
 
-	getType(address: string): [string, string] {
+	getType(address: string): [TAddressType, string] {
 		this.logger.debug('Parsing', address);
 
 		// Trim whitespace and remove protocol
