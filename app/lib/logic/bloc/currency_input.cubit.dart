@@ -60,9 +60,6 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
 
   CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
     options.controller!.outputStream.stream
-        .doOnData((event) {
-          print(event);
-        })
         .distinct()
         .map((event) => event.amount)
         .debounceTime(const Duration(milliseconds: 500))

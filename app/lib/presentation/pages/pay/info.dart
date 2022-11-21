@@ -75,9 +75,14 @@ class PaymentInfoPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Table(
+        columnWidths: const {
+          0: IntrinsicColumnWidth(),
+          1: FlexColumnWidth(),
+        },
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
           TableRow(children: [
-            Text(AppLocalizations.of(context)!.amount),
+            TableKey(child: Text(AppLocalizations.of(context)!.amount)),
             AmountText(
                 amount: entity.amount,
                 fromCurrency: entity.currency,
@@ -85,7 +90,7 @@ class PaymentInfoPreview extends StatelessWidget {
                 builder: (state) => Text(state))
           ]),
           TableRow(children: [
-            Text(AppLocalizations.of(context)!.fee),
+            TableKey(child: Text(AppLocalizations.of(context)!.fee)),
             AmountText(
                 amount: entity.fee,
                 fromCurrency: entity.feeCurrency,
@@ -93,7 +98,7 @@ class PaymentInfoPreview extends StatelessWidget {
                 builder: (state) => Text(state))
           ]),
           TableRow(children: [
-            Text(AppLocalizations.of(context)!.address),
+            TableKey(child: Text(AppLocalizations.of(context)!.address)),
             Text(
               entity.address ?? '',
               style: const TextStyle(

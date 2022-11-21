@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym.models/index.dart';
 // import 'package:collection/collection.dart'; // You have to add this manually, for some reason it cannot be added automatically
 
 @LazySingleton(as: ActionRepository, env: [Env.mock])
@@ -54,7 +54,6 @@ class MockActionRepository implements ActionRepository {
   validateInternetIdentifier(internetIdentifier) {
     var re = RegExp(
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-    // print(re.hasMatch(internetIdentifier));
     return re.hasMatch(internetIdentifier);
   }
 
