@@ -40,7 +40,17 @@ abstract class EntityCubit<EntityRepo extends CrudRepository<EntityType>,
 
   fetch(dynamic id) async {
     safeEmit(stateClass(entity: state.entity, loading: true));
+    EntityType? updated;
+    StreamSubscription fetchSub = repository.updated.stream.listen((event) {
+      if ((event as dynamic).id == (state.entity as dynamic).id) {
+        updated = event;
+      }
+    });
     set(await repository.fetch(id));
+    fetchSub.cancel();
+    if (updated != null) {
+      set(updated!);
+    }
   }
 
   createOrUpdate(EntityType params) {

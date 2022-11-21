@@ -1,7 +1,6 @@
+import inspect
 import os
 import sys
-import inspect
-
 
 # Add the spec folder to path, as py will only find files in same folder
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -9,11 +8,12 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir) 
 sys.path.insert(0, parentdir + "/spec") 
 
+import os
+from random import random, seed
+
 from spec.kubernetes import GenerateConfig
-from yaml import dump_all, dump
-import os 
-from random import seed
-from random import random
+from yaml import dump, dump_all
+
 # seed random number generator
 seed(1)
 
@@ -37,13 +37,9 @@ print("Generated resources for minikube...")
 # print(minikube_resources)
 print()
 
-# Make image pull for API local.
+# Print resource name
 for idx, item in enumerate(minikube_resources):
     print(item["metadata"]["name"])
-    if item["metadata"]["name"] == "development-api-deployment":
-        item["spec"]["template"]["spec"]["containers"][0]["imagePullPolicy"] = "IfNotPresent"
-        item["spec"]["template"]["spec"]["containers"][0]["image"] = "api"
-        item["spec"]["template"]["spec"]["containers"][0]["command"] = ["npm", "run", "start:dev"]
 
 
 # Output resources to a yaml file
