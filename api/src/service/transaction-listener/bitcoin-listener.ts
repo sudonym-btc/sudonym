@@ -63,13 +63,19 @@ export class BitcoinListener extends TransactionListener {
 									transaction.amount
 								);
 
-							console.log(
+							const response =
 								await this.lightningNodeService.withdrawOnChain(
 									{
 										satoshis: btcAmount.amount * SATOSHIS,
-										address: transaction.originalAddress,
+										address: transaction.address,
 									}
-								)
+								);
+							await this.transactionService.update(
+								transaction.id,
+								{
+									txid: response.txid,
+									status: true,
+								}
 							);
 						} catch (e) {
 							await this.transactionService.update(

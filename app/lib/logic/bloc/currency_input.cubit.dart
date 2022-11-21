@@ -56,21 +56,15 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
   final CurrencyInputOptions options;
   MoneyMaskedTextController? controller;
 
-  num clickMultiplier = 0;
   num clickValueBase = 1;
-  DateTime? lastClick;
 
   CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
-    Timer.periodic(const Duration(milliseconds: 400), (timer) {
-      if (clickMultiplier > 0 &&
-          (lastClick == null ||
-              DateTime.now().difference(lastClick!).inMilliseconds > 400)) {
-        clickMultiplier--;
-      }
-    });
     options.controller!.outputStream.stream
-        .map((event) => event.amount)
+        .doOnData((event) {
+          print(event);
+        })
         .distinct()
+        .map((event) => event.amount)
         .debounceTime(const Duration(milliseconds: 500))
         .asyncMap(resolveValues)
         .listen((event) {});
@@ -110,6 +104,9 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
         altLoading: true));
     createController();
     controller!.updateValue(newCurrVal.toDouble());
+    setValue(getRealValue(
+        options.currencies[state.currCurrency], controller!.numberValue));
+    clickValueBase = options.currencies[state.currCurrency] == 'BTC' ? 1000 : 1;
   }
 
   toggleCurrency() {
@@ -156,30 +153,56 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     safeEmit(state.copyWith(currVal: val.toDouble()));
   }
 
-  setClickValue(num val) {
-    controller!.updateValue(val.toDouble());
-    if (clickMultiplier <= 3) {
-      clickMultiplier++;
-    }
-    lastClick = DateTime.now();
+  getMultiplier() {
+    int multiplier = (getDisplayValue(
+                options.currencies[state.currCurrency], state.currVal) /
+            clickValueBase)
+        .toString()
+        .split('.')[0]
+        .length;
+    return max(0, multiplier - 1);
   }
 
-  incrementValue() {
-    num clickVal = (clickValueBase * pow(10, clickMultiplier));
+  incrementValue() async {
+    num clickVal = (clickValueBase * pow(10, getMultiplier()));
     num newVal =
         getDisplayValue(options.currencies[state.currCurrency], state.currVal) +
             clickVal;
     newVal = (newVal / clickVal).ceil() * clickVal;
-    setClickValue(newVal);
+    controller!.updateValue(min(
+        getDisplayValue(options.currencies[state.currCurrency], await getMax()),
+        newVal.toDouble()));
   }
 
-  decrementValue() {
-    num clickVal = (clickValueBase * pow(10, clickMultiplier));
+  Future<double> getMin() async {
+    return ((options.min ?? 0) *
+            (await _currencyRespository.getRate(
+                    fromCurrency: options.maxCurrency ??
+                        options.currencies[state.currCurrency],
+                    toCurrency: options.currencies[state.currCurrency]))
+                .amount)
+        .toDouble();
+  }
+
+  Future<double> getMax() async {
+    return ((options.max ?? 9999999999999) *
+            (await _currencyRespository.getRate(
+                    fromCurrency: options.maxCurrency ??
+                        options.currencies[state.currCurrency],
+                    toCurrency: options.currencies[state.currCurrency]))
+                .amount)
+        .toDouble();
+  }
+
+  decrementValue() async {
+    num clickVal = (clickValueBase * pow(10, getMultiplier()));
     num newVal =
         getDisplayValue(options.currencies[state.currCurrency], state.currVal) -
             clickVal;
     newVal = (newVal / clickVal).floor() * clickVal;
-    setClickValue(newVal);
+    controller!.updateValue(max(
+        getDisplayValue(options.currencies[state.currCurrency], await getMin()),
+        newVal.toDouble()));
   }
 
   // Convert display value in sats to BTC value

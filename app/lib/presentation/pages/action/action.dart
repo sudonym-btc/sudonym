@@ -30,13 +30,13 @@ class ActionPage extends StatelessWidget {
         (err.response as dynamic).statusCode == 503) {
       return StatusPage(
           title: 'Error',
-          subtitle: 'Could not get OK response from remote server',
+          subtitleText: 'Could not get OK response from remote server',
           content: Text(err.message.toString()),
           color: Theme.of(context).errorColor);
     }
     return StatusPage(
         title: 'Error',
-        subtitle: 'Encountered an unrecoverable error',
+        subtitleText: 'Encountered an unrecoverable error',
         content: Text(err.toString()),
         color: Theme.of(context).errorColor);
   }

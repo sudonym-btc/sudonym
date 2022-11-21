@@ -72,7 +72,7 @@ class _SendPageState extends State<SendPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: padding),
+                      // const SizedBox(height: padding),
                       ReactiveForm(
                         formGroup: form,
                         child: Row(children: [
@@ -179,8 +179,9 @@ class CheckClipboardState extends State<CheckClipboard> {
           ListTile(
               leading: Icon(Icons.paste),
               title: Text(
-                AppLocalizations.of(context)!.paste + ' " $address "',
-                overflow: TextOverflow.ellipsis,
+                AppLocalizations.of(context)!.paste + ' "$address"',
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
               onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
                   context: context, link: address!, pot: widget.pot))),

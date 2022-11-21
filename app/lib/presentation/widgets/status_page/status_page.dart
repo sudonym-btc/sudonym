@@ -5,7 +5,8 @@ import 'package:sudonym/presentation/index.dart';
 class StatusPage extends StatelessWidget {
   final String pageTitle;
   final String? title;
-  final String? subtitle;
+  final Widget? subtitle;
+  final String? subtitleText;
   final IconData? icon;
   final Widget? content;
   final Widget? actions;
@@ -16,6 +17,7 @@ class StatusPage extends StatelessWidget {
       this.pageTitle = '',
       this.title,
       this.subtitle,
+      this.subtitleText,
       this.icon,
       this.content,
       this.actions,
@@ -50,8 +52,8 @@ class StatusPage extends StatelessWidget {
 
     List<Widget> children = [];
     if (title != null) children.add(Header(title));
-    if (subtitle != null) children.add(Subtitle(subtitle));
-    if (title != null || subtitle != null) {
+    if (subtitle != null) children.add(subtitle ?? Subtitle(subtitleText));
+    if (title != null || subtitle != null || subtitleText != null) {
       children.add(const SizedBox(height: padding * 2));
     }
     if (content == null && icon == null) {

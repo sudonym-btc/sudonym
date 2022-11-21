@@ -25,14 +25,14 @@ class ReceiverPage extends StatelessWidget {
           } else if (state.entity!.received > 0) {
             return StatusPage(
                 title: AppLocalizations.of(context)!.received,
-                subtitle: AppLocalizations.of(context)!.receivedPayment,
+                subtitleText: AppLocalizations.of(context)!.receivedPayment,
                 icon: FontAwesomeIcons.check,
                 color: Colors.green);
           }
 
           return StatusPage(
               title: AppLocalizations.of(context)!.receiving,
-              subtitle: AppLocalizations.of(context)!.waitingForPayment,
+              subtitleText: AppLocalizations.of(context)!.waitingForPayment,
               content: const Center(
                   child: CircularProgressIndicator(color: Colors.white)),
               color: Colors.indigo.shade800);

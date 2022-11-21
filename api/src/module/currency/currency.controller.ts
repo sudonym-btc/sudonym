@@ -5,6 +5,7 @@ import {
 	Header,
 	Inject,
 	Query,
+	Res,
 } from '@nestjs/common';
 import { CurrencyService } from './currency.service';
 
@@ -15,12 +16,18 @@ export class CurrencyController {
 	@Get('')
 	@CacheTTL(60)
 	@Header('Cache-Control', 'max-age=60')
-	convert(
+	async convert(
 		@Query('fromCurrency') from,
 		@Query('toCurrency') to,
 		@Query('amount') amount,
-		@Query('time') time
+		@Query('time') time,
+		@Res({ passthrough: true }) response
 	) {
+		if (!time) {
+			response.set('Cache-Control', 'public, max-age=60');
+		} else {
+			response.set('Cache-Control', 'public, max-age=31536000');
+		}
 		return this.service.convert(
 			from,
 			to,

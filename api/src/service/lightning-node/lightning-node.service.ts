@@ -3,6 +3,11 @@ import axios from 'axios';
 import * as bolt11 from 'bolt11';
 import * as fs from 'fs';
 import * as https from 'https';
+import {
+	PayResponse,
+	SendPayResponse,
+	WaitSendPayResponse,
+} from 'service/transaction-listener/lightning-events';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../../config/config';
 
@@ -228,7 +233,7 @@ export class LightningNodeService {
 		).route;
 	}
 
-	async pay(invoice, amount) {
+	async pay(invoice, amount): Promise<PayResponse | SendPayResponse> {
 		const inv = bolt11.decode(invoice);
 		let hasAmount = false;
 		if (inv.millisatoshis || inv.satoshis) {
@@ -242,16 +247,7 @@ export class LightningNodeService {
 				hasAmount ? Number(inv.millisatoshis) : amount
 			);
 
-			this.logger.debug(
-				'Routing local payment',
-				JSON.stringify(circleRoute),
-				inv.tagsObject.payment_hash,
-				hasAmount ? amount : null,
-				invoice,
-				inv.tagsObject.payment_secret,
-				1
-			);
-			return this.rpc('sendpay', [
+			const args = [
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
@@ -259,7 +255,10 @@ export class LightningNodeService {
 				invoice,
 				inv.tagsObject.payment_secret,
 				1,
-			]);
+			];
+
+			this.logger.debug('Routing local payment', ...args);
+			return this.rpc('sendpay', args);
 		}
 
 		this.logger.verbose('Making payment to ' + invoice);
@@ -280,8 +279,12 @@ export class LightningNodeService {
 		]);
 	}
 
-	waitSendPay(payment_hash: string, timeout: number | null, partId: any) {
-		return this.rpc('waitsendpay', [payment_hash, null, partId]);
+	async waitSendPay(
+		payment_hash: string,
+		timeout: number | null = null,
+		partId?: number
+	): Promise<WaitSendPayResponse> {
+		return this.rpc('waitsendpay', [payment_hash, timeout, partId]);
 	}
 
 	async listSendPays(bolt11, payment_hash) {

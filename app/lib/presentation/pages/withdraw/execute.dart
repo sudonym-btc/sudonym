@@ -18,7 +18,7 @@ class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
     return StatusPage(
       color: Colors.red,
       title: AppLocalizations.of(context)!.failed,
-      subtitle: 'Could not create receiver for this withdrawal',
+      subtitleText: 'Could not create receiver for this withdrawal',
       icon: FontAwesomeIcons.circleExclamation,
       content: Text(err.toString()),
       actions: ButtonBar(
@@ -41,7 +41,7 @@ class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
     return StatusPage(
       color: Colors.indigo.shade800,
       title: 'Withdrawing',
-      subtitle: 'Withdrawal in progress',
+      subtitleText: 'Withdrawal in progress',
       content: loader,
     );
   }

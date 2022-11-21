@@ -1,13 +1,8 @@
-from helper import (
-    addNum,
-    getBackupName,
-    getDeploymentName,
-    getSecretName,
-    getServiceName,
-    getVolumeClaimName,
-)
-from kubernetes_cluster import cluster
+from helper import (addNum, getBackupName, getDeploymentName, getSecretName,
+                    getServiceName, getVolumeClaimName)
 from kubernetes_bitcoin import bitcoin
+from kubernetes_cluster import cluster
+
 
 def getLightningChainName(name) :
     if(name == "mainnet") : return "bitcoin"
@@ -268,6 +263,6 @@ def lightning(config, cluster_types):
             },
         ]
     return {
-        "resources": getResource(1) + (getResource(2) if config["env"] != "production" else []),
+        "resources": getResource(1) + (getResource(2) + getResource(3) if config["env"] == "development" else []),
         "base_name": base_name,
     }

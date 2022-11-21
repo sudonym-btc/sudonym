@@ -4,6 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:timeago_flutter/timeago_flutter.dart';
 
 Widget loader = const Expanded(
     child: Center(child: CircularProgressIndicator(color: Colors.white)));
@@ -59,9 +61,13 @@ class _OutgoingPending extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: (AppLocalizations.of(context)!.paymentInProgress),
-        subtitle: (AppLocalizations.of(context)!.paymentIsCurrentlyInTransit(
-            FormatCurrency()
-                .format(transaction.currencyCode, transaction.amount))),
+        subtitle: AmountText(
+            fromCurrency: transaction.currencyCode,
+            amount: transaction.amount,
+            toCurrency: transaction.Pot.currency,
+            date: transaction.createdAt,
+            builder: (val) => Subtitle(AppLocalizations.of(context)!
+                .paymentIsCurrentlyInTransit(val))),
         content: loader,
         color: Colors.indigo.shade800);
   }
@@ -75,10 +81,13 @@ class _OutgoingFailed extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentError,
-        subtitle: AppLocalizations.of(context)!.outgoingPaymentError(
-            FormatCurrency()
-                .format(transaction.currencyCode, transaction.amount),
-            transaction.originalAddress),
+        subtitle: AmountText(
+            fromCurrency: transaction.currencyCode,
+            amount: transaction.amount,
+            toCurrency: transaction.Pot.currency,
+            date: transaction.createdAt,
+            builder: (val) => Subtitle(AppLocalizations.of(context)!
+                .outgoingPaymentError(val, transaction.originalAddress))),
         content: Text(transaction.errorMessage ?? ''),
         color: Theme.of(context).errorColor);
   }
@@ -92,9 +101,13 @@ class _OutgoingComplete extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
-        subtitle: AppLocalizations.of(context)!.paymentOutgoingSuccess(
-            FormatCurrency()
-                .format(transaction.currencyCode, transaction.amount)),
+        subtitle: AmountText(
+            fromCurrency: transaction.currencyCode,
+            amount: transaction.amount,
+            toCurrency: transaction.Pot.currency,
+            date: transaction.createdAt,
+            builder: (val) => Subtitle(
+                AppLocalizations.of(context)!.paymentOutgoingSuccess(val))),
         content: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,26 +116,43 @@ class _OutgoingComplete extends _TransactionStatusPage {
               const SizedBox(
                 height: padding * 2,
               ),
-              Table(children: [
-                TableRow(children: [
-                  Text(AppLocalizations.of(context)!.amount),
-                  AmountText(
-                    amount: transaction.amount,
-                    fromCurrency: transaction.currencyCode,
-                    toCurrency: transaction.Pot.currency,
-                    date: transaction.createdAt,
-                  )
-                ]),
-                TableRow(children: [
-                  Text(AppLocalizations.of(context)!.address),
-                  Text(
-                    transaction.originalAddress,
-                    style: const TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                ]),
-              ]),
+              Table(
+                  columnWidths: const {
+                    0: IntrinsicColumnWidth(),
+                    1: FlexColumnWidth(),
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(children: [
+                      TableKey(
+                          child: Text(AppLocalizations.of(context)!.amount)),
+                      AmountText(
+                        amount: transaction.amount,
+                        fromCurrency: transaction.currencyCode,
+                        toCurrency: transaction.Pot.currency,
+                        date: transaction.createdAt,
+                      )
+                    ]),
+                    TableRow(children: [
+                      TableKey(
+                          child: Text(AppLocalizations.of(context)!.address)),
+                      Text(
+                        transaction.originalAddress,
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ]),
+                    TableRow(children: [
+                      TableKey(child: Text(AppLocalizations.of(context)!.time)),
+                      Timeago(
+                        builder: ((context, value) => Text(timeago.format(
+                            transaction.createdAt,
+                            locale: 'en_short'))),
+                        date: transaction.createdAt,
+                      )
+                    ]),
+                  ]),
             ]),
         color: Colors.green);
   }
@@ -136,9 +166,13 @@ class _IncomingPending extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentIncoming,
-        subtitle: AppLocalizations.of(context)!.paymentIsCurrentlyInTransit(
-            FormatCurrency()
-                .format(transaction.currencyCode, transaction.amount)),
+        subtitle: AmountText(
+            fromCurrency: transaction.currencyCode,
+            amount: transaction.amount,
+            toCurrency: transaction.Pot.currency,
+            date: transaction.createdAt,
+            builder: (val) => Subtitle(AppLocalizations.of(context)!
+                .paymentIsCurrentlyInTransit(val))),
         content: loader,
         color: Colors.indigo.shade800);
   }
@@ -152,13 +186,22 @@ class _IncomingComplete extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
-        subtitle: AppLocalizations.of(context)!.incomingPaymentSuccess(
-            FormatCurrency()
-                .format(transaction.currencyCode, transaction.amount)),
+        subtitle: AmountText(
+            fromCurrency: transaction.currencyCode,
+            amount: transaction.amount,
+            toCurrency: transaction.Pot.currency,
+            date: transaction.createdAt,
+            builder: (val) => Subtitle(
+                AppLocalizations.of(context)!.incomingPaymentSuccess(val))),
         content: Table(
+          columnWidths: const {
+            0: IntrinsicColumnWidth(),
+            1: FlexColumnWidth(),
+          },
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
             TableRow(children: [
-              Text(AppLocalizations.of(context)!.amount),
+              TableKey(child: Text(AppLocalizations.of(context)!.amount)),
               AmountText(
                 amount: transaction.amount,
                 fromCurrency: transaction.currencyCode,
@@ -167,7 +210,7 @@ class _IncomingComplete extends _TransactionStatusPage {
               )
             ]),
             TableRow(children: [
-              Text(AppLocalizations.of(context)!.address),
+              TableKey(child: Text(AppLocalizations.of(context)!.address)),
               Text(
                 transaction.originalAddress ?? '',
                 style: const TextStyle(
@@ -175,10 +218,34 @@ class _IncomingComplete extends _TransactionStatusPage {
                 ),
               )
             ]),
+            TableRow(children: [
+              TableKey(child: Text(AppLocalizations.of(context)!.time)),
+              Timeago(
+                builder: ((context, value) => Text(
+                    timeago.format(transaction.createdAt, locale: 'en_short'))),
+                date: transaction.createdAt,
+              )
+            ]),
           ],
         ),
         icon: FontAwesomeIcons.check,
         color: Colors.green);
+  }
+}
+
+class TableKey extends StatelessWidget {
+  final Widget child;
+  const TableKey({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+        opacity: 0.8,
+        child: Padding(
+          padding: EdgeInsets.only(
+              right: padding, bottom: padding / 4, top: padding / 4),
+          child: child,
+        ));
   }
 }
 
@@ -190,10 +257,12 @@ class _IncomingFailed extends _TransactionStatusPage {
   Widget build(BuildContext context) {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentError,
-        subtitle: AppLocalizations.of(context)!.incomingPaymentError(
-            FormatCurrency()
-                .format(transaction.currencyCode, transaction.amount),
-            transaction.address),
+        subtitle: AmountText(
+            fromCurrency: transaction.currencyCode,
+            amount: transaction.amount,
+            toCurrency: transaction.Pot.currency,
+            builder: (val) => Subtitle(AppLocalizations.of(context)!
+                .incomingPaymentError(val, transaction.address))),
         color: Theme.of(context).errorColor);
   }
 }

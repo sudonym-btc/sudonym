@@ -1,4 +1,5 @@
-from helper import getConfigName, getServiceName, getVolumeClaimName, getSecretName
+from helper import (getConfigName, getSecretName, getServiceName,
+                    getVolumeClaimName)
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -51,7 +52,7 @@ def ride_the_lightning(config, cluster_types):
         "enableOffers": true
       },
       "enableOffers": true
-    },
+    }""" + (""",
     {
       "index": 2,
       "lnNode": "Node 2",
@@ -71,7 +72,27 @@ def ride_the_lightning(config, cluster_types):
         "enableOffers": true
       },
       "enableOffers": true
-    }
+    },
+    {
+      "index": 3,
+      "lnNode": "Node 3",
+      "lnImplementation": "CLT",
+      "Authentication": {
+        "macaroonPath": "/RTL/certs3"
+      },
+      "Settings": {
+        "userPersona": "MERCHANT",
+        "themeMode": "DAY",
+        "themeColor": "PURPLE",
+        "logLevel": "ERROR",
+        "lnServerUrl": "http://"""
+                        + getServiceName(lightning_rest_base_name, 3)
+                        + """:3001",
+        "fiatConversion": false,
+        "enableOffers": true
+      },
+      "enableOffers": true
+    }""" if config["env"] == "development" else "") + """
   ],
   "multiPass": "testing"
 }
@@ -109,7 +130,7 @@ def ride_the_lightning(config, cluster_types):
                         getVolumeClaimName(lightning_rest_base_name + "-macaroon", 1),
                     ] + ([
                         getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2)
-                        ] if config["env"] != "production" else [])
+                        ] if config["env"] == "development" else [])
                 },
                 "properties": {
                     "apiVersion": "apps/v1",
@@ -157,7 +178,10 @@ def ride_the_lightning(config, cluster_types):
                                         ] + ([{
                                                 "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2),
                                                 "mountPath": "RTL/certs2",
-                                            }] if config["env"] != "production" else []),
+                                            },{
+                                                "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
+                                                "mountPath": "RTL/certs3",
+                                            },] if config["env"] == "development" else []),
                                     }
                                 ],
                                 "volumes": [
@@ -177,7 +201,12 @@ def ride_the_lightning(config, cluster_types):
                                         "persistentVolumeClaim": {
                                             "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 2)
                                         },
-                                    },] if config["env"] != "production" else []),
+                                    },{
+                                        "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
+                                        "persistentVolumeClaim": {
+                                            "claimName": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3)
+                                        },
+                                    },] if config["env"] == "development" else []),
                             },
                         },
                     },

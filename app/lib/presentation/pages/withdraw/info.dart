@@ -33,7 +33,7 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
     return StatusPage(
       color: Colors.indigo.shade800,
       title: 'Withdrawing',
-      subtitle: AppLocalizations.of(context)!.gatheredWithdrawalInformation,
+      subtitleText: AppLocalizations.of(context)!.gatheredWithdrawalInformation,
       content: Column(children: [
         Table(
           children: [
@@ -61,7 +61,7 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
     return StatusPage(
       color: Colors.indigo.shade800,
       title: AppLocalizations.of(context)!.withdrawInfo,
-      subtitle: AppLocalizations.of(context)!.gatheringWithdrawInfomation,
+      subtitleText: AppLocalizations.of(context)!.gatheringWithdrawInfomation,
       content:
           const Center(child: CircularProgressIndicator(color: Colors.white)),
     );

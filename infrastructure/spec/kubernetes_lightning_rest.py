@@ -1,4 +1,5 @@
-from helper import addNum, getConfigName, getDeploymentName, getServiceName, getVolumeClaimName
+from helper import (addNum, getConfigName, getDeploymentName, getServiceName,
+                    getVolumeClaimName)
 from kubernetes_cluster import cluster
 from kubernetes_lightning import lightning
 
@@ -200,6 +201,6 @@ def lightning_rest(config, cluster_types):
             ]
             
     return  {
-        "resources": getResource(1) + (getResource(2) if config["env"] != "production" else []),
+        "resources": getResource(1) + (getResource(2) + getResource(3) if config["env"] == "development" else []),
         "base_name": base_name,
         }

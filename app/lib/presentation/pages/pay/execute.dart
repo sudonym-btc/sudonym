@@ -28,7 +28,7 @@ class PayExecutePage extends ActionFlow<Payment, Transaction> {
     return StatusPage(
         color: Colors.red,
         title: AppLocalizations.of(context)!.failed,
-        subtitle: AppLocalizations.of(context)!.failedToCreateTransactions,
+        subtitleText: AppLocalizations.of(context)!.failedToCreateTransactions,
         icon: FontAwesomeIcons.circleExclamation,
         content: Text(err.toString()),
         actions: ButtonBar(

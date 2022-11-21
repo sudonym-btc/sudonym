@@ -48,16 +48,18 @@ export class ExchangeService {
 					0
 			  )
 			: null;
-		console.log(
-			market.symbol,
-			'1m',
-			timestamp, // Subtract two minutes so there will always be a ticker
-			100
-		);
+		if (time)
+			console.log(
+				market.symbol,
+				'1m',
+				time,
+				timestamp, // Subtract two minutes so there will always be a ticker
+				100
+			);
 		const response = await this.exchanges[0].fetchOHLCV(
 			market.symbol,
 			'1m',
-			timestamp, // Subtract two minutes so there will always be a ticker
+			timestamp - 1000 * 60 * 2, // Subtract two minutes so there will always be a ticker
 			100
 		);
 		return market.quote == quoteCurrency

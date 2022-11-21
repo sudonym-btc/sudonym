@@ -32,7 +32,7 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
     return StatusPage(
         color: Colors.indigo.shade800,
         title: AppLocalizations.of(context)!.paymentInfo,
-        subtitle: AppLocalizations.of(context)!.gatheredPaymentInformation,
+        subtitleText: AppLocalizations.of(context)!.gatheredPaymentInformation,
         content: PaymentInfoPreview(
           entity: r,
           pot: pot,
@@ -62,7 +62,7 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
     return StatusPage(
         color: Colors.indigo.shade800,
         title: AppLocalizations.of(context)!.paymentInfo,
-        subtitle: AppLocalizations.of(context)!.gatheringPaymentInfomation,
+        subtitleText: AppLocalizations.of(context)!.gatheringPaymentInfomation,
         content: loader);
   }
 }

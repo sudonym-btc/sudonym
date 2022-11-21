@@ -16,7 +16,15 @@ class PotHeader extends StatelessWidget {
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Subtitle(entity.name ?? ''),
-          Header(FormatCurrency().format(entity.currency, entity.balance))
+          Header(FormatCurrency().format(entity.currency, entity.balance)),
+          entity.currency == 'BTC'
+              ? AmountText(
+                  amount: entity.balance,
+                  fromCurrency: entity.currency,
+                  toCurrency: 'USD',
+                  builder: (val) => Info('≈ $val'),
+                )
+              : Container()
         ]));
   }
 }

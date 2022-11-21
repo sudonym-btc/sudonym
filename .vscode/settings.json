@@ -63,5 +63,8 @@
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": true
+	},
+	"[shellscript]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	}
 }

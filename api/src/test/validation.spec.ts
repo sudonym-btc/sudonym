@@ -59,6 +59,7 @@ scaffoldGroup('Validation', (scaffold) => {
 			],
 			onchain: [
 				'bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st',
+				'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09',
 				'3Eu6iMWSD64MYtf69CqT3V7DssSkBM4Un9',
 			],
 			bolt11: [

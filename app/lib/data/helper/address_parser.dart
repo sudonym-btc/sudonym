@@ -5,8 +5,7 @@ const LIGHTNING_SCHEME = 'lightning';
 const BOLT11_SCHEME = 'lnbc';
 const LNURL_SCHEME = 'lnurl';
 
-final RegExp BITCOIN_PATTERN = RegExp(
-    '\b(bc(0([ac-hj-np-z02-9]{39}|[ac-hj-np-z02-9]{59})|1[ac-hj-np-z02-9]{8,87})|[13][a-km-zA-HJ-NP-Z1-9]{25,35})\b');
+final RegExp BITCOIN_PATTERN = RegExp(r'^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}');
 final RegExp BITCOIN_PATTERN_TEST = RegExp(
     '\b((bc|tb)(0([ac-hj-np-z02-9]{39}|[ac-hj-np-z02-9]{59})|1[ac-hj-np-z02-9]{8,87})|([13]|[mn2])[a-km-zA-HJ-NP-Z1-9]{25,39})\b');
 
@@ -28,7 +27,7 @@ extension URLValidator on String {
 
 extension OnChainValidator on String {
   bool isValidOnchainAddress() {
-    return BITCOIN_PATTERN.hasMatch(this);
+    return BITCOIN_PATTERN.hasMatch(replaceAll('bitcoin:', '').split('?')[0]);
   }
 }
 

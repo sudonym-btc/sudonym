@@ -4,7 +4,11 @@ import {
 	LightningError,
 	LightningNodeService,
 } from '../lightning-node/lightning-node.service';
-import { LightningEvents } from './lightning-events';
+import {
+	LightningEvents,
+	SendPayResponse,
+	WaitSendPayResponse,
+} from './lightning-events';
 import { TransactionListener } from './transaction-listener.interface';
 
 @Injectable()
@@ -78,7 +82,6 @@ export class LightningListener extends TransactionListener {
 							data: {
 								...e,
 								bolt11: invoice,
-								msatoshi: e.msatoshi_sent,
 							},
 						});
 					}
@@ -125,14 +128,14 @@ export class LightningListener extends TransactionListener {
 					event: 'sendpay',
 					data: {
 						bolt11: invoice,
-						...response,
-					},
+						...response, //todo: may have to convert amount fields
+					} as unknown as WaitSendPayResponse,
 				});
 			}
 			this.waitForPayment(
 				response.payment_hash,
 				invoice,
-				response.partid
+				(response as SendPayResponse).partid
 			);
 		} catch (e) {
 			this.logger.error('Pay error', e);
@@ -207,17 +210,16 @@ export class LightningListener extends TransactionListener {
 					await this.transactionService.update(
 						transactions.data[0].id,
 						{
-							totalAmount: (e.data as any).msatoshi_sent
-								? (e.data as any).msatoshi_sent / MSATOSHIS
+							totalAmount: e.data.msatoshi_sent
+								? e.data.msatoshi_sent / MSATOSHIS
 								: null,
 							status,
 							...(!status &&
-							((e.data as any).failcodename ||
-								(e.data as any).failreason)
+							(e.data.failcodename || e.data.failreason)
 								? {
 										errorMessage:
-											(e.data as any).failcodename ||
-											(e.data as any).failreason,
+											e.data.failcodename ||
+											e.data.failreason,
 								  }
 								: {}),
 						}

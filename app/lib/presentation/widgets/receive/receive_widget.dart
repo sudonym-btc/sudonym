@@ -56,13 +56,26 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
         ],
         child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
+          copy() {
+            FocusScope.of(context).unfocus();
+
+            FlutterClipboard.copy(state.entity!.data).then((value) {
+              SnackBar snackBar = SnackBar(
+                content: Text(AppLocalizations.of(context)!.copiedToClipboard),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            });
+          }
+
           Widget image = const Center(child: CircularProgressIndicator());
           if (!state.loading && state.entity?.data != null) {
-            image = QrImage(
-              data: state.entity!.data,
-              foregroundColor:
-                  Theme.of(context).appBarTheme.titleTextStyle!.color,
-              version: QrVersions.auto,
+            image = GestureDetector(
+              onTap: copy,
+              child: QrImage(
+                  data: state.entity!.data,
+                  foregroundColor:
+                      Theme.of(context).appBarTheme.titleTextStyle!.color,
+                  version: QrVersions.auto),
             );
           }
           return Column(
@@ -80,19 +93,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                   child: ButtonBar(children: [
                     Button(
                       icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
-                      onPressed: state.loading
-                          ? null
-                          : () {
-                              FlutterClipboard.copy(state.entity!.data)
-                                  .then((value) {
-                                SnackBar snackBar = SnackBar(
-                                  content: Text(AppLocalizations.of(context)!
-                                      .copiedToClipboard),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                              });
-                            },
+                      onPressed: state.loading ? null : copy,
                       text: (AppLocalizations.of(context)!.copy),
                     ),
                     Button(

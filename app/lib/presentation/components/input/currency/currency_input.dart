@@ -34,15 +34,6 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
         create: (_) => CurrencyInputCubit(options),
         child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
           builder: (context, state) {
-            List<MaterialState> negativeButtonState =
-                state.negativeEnabled && !state.minLoading
-                    ? []
-                    : [MaterialState.disabled];
-            List<MaterialState> positiveButtonState =
-                state.positiveEnabled && !state.maxLoading
-                    ? []
-                    : [MaterialState.disabled];
-
             Ink negativeButton = Ink(
                 decoration: buttonDecoration(context, state.negativeEnabled),
                 child: IconButton(
@@ -54,7 +45,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       .elevatedButtonTheme
                       .style!
                       .foregroundColor!
-                      .resolve(Set.of(negativeButtonState)),
+                      .resolve({}),
                   icon: const Icon(Icons.remove),
                 ));
             Ink positiveButton = Ink(
@@ -68,7 +59,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       .elevatedButtonTheme
                       .style!
                       .foregroundColor!
-                      .resolve(Set.of(positiveButtonState)),
+                      .resolve({}),
                   icon: const Icon(Icons.add),
                 ));
 
