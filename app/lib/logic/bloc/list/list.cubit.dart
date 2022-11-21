@@ -25,11 +25,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     });
 
     onUpdated ??= _repository.updated.stream.listen((event) async {
-      emit(ListCubitState(
+      safeEmit(state.copyWith(
           data: state.data
               .map((e) => e.id == (event as dynamic).id ? event : e)
-              .toList(),
-          metadata: state.metadata));
+              .toList()));
     });
   }
 
@@ -48,11 +47,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     if (!state.loading) {
       loggy.d('Loading next ${_repository.endpoint}');
 
-      safeEmit(ListCubitState(
-          data: state.data,
-          metadata: state.metadata,
-          loading: true,
-          loadingNext: true));
+      safeEmit(state.copyWith(loading: true, loadingNext: true));
 
       var response = await _repository.list(where: {
         ...where,
@@ -61,7 +56,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       List filtered = filter(response.data);
       List elements = [...state.data, ...filtered];
 
-      safeEmit(ListCubitState(
+      safeEmit(state.copyWith(
           data: elements,
           metadata: response.metadata,
           loading: false,
@@ -73,11 +68,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     if (!state.loading) {
       loggy.d('Loading previous ${_repository.endpoint}');
 
-      safeEmit(ListCubitState(
-          data: state.data,
-          metadata: state.metadata,
-          loading: true,
-          loadingPrevious: true));
+      safeEmit(state.copyWith(loading: true, loadingPrevious: true));
 
       var response = await _repository.list(where: {
         ...where,
@@ -87,7 +78,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       List filtered = filter(response.data);
       List elements = [...filtered, ...state.data];
 
-      safeEmit(ListCubitState(
+      safeEmit(state.copyWith(
           data: elements,
           metadata: response.metadata,
           loading: false,
@@ -123,9 +114,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
 }
 
 class ListCubitState<T> extends Equatable {
-  @override
   final List<T> data;
-  @override
   final dynamic metadata;
   final bool loading;
   final bool loadingPrevious;
@@ -138,6 +127,22 @@ class ListCubitState<T> extends Equatable {
       this.loadingPrevious = false,
       this.loadingNext = false});
 
+  ListCubitState copyWith({
+    List<T>? data,
+    dynamic metadata,
+    bool? loading,
+    bool? loadingPrevious,
+    bool? loadingNext,
+  }) =>
+      ListCubitState(
+        data: data ?? this.data,
+        metadata: metadata ?? this.metadata,
+        loading: loading ?? this.loading,
+        loadingNext: loadingNext ?? this.loadingNext,
+        loadingPrevious: loadingPrevious ?? this.loadingPrevious,
+      );
+
   @override
-  List<Object?> get props => [data, metadata, loading];
+  List<Object?> get props =>
+      [data, metadata, loading, loadingNext, loadingPrevious];
 }

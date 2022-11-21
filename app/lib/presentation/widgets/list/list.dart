@@ -66,6 +66,7 @@ class _ListWidgetState extends State<ListWidget>
     });
     loggy.v('Loading next due to init');
     c.loadNext();
+    _nextLoadingController.forward();
     super.initState();
   }
 
