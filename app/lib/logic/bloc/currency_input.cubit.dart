@@ -154,8 +154,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     int multiplier = (getDisplayValue(
                 options.currencies[state.currCurrency], state.currVal) /
             clickValueBase)
-        .toString()
-        .split('.')[0]
+        .toStringAsFixed(0)
         .length;
     return max(0, multiplier - 1);
   }

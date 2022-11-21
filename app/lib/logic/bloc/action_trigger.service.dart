@@ -100,8 +100,8 @@ class ActionTriggerService with ActionLogger {
             firstPageAmount = true;
             return Navigator.of(actionStream.context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) =>
-                        AmountPage<Payment>(action: value, onDone: next)));
+                    builder: (context) => AmountPage<Payment>(
+                        action: value, pot: actionStream.pot, onDone: next)));
           }
           return next(value);
         })
@@ -149,8 +149,8 @@ class ActionTriggerService with ActionLogger {
             firstPageAmount = true;
             return Navigator.of(actionStream.context).pushReplacement(
                 MaterialPageRoute(
-                    builder: (context) =>
-                        AmountPage<Withdraw>(action: value, onDone: next)));
+                    builder: (context) => AmountPage<Withdraw>(
+                        action: value, pot: actionStream.pot, onDone: next)));
           }
           return next(value);
         })
