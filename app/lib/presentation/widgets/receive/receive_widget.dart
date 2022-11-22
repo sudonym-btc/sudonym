@@ -11,7 +11,6 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
-import 'package:universal_io/io.dart';
 
 class ReceiveWidget extends StatefulWidget {
   final Pot pot;
@@ -27,7 +26,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
   late CurrencyInputOptions inputOptions;
 
   ActionParseResponse cb(ActionParseResponse a) {
-    if (a.withdraw) {
+    if (a.withdraw != null) {
       CurrencyInputOutput lastEvent = inputOptions.controller!.value;
       a.withdraw.currency = lastEvent.currency;
       a.withdraw.amount = lastEvent.amount;
@@ -114,19 +113,6 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
               text: (AppLocalizations.of(context)!.share),
             ),
           ];
-          if (Platform.isIOS) {
-            buttons.add(
-              Button(
-                icon: const FaIcon(FontAwesomeIcons.nfcSymbol, size: iconSize),
-                onPressed: state.loading
-                    ? null
-                    : () {
-                        getIt<NFCListener>().listen();
-                      },
-                text: 'NFC',
-              ),
-            );
-          }
           return Column(
             children: [
               Expanded(

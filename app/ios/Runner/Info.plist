@@ -126,6 +126,10 @@
 		<string>8B5D</string>
 		<string>8FC1</string>
 		<string>FE00</string>
+		<string>8005</string>
+		<string>90B7</string>
+		<string>927A</string>
+		<string>86A7</string>
 	</array>
 	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
 	<array>
@@ -176,6 +180,7 @@
 		<string>A0000000048002</string>
 		<string>A0000000049999</string>
 		<string>A0000000050001</string>
+		<string>D2760000850101</string>
 		<string>A0000000050002</string>
 		<string>A0000000090001FF44FF1289</string>
 		<string>A0000000101030</string>

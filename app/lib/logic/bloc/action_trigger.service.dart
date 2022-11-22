@@ -6,6 +6,8 @@ import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
+import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/bloc/current_pot.service.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -57,6 +59,16 @@ class ActionStream {
 class ActionTriggerService with ActionLogger {
   final CallbackHandler<ActionParseResponse> callbacks =
       CallbackHandler<ActionParseResponse>();
+  final CallbackHandler<ActionStream> actionStreamCallbacks =
+      CallbackHandler<ActionStream>();
+
+  ActionTriggerService() {
+    actionStreamCallbacks.add((p0) {
+      print(p0);
+      p0.pot ??= getIt<CurrentPotService>().pot;
+      return p0;
+    });
+  }
 
   trigger(ActionStream action) {
     final triggerStream = PublishSubject<ActionStream>();
@@ -67,6 +79,7 @@ class ActionTriggerService with ActionLogger {
       throw Error();
     }
     triggerStream
+        .asyncMap(actionStreamCallbacks.handle)
         .switchMapCallback(
             (value, void Function(ActionParseResponse x) next, err) =>
                 Navigator.push(
@@ -81,6 +94,7 @@ class ActionTriggerService with ActionLogger {
         .handleError(
       (err) {
         loggy.e(err);
+        throw err;
       },
       // test: (error) => error instanceof DioErr,
     ).listen((event) {
