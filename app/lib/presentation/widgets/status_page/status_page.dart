@@ -52,7 +52,9 @@ class StatusPage extends StatelessWidget {
 
     List<Widget> children = [];
     if (title != null) children.add(Header(title));
-    if (subtitle != null) children.add(subtitle ?? Subtitle(subtitleText));
+    if (subtitle != null || subtitleText != null) {
+      children.add(subtitle ?? Subtitle(subtitleText));
+    }
     if (title != null || subtitle != null || subtitleText != null) {
       children.add(const SizedBox(height: padding * 2));
     }
