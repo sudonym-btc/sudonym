@@ -55,6 +55,9 @@ class ActionStream {
 @lazySingleton
 @injectable
 class ActionTriggerService with ActionLogger {
+  final CallbackHandler<ActionParseResponse> callbacks =
+      CallbackHandler<ActionParseResponse>();
+
   trigger(ActionStream action) {
     final triggerStream = PublishSubject<ActionStream>();
 
@@ -71,6 +74,7 @@ class ActionTriggerService with ActionLogger {
                     MaterialPageRoute(
                         builder: (context) => ActionPage(
                             address: value.link, onDone: next, onError: err))))
+        .asyncMap(callbacks.handle)
         .switchMap((value) => value.payment != null
             ? handlePayment(action)(value.payment)
             : handleWithdraw(action)(value.withdraw))
@@ -191,4 +195,20 @@ class ActionTriggerService with ActionLogger {
 //         .where((event) => event.withdraw != null)
 //         .map((event) => event.withdraw);
 //   }
+}
+
+class CallbackHandler<T> {
+  final List<T Function(T)> callbacks = [];
+
+  add(T Function(T) f) {
+    callbacks.add(f);
+  }
+
+  remove(T Function(T) f) {
+    callbacks.remove(f);
+  }
+
+  handle(T a) {
+    return callbacks.fold(a, (value, element) => element(value));
+  }
 }

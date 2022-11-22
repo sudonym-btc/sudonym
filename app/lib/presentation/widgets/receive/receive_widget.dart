@@ -25,6 +25,17 @@ class ReceiveWidget extends StatefulWidget {
 class ReceiveWidgetState extends State<ReceiveWidget> {
   late CurrencyInputOptions inputOptions;
 
+  ActionParseResponse cb(ActionParseResponse a) {
+    if (a.withdraw) {
+      CurrencyInputOutput lastEvent = inputOptions.controller!.value;
+      a.withdraw.currency = lastEvent.currency;
+      a.withdraw.amount = lastEvent.amount;
+      a.withdraw.minAmount = lastEvent.amount;
+      a.withdraw.maxAmount = lastEvent.amount;
+    }
+    return a;
+  }
+
   @override
   void initState() {
     inputOptions = CurrencyInputOptions(
@@ -34,7 +45,15 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
           widget.pot.currency == 'BTC' ? 'USD' : 'BTC'
         ]);
 
+    getIt<ActionTriggerService>().callbacks.add(cb);
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    getIt<ActionTriggerService>().callbacks.remove(cb);
+    super.dispose();
   }
 
   @override
@@ -87,7 +106,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
               const SizedBox(height: padding),
               Padding(
                   padding: const EdgeInsets.all(padding),
-                  child: CurrencyInput(options: inputOptions)),
+                  child: CurrencyInput(options: inputOptions, large: false)),
               Padding(
                   padding: const EdgeInsets.all(padding),
                   child: ButtonBar(children: [

@@ -35,7 +35,7 @@ class _SendPageState extends State<SendPage> {
     form
         .control('address')
         .valueChanges
-        .debounceTime(const Duration(milliseconds: 500))
+        .debounceTime(const Duration(milliseconds: 1000))
         .listen((event) {
       listCubit.setWhere(event.isNotEmpty
           ? {
@@ -120,7 +120,7 @@ class _SendPageState extends State<SendPage> {
                                   onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => EditContact(
+                                          builder: (context) => EditContactPage(
                                                   entity: Contact.fromJson({
                                                 'ContactAddresses': [
                                                   {'address': ''}

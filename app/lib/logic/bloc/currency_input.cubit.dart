@@ -29,6 +29,8 @@ class CurrencyInputController {
 class CurrencyInputOptions {
   CurrencyInputController? controller;
   List<String> currencies;
+  String? initialCurrency;
+  String? outputCurrency;
   final num? min;
   final num? max;
   late String? minCurrency;
@@ -42,9 +44,11 @@ class CurrencyInputOptions {
       this.max = 999999999,
       this.minCurrency,
       this.maxCurrency,
-      this.currencies = defaultCurrencies}) {
+      this.currencies = defaultCurrencies,
+      this.initialCurrency}) {
     minCurrency ??= initialValue.currency;
     maxCurrency ??= initialValue.currency;
+    initialCurrency ??= initialValue.currency;
     controller ??= CurrencyInputController();
     currencies = currencies.toSet().toList();
   }
@@ -65,11 +69,17 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
         .debounceTime(const Duration(milliseconds: 500))
         .asyncMap(resolveValues)
         .listen((event) {});
-    setCurrentCurrency(
-        options.currencies.indexOf(options.initialValue.currency));
-    controller!.updateValue(getDisplayValue(
-        options.currencies[state.currCurrency], options.initialValue.amount));
-    setValue(options.initialValue.amount);
+    setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
+    _currencyRespository
+        .getRate(
+            fromCurrency: options.initialValue.currency,
+            toCurrency: options.initialCurrency!,
+            amount: options.initialValue.amount)
+        .then((value) {
+      controller!.updateValue(getDisplayValue(
+          options.currencies[state.currCurrency], value.amount));
+      setValue(value.amount);
+    });
   }
 
   createController() {
