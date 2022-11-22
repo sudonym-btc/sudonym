@@ -123,7 +123,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                     : () {
                         getIt<NFCListener>().listen();
                       },
-                text: (AppLocalizations.of(context)!.share),
+                text: 'NFC',
               ),
             );
           }
