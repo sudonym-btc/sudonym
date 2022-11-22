@@ -11,6 +11,7 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
+import 'package:universal_io/io.dart';
 
 class ReceiveWidget extends StatefulWidget {
   final Pot pot;
@@ -97,6 +98,35 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                   version: QrVersions.auto),
             );
           }
+          var buttons = [
+            Button(
+              icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
+              onPressed: state.loading ? null : copy,
+              text: (AppLocalizations.of(context)!.copy),
+            ),
+            Button(
+              icon: const FaIcon(FontAwesomeIcons.share, size: iconSize),
+              onPressed: state.loading
+                  ? null
+                  : () {
+                      Share.share(state.entity!.data);
+                    },
+              text: (AppLocalizations.of(context)!.share),
+            ),
+          ];
+          if (Platform.isIOS) {
+            buttons.add(
+              Button(
+                icon: const FaIcon(FontAwesomeIcons.nfcSymbol, size: iconSize),
+                onPressed: state.loading
+                    ? null
+                    : () {
+                        getIt<NFCListener>().listen();
+                      },
+                text: (AppLocalizations.of(context)!.share),
+              ),
+            );
+          }
           return Column(
             children: [
               Expanded(
@@ -109,23 +139,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                   child: CurrencyInput(options: inputOptions, large: false)),
               Padding(
                   padding: const EdgeInsets.all(padding),
-                  child: ButtonBar(children: [
-                    Button(
-                      icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
-                      onPressed: state.loading ? null : copy,
-                      text: (AppLocalizations.of(context)!.copy),
-                    ),
-                    Button(
-                      icon:
-                          const FaIcon(FontAwesomeIcons.share, size: iconSize),
-                      onPressed: state.loading
-                          ? null
-                          : () {
-                              Share.share(state.entity!.data);
-                            },
-                      text: (AppLocalizations.of(context)!.share),
-                    ),
-                  ]))
+                  child: ButtonBar(children: buttons))
             ],
           );
         }));

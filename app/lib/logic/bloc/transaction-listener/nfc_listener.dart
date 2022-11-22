@@ -7,21 +7,25 @@ import 'package:sudonym/logic/index.dart';
 
 @singleton
 class NFCListener extends TransactionListenerSubtype with NFCLogger {
+  listen() {
+    loggy.d('Starting NFC');
+    // Start Session
+    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+      var x = Ndef.from(tag);
+      for (var t in x!.cachedMessage!.records) {
+        Record r = Record.fromNdef(t);
+        loggy.d(r);
+        if (r is WellknownUriRecord) {
+          streamController.add(r.uri.toString());
+        }
+      }
+    }).then((value) => loggy.i('done'));
+  }
+
   init() async {
     if (!Platform.isIOS) {
       if (await NfcManager.instance.isAvailable()) {
-        loggy.d('Starting NFC');
-        // Start Session
-        NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-          var x = Ndef.from(tag);
-          for (var t in x!.cachedMessage!.records) {
-            Record r = Record.fromNdef(t);
-            loggy.d(r);
-            if (r is WellknownUriRecord) {
-              streamController.add(r.uri.toString());
-            }
-          }
-        }).then((value) => loggy.i('done'));
+        listen();
       }
     }
   }
