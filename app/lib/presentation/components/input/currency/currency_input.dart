@@ -8,15 +8,17 @@ import 'package:sudonym/presentation/index.dart';
 class CurrencyInput extends FormField<CurrencyInputOutput> {
   final CurrencyInputOptions options;
   final void Function(CurrencyInputOutput)? onChanged;
+  final bool large;
 
   CurrencyInput({
     required this.options,
+    this.large = false,
     this.onChanged,
     super.key,
   }) : super(
             builder: (FormFieldState<CurrencyInputOutput> state) =>
                 (state as _CurrencyInputState)
-                    .constructWidget(state.context, options));
+                    .constructWidget(state.context, options, large));
 
   @override
   FormFieldState<CurrencyInputOutput> createState() => _CurrencyInputState();
@@ -29,7 +31,8 @@ class CurrencyInputOutput {
 }
 
 class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
-  Widget constructWidget(BuildContext context, CurrencyInputOptions options) {
+  Widget constructWidget(
+      BuildContext context, CurrencyInputOptions options, bool large) {
     return BlocProvider(
         create: (_) => CurrencyInputCubit(options),
         child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
@@ -63,58 +66,98 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                   icon: const Icon(Icons.add),
                 ));
 
-            return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      textAlignVertical: TextAlignVertical.center,
-                      style: Theme.of(context).textTheme.displayLarge,
-                      decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          prefixText:
-                              '${getCurrencySymbol(options.currencies[state.currCurrency])}  ',
-                          prefixStyle: Theme.of(context)
-                              .textTheme
-                              .displayLarge!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge!
-                                      .color!
-                                      .withAlpha(70)),
-                          suffixIcon: IconButton(
-                            iconSize: 24,
-                            onPressed:
-                                BlocProvider.of<CurrencyInputCubit>(context)
-                                    .toggleCurrency,
-                            icon: Icon(
-                              Icons.swap_vert,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          helperText: state.altLoading
-                              ? '...'
-                              : FormatCurrency().format(
-                                  options.currencies[state.altCurrency],
-                                  state.altVal)),
-                      controller: BlocProvider.of<CurrencyInputCubit>(context)
-                          .controller,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      keyboardType: TextInputType.number,
+            Widget input = Column(
+                crossAxisAlignment: large
+                    ? CrossAxisAlignment.center
+                    : CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    textAlignVertical: TextAlignVertical.center,
+                    textAlign: large ? TextAlign.center : TextAlign.start,
+                    style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                        // fontSize: 44,
+                        ),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      prefixText:
+                          '${getCurrencySymbol(options.currencies[state.currCurrency])}  ',
+                      prefixStyle: Theme.of(context)
+                          .textTheme
+                          .displayLarge!
+                          .copyWith(
+                              // fontSize: 44,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .color!
+                                  .withAlpha(70)),
+                      suffixIcon: IconButton(
+                        iconSize: 24,
+                        onPressed: BlocProvider.of<CurrencyInputCubit>(context)
+                            .toggleCurrency,
+                        icon: Icon(
+                          Icons.swap_vert,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
                     ),
+                    controller:
+                        BlocProvider.of<CurrencyInputCubit>(context).controller,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    keyboardType: TextInputType.number,
                   ),
+                  Info(state.altLoading
+                      ? '...'
+                      : FormatCurrency().format(
+                          options.currencies[state.altCurrency], state.altVal)),
                   const SizedBox(
-                    width: padding / 2,
+                    height: padding,
                   ),
-                  negativeButton,
+                ]);
+            if (large) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  input,
                   const SizedBox(
-                    width: padding / 2,
+                    height: padding * 2,
                   ),
-                  positiveButton
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      negativeButton,
+                      const SizedBox(
+                        width: padding * 2,
+                      ),
+                      positiveButton
+                    ],
+                  )
+                ],
+              );
+            }
+
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: input,
+                        ),
+                        const SizedBox(
+                          width: padding / 2,
+                        ),
+                        negativeButton,
+                        const SizedBox(
+                          width: padding / 2,
+                        ),
+                        positiveButton
+                      ])
                 ]);
           },
         ));

@@ -7,9 +7,9 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
-class EditContact extends StatelessWidget {
+class EditContactPage extends StatelessWidget {
   final Contact entity;
-  const EditContact({required this.entity, Key? key}) : super(key: key);
+  const EditContactPage({required this.entity, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

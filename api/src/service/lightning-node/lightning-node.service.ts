@@ -251,7 +251,9 @@ export class LightningNodeService {
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
-				!hasAmount ? Math.round(amount) : null,
+				!hasAmount
+					? Math.round(amount)
+					: inv.millisatoshis || inv.satoshis * 1000,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1,

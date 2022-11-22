@@ -36,14 +36,18 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
         maxCurrency: widget.action.currency,
         min: widget.action.minAmount,
         minCurrency: widget.action.currency,
+        initialCurrency: widget.pot?.currency,
         initialValue: CurrencyInputOutput(
-            widget.action.minAmount ?? 0, widget.pot!.currency));
+            widget.action.minAmount ?? 0, widget.action.currency));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CurrencyInput currencyInput = CurrencyInput(options: options);
+    CurrencyInput currencyInput = CurrencyInput(
+      options: options,
+      large: false,
+    );
 
     return Container(
         color: Theme.of(context).backgroundColor,

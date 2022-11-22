@@ -14,17 +14,23 @@ class PotHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(padding * 2),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Subtitle(entity.name ?? ''),
-          Header(FormatCurrency().format(entity.currency, entity.balance)),
-          entity.currency == 'BTC'
-              ? AmountText(
-                  amount: entity.balance,
-                  fromCurrency: entity.currency,
-                  toCurrency: 'USD',
-                  builder: (val) => Info('≈ $val'),
-                )
-              : Container()
-        ]));
+        child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EditPot(entity: entity)));
+            },
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Subtitle(entity.name ?? ''),
+              Header(FormatCurrency().format(entity.currency, entity.balance)),
+              entity.currency == 'BTC'
+                  ? AmountText(
+                      amount: entity.balance,
+                      fromCurrency: entity.currency,
+                      toCurrency: 'USD',
+                      builder: (val) => Info('≈ $val'),
+                    )
+                  : Container()
+            ])));
   }
 }

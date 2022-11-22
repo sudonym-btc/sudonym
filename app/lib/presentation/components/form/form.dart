@@ -69,9 +69,11 @@ class _CustomFormState<
                                         try {
                                           final formData = form.value;
                                           Map<String, dynamic> d = ({
-                                            ...widget.entity.toJson(),
+                                            // ...widget.entity.toJson(),
+                                            'id': widget.entity.toJson()['id'],
                                             ...formData
                                           });
+                                          print(d);
                                           await BlocProvider.of<C>(context)
                                               .createOrUpdate(
                                                   BlocProvider.of<C>(context)
@@ -86,6 +88,7 @@ class _CustomFormState<
                                               e.response?.statusCode == 400) {
                                             for (final obj in e
                                                 .response?.data?['message']) {
+                                              print(obj);
                                               form
                                                   .control(obj['property'])
                                                   .setErrors(

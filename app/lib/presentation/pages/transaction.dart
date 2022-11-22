@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -146,9 +145,8 @@ class _OutgoingComplete extends _TransactionStatusPage {
                     TableRow(children: [
                       TableKey(child: Text(AppLocalizations.of(context)!.time)),
                       Timeago(
-                        builder: ((context, value) => Text(timeago.format(
-                            transaction.createdAt,
-                            locale: 'en_short'))),
+                        builder: ((context, value) => Text(timeago
+                            .format(transaction.createdAt, locale: 'en'))),
                         date: transaction.createdAt,
                       )
                     ]),
@@ -221,14 +219,13 @@ class _IncomingComplete extends _TransactionStatusPage {
             TableRow(children: [
               TableKey(child: Text(AppLocalizations.of(context)!.time)),
               Timeago(
-                builder: ((context, value) => Text(
-                    timeago.format(transaction.createdAt, locale: 'en_short'))),
+                builder: ((context, value) =>
+                    Text(timeago.format(transaction.createdAt, locale: 'en'))),
                 date: transaction.createdAt,
               )
             ]),
           ],
         ),
-        icon: FontAwesomeIcons.check,
         color: Colors.green);
   }
 }
@@ -285,7 +282,7 @@ class _ContactSection extends StatelessWidget {
             onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => EditContact(
+                    builder: (context) => EditContactPage(
                             entity: Contact.fromJson({
                           'ContactAddresses': [
                             {'address': entity.originalAddress}

@@ -75,6 +75,10 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
     });
   }
 
+  Future<dynamic> delete(dynamic id) async {
+    return dio.delete('/$endpoint/$id');
+  }
+
   Future<ListState<T>> search(String term) async {
     return dio.get('/$endpoint').then((value) {
       var list = (value.data as List).map((e) {
