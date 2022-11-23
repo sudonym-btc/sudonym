@@ -32,5 +32,6 @@ abstract class ReceiverRepository extends CrudRepository<Receiver>
 
 class ReceiverRepositoryProps {
   String get endpoint => 'receiver';
-  Function converter = (e) => Receiver.fromJson(e);
+  Receiver Function(Map<String, dynamic>) converter =
+      (e) => Receiver.fromJson(e);
 }

@@ -18,6 +18,11 @@ class Mockdata {
           list.add(Model.Pot.fromJson(obj) as T);
         });
         break;
+      case "potUser":
+        data["potUser"]["mocks"].forEach((obj) {
+          list.add(Model.PotUser.fromJson(obj) as T);
+        });
+        break;
       case "user":
         data["user"]["mocks"].forEach((obj) {
           list.add(Model.User.fromJson(obj) as T);

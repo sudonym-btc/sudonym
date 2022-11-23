@@ -19,5 +19,6 @@ abstract class TransactionRepository extends CrudRepository<Transaction>
 
 class TransactionRepositoryProps {
   String get endpoint => 'transaction';
-  Function converter = (e) => Transaction.fromJson(e);
+  Transaction Function(Map<String, dynamic>) converter =
+      (e) => Transaction.fromJson(e);
 }

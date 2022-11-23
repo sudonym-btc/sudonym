@@ -45,19 +45,14 @@ class _CustomFormState<
     super.initState();
   }
 
-  submit(FormGroup form) async {
+  submit(BuildContext context, FormGroup form) async {
     setState(() {
       loading = true;
     });
     // Validate returns true if the form is valid, or false otherwise.
     try {
       final formData = form.value;
-      Map<String, dynamic> d = ({
-        // ...widget.entity.toJson(),
-        'id': widget.entity.toJson()['id'],
-        ...formData
-      });
-      print(d);
+      Map<String, dynamic> d = {...widget.entity.toJson(), ...formData};
       await BlocProvider.of<C>(context)
           .createOrUpdate(BlocProvider.of<C>(context).repository.converter(d));
       formGroup.markAsPristine();
@@ -101,11 +96,14 @@ class _CustomFormState<
                       builder: (context, form, child) {
                         return form.dirty || !widget.hideSubmit
                             ? Button(
-                                onPressed: form.valid && form.dirty
-                                    ? () => submit(form)
+                                onPressed: form.valid && form.dirty && !loading
+                                    ? () => submit(context, form)
                                     : null,
                                 icon: loading
-                                    ? CircularProgressIndicator()
+                                    ? SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator())
                                     : null,
                                 text: loading
                                     ? null

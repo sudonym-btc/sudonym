@@ -19,5 +19,6 @@ abstract class BoltCardRepository extends CrudRepository<BoltCard>
 
 class BoltCardRepositoryProps {
   String endpoint = 'boltCard';
-  Function converter = (e) => BoltCard.fromJson(e);
+  BoltCard Function(Map<String, dynamic>) converter =
+      (e) => BoltCard.fromJson(e);
 }

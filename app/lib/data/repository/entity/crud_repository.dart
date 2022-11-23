@@ -12,7 +12,7 @@ const List<List<String>> order = [
 
 abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   String endpoint = '';
-  Function converter = <T>(obj) {
+  T Function(Map<String, dynamic>) converter = <T>(obj) {
     throw Error();
   };
   Dio dio;
@@ -61,13 +61,13 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
     });
   }
 
-  Future<T> create(dynamic entity) async {
+  Future<T> create(Map<String, dynamic> entity) async {
     return dio.post('/$endpoint', data: entity).then((value) {
       return converter(value.data);
     });
   }
 
-  Future<T> update(dynamic entity) async {
+  Future<T> update(Map<String, dynamic> entity) async {
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
         .then((value) {

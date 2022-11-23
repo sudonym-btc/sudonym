@@ -19,5 +19,6 @@ abstract class UserDeviceRepository extends CrudRepository<UserDevice>
 
 class UserDeviceRepositoryProps {
   String get endpoint => 'userDevice';
-  Function converter = (e) => UserDevice.fromJson(e);
+  UserDevice Function(Map<String, dynamic>) converter =
+      (e) => UserDevice.fromJson(e);
 }

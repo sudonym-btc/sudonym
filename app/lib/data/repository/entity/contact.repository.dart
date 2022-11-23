@@ -19,5 +19,5 @@ abstract class ContactRepository extends CrudRepository<Contact>
 
 class ContactRepositoryProps {
   String endpoint = 'contact';
-  Function converter = (e) => Contact.fromJson(e);
+  Contact Function(Map<String, dynamic>) converter = (e) => Contact.fromJson(e);
 }

@@ -12,12 +12,12 @@ class PotUserRepositoryImpl extends PotUserRepository {
 }
 
 abstract class PotUserRepository extends CrudRepository<PotUser>
-    with PotRepositoryProps {
+    with PotUserRepositoryProps {
   PotUserRepository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
 }
 
 class PotUserRepositoryProps {
   String get endpoint => 'potUser';
-  Function converter = (e) => Pot.fromJson(e);
+  PotUser Function(Map<String, dynamic>) converter = (e) => PotUser.fromJson(e);
 }

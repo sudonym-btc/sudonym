@@ -19,5 +19,5 @@ abstract class UserRepository extends CrudRepository<User>
 
 class UserRepositoryProps {
   String get endpoint => 'user';
-  Function converter = (e) => User.fromJson(e);
+  User Function(Map<String, dynamic>) converter = (e) => User.fromJson(e);
 }

@@ -7,8 +7,8 @@ import 'package:sudonym.models/index.dart';
 class CurrentPotService with ActionLogger {
   Pot? pot;
 
-  set(Pot p) {
-    loggy.d('Setting pot ${p.id}');
+  set(Pot? p) {
+    loggy.d('Setting pot ${p != null ? p.id : 'null'}');
     pot = p;
   }
 }

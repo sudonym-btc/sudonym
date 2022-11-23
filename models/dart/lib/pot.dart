@@ -8,7 +8,7 @@ class Pot extends BaseClass {
   String currency;
   dynamic /* num | null */ balance;
   dynamic /* num | null */ spendableBalance;
-  dynamic /* List < PotUser > | null */ PotUsers;
+  dynamic /* List < PotUser > | dynamic */ PotUsers;
   Pot(this.id,
       [this.name = "",
       this.currency = "BTC",
@@ -37,7 +37,7 @@ class Pot extends BaseClass {
       "currency": this.currency,
       "balance": this.balance,
       "spendableBalance": this.spendableBalance,
-      "PotUsers": this.PotUsers
+      "PotUsers": this.PotUsers.map((i) => i.toJson()).toList()
     };
   }
 }

@@ -19,5 +19,5 @@ abstract class PotRepository extends CrudRepository<Pot>
 
 class PotRepositoryProps {
   String get endpoint => 'pot';
-  Function converter = (e) => Pot.fromJson(e);
+  Pot Function(Map<String, dynamic>) converter = (e) => Pot.fromJson(e);
 }

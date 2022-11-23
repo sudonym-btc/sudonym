@@ -100,6 +100,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
             element.id < previousValue ? element.id : previousValue);
   }
 
+  setData(List<T> data) {
+    safeEmit(state.copyWith(data: data));
+  }
+
   @override
   close() async {
     loggy.d('Unsubscribing to ${_repository.endpoint}');

@@ -12,6 +12,7 @@ export 'entity/user.cubit.dart';
 export 'list/list.cubit.dart';
 export 'pages/pay_manager.dart';
 export 'pages/withdraw_manager.dart';
+export 'pot_list_reorganizer.cubit.dart';
 export 'safe_emit.dart';
 export 'transaction-listener/clipboard_listener.dart';
 export 'transaction-listener/link_listener.dart';

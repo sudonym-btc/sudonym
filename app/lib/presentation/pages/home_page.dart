@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +9,7 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/bloc/current_pot.service.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,14 +22,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   PageController controller = PageController();
+  late ListCubit<Pot> l;
+  Color currentColor = Colors.orangeAccent;
+  @override
+  void initState() {
+    l = ListCubit<Pot>(getIt<PotRepository>());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) {
-            var l = ListCubit(getIt<PotRepository>());
+            return PotListReorganizerCubit(list: l, controller: controller);
+          }),
+          BlocProvider(create: (_) {
             controller.addListener(() {
+              setState(() {
+                currentColor = Color.alphaBlend(
+                  Theme.of(context)
+                      .primaryColor
+                      .withAlpha((255 * (min(controller.page!, 1.0))).toInt()),
+                  Colors.orangeAccent,
+                );
+              });
               if ((controller.page! % 1) == 0) {
                 getIt<CurrentPotService>().set(
                     l.state.data.length > controller.page!.toInt()
@@ -37,7 +57,7 @@ class _HomePageState extends State<HomePage> {
             return l..loadNext();
           })
         ],
-        child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
+        child: BlocBuilder<ListCubit<Pot>, ListCubitState<dynamic>>(
           builder: (context, state) {
             List<Widget> children =
                 state.data.map<Widget>((e) => PotPage(entity: e)).toList();
@@ -79,8 +99,7 @@ class _HomePageState extends State<HomePage> {
                                         effect: ExpandingDotsEffect(
                                             dotHeight: 6,
                                             dotWidth: 6,
-                                            activeDotColor:
-                                                Theme.of(context).primaryColor),
+                                            activeDotColor: currentColor),
                                       ))
                                 ],
                               ))));

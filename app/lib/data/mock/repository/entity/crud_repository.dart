@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:sudonym.models/index.dart';
-import 'package:sudonym.models/mock/parsed_data.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
+import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/mock/parsed_data.dart';
 
 const requestDelay = Duration(seconds: 1);
 
@@ -22,7 +22,7 @@ abstract class MockCrudRepository<T extends BaseClass>
   }
 
   @override
-  Future<T> create(dynamic entity) async {
+  Future<T> create(Map<String, dynamic> entity) async {
     beforeCreate(entity);
     T newEntity = converter(entity);
     var sorted = availableData.map((dynamic e) => e.id).toList();
@@ -72,10 +72,10 @@ abstract class MockCrudRepository<T extends BaseClass>
   }
 
   @override
-  Future<T> update(dynamic entity) async {
+  Future<T> update(Map<String, dynamic> entity) async {
     await Future.delayed(requestDelay);
     return availableData
-        .firstWhere((e) => (e as dynamic).id == (entity as dynamic).id);
+        .firstWhere((e) => (e as dynamic).id == (entity as dynamic)['id']);
   }
 
   @override
