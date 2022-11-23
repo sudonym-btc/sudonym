@@ -11,10 +11,13 @@ export const createPots = async () => {
 	]);
 
 	for (const pot of pots) {
-		await PotUser.create({
-			potId: pot.id,
-			userId: '123',
-		});
+		pot.PotUsers = [
+			await PotUser.create({
+				potId: pot.id,
+				index: 1,
+				userId: '123',
+			}),
+		];
 	}
 
 	return pots;

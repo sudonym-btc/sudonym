@@ -1,6 +1,7 @@
 import {
 	Body,
 	CanActivate,
+	Delete,
 	Get,
 	Inject,
 	Param,
@@ -37,6 +38,7 @@ export interface BaseControllerOptions<
 					update: true;
 				}
 		  >;
+	delete?: false | Partial<EndpointOptions<Constructor<TUpdate>, TModel>>;
 	update?: false | Partial<EndpointOptions<Constructor<TUpdate>, TModel>>;
 	list?: false | Partial<EndpointOptions<TModel, TModel>>;
 	get?: false | Partial<EndpointOptions<TModel, TModel>>;
@@ -68,7 +70,7 @@ export const BaseController = <
 	const defaultEndpointOptions: Partial<EndpointOptions<TModel, TModel>> = {
 		auth: options.auth,
 	};
-	['get', 'list', 'update', 'create'].forEach((i) => {
+	['get', 'list', 'update', 'create', 'delete'].forEach((i) => {
 		options[i] = Object.assign(defaultEndpointOptions, options[i] || {});
 	});
 
@@ -117,6 +119,12 @@ export const BaseController = <
 		@Put(':id')
 		update(@Param('id') id, @Body() data: TUpdate) {
 			return this.service.update(id, data);
+		}
+
+		@UseGuards(...getGuards(options.delete))
+		@Delete(':id')
+		delete(@Param('id') id) {
+			return this.service.delete(id);
 		}
 	}
 	return X;

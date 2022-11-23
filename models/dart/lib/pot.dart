@@ -1,4 +1,5 @@
 import "base-class.dart" show BaseClass;
+import "pot-user.dart" show PotUser;
 
 class Pot extends BaseClass {
   dynamic /* num | null */ id;
@@ -6,17 +7,26 @@ class Pot extends BaseClass {
   String currency;
   dynamic /* num | null */ balance;
   dynamic /* num | null */ spendableBalance;
+  dynamic /* List < PotUser > | null */ PotUsers;
   Pot(this.id,
       [this.name = "",
       this.currency = "BTC",
       this.balance = 0,
-      this.spendableBalance = 0])
+      this.spendableBalance = 0,
+      this.PotUsers])
       : super() {
     /* super call moved to initializer */;
   }
   static Pot fromJson(Map<String, dynamic> json) {
-    return new Pot(json["id"], json["name"], json["currency"], json["balance"],
-        json["spendableBalance"]);
+    return new Pot(
+        json["id"],
+        json["name"],
+        json["currency"],
+        json["balance"],
+        json["spendableBalance"],
+        json["PotUsers"]
+            ? json["PotUsers"].map((i) => PotUser.fromJson(i))
+            : []);
   }
 
   dynamic toJson() {
@@ -25,7 +35,8 @@ class Pot extends BaseClass {
       "name": this.name,
       "currency": this.currency,
       "balance": this.balance,
-      "spendableBalance": this.spendableBalance
+      "spendableBalance": this.spendableBalance,
+      "PotUsers": this.PotUsers
     };
   }
 }

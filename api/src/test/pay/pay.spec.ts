@@ -49,11 +49,13 @@ scaffoldGroup('Payment', (scaffold) => {
 				async (hash, timeout, part) => {
 					await new Promise((resolve) => setTimeout(resolve, 100));
 					return {
+						id: 23423423,
 						payment_preimage: 'mock',
 						payment_hash: '543543543543543543534534543543',
 						created_at: Date.now().valueOf() / 1000,
 						parts: 1,
 						partid: 1,
+						msatoshi_sent: 1 * MSATOSHIS,
 						amount_msat: 1 * MSATOSHIS,
 						amount_sent_msat: 1 * MSATOSHIS,
 						status: 'failed',

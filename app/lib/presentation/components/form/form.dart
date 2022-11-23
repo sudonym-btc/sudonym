@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,11 +37,56 @@ class _CustomFormState<
     CS extends EntityCubitState<T>,
     T extends BaseClass> extends State<CustomForm> {
   late FormGroup formGroup;
+  bool loading = false;
 
   @override
   void initState() {
     formGroup = widget.formGroup();
     super.initState();
+  }
+
+  submit(FormGroup form) async {
+    setState(() {
+      loading = true;
+    });
+    // Validate returns true if the form is valid, or false otherwise.
+    try {
+      final formData = form.value;
+      Map<String, dynamic> d = ({
+        // ...widget.entity.toJson(),
+        'id': widget.entity.toJson()['id'],
+        ...formData
+      });
+      print(d);
+      await BlocProvider.of<C>(context)
+          .createOrUpdate(
+              BlocProvider.of<C>(context)
+                  .repository
+                  .converter(d));
+      formGroup.markAsPristine();
+      if (widget.onSave != null) {
+        widget.onSave!();
+      }
+    } catch (e) {
+      if (e is DioError &&
+          e.response?.statusCode == 400) {
+        for (final obj in e
+            .response?.data?['message']) {
+          print(obj);
+          form
+              .control(obj['property'])
+              .setErrors(
+                  {obj['message']: true});
+        }
+        form.markAllAsTouched();
+      } else {
+        rethrow;
+      }
+    }
+                                      
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -64,44 +110,10 @@ class _CustomFormState<
                         return form.dirty || !widget.hideSubmit
                             ? Button(
                                 onPressed: form.valid && form.dirty
-                                    ? () async {
-                                        // Validate returns true if the form is valid, or false otherwise.
-                                        try {
-                                          final formData = form.value;
-                                          Map<String, dynamic> d = ({
-                                            // ...widget.entity.toJson(),
-                                            'id': widget.entity.toJson()['id'],
-                                            ...formData
-                                          });
-                                          print(d);
-                                          await BlocProvider.of<C>(context)
-                                              .createOrUpdate(
-                                                  BlocProvider.of<C>(context)
-                                                      .repository
-                                                      .converter(d));
-                                          formGroup.markAsPristine();
-                                          if (widget.onSave != null) {
-                                            widget.onSave!();
-                                          }
-                                        } catch (e) {
-                                          if (e is DioError &&
-                                              e.response?.statusCode == 400) {
-                                            for (final obj in e
-                                                .response?.data?['message']) {
-                                              print(obj);
-                                              form
-                                                  .control(obj['property'])
-                                                  .setErrors(
-                                                      {obj['message']: true});
-                                            }
-                                            form.markAllAsTouched();
-                                          } else {
-                                            rethrow;
-                                          }
-                                        }
-                                      }
+                                    ? () => submit(form)
                                     : null,
-                                text: AppLocalizations.of(context)!.submit,
+                                icon: loading ? CircularProgressIndicator(),
+                                text: loading ? null : AppLocalizations.of(context)!.submit,
                               )
                             : Container();
                       },

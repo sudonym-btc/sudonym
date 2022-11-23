@@ -25,6 +25,7 @@ class ReceiveWidget extends StatefulWidget {
 class ReceiveWidgetState extends State<ReceiveWidget> {
   late CurrencyInputOptions inputOptions;
 
+// add the amount of the current widget to the withdraw actions triggered while on this page
   ActionParseResponse cb(ActionParseResponse a) {
     if (a.withdraw) {
       CurrencyInputOutput lastEvent = inputOptions.controller!.value;

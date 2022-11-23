@@ -17,6 +17,7 @@ export interface TControllerAndService<TModel> {
 	findOne(id): Promise<TModel>;
 	create(params: RecursivePartial<TModel>): Promise<TModel>;
 	update(id, params: RecursivePartial<TModel>): Promise<TModel>;
+	delete(id): Promise<TModel>;
 	list(
 		param: FindOptions,
 		options?
@@ -34,6 +35,9 @@ export interface TBaseService<TModel> extends TControllerAndService<TModel> {
 	beforeUpdate: Callback<TModel>;
 	afterUpdate: Callback<CreatedOrUpdated<TModel>>;
 	onAfterUpdated: Callback<TModel>;
+	beforeDelete: Callback<TModel>;
+	afterDelete: Callback<CreatedOrUpdated<TModel>>;
+	onAfterDeleted: Callback<TModel>;
 	getUserIds: (id: number | string, scope?: string) => Promise<string[]>;
 	createOrUpdate: (params) => Promise<TModel>;
 }
@@ -53,6 +57,9 @@ export const BaseService = <TModel extends BaseModel>(
 		beforeUpdate = new Callback<TModel>();
 		afterUpdate = new Callback<CreatedOrUpdated<TModel>>();
 		onAfterUpdated = new Callback<TModel>();
+		beforeDelete = new Callback<TModel>();
+		afterDelete = new Callback<CreatedOrUpdated<TModel>>();
+		onAfterDeleted = new Callback<TModel>();
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
 
@@ -132,10 +139,15 @@ export const BaseService = <TModel extends BaseModel>(
 					const record = await this.repo
 						.scope(scopes as any)
 						.findByPk(id);
+					const _previousDataValues = Object.assign(
+						{},
+						(record as any)._previousDataValues
+					);
 					const changed = record.set(params).changed();
 					await record.save();
 					const entity = await this.findOne(record.id);
 					if (changed) (entity as any)._changed = new Set(changed);
+					(entity as any)._previousDataValues = _previousDataValues;
 
 					await this.afterUpdate.execute({ entity, params });
 
@@ -167,7 +179,6 @@ export const BaseService = <TModel extends BaseModel>(
 				async (t) => {
 					await this.beforeCreate.execute(params);
 					const newEntity = await this.repo.create(params);
-
 					const entity = await this.findOne(newEntity.id);
 					entity.isNewRecord = true;
 
@@ -223,6 +234,37 @@ export const BaseService = <TModel extends BaseModel>(
 			return this.findOne({
 				where: uniqueKeys,
 			});
+		}
+
+		async delete(id: number | string) {
+			return await this.repo.sequelize.transaction(
+				{ transaction: sequelizeCls.get('transaction') },
+				async (t) => {
+					const entity = await this.findOne(id);
+					await this.beforeDelete.execute(entity);
+					await entity.destroy();
+
+					await this.afterDelete.execute({ entity, params: entity });
+
+					t.afterCommit(async () => {
+						this.newTransaction(async () => {
+							this.onAfterDeleted.execute(entity);
+							this.eventsService.trigger(
+								new TriggeredEvent(
+									new Event(
+										this.repo.name.toLowerCase() +
+											'.deleted',
+										entity
+									),
+									await this.getUserIds(entity.id)
+								)
+							);
+						});
+					});
+
+					return entity;
+				}
+			);
 		}
 	}
 

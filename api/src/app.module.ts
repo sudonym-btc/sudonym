@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from 'config/config.module';
 import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 import { ContactModule } from 'module/contact/contact.module';
+import { PotUserModule } from 'module/pot-user/pot-user.module';
 import { SenderModule } from 'module/sender/sender.module';
 import { FirebaseNotificationModule } from 'service/firebase-notification/firebase-notification.module';
 import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
@@ -36,6 +37,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 		ContactModule,
 		UserDeviceModule,
 		PotModule,
+		PotUserModule,
 		ActionModule,
 		BalanceUpdaterModule,
 		FirebaseNotificationModule,

@@ -1,6 +1,7 @@
 import * as Models from '@sudonym/models';
 import { User } from 'module/user/user.model';
 import {
+	AllowNull,
 	AutoIncrement,
 	BelongsTo,
 	Column,
@@ -19,6 +20,10 @@ export class PotUser extends BaseModel implements Models.PotUser {
 	@AutoIncrement
 	@Column
 	id: number;
+
+	@AllowNull(false)
+	@Column
+	index: number;
 
 	@BelongsTo(() => Pot)
 	Pot: Pot;

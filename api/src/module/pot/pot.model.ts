@@ -21,6 +21,7 @@ const { Op } = require('sequelize');
 
 @Table({
 	scopes: Pot.scopes,
+	paranoid: true,
 })
 export class Pot extends BaseModel implements Models.Pot {
 	@PrimaryKey
@@ -56,13 +57,22 @@ export class Pot extends BaseModel implements Models.Pot {
 	@HasMany(() => Sender)
 	Senders: Sender[];
 
+	// Must be here as used in create hook
+
 	@AfterCreate
-	static addPotUser = async (rec) => {
+	static async potUserCreator(entity) {
+		const prev = await PotUser.findOne({
+			where: {
+				userId: context.get('request')?.auth.uid,
+			},
+			order: [['index', 'DESC']],
+		});
 		await PotUser.create({
-			potId: rec.id,
+			potId: entity.id,
+			index: prev ? prev.index + 1 : 1,
 			userId: context.get('request')?.auth.uid,
 		});
-	};
+	}
 
 	static accessors = {
 		canFind: (id) =>

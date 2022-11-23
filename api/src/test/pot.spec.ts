@@ -1,14 +1,115 @@
+import { context } from 'helper/context-request';
+import { PotUser } from 'module/pot-user/pot-user.model';
+import { PotUserService } from 'module/pot-user/pot-user.service';
+import { PotService } from 'module/pot/pot.service';
 import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Pot', (scaffold) => {
 	it('should delete pot', async () => {
-		//todo
+		let pot;
+		// Create a second pot
+		await context.run(async () => {
+			const req = {
+				auth: {
+					uid: scaffold.entities.user[0].id,
+				},
+			};
+
+			context.set('request', req);
+			pot = await scaffold.app.get(PotService).create({
+				name: 'Test 2',
+				currency: 'BTC',
+			});
+			expect(pot.PotUsers[0].index).toBe(2);
+
+			await scaffold.app
+				.get(PotService)
+				.delete(scaffold.entities.pot[0].id);
+
+			expect(
+				(
+					await PotUser.findOne({
+						where: {
+							potId: pot.id,
+						},
+					})
+				).index
+			).toBe(1);
+		});
 	});
 	it('should not allow delete if last pot', async () => {
-		//todo
+		expect(
+			scaffold.app.get(PotService).delete(scaffold.entities.pot[0].id)
+		).rejects.toThrowError();
 	});
 
 	it('should not allow duplicate name', async () => {
 		//todo
+	});
+
+	it('should reorder up', async () => {
+		// Create a second pot
+		await context.runAndReturn(async () => {
+			const req = {
+				auth: {
+					uid: scaffold.entities.user[0].id,
+				},
+			};
+
+			context.set('request', req);
+
+			const pot = await scaffold.app.get(PotService).create({
+				name: 'Test 2',
+				currency: 'BTC',
+			});
+			expect(pot.PotUsers[0].index).toBe(2);
+
+			expect(
+				(
+					await scaffold.app
+						.get(PotUserService)
+						.update(scaffold.entities.pot[0].PotUsers[0].id, {
+							index: 2,
+						})
+				).index
+			).toBe(2);
+			expect((await PotUser.findByPk(pot.PotUsers[0].id)).index).toBe(1);
+		});
+	});
+
+	it('should reorder down', async () => {
+		// Create a second pot
+		await context.runAndReturn(async () => {
+			const req = {
+				auth: {
+					uid: scaffold.entities.user[0].id,
+				},
+			};
+
+			context.set('request', req);
+
+			const pot = await scaffold.app.get(PotService).create({
+				name: 'Test 2',
+				currency: 'BTC',
+			});
+			expect(pot.PotUsers[0].index).toBe(2);
+
+			expect(
+				(
+					await scaffold.app
+						.get(PotUserService)
+						.update(pot.PotUsers[0].id, {
+							index: 1,
+						})
+				).index
+			).toBe(1);
+			expect(
+				(
+					await PotUser.findByPk(
+						scaffold.entities.pot[0].PotUsers[0].id
+					)
+				).index
+			).toBe(2);
+		});
 	});
 });
