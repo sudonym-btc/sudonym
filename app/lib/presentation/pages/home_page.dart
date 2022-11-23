@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/bloc/current_pot.service.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
@@ -23,8 +24,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
-              create: (_) => ListCubit(getIt<PotRepository>())..loadNext())
+          BlocProvider(create: (_) {
+            var l = ListCubit(getIt<PotRepository>());
+            controller.addListener(() {
+              if ((controller.page! % 1) == 0) {
+                getIt<CurrentPotService>().set(
+                    l.state.data.length > controller.page!.toInt()
+                        ? l.state.data[controller.page!.toInt()]
+                        : null);
+              }
+            });
+            return l..loadNext();
+          })
         ],
         child: BlocBuilder<ListCubit<dynamic>, ListCubitState<dynamic>>(
           builder: (context, state) {

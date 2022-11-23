@@ -183,10 +183,7 @@ export class AddressParser implements IAddressParser {
 		this.logger.debug('Parsing', address);
 
 		// Trim whitespace and remove protocol and query
-		address = address
-			.trim()
-			.replace(/(^\w+:|^)\/\//, '')
-			.split('?')[0];
+		address = address.trim().replace(/(^\w+:|^)\/\//, '');
 		if (!address || address === '') {
 			return null;
 		}
@@ -214,13 +211,13 @@ export class AddressParser implements IAddressParser {
 		}
 		if (
 			validateBitcoinAddress(
-				address,
+				address.split('?')[0],
 				['mock', 'development'].includes(this.config.env)
 					? null
 					: Network[this.config.bitcoin.network] // Don't check for valid network if in testing mode
 			)
 		) {
-			return ['onchain', address];
+			return ['onchain', address.split('?')[0]];
 		}
 		return [null, address];
 	}

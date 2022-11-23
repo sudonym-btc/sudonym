@@ -27,7 +27,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
 
 // add the amount of the current widget to the withdraw actions triggered while on this page
   ActionParseResponse cb(ActionParseResponse a) {
-    if (a.withdraw) {
+    if (a.withdraw != null) {
       CurrencyInputOutput lastEvent = inputOptions.controller!.value;
       a.withdraw.currency = lastEvent.currency;
       a.withdraw.amount = lastEvent.amount;
@@ -98,6 +98,22 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                   version: QrVersions.auto),
             );
           }
+          var buttons = [
+            Button(
+              icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
+              onPressed: state.loading ? null : copy,
+              text: (AppLocalizations.of(context)!.copy),
+            ),
+            Button(
+              icon: const FaIcon(FontAwesomeIcons.share, size: iconSize),
+              onPressed: state.loading
+                  ? null
+                  : () {
+                      Share.share(state.entity!.data);
+                    },
+              text: (AppLocalizations.of(context)!.share),
+            ),
+          ];
           return Column(
             children: [
               Expanded(
@@ -110,23 +126,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                   child: CurrencyInput(options: inputOptions, large: false)),
               Padding(
                   padding: const EdgeInsets.all(padding),
-                  child: ButtonBar(children: [
-                    Button(
-                      icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
-                      onPressed: state.loading ? null : copy,
-                      text: (AppLocalizations.of(context)!.copy),
-                    ),
-                    Button(
-                      icon:
-                          const FaIcon(FontAwesomeIcons.share, size: iconSize),
-                      onPressed: state.loading
-                          ? null
-                          : () {
-                              Share.share(state.entity!.data);
-                            },
-                      text: (AppLocalizations.of(context)!.share),
-                    ),
-                  ]))
+                  child: ButtonBar(children: buttons))
             ],
           );
         }));

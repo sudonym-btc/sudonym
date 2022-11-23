@@ -22,16 +22,21 @@ class ActionPage extends StatelessWidget {
   }
 
   StatusPage errorPage(BuildContext context, dynamic err) {
-    print(err);
-    print("-------");
+    // print(err);
+    // print("-------");
     // Error came from remote service
     if (err is DioError &&
         err.response != null &&
         (err.response as dynamic).statusCode == 503) {
+      var el =
+          err.response?.data?['withdraw'] ?? err.response?.data?['payment'];
+      print(el);
+      var reason = el['remoteResponse']?['data']?['reason'];
       return StatusPage(
           title: 'Error',
           subtitleText: 'Could not get OK response from remote server',
-          content: Text(err.message.toString()),
+          content: Text(
+              err.message.toString() + (reason != null ? ': $reason' : '')),
           color: Theme.of(context).errorColor);
     }
     return StatusPage(

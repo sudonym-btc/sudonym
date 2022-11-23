@@ -1,4 +1,5 @@
-from helper import getSecretName, getDeploymentName, getServiceName, getVolumeClaimName
+from helper import (getDeploymentName, getSecretName, getServiceName,
+                    getVolumeClaimName)
 from kubernetes_cluster import cluster
 from kubernetes_lightning_rest import lightning_rest
 
@@ -89,7 +90,7 @@ def api(config, cluster_types):
                                     }
                                 ],
                                 "containers": [
-                                    {
+                                    dict({
                                         "name": base_name,
                                         "image": "gcr.io/"
                                         + config["project"]
@@ -116,7 +117,12 @@ def api(config, cluster_types):
                                                 "mountPath": "usr/src/app/api/certs",
                                             },
                                         ],
-                                    }
+                                       
+                                    }, **({
+                                        "image": "api",
+                                        "imagePullPolicy": "IfNotPresent",
+                                        "command": ["npm", "run", "start:dev"]
+                                    } if config["env"] == "development" else {}))
                                 ] + ([{
                                     "name": "cloud-sql-proxy",
                                     "image": "gcr.io/cloudsql-docker/gce-proxy:1.32.0", # make sure the use the latest version
