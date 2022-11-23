@@ -1,6 +1,6 @@
 import { BaseClass } from './base-class';
 import { PotUser } from './pot-user';
-
+//todo: add polyfill for toList function needed in dart to js too
 export class Pot extends BaseClass {
 	constructor(
 		public id: number | null,
@@ -20,8 +20,8 @@ export class Pot extends BaseClass {
 			json['currency'],
 			json['balance'],
 			json['spendableBalance'],
-			json['PotUsers']
-				? json['PotUsers'].map((i) => PotUser.fromJson(i))
+			json['PotUsers'] != null
+				? json['PotUsers'].map((i) => PotUser.fromJson(i)).toList()
 				: []
 		);
 	}

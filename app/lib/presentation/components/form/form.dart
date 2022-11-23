@@ -59,31 +59,23 @@ class _CustomFormState<
       });
       print(d);
       await BlocProvider.of<C>(context)
-          .createOrUpdate(
-              BlocProvider.of<C>(context)
-                  .repository
-                  .converter(d));
+          .createOrUpdate(BlocProvider.of<C>(context).repository.converter(d));
       formGroup.markAsPristine();
       if (widget.onSave != null) {
         widget.onSave!();
       }
     } catch (e) {
-      if (e is DioError &&
-          e.response?.statusCode == 400) {
-        for (final obj in e
-            .response?.data?['message']) {
+      if (e is DioError && e.response?.statusCode == 400) {
+        for (final obj in e.response?.data?['message']) {
           print(obj);
-          form
-              .control(obj['property'])
-              .setErrors(
-                  {obj['message']: true});
+          form.control(obj['property']).setErrors({obj['message']: true});
         }
         form.markAllAsTouched();
       } else {
         rethrow;
       }
     }
-                                      
+
     setState(() {
       loading = false;
     });
@@ -112,8 +104,12 @@ class _CustomFormState<
                                 onPressed: form.valid && form.dirty
                                     ? () => submit(form)
                                     : null,
-                                icon: loading ? CircularProgressIndicator(),
-                                text: loading ? null : AppLocalizations.of(context)!.submit,
+                                icon: loading
+                                    ? CircularProgressIndicator()
+                                    : null,
+                                text: loading
+                                    ? null
+                                    : AppLocalizations.of(context)!.submit,
                               )
                             : Container();
                       },

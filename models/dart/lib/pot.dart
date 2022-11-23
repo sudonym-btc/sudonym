@@ -1,6 +1,7 @@
 import "base-class.dart" show BaseClass;
 import "pot-user.dart" show PotUser;
 
+//todo: add polyfill for toList function needed in dart to js too
 class Pot extends BaseClass {
   dynamic /* num | null */ id;
   String name;
@@ -24,8 +25,8 @@ class Pot extends BaseClass {
         json["currency"],
         json["balance"],
         json["spendableBalance"],
-        json["PotUsers"]
-            ? json["PotUsers"].map((i) => PotUser.fromJson(i))
+        json["PotUsers"] != null
+            ? json["PotUsers"].map((i) => PotUser.fromJson(i)).toList()
             : []);
   }
 
