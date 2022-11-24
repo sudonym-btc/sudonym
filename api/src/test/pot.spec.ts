@@ -88,28 +88,37 @@ scaffoldGroup('Pot', (scaffold) => {
 
 			context.set('request', req);
 
-			const pot = await scaffold.app.get(PotService).create({
+			const pot2 = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
-			expect(pot.PotUsers[0].index).toBe(2);
+			expect(pot2.PotUsers[0].index).toBe(2);
+
+			const pot3 = await scaffold.app.get(PotService).create({
+				name: 'Test 3',
+				currency: 'BTC',
+			});
+			expect(pot3.PotUsers[0].index).toBe(3);
 
 			expect(
 				(
 					await scaffold.app
 						.get(PotUserService)
-						.update(pot.PotUsers[0].id, {
-							index: 1,
+						.update(pot3.PotUsers[0].id, {
+							index: 2,
 						})
 				).index
-			).toBe(1);
+			).toBe(2);
+
 			expect(
 				(
 					await PotUser.findByPk(
 						scaffold.entities.pot[0].PotUsers[0].id
 					)
 				).index
-			).toBe(2);
+			).toBe(1);
+
+			expect((await PotUser.findByPk(pot2.PotUsers[0].id)).index).toBe(3);
 		});
 	});
 });

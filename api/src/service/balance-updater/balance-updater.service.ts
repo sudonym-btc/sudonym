@@ -13,7 +13,9 @@ export class BalanceUpdaterService {
 
 	onModuleInit() {
 		this.transactionService.afterCreate.hook(async ({ entity }) => {
+			console.log(entity);
 			const pot = await this.potService.findOne(entity.potId);
+			console.log(pot);
 			let newBalance = pot.balance;
 			let newSpendableBalance = pot.spendableBalance;
 			const amountInPotCurrency = (

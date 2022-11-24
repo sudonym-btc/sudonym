@@ -4,6 +4,7 @@ import { context } from 'helper/context-request';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
 import { Transaction } from 'module/transaction/transaction.model';
+import { FindOptions } from 'sequelize';
 import {
 	AfterCreate,
 	AllowNull,
@@ -86,8 +87,12 @@ export class Pot extends BaseModel implements Models.Pot {
 	};
 
 	static scopes = {
-		find: () =>
-			context.get('request')?.auth
+		orderByIndex: () =>
+			({
+				order: [[{ model: PotUser, as: 'PotUsers' }, 'index', 'asc']],
+			} as FindOptions),
+		find: () => ({
+			...(context.get('request')?.auth
 				? {
 						include: [
 							{
@@ -95,11 +100,13 @@ export class Pot extends BaseModel implements Models.Pot {
 								as: 'PotUsers',
 								required: true,
 								where: {
-									userId: context.get('request').auth.uid,
+									userId: context.get('request')?.auth?.uid,
 								},
 							},
 						],
+						...Pot.scopes.orderByIndex(),
 				  }
-				: {},
+				: {}),
+		}),
 	};
 }

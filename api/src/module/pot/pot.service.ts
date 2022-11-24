@@ -26,6 +26,7 @@ export class PotService extends BaseService(Pot) {
 		if (potId) {
 			return this.findOne(potId);
 		} else {
+			const order = Pot.scopes.orderByIndex().order;
 			return this.findOne({
 				include: [
 					{
@@ -41,20 +42,12 @@ export class PotService extends BaseService(Pot) {
 						? [
 								[
 									Sequelize.literal(`
-                        id="${potId}"`),
-									'DESC',
-								],
-						  ]
-						: []),
-					...(potName
-						? [
-								[
-									Sequelize.literal(`
                     name="${potName}"`),
 									'DESC',
 								],
 						  ]
 						: []),
+					...(order instanceof Array ? order : []),
 				],
 			});
 		}

@@ -22,19 +22,21 @@ export class PotUserService extends BaseService(PotUser) {
 		});
 
 		this.afterUpdate.hook(async (rec) => {
-			if (context.get('updatingIndexes')) return;
-			else {
-				await context.runAndReturn(async () => {
+			await context.runAndReturn(async () => {
+				if (context.get('updatingIndexes')) return;
+				else {
+					console.log(rec);
 					context.set('updatingIndexes', true);
 					if (!rec.entity.changed('index')) return;
 					const movingForward =
 						rec.entity.index < rec.entity.previous('index');
 
-					await new Promise((r) => setTimeout(r, 500));
-
 					// shift all pots greater than the deleted on down by one
 					for (const potUser of await PotUser.findAll({
 						where: {
+							id: {
+								[Op.ne]: rec.entity.id,
+							},
 							userId: rec.entity.userId,
 							index: movingForward
 								? {
@@ -47,12 +49,18 @@ export class PotUserService extends BaseService(PotUser) {
 								  },
 						},
 					})) {
+						console.log(
+							'updating',
+							potUser,
+							potUser.index + (movingForward ? 1 : -1),
+							movingForward
+						);
 						await this.update(potUser.id, {
 							index: potUser.index + (movingForward ? 1 : -1),
 						});
 					}
-				});
-			}
+				}
+			});
 		});
 	}
 }

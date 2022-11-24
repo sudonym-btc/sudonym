@@ -15,58 +15,52 @@ class PotListReorganizerCubit extends Cubit<PotListState> {
       : super(PotListState());
 
   canMoveLeft(Pot p) {
-    if (p.PotUsers[0].index > list.state.data.first.PotUsers[0].index) {
+    if (list.state.data.indexOf(p) > 0) {
       return true;
     }
     return false;
   }
 
   canMoveRight(Pot p) {
-    if (p.PotUsers[0].index < list.state.data.last.PotUsers[0].index) {
+    if (list.state.data.indexOf(p) < list.state.data.length - 1) {
       return true;
     }
     return false;
   }
 
-  onMoveLeft(Pot p) {
+  onMoveLeft(Pot p) async {
     Map<String, dynamic> d = {
       ...p.PotUsers[0].toJson(),
-      'index': p.PotUsers[0].index--
+      'index': list.state.data.indexOf(p)
     };
-    getIt<PotUserRepository>().update(d);
+    await getIt<PotUserRepository>().update(d);
     controller.previousPage(
-        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     list.setData([
-      ...list.state.data.where((element) =>
-          element.PotUsers[0].index < p.PotUsers[0].index - 1 &&
-          element.id != p.id),
+      ...list.state.data.sublist(0, list.state.data.indexOf(p) - 1),
       p,
-      ...list.state.data.where((element) =>
-          element.PotUsers[0].index >= p.PotUsers[0].index - 1 &&
-          element.id != p.id),
+      list.state.data[list.state.data.indexOf(p) - 1],
+      ...list.state.data
+          .sublist(list.state.data.indexOf(p) + 1, list.state.data.length),
     ]);
   }
 
-  onMoveRight(Pot p) {
+  onMoveRight(Pot p) async {
     Map<String, dynamic> d = {
       ...p.PotUsers[0].toJson(),
-      'index': p.PotUsers[0].index++
+      'index': list.state.data.indexOf(p) + 2
     };
     getIt<PotUserRepository>().update(d);
     controller.nextPage(
         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     list.setData([
-      ...list.state.data.where((element) =>
-          element.PotUsers[0].index < p.PotUsers[0].index + 1 &&
-          element.id != p.id),
+      ...list.state.data.sublist(0, list.state.data.indexOf(p)),
+      list.state.data[list.state.data.indexOf(p) + 1],
       p,
-      ...list.state.data.where((element) =>
-          element.PotUsers[0].index >= p.PotUsers[0].index + 1 &&
-          element.id != p.id),
+      ...list.state.data
+          .sublist(list.state.data.indexOf(p) + 1, list.state.data.length),
     ]);
   }
-
-  reorgData() {}
 }
 
 class PotListState {}

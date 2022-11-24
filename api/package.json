@@ -76,6 +76,7 @@
     "@types/validator": "^13.7.9",
     "conditional-decorator": "^0.1.7",
     "jest": "^27.5.1",
+    "sequelize-cli": "^6.5.2",
     "source-map-support": "^0.5.20",
     "sqlite3": "^5.1.2",
     "supertest": "^6.3.1",
