@@ -1,4 +1,5 @@
 import { context } from 'helper/context-request';
+import { CurrencyService } from 'module/currency/currency.service';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { PotUserService } from 'module/pot-user/pot-user.service';
 import { PotService } from 'module/pot/pot.service';
@@ -37,6 +38,27 @@ scaffoldGroup('Pot', (scaffold) => {
 			).toBe(1);
 		});
 	});
+
+	it('should change currency of pot', async () => {
+		const prevSpendable = scaffold.entities.pot[0].spendableBalance;
+		const prevBalance = scaffold.entities.pot[0].balance;
+
+		const newSpendable = await scaffold.app
+			.get(CurrencyService)
+			.convert(scaffold.entities.pot[0].currency, 'USD', prevSpendable);
+		const newBalance = await scaffold.app
+			.get(CurrencyService)
+			.convert(scaffold.entities.pot[0].currency, 'USD', prevBalance);
+
+		const pot = await scaffold.app
+			.get(PotService)
+			.update(scaffold.entities.pot[0].id, {
+				currency: 'USD',
+			});
+		expect(pot.spendableBalance).toBe(newSpendable);
+		expect(pot.balance).toBe(newBalance);
+	});
+
 	it('should not allow delete if last pot', async () => {
 		expect(
 			scaffold.app.get(PotService).delete(scaffold.entities.pot[0].id)

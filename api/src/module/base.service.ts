@@ -242,6 +242,8 @@ export const BaseService = <TModel extends BaseModel>(
 				async (t) => {
 					const entity = await this.findOne(id);
 					await this.beforeDelete.execute(entity);
+					const userIds = await this.getUserIds(entity.id);
+
 					await entity.destroy();
 
 					await this.afterDelete.execute({ entity, params: entity });
@@ -256,7 +258,7 @@ export const BaseService = <TModel extends BaseModel>(
 											'.deleted',
 										entity
 									),
-									await this.getUserIds(entity.id)
+									userIds
 								)
 							);
 						});
