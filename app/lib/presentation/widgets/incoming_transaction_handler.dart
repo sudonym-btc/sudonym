@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
-import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/bloc/incoming_transaction_handler.service.dart';
 import 'package:sudonym/presentation/index.dart';
 
 class IncomingTransactionHandler extends StatefulWidget {
@@ -17,12 +17,12 @@ class IncomingTransactionHandler extends StatefulWidget {
 
 class IncomingTransactionHandlerState
     extends State<IncomingTransactionHandler> {
-  late TransactionRepository _transactionRepository;
+  IncomingTransactionHandlerService _incomingTransactionHandlerService =
+      getIt<IncomingTransactionHandlerService>();
 
   @override
   void initState() {
-    _transactionRepository = getIt<TransactionRepository>();
-    _transactionRepository.created.stream.listen((event) {
+    _incomingTransactionHandlerService.callbacks.after.add((event) {
       if (event.outgoing == false) {
         FlutterRingtonePlayer.playNotification();
         Navigator.of(context).push(
@@ -31,7 +31,9 @@ class IncomingTransactionHandlerState
               fullscreenDialog: true),
         );
       }
+      return event;
     });
+
     super.initState();
   }
 

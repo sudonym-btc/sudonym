@@ -1,18 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:sudonym/injection.dart';
+import 'package:sudonym/logic/bloc/incoming_transaction_handler.service.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
-class ReceiverPage extends StatelessWidget {
+class ReceiverPage extends StatefulWidget {
   final Receiver entity;
   const ReceiverPage({required this.entity, Key? key}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => ReceiverPageState();
+}
+
+class ReceiverPageState extends State<ReceiverPage> {
+  Transaction? handle(Transaction t) {
+    // Don't bubble this event to global transaction handler if already on this page
+    if (t.receiverId == widget.entity.id) {
+      FlutterRingtonePlayer.playNotification();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => TransactionPage(entity: t),
+              fullscreenDialog: true),
+          (route) => route.isFirst);
+      return null;
+    }
+    return t;
+  }
+
+  @override
+  void initState() {
+    getIt<IncomingTransactionHandlerService>().callbacks.add(handle);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    getIt<IncomingTransactionHandlerService>().callbacks.remove(handle);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CubitWrapper<ReceiverCubit, ReceiverCubitState, Receiver>(
-        entity: entity,
+        entity: widget.entity,
         fetch: true,
         builder: (context, state) {
           if (state.entity == null) {
@@ -22,19 +55,21 @@ class ReceiverPage extends StatelessWidget {
                 content: const Center(
                     child: CircularProgressIndicator(color: Colors.white)),
                 color: Colors.indigo.shade800);
-          } else if (state.entity!.received > 0) {
-            return StatusPage(
-                title: AppLocalizations.of(context)!.received,
-                subtitleText: AppLocalizations.of(context)!.receivedPayment,
-                icon: FontAwesomeIcons.check,
-                color: Colors.green);
           }
+          // else if (state.entity!.received > 0) {
+          //   return StatusPage(
+          //       title: AppLocalizations.of(context)!.received,
+          //       subtitleText: AppLocalizations.of(context)!.receivedPayment,
+          //       icon: FontAwesomeIcons.check,
+          //       color: Colors.green);
+          // }
+
+          // don't show success page as will route to transaction page anyway
 
           return StatusPage(
               title: AppLocalizations.of(context)!.receiving,
               subtitleText: AppLocalizations.of(context)!.waitingForPayment,
-              content: const Center(
-                  child: CircularProgressIndicator(color: Colors.white)),
+              content: loader,
               color: Colors.indigo.shade800);
         });
   }

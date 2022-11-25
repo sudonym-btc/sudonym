@@ -10,9 +10,12 @@ import 'package:sudonym.models/index.dart';
 class PotListReorganizerCubit extends Cubit<PotListState> {
   ListCubit<Pot> list;
   PageController controller;
+  PotRepository potRepository = getIt<PotRepository>();
 
   PotListReorganizerCubit({required this.list, required this.controller})
-      : super(PotListState());
+      : super(PotListState()) {
+    potRepository.deleted.stream.listen(onDelete);
+  }
 
   canMoveLeft(Pot p) {
     if (list.state.data.indexOf(p) > 0) {
@@ -26,6 +29,11 @@ class PotListReorganizerCubit extends Cubit<PotListState> {
       return true;
     }
     return false;
+  }
+
+  onDelete(Pot p) {
+    list.setData(
+        list.state.data.where((element) => element.id != p.id).toList());
   }
 
   onMoveLeft(Pot p) async {

@@ -100,7 +100,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
             element.id < previousValue ? element.id : previousValue);
   }
 
-  setData(List<T> data) {
+  setData(List<dynamic> data) {
     safeEmit(state.copyWith(data: data));
   }
 

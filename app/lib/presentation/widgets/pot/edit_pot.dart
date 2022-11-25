@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:sudonym/data/index.dart';
+import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -19,6 +22,17 @@ class EditPot extends StatelessWidget {
                   title: Text(entity?.id == null
                       ? AppLocalizations.of(context)!.createPot
                       : AppLocalizations.of(context)!.editPot),
+                  actions: entity?.id != null
+                      ? [
+                          IconButton(
+                              onPressed: () {
+                                getIt<PotRepository>().delete(entity!.id);
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                              },
+                              icon: const FaIcon(FontAwesomeIcons.trashCan))
+                        ]
+                      : [],
                 ),
                 body: Padding(
                     padding: const EdgeInsets.all(padding),

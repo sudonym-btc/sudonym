@@ -212,17 +212,32 @@ class ActionTriggerService with ActionLogger {
 }
 
 class CallbackHandler<T> {
-  final List<T Function(T)> callbacks = [];
+  final List<T? Function(T)> callbacks = [];
+  final List<T? Function(T)> after = [];
 
-  add(T Function(T) f) {
+  add(T? Function(T) f) {
     callbacks.add(f);
   }
 
-  remove(T Function(T) f) {
+  remove(T? Function(T) f) {
     callbacks.remove(f);
   }
 
-  handle(T a) {
-    return callbacks.fold(a, (value, element) => element(value));
+  handle(T? a) {
+    T? r = callbacks.fold(a, (value, element) {
+      if (value != null) {
+        return element(value);
+      }
+      return null;
+    });
+    if (r != null) {
+      after.fold(a, (value, element) {
+        if (value != null) {
+          return element(value);
+        }
+        return null;
+      });
+      return r;
+    }
   }
 }

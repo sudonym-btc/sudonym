@@ -20,6 +20,7 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   Websocket websocket;
   StreamController<T> updated = StreamController.broadcast();
   StreamController<T> created = StreamController.broadcast();
+  StreamController<T> deleted = StreamController.broadcast();
   StreamController<dynamic> events = StreamController.broadcast();
 
   CrudRepository(this.config, this.dio, this.websocket) {
@@ -36,6 +37,8 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
           created.add(converter(e.data));
         } else if (e.name.split('.')[1] == 'updated') {
           updated.add(converter(e.data));
+        } else if (e.name.split('.')[1] == 'deleted') {
+          deleted.add(converter(e.data));
         } else {
           events.add(e);
         }
