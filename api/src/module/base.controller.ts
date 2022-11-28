@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	CanActivate,
 	Delete,
@@ -10,6 +11,7 @@ import {
 	Query,
 	UseGuards,
 	UsePipes,
+	ValidationError,
 	ValidationPipe,
 } from '@nestjs/common';
 import { conditional } from 'conditional-decorator';
@@ -61,6 +63,7 @@ export const BaseController = <
 >(
 	options: BaseControllerOptions<TService, TModel, TCreate, TUpdate>
 ): Constructor<TBaseController<TService, TModel>> => {
+	// console.log(options);
 	const defaultOptions: Partial<
 		BaseControllerOptions<TService, TModel, TCreate, TUpdate>
 	> = {
@@ -71,8 +74,19 @@ export const BaseController = <
 		auth: options.auth,
 	};
 	['get', 'list', 'update', 'create', 'delete'].forEach((i) => {
-		options[i] = Object.assign(defaultEndpointOptions, options[i] || {});
+		options[i] = Object.assign(
+			Object.assign({}, defaultEndpointOptions),
+			options[i] || {}
+		);
 	});
+
+	// if (options.model.name == 'Pot')
+	// 	console.log(options.update, options.create);
+
+	const exceptionFactory = (validationErrors: ValidationError[] = []) => {
+		console.log(validationErrors);
+		return new BadRequestException(validationErrors);
+	};
 
 	// console.log(options, AuthGuard);
 	const getGuards = (obj) =>
@@ -97,8 +111,11 @@ export const BaseController = <
 		@UseGuards(...getGuards(options.create))
 		@UsePipes(
 			new ValidationPipe({
+				whitelist: true,
+				transform: true,
 				expectedType: options.create && options.create.input,
 				...(options.create ? options.create.validator : {}),
+				exceptionFactory,
 			})
 		)
 		@conditional(!!options.create, Post(''))
@@ -112,12 +129,17 @@ export const BaseController = <
 		@UseGuards(...getGuards(options.update))
 		@UsePipes(
 			new ValidationPipe({
+				whitelist: true,
+				transform: true,
 				expectedType: options.update && options.update.input,
 				...(options.update ? options.update.validator : {}),
+				exceptionFactory,
+				skipUndefinedProperties: true, // todo: why are updates coming through undefined
 			})
 		)
-		@Put(':id')
+		@conditional(!!options.update, Put(':id'))
 		update(@Param('id') id, @Body() data: TUpdate) {
+			console.log(data);
 			return this.service.update(id, data);
 		}
 

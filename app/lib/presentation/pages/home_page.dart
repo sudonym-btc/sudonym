@@ -26,7 +26,10 @@ class _HomePageState extends State<HomePage> {
   Color currentColor = Colors.orangeAccent;
   @override
   void initState() {
-    l = ListCubit<Pot>(getIt<PotRepository>());
+    l = ListCubit<Pot>(getIt<PotRepository>(),
+        column: '\$PotUsers.index\$',
+        order: 'ASC',
+        getId: (element) => element.PotUsers[0].index);
     super.initState();
   }
 
@@ -75,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                             icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
                           )
                         ]),
-                        body: state.loading
+                        body: state.loading && state.data.isEmpty
                             ? const Center(child: CircularProgressIndicator())
                             : Column(
                                 children: [

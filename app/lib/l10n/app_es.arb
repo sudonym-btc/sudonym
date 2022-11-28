@@ -82,5 +82,6 @@
 	"outgoingPaymentError": "El pago saliente para {address} de {amount} falló",
 	"incomingPaymentError": "El pago entrante de {amount} falló",
 	"incomingPaymentSuccess": "Pago de {amount} recibido",
-	"time": "Hora"
+	"time": "Hora",
+	"to": "Para"
 }

@@ -132,16 +132,22 @@ class _OutgoingComplete extends _TransactionStatusPage {
                         date: transaction.createdAt,
                       )
                     ]),
-                    TableRow(children: [
-                      TableKey(
-                          child: Text(AppLocalizations.of(context)!.address)),
-                      Text(
-                        transaction.originalAddress,
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )
-                    ]),
+                    ...((transaction.originalAddress != '' &&
+                            transaction.originalAddress != null)
+                        ? [
+                            TableRow(children: [
+                              TableKey(
+                                  child: Text(
+                                      AppLocalizations.of(context)!.address)),
+                              Text(
+                                transaction.originalAddress,
+                                style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            ])
+                          ]
+                        : []),
                     TableRow(children: [
                       TableKey(child: Text(AppLocalizations.of(context)!.time)),
                       Timeago(
@@ -207,15 +213,21 @@ class _IncomingComplete extends _TransactionStatusPage {
                 date: transaction.createdAt,
               )
             ]),
-            TableRow(children: [
-              TableKey(child: Text(AppLocalizations.of(context)!.address)),
-              Text(
-                transaction.originalAddress ?? '',
-                style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                ),
-              )
-            ]),
+            ...((transaction.originalAddress != '' &&
+                    transaction.originalAddress != null)
+                ? [
+                    TableRow(children: [
+                      TableKey(
+                          child: Text(AppLocalizations.of(context)!.address)),
+                      Text(
+                        transaction.originalAddress ?? '',
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ])
+                  ]
+                : []),
             TableRow(children: [
               TableKey(child: Text(AppLocalizations.of(context)!.time)),
               Timeago(

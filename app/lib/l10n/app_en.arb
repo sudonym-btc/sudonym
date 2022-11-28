@@ -124,5 +124,6 @@
 			}
 		}
 	},
-	"time": "Time"
+	"time": "Time",
+	"to": "To"
 }

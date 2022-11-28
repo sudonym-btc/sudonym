@@ -82,5 +82,6 @@
 	"outgoingPaymentError": "Ausgehende Zahlung von {amount} an {address}fehlgeschlagen",
 	"incomingPaymentError": "Eingehende Zahlung von {amount} fehlgeschlagen",
 	"incomingPaymentSuccess": "Zahlung von {amount} erhalten",
-	"time": "Um"
+	"time": "Um",
+	"to": "An"
 }

@@ -79,7 +79,18 @@ export class ExchangeService {
 		return market;
 	}
 
-	async settle(from, to, amount, side: 'buy' | 'sell' = 'buy') {
+	async listFunds() {
+		const funds = {};
+		for (const exchange of this.exchanges) {
+			funds[exchange.name] = await exchange
+				.fetchBalance()
+				.then((u) => u.free);
+		}
+		return funds;
+	}
+	async buy(currency: string, amount: number) {}
+
+	async trade(from, to, amount, side: 'buy' | 'sell' = 'buy') {
 		const market = await this.fetchMarket(from, to);
 		return await this.exchanges[0]
 			.createMarketOrder(

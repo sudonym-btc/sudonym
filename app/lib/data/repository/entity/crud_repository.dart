@@ -71,6 +71,8 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   Future<T> update(Map<String, dynamic> entity) async {
+    print(entity);
+    print('-----');
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
         .then((value) {

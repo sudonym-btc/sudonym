@@ -12,10 +12,29 @@ export class BalanceUpdaterService {
 	private readonly logger = new Logger(this.constructor.name);
 
 	onModuleInit() {
+		this.potService.beforeUpdate.hook(async ({ params, entity }) => {
+			if (params.currency) {
+				params.spendableBalance = (
+					await this.currencyService.convert(
+						entity.currency,
+						params.currency,
+						entity.spendableBalance
+					)
+				).amount;
+
+				params.balance = (
+					await this.currencyService.convert(
+						entity.currency,
+						params.currency,
+						entity.balance
+					)
+				).amount;
+
+				return;
+			}
+		});
 		this.transactionService.afterCreate.hook(async ({ entity }) => {
-			console.log(entity);
 			const pot = await this.potService.findOne(entity.potId);
-			console.log(pot);
 			let newBalance = pot.balance;
 			let newSpendableBalance = pot.spendableBalance;
 			const amountInPotCurrency = (
@@ -83,7 +102,6 @@ export class BalanceUpdaterService {
 					// If payment is incoming update balances
 				} else {
 					if (entity.status == true) {
-						console.log(amountInPotCurrency);
 						newSpendableBalance += amountInPotCurrency;
 					} else {
 						newBalance -= amountInPotCurrency;

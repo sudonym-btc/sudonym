@@ -53,6 +53,8 @@ class _CustomFormState<
     try {
       final formData = form.value;
       Map<String, dynamic> d = {...widget.entity.toJson(), ...formData};
+      print((BlocProvider.of<C>(context).repository.converter(d) as dynamic)
+          .name);
       await BlocProvider.of<C>(context)
           .createOrUpdate(BlocProvider.of<C>(context).repository.converter(d));
       formGroup.markAsPristine();
@@ -61,9 +63,15 @@ class _CustomFormState<
       }
     } catch (e) {
       if (e is DioError && e.response?.statusCode == 400) {
+        print(e.response?.data?['message']);
         for (final obj in e.response?.data?['message']) {
-          print(obj);
-          form.control(obj['property']).setErrors({obj['message']: true});
+          if (obj is String) {
+            form.setErrors({'main': obj});
+          } else {
+            form.control(obj['property']).setErrors(obj['message'] != null
+                ? {obj['message']: true}
+                : obj['constraints']);
+          }
         }
         form.markAllAsTouched();
       } else {

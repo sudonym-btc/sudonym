@@ -32,7 +32,7 @@ export interface TBaseService<TModel> extends TControllerAndService<TModel> {
 	beforeCreate: Callback<TModel>;
 	afterCreate: Callback<CreatedOrUpdated<TModel>>;
 	onAfterCreated: Callback<TModel>;
-	beforeUpdate: Callback<TModel>;
+	beforeUpdate: Callback<CreatedOrUpdated<TModel>>;
 	afterUpdate: Callback<CreatedOrUpdated<TModel>>;
 	onAfterUpdated: Callback<TModel>;
 	beforeDelete: Callback<TModel>;
@@ -54,7 +54,7 @@ export const BaseService = <TModel extends BaseModel>(
 		beforeCreate = new Callback<TModel>();
 		afterCreate = new Callback<CreatedOrUpdated<TModel>>();
 		onAfterCreated = new Callback<TModel>();
-		beforeUpdate = new Callback<TModel>();
+		beforeUpdate = new Callback<CreatedOrUpdated<TModel>>();
 		afterUpdate = new Callback<CreatedOrUpdated<TModel>>();
 		onAfterUpdated = new Callback<TModel>();
 		beforeDelete = new Callback<TModel>();
@@ -91,6 +91,7 @@ export const BaseService = <TModel extends BaseModel>(
 		}
 
 		async list(params: FindOptions, options: ListOptions = { scopes: [] }) {
+			params = parseParams(params);
 			const scopes = [
 				...(options.scopes || []),
 				this.repo.scopes.find ? this.repo.scopes.find() : null,
@@ -139,6 +140,8 @@ export const BaseService = <TModel extends BaseModel>(
 					const record = await this.repo
 						.scope(scopes as any)
 						.findByPk(id);
+					await this.beforeUpdate.execute({ params, entity: record });
+
 					const _previousDataValues = Object.assign(
 						{},
 						(record as any)._previousDataValues
@@ -291,3 +294,24 @@ const parseFindParams = (params) => {
 class ListOptions {
 	scopes;
 }
+
+const parseParams = (params) => {
+	if (typeof params == 'object') {
+		if (!params) return params;
+		if (Array.isArray(params)) {
+			return params.map(parseParams);
+		}
+		return Reflect.ownKeys(params).reduce(
+			(acc, i) => ({
+				...acc,
+				[typeof i == 'string'
+					? i.includes('.')
+						? i // '$' + i + '$' could add this but currently adding on frontend
+						: i
+					: i]: parseParams(params[i]),
+			}),
+			{}
+		);
+	}
+	return params;
+};

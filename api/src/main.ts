@@ -1,23 +1,14 @@
-import { LogLevel } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { applyGlobals } from 'app.globals';
-import { getConfig } from 'config/config';
+import { SentryLogger } from 'helper/sentry';
 import { AppModule } from './app.module';
 import { downloadFiles } from './helper/config-loader';
 
 async function bootstrap() {
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule, {
-		logger: [
-			...(['mock', 'development'].includes(getConfig().env)
-				? ['verbose']
-				: []),
-			'error',
-			'warn',
-			'log',
-			'debug',
-		] as LogLevel[],
+		logger: new SentryLogger(),
 	});
 	applyGlobals(app);
 

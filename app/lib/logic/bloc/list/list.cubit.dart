@@ -10,18 +10,24 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   final CrudRepository _repository;
   Map<String, dynamic> where;
   String order = 'DESC';
+  String column = 'id';
   StreamSubscription? onCreated;
   StreamSubscription? onUpdated;
+  Function? getId = (dynamic element) => element.id;
 
-  ListCubit(this._repository, {this.where = const {}})
+  ListCubit(this._repository,
+      {this.where = const {},
+      this.column = 'id',
+      this.getId,
+      this.order = 'DESC'})
       : super(const ListCubitState(data: [], metadata: {}, loading: false)) {
     if (onCreated == null) {
       loggy.d('Subscribing to ${_repository.endpoint}');
     }
-    onCreated ??= _repository.created.stream.listen((event) async {
+    onCreated ??= _repository.created.stream.listen((event) {
       loggy.d(
           "Created ${event.toJson()["id"].toString()} reloading ${_repository.endpoint}");
-      await loadPrevious();
+      order == 'DESC' ? loadPrevious() : loadNext();
     });
 
     onUpdated ??= _repository.updated.stream.listen((event) async {
@@ -49,10 +55,16 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
 
       safeEmit(state.copyWith(loading: true, loadingNext: true));
 
-      var response = await _repository.list(where: {
-        ...where,
-        'id': order == 'DESC' ? {'lt': getSmallestId()} : {'lt': getLargestId()}
-      });
+      var response = await _repository.list(
+          where: {
+            ...where,
+            column: order == 'DESC'
+                ? {'lt': getSmallestId()}
+                : {'lt': getLargestId()}
+          },
+          order: [
+            [...column.replaceAll('\$', '').split('.'), order]
+          ].toList());
       List filtered = filter(response.data);
       List elements = [...state.data, ...filtered];
 
@@ -70,10 +82,16 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
 
       safeEmit(state.copyWith(loading: true, loadingPrevious: true));
 
-      var response = await _repository.list(where: {
-        ...where,
-        'id': order == 'DESC' ? {'gt': getLargestId()} : {'gt': getSmallestId()}
-      });
+      var response = await _repository.list(
+          where: {
+            ...where,
+            column: order == 'DESC'
+                ? {'gt': getLargestId()}
+                : {'gt': getSmallestId()}
+          },
+          order: [
+            [...column.replaceAll('\$', '').split('.'), order]
+          ].toList());
 
       List filtered = filter(response.data);
       List elements = [...filtered, ...state.data];
@@ -88,16 +106,16 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
 
   getLargestId() {
     return state.data.fold(
-        0,
+        order == 'DESC' ? 0 : 99999999999999,
         (previousValue, element) =>
-            element.id > previousValue ? element.id : previousValue);
+            getId!(element) > previousValue ? getId!(element) : previousValue);
   }
 
   getSmallestId() {
     return state.data.fold(
-        99999999999999,
+        order == 'DESC' ? 99999999999999 : 0,
         (previousValue, element) =>
-            element.id < previousValue ? element.id : previousValue);
+            getId!(element) < previousValue ? getId!(element) : previousValue);
   }
 
   setData(List<dynamic> data) {

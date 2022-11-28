@@ -1,4 +1,5 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
+import { SATOSHIS } from '@sudonym/models';
 import axios from 'axios';
 import * as bolt11 from 'bolt11';
 import * as fs from 'fs';
@@ -39,12 +40,29 @@ export class LightningNodeService {
 		return from < to ? '0' : '1';
 	}
 
-	async circularRoute(millisatoshis) {
-		const channel = this.connectedChannels.find(
-			(c) =>
-				c.spendable_msatoshi >= millisatoshis &&
-				c.state == 'CHANNELD_NORMAL'
+	// Lists onchain and in-channel funds
+	async listFunds() {
+		const funds = await this.makeRequest({
+			path: '/v1/listFunds',
+			method: 'GET',
+		});
+
+		this.logger.verbose(funds);
+
+		return (
+			(funds.outputs.reduce((acc, i) => acc + i.value, 0) +
+				funds.channels.reduce((acc, i) => acc + i.channel_sat, 0)) /
+			SATOSHIS
 		);
+	}
+
+	async circularRoute(millisatoshis) {
+		const channel =
+			this.connectedChannels.find(
+				(c) =>
+					c.spendable_msatoshi >= millisatoshis &&
+					c.state == 'CHANNELD_NORMAL'
+			) || this.connectedChannels[0]; // Try sending with first channel if none fit filter and fail organically
 		const outgoingChannel = channel.channels.find(
 			(c) => c.destination != this.info.id
 		);

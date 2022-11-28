@@ -79,6 +79,10 @@ export class MockLightningNodeService extends LightningNodeService {
 		return this.pays.filter((i) => i.payment_hash == hash);
 	}
 
+	async listFunds(): Promise<number> {
+		return 1;
+	}
+
 	createOffer(amount: any, description?: any): Promise<any> {
 		throw new Error('Method not implemented.');
 	}

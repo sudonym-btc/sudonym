@@ -55,8 +55,8 @@ scaffoldGroup('Pot', (scaffold) => {
 			.update(scaffold.entities.pot[0].id, {
 				currency: 'USD',
 			});
-		expect(pot.spendableBalance).toBe(newSpendable);
-		expect(pot.balance).toBe(newBalance);
+		expect(pot.spendableBalance).toBe(newSpendable.amount);
+		expect(pot.balance).toBe(newBalance.amount);
 	});
 
 	it('should not allow delete if last pot', async () => {

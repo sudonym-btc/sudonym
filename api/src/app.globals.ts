@@ -1,10 +1,4 @@
-import {
-	BadRequestException,
-	INestApplication,
-	Logger,
-	ValidationPipe
-} from '@nestjs/common';
-import { ValidationError } from 'class-validator';
+import { INestApplication, Logger } from '@nestjs/common';
 import { contextRequest } from 'helper/context-request';
 import { requestLogger } from 'helper/logger';
 import { ValidationErrorInterceptor } from 'helper/validation-response.interceptor';
@@ -14,14 +8,6 @@ const logger = new Logger('Global');
 
 export const applyGlobals = (app: INestApplication) => {
 	logger.log('Applying global validators and interceptors');
-	app.useGlobalPipes(
-		new ValidationPipe({
-			whitelist: true,
-			transform: true,
-			exceptionFactory: (validationErrors: ValidationError[] = []) =>
-				new BadRequestException(validationErrors),
-		})
-	);
 	app.useGlobalInterceptors(new ValidationErrorInterceptor());
 	app.useWebSocketAdapter(new WsAdapter(app));
 	app.use(requestLogger);

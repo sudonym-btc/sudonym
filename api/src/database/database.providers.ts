@@ -45,7 +45,7 @@ export const databaseProviders = [
 			const sequelize = new Sequelize({
 				...config.database,
 				logging: (e) => {
-					logger.verbose(e);
+					// logger.verbose(e);
 				},
 				models: [
 					Pot,

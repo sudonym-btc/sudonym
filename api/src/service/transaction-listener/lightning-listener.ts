@@ -1,5 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { MSATOSHIS } from '@sudonym/models';
+import * as bolt11 from 'bolt11';
+import { Op } from 'sequelize';
 import {
 	LightningError,
 	LightningNodeService,
@@ -56,12 +58,27 @@ export class LightningListener extends TransactionListener {
 	}
 
 	async waitForPayment(payment_hash, invoice, partId) {
+		if (payment_hash == null) {
+			payment_hash = bolt11
+				.decode(invoice)
+				.tags.find((t) => t.tagName == 'payment_hash').data;
+		}
 		if (!partId && payment_hash) {
 			const sendpays = await this.lightningNodeService.listSendPays(
 				null,
 				payment_hash
 			);
 			this.logger.verbose('Sendpays', sendpays);
+			if (!sendpays.length) {
+				this.lightningEvents.onEvent.next({
+					event: 'sendpay',
+					data: {
+						bolt11: invoice,
+						payment_hash,
+						status: 'failed',
+					} as WaitSendPayResponse,
+				});
+			}
 			partId = sendpays[0].partid;
 		}
 		this.logger.verbose('PartId', partId);
@@ -155,6 +172,25 @@ export class LightningListener extends TransactionListener {
 	}
 
 	listenOutgoing() {
+		this.transactionService
+			.list({
+				where: {
+					type: {
+						[Op.in]: [
+							'lnurl',
+							'lightningaddress',
+							'bolt11',
+							'bolt12',
+						],
+					},
+					status: null,
+				},
+			})
+			.then((data) => {
+				for (const transaction of data.data) {
+					this.waitForPayment(null, transaction.txid, null);
+				}
+			});
 		this.transactionService.onAfterCreated.listen(async (entity) => {
 			if (
 				entity.outgoing &&
