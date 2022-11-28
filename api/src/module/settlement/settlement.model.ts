@@ -1,10 +1,19 @@
 import * as Models from '@sudonym/models';
-import { Column, DataType, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+	AllowNull,
+	AutoIncrement,
+	Column,
+	DataType,
+	PrimaryKey,
+	Table,
+} from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 
 @Table
 export class Settlement extends BaseModel implements Models.Settlement {
 	@PrimaryKey
+	@AutoIncrement
+	@AllowNull(false)
 	@Column
 	id: number;
 

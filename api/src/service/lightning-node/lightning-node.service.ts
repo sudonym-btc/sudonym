@@ -76,22 +76,19 @@ export class LightningNodeService {
 			millisatoshis,
 			0,
 			200,
-			outgoingChannel.destination,
+			incomingChannel.source,
 			null,
 			[
-				outgoingChannel.short_channel_id +
+				incomingChannel.short_channel_id +
 					'/' +
-					this.getDirection(
-						outgoingChannel.destination,
-						this.info.id
-					),
+					this.getDirection(incomingChannel.source, this.info.id),
 			]
 		);
 		const secondHop = (await this.getChannel(restHops[0].channel)).find(
 			(c) => c.destination == restHops[0].id
 		);
 		const firstHop = await this.getRoute(
-			outgoingChannel.destination,
+			incomingChannel.source,
 			restHops[0].msatoshi +
 				this.calcHopFee(secondHop, restHops[0].msatoshi),
 			0,

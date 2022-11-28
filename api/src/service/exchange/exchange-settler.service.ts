@@ -38,13 +38,95 @@ export class ExchangeSettlerService {
 		);
 	}
 
-	async getFunds() {
-		return {
+	async buy(currency: string, amount: number) {
+		this.logger.verbose(`Buying ${amount} of ${currency}`);
+		const exchangeFunds = await this.exchangeService.listFunds();
+		const totalFunds = await this.getTotalFunds();
+		const liabilities = await this.getLiabilities();
+		for (const exchange of Object.keys(exchangeFunds)) {
+			const surplusCurrencies = Object.keys(
+				exchangeFunds[exchange]
+			).filter((i) => {
+				return totalFunds[i] > liabilities[currency];
+			});
+			console.log(surplusCurrencies, totalFunds);
+			for (const surplusCurrency of surplusCurrencies) {
+				const surplusAmount =
+					totalFunds[surplusCurrency] -
+					(liabilities[surplusCurrency] || 0);
+				console.log(surplusAmount);
+				console.log(
+					Math.min(
+						exchangeFunds[exchange][surplusCurrency],
+						surplusAmount
+					)
+				);
+				console.log(
+					(await this.exchangeService.fetchPriceAtTime(
+						surplusCurrency,
+						currency
+					)) *
+						Math.min(
+							exchangeFunds[exchange][surplusCurrency],
+							surplusAmount
+						)
+				);
+				if (
+					(await this.exchangeService.fetchPriceAtTime(
+						surplusCurrency,
+						currency
+					)) *
+						Math.min(
+							exchangeFunds[exchange][surplusCurrency],
+							surplusAmount
+						) >
+					amount
+				) {
+					console.log(
+						await this.exchangeService.trade(
+							surplusCurrency,
+							currency,
+							amount
+						)
+					);
+					return;
+				}
+			}
+		}
+	}
+
+	async getFunds(): Promise<{ [key: string]: { [key: string]: number } }> {
+		const funds = {
 			...(await this.exchangeService.listFunds()),
 			lightning: {
 				BTC: await this.lightningNodeService.listFunds(),
 			},
 		};
+		// Strip zero's from funds
+		return Object.keys(funds).reduce(
+			(acc, i) => ({
+				...acc,
+				[i]: Object.keys(funds[i]).reduce(
+					(newAcc, newI) => ({
+						...newAcc,
+						...(!funds[i][newI] ? {} : { [newI]: funds[i][newI] }),
+					}),
+					{}
+				),
+			}),
+			{}
+		);
+	}
+
+	async getTotalFunds() {
+		const funds = await this.getFunds();
+		return Object.values(funds).reduce((acc, i) => {
+			Object.keys(i).forEach((currency) => {
+				acc[currency] = acc[currency] || 0;
+				acc[currency] += i[currency];
+			});
+			return acc;
+		}, {});
 	}
 
 	async settle() {
@@ -54,13 +136,12 @@ export class ExchangeSettlerService {
 		this.logger.verbose('Liabilities', liabilities, 'Funds', funds);
 		for (const key of Object.keys(liabilities)) {
 			const totalFunds = Object.values(funds).reduce((acc, i) => {
-				return acc + i[key];
+				return acc + (i[key] || 0);
 			}, 0);
-
 			if (liabilities[key] > totalFunds) {
 				this.logger.log(key + ' funds lower than liabilities');
+				await this.buy(key, liabilities[key] - totalFunds);
 			}
-			await this.exchangeService.buy(liabilities[key], totalFunds);
 		}
 	}
 }

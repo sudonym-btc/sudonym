@@ -33,7 +33,7 @@ export class ExchangeService {
 	async fetchPriceAtTime(
 		fromCurrency = 'BTC',
 		quoteCurrency = 'BTC',
-		time: Date
+		time?: Date
 	) {
 		if (fromCurrency == quoteCurrency) return 1;
 		const market = await this.fetchMarket(fromCurrency, quoteCurrency);
@@ -79,24 +79,25 @@ export class ExchangeService {
 		return market;
 	}
 
-	async listFunds() {
+	async listFunds(): Promise<{ [key: string]: { [key: string]: number } }> {
 		const funds = {};
 		for (const exchange of this.exchanges) {
-			funds[exchange.name] = await exchange
+			funds[exchange.id] = await exchange
 				.fetchBalance()
 				.then((u) => u.free);
 		}
 		return funds;
 	}
-	async buy(currency: string, amount: number) {}
 
-	async trade(from, to, amount, side: 'buy' | 'sell' = 'buy') {
+	async trade(from, to, amount) {
 		const market = await this.fetchMarket(from, to);
 		return await this.exchanges[0]
 			.createMarketOrder(
 				market.symbol,
-				market.baseId == from ? side : side == 'buy' ? 'sell' : side,
-				amount
+				market.quote == to ? 'sell' : 'buy',
+				market.quote == to
+					? (await this.fetchPriceAtTime(to, from)) * amount
+					: amount
 			)
 			.then(async (order) => {
 				await this.settlementService.create({
