@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -35,7 +36,7 @@ class CustomForm<
 class _CustomFormState<
     C extends EntityCubit<CrudRepository<T>, CS, T>,
     CS extends EntityCubitState<T>,
-    T extends BaseClass> extends State<CustomForm> {
+    T extends BaseClass> extends State<CustomForm> with FormLogger {
   late FormGroup formGroup;
   bool loading = false;
 
@@ -53,8 +54,6 @@ class _CustomFormState<
     try {
       final formData = form.value;
       Map<String, dynamic> d = {...widget.entity.toJson(), ...formData};
-      print((BlocProvider.of<C>(context).repository.converter(d) as dynamic)
-          .name);
       await BlocProvider.of<C>(context)
           .createOrUpdate(BlocProvider.of<C>(context).repository.converter(d));
       formGroup.markAsPristine();
@@ -63,7 +62,7 @@ class _CustomFormState<
       }
     } catch (e) {
       if (e is DioError && e.response?.statusCode == 400) {
-        print(e.response?.data?['message']);
+        loggy.e(e.response?.data?['message']);
         for (final obj in e.response?.data?['message']) {
           if (obj is String) {
             form.setErrors({'main': obj});

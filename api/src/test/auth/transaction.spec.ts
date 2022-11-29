@@ -11,4 +11,6 @@ scaffoldGroup('Transaction Access', (scaffold) => {
 			address: 'lnbc',
 		});
 	});
+
+	//TODO CHECK TRANSACTION CURRENCY BEFORE SENDING ANYWHERE
 });

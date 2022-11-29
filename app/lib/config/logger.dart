@@ -20,6 +20,10 @@ mixin AmountLogger {
   Logger get loggy => Logger();
 }
 
+mixin FormLogger {
+  Logger get loggy => Logger();
+}
+
 mixin WebsocketLogger {
   Logger get loggy => Logger();
 }
