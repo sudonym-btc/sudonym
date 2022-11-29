@@ -13,7 +13,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   String column = 'id';
   StreamSubscription? onCreated;
   StreamSubscription? onUpdated;
-  Function? getId = (dynamic element) => element.id;
+  Function? getId;
 
   ListCubit(this._repository,
       {this.where = const {},
@@ -21,6 +21,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       this.getId,
       this.order = 'DESC'})
       : super(const ListCubitState(data: [], metadata: {}, loading: false)) {
+    getId ??= (dynamic element) => element.id;
     if (onCreated == null) {
       loggy.d('Subscribing to ${_repository.endpoint}');
     }

@@ -39,7 +39,7 @@ export class ExchangeSettlerService {
 	}
 
 	async buy(currency: string, amount: number) {
-		this.logger.verbose(`Buying ${amount} of ${currency}`);
+		this.logger.debug(`Buying ${amount} of ${currency}`);
 		const exchangeFunds = await this.exchangeService.listFunds();
 		const totalFunds = await this.getTotalFunds();
 		const liabilities = await this.getLiabilities();
@@ -65,7 +65,7 @@ export class ExchangeSettlerService {
 						) >
 					amount
 				) {
-					console.log(
+					this.logger.debug(
 						await this.exchangeService.trade(
 							surplusCurrency,
 							currency,

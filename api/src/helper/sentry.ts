@@ -12,15 +12,18 @@ Sentry.init({
 });
 
 export class SentryLogger extends ConsoleLogger {
-	protected static logLevels?: LogLevel[] = [
-		...(['mock', 'development'].includes(getConfig().env)
-			? ['verbose']
-			: []),
-		'error',
-		'warn',
-		'log',
-		'debug',
-	] as LogLevel[];
+	constructor() {
+		super();
+		this.setLogLevels([
+			...(['mock', 'development'].includes(getConfig().env)
+				? ['verbose']
+				: []),
+			'error',
+			'warn',
+			'log',
+			'debug',
+		] as LogLevel[]);
+	}
 	/**
 	 * Write a 'log' level log.
 	 */
