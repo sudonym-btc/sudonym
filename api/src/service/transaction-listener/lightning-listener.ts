@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { MSATOSHIS } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
+import { CurrencyService } from 'module/currency/currency.service';
 import { Op } from 'sequelize';
 import {
 	LightningError,
@@ -19,6 +20,7 @@ export class LightningListener extends TransactionListener {
 
 	@Inject() lightningNodeService: LightningNodeService;
 	@Inject() lightningEvents: LightningEvents;
+	@Inject() currencyService: CurrencyService;
 
 	listenIncoming() {
 		this.lightningEvents.onEvent.subscribe(async (e) => {
@@ -129,14 +131,17 @@ export class LightningListener extends TransactionListener {
 	async triggerPayment(entity, invoice) {
 		// Attempt to trigger payment
 		try {
-			this.logger.debug(
-				'Amount',
-				entity.amount,
-				entity.amount * MSATOSHIS
-			);
+			const btcAmount = (
+				await this.currencyService.convert(
+					entity.currency,
+					'BTC',
+					entity.amount
+				)
+			).amount;
+			this.logger.debug('Amount', btcAmount, btcAmount * MSATOSHIS);
 			const response = await this.lightningNodeService.pay(
 				invoice,
-				Math.round(entity.amount * MSATOSHIS)
+				Math.round(btcAmount * MSATOSHIS)
 			);
 			this.logger.debug('Lightning pay', response);
 
