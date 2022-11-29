@@ -4,7 +4,6 @@ import { debounceTime, interval, merge, Subject } from 'rxjs';
 import { Sequelize } from 'sequelize';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { PotService } from '../../module/pot/pot.service';
-import { TransactionService } from '../../module/transaction/transaction.service';
 import { ExchangeService } from './exchange.service';
 
 @Injectable()
@@ -13,14 +12,19 @@ export class ExchangeSettlerService {
 
 	@Inject() exchangeService: ExchangeService;
 	@Inject() lightningNodeService: LightningNodeService;
-	@Inject() transactionService: TransactionService;
 	@Inject() potService: PotService;
+
 	run = new Subject();
 
 	async onModuleInit() {
-		this.transactionService.onAfterCreated.listen(
-			this.run.next.bind(this.run)
-		);
+		this.potService.onAfterUpdated.listen((entity) => {
+			if (
+				entity.changed('spendableBalance') ||
+				entity.changed('balance')
+			) {
+				this.run.next(entity);
+			}
+		});
 		merge(this.run, interval(10 * 60 * 1000))
 			.pipe(debounceTime(1000))
 			.subscribe(this.settle.bind(this));
@@ -162,10 +166,10 @@ export class ExchangeSettlerService {
 	}
 
 	async settle() {
-		this.logger.verbose('Settling balances');
+		this.logger.debug('Settling balances');
 		const funds = await this.getTotalFunds();
 		const liabilities = await this.getLiabilities();
-		this.logger.verbose('Liabilities', liabilities, 'Funds', funds);
+		this.logger.debug('Liabilities', liabilities, 'Funds', funds);
 		for (const key of Object.keys(liabilities)) {
 			if (liabilities[key] > funds[key]) {
 				this.logger.log(key + ' funds lower than liabilities');

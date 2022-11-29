@@ -117,6 +117,11 @@ def api(config, cluster_types):
                                                 "mountPath": "usr/src/app/api/certs",
                                             },
                                         ],
+                                        "readinessProbe": {
+                                            "httpGet": {
+                                                "port": config["api"]["port"]
+                                            }
+                                        }
                                        
                                     }, **({
                                         "image": "api",
@@ -149,6 +154,7 @@ def api(config, cluster_types):
                                         },
                                     },
                                 ],
+                                
                             },
                         },
                     },
