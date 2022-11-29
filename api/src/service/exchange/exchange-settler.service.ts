@@ -18,7 +18,9 @@ export class ExchangeSettlerService {
 	run = new Subject();
 
 	async onModuleInit() {
-		this.transactionService.onAfterCreated.listen(this.run.next);
+		this.transactionService.onAfterCreated.listen(
+			this.run.next.bind(this.run)
+		);
 		merge(this.run, interval(10 * 60 * 1000))
 			.pipe(debounceTime(1000))
 			.subscribe(this.settle.bind(this));
@@ -41,41 +43,75 @@ export class ExchangeSettlerService {
 	async buy(currency: string, amount: number) {
 		this.logger.debug(`Buying ${amount} of ${currency}`);
 		const exchangeFunds = await this.exchangeService.listFunds();
+		const exchangeFundsByRealName = Object.keys(exchangeFunds).reduce(
+			(acc, i) => {
+				return {
+					...acc,
+					[i]: Object.keys,
+				};
+			},
+			{}
+		);
 		const totalFunds = await this.getTotalFunds();
 		const liabilities = await this.getLiabilities();
+
+		// For each exchange
 		for (const exchange of Object.keys(exchangeFunds)) {
+			// Check which currencies on this exchange we have more of than liabilties
 			const surplusCurrencies = Object.keys(
 				exchangeFunds[exchange]
 			).filter((i) => {
-				return totalFunds[i] > liabilities[currency];
+				return (
+					totalFunds[this.exchangeService.getRealName(i)] >
+					liabilities[currency]
+				);
 			});
+			// For each surplus currency
 			for (const surplusCurrency of surplusCurrencies) {
 				const surplusAmount =
 					totalFunds[surplusCurrency] -
 					(liabilities[surplusCurrency] || 0);
 
-				if (
-					(await this.exchangeService.fetchPriceAtTime(
-						surplusCurrency,
-						currency
-					)) *
-						Math.min(
-							exchangeFunds[exchange][surplusCurrency],
-							surplusAmount
-						) >
-					amount
-				) {
-					this.logger.debug(
-						await this.exchangeService.trade(
-							surplusCurrency,
-							currency,
+				// Check if surplus is enough to settle liability
+				for (const synonymousCurrency of this.exchangeService.getSynonyms(
+					currency
+				))
+					try {
+						if (
+							(await this.exchangeService.fetchPriceAtTime(
+								surplusCurrency,
+								currency
+							)) *
+								Math.min(
+									exchangeFunds[exchange][surplusCurrency],
+									surplusAmount
+								) >
 							amount
-						)
-					);
-					return;
-				}
+						) {
+							{
+								this.logger.debug(
+									await this.exchangeService.trade(
+										surplusCurrency,
+										synonymousCurrency,
+										amount
+									)
+								);
+								return;
+							}
+						} else {
+							this.logger.debug(
+								'Did not have enough ' +
+									surplusCurrency +
+									' to buy ' +
+									synonymousCurrency
+							);
+						}
+					} catch (e) {
+						this.logger.warn(e);
+					}
 			}
 		}
+		this.logger.warn('Could not make trade');
 	}
 
 	async getFunds(): Promise<{ [key: string]: { [key: string]: number } }> {
@@ -101,29 +137,48 @@ export class ExchangeSettlerService {
 		);
 	}
 
-	async getTotalFunds() {
+	async getFundsByRealName(): Promise<{
+		[key: string]: { [key: string]: number };
+	}> {
 		const funds = await this.getFunds();
-		return Object.values(funds).reduce((acc, i) => {
-			Object.keys(i).forEach((currency) => {
-				acc[currency] = acc[currency] || 0;
-				acc[currency] += i[currency];
-			});
+		return Object.keys(funds).reduce((acc, exchange) => {
+			return {
+				...acc,
+				[exchange]: this.exchangeFundsToRealCurrency(funds[exchange]),
+			};
+		}, {});
+	}
+
+	async getTotalFunds() {
+		const acc = {};
+		const funds = await this.getFundsByRealName();
+		for (const ex of Object.values(funds)) {
+			for (const curr of Object.keys(ex)) {
+				acc[curr] = acc[curr] || 0;
+				acc[curr] += ex[curr];
+			}
+		}
+		return acc;
+	}
+
+	exchangeFundsToRealCurrency(i) {
+		return Object.keys(i).reduce((acc, currency) => {
+			acc[this.exchangeService.getRealName(currency)] =
+				acc[currency] || 0;
+			acc[this.exchangeService.getRealName(currency)] += i[currency];
 			return acc;
 		}, {});
 	}
 
 	async settle() {
 		this.logger.verbose('Settling balances');
-		const funds = await this.getFunds();
+		const funds = await this.getTotalFunds();
 		const liabilities = await this.getLiabilities();
 		this.logger.verbose('Liabilities', liabilities, 'Funds', funds);
 		for (const key of Object.keys(liabilities)) {
-			const totalFunds = Object.values(funds).reduce((acc, i) => {
-				return acc + (i[key] || 0);
-			}, 0);
-			if (liabilities[key] > totalFunds) {
+			if (liabilities[key] > funds[key]) {
 				this.logger.log(key + ' funds lower than liabilities');
-				await this.buy(key, liabilities[key] - totalFunds);
+				await this.buy(key, liabilities[key] - funds[key]);
 			}
 		}
 	}

@@ -75,7 +75,7 @@ export class ExchangeService {
 				(m.baseId == from && m.quoteId == to) ||
 				(m.baseId == to && m.quoteId == from)
 		);
-		this.logger.debug('Found market', market.symbol);
+		this.logger.debug('Market:', market?.symbol);
 		return market;
 	}
 
@@ -109,7 +109,22 @@ export class ExchangeService {
 				});
 			});
 	}
+
+	getRealName(currency: string) {
+		return (
+			Object.keys(synonyms).find((key) =>
+				synonyms[key].includes(currency)
+			) || currency
+		);
+	}
+	getSynonyms(currency: string) {
+		return synonyms[currency] || [currency];
+	}
 }
+
+const synonyms = {
+	USD: ['USD', 'USDT'],
+};
 
 export const isBitcoin = (type) =>
 	['lightningaddress', 'lnurl', 'bolt11', 'bolt12', 'onchain'].includes(type);
