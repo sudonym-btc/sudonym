@@ -37,7 +37,7 @@ class WebsocketImpl extends Websocket
     Uri url = Uri.parse(
             '${config.apiUrl.replaceAll('http', 'ws')}:${config.websocketPort}/socket.io')
         .replace(queryParameters: {
-      'x-access-token': await FirebaseAuth.instance.currentUser!.getIdToken()
+      'x-access-token': await FirebaseAuth.instance.currentUser?.getIdToken()
     });
 
     loggy.i('Connecting websocket to $url');

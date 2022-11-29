@@ -3,7 +3,7 @@ version: 0.0.1+10
 publish_to: none
 description: Sudonym bitcoin wallet.
 environment:
-    sdk: '>=2.18.0 <3.0.0'
+    sdk: ">=2.18.0 <3.0.0"
 dependencies:
     app_links: ^3.3.0
     auto_animated: ^3.1.0
@@ -72,6 +72,7 @@ dev_dependencies:
 flutter:
     assets:
         - assets/mastercardLogo.png
+        - assets/fonts/
         - assets/visaLogo.png
         - assets/currencies/
     generate: true

@@ -42,7 +42,6 @@ ThemeData getTheme({bool light = true}) {
               }),
               shadowColor:
                   MaterialStateProperty.all<Color>(Colors.transparent))),
-      // fontFamily: 'Satoshi',
       scaffoldBackgroundColor: backgroundColor,
       primaryColor: primary,
       inputDecorationTheme: const InputDecorationTheme(
@@ -55,13 +54,24 @@ ThemeData getTheme({bool light = true}) {
           .white
           .copyWith(
             displayMedium: TextStyle(
-                color: textColor, fontSize: 20, fontWeight: FontWeight.w900),
+                fontFamily: 'Satoshi',
+                color: textColor,
+                fontSize: 20,
+                fontWeight: FontWeight.w900),
             displayLarge: TextStyle(
-                color: textColor, fontSize: 30, fontWeight: FontWeight.w900),
+                fontFamily: 'Satoshi',
+                color: textColor,
+                fontSize: 30,
+                fontWeight: FontWeight.w900),
           )
-          .apply(bodyColor: textColor, displayColor: textColor)
+          .apply(
+            bodyColor: textColor,
+            displayColor: textColor,
+            fontFamily: 'Satoshi',
+          )
           .copyWith(
               bodySmall: TextStyle(
+            fontFamily: 'Satoshi',
             color: textColor.withAlpha(150),
           )));
 }
