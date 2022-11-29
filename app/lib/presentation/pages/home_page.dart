@@ -27,9 +27,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     l = ListCubit<Pot>(getIt<PotRepository>(),
-        column: '\$PotUsers.index\$',
-        order: 'ASC',
-        getId: (element) => element.PotUsers[0].index);
+        column: '\$PotUsers.index\$', order: 'ASC', getId: (element) {
+      print(element.PotUsers);
+      return element.PotUsers[0].index;
+    });
     super.initState();
   }
 
