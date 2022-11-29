@@ -21,7 +21,7 @@ export class ExchangeSettlerService {
 		this.transactionService.onAfterCreated.listen(this.run.next);
 		merge(this.run, interval(10 * 60 * 1000))
 			.pipe(debounceTime(1000))
-			.subscribe(this.settle);
+			.subscribe(this.settle.bind(this));
 		await this.settle();
 	}
 
@@ -49,28 +49,11 @@ export class ExchangeSettlerService {
 			).filter((i) => {
 				return totalFunds[i] > liabilities[currency];
 			});
-			console.log(surplusCurrencies, totalFunds);
 			for (const surplusCurrency of surplusCurrencies) {
 				const surplusAmount =
 					totalFunds[surplusCurrency] -
 					(liabilities[surplusCurrency] || 0);
-				console.log(surplusAmount);
-				console.log(
-					Math.min(
-						exchangeFunds[exchange][surplusCurrency],
-						surplusAmount
-					)
-				);
-				console.log(
-					(await this.exchangeService.fetchPriceAtTime(
-						surplusCurrency,
-						currency
-					)) *
-						Math.min(
-							exchangeFunds[exchange][surplusCurrency],
-							surplusAmount
-						)
-				);
+
 				if (
 					(await this.exchangeService.fetchPriceAtTime(
 						surplusCurrency,

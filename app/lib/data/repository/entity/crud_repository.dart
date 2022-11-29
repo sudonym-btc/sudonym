@@ -22,27 +22,29 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   StreamController<T> created = StreamController.broadcast();
   StreamController<T> deleted = StreamController.broadcast();
   StreamController<dynamic> events = StreamController.broadcast();
-
+  StreamSubscription? websocketSub;
   CrudRepository(this.config, this.dio, this.websocket) {
     onInit();
   }
 
   onInit() {
     loggy.i('Listening to stream $endpoint');
-    websocket.getStream().listen((event) {
-      Event e = Event.fromJson(jsonDecode(event));
-      if (e.name.split('.')[0].toLowerCase() == endpoint.toLowerCase()) {
-        loggy.d('Websocket: ${e.name}');
-        if (e.name.split('.')[1] == 'created') {
-          created.add(converter(e.data));
-        } else if (e.name.split('.')[1] == 'updated') {
-          updated.add(converter(e.data));
-        } else if (e.name.split('.')[1] == 'deleted') {
-          deleted.add(converter(e.data));
-        } else {
-          events.add(e);
+    websocketSub ??= websocket.getStream().listen((event) {
+      try {
+        Event e = Event.fromJson(jsonDecode(event));
+        if (e.name.split('.')[0].toLowerCase() == endpoint.toLowerCase()) {
+          loggy.d('Websocket: ${e.name}');
+          if (e.name.split('.')[1] == 'created') {
+            created.add(converter(e.data));
+          } else if (e.name.split('.')[1] == 'updated') {
+            updated.add(converter(e.data));
+          } else if (e.name.split('.')[1] == 'deleted') {
+            deleted.add(converter(e.data));
+          } else {
+            events.add(e);
+          }
         }
-      }
+      } catch (e) {}
     });
   }
 
@@ -71,8 +73,6 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   Future<T> update(Map<String, dynamic> entity) async {
-    print(entity);
-    print('-----');
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
         .then((value) {

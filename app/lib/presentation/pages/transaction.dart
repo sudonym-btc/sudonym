@@ -285,6 +285,8 @@ class _ContactSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (entity.ContactAddress?.contactId != null) {
       return ContactListItem(
+          actions: false,
+          fetch: true,
           contact: Contact.fromJson({'id': entity.ContactAddress.contactId}));
     }
     return ['lnurl', 'lightningaddress'].contains(entity.type)

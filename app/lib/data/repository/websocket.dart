@@ -17,6 +17,7 @@ class WebsocketImpl extends Websocket
   StreamController stream = StreamController.broadcast();
   StreamSubscription? socketSubscription;
   WebSocketChannel? channel;
+  int _errorCount = 0;
 
   WebsocketImpl(this.config) : super() {
     WidgetsFlutterBinding.ensureInitialized();
@@ -45,15 +46,16 @@ class WebsocketImpl extends Websocket
     channel = WebSocketChannel.connect(url);
 
     socketSubscription = channel!.stream.listen((event) {
+      _errorCount = 0;
       stream.sink.add(event);
-    }, onError: (e) async {
-      loggy.e(e);
-      await Future.delayed(const Duration(seconds: 1));
-      await connect();
-    }, onDone: () async {
-      await Future.delayed(const Duration(milliseconds: 500));
-      await connect();
-    }, cancelOnError: true);
+    }, onError: onError, onDone: () => onError(null), cancelOnError: true);
+  }
+
+  void onError(dynamic e) async {
+    loggy.e(e);
+    await Future.delayed(Duration(milliseconds: 500 * _errorCount));
+    _errorCount++;
+    await connect();
   }
 
   @override

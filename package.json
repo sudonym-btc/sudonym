@@ -1,73 +1,74 @@
 {
-  "name": "sudonym",
-  "version": "0.0.1",
-  "description": "sudonym monorepo",
-  "main": "index.js",
-  "private": true,
-  "scripts": {
-    "init:gcloud": "cd infrastructure/setup && bash ./setup.sh",
-    "deploy:production": "bash infrastructure/deploy.sh production",
-    "deploy:staging": "bash infrastructure/deploy.sh staging",
-    "deploy:test": "bash infrastructure/deploy.sh test",
-    "deploy:development": "sudo echo && npm run minikube:start && parallelshell 'npm run minikube:loadApi' 'npm run loadAndStart'",
-    "deploy:development:hard": "sudo echo && npm run deploy:development:clear && npm run deploy:development && npm run init:lightning",
-    "deploy:development:clear": "parallelshell 'minikube delete --all' 'npm run clearcloudcache'",
-    "build:homepage": "docker build -t gcr.io/$(gcloud config get project)/homepage -f infrastructure/homepage.Dockerfile ./homepage && docker push gcr.io/$(gcloud config get project)/homepage",
-    "prewatch:api": "echo $(killall ksync) && echo $(killall syncthing)",
-    "watch:api": "echo $(ksync init) && (ksync watch &) && sleep 5 && ksync delete --all && ksync create --reload=false --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
-    "watch:models": "ksync create --selector=app=development-api $(pwd)/models /usr/src/app/models",
-    "watch:wait": "bash -c 'while ksync get | grep watching > /dev/null; do sleep 1 echo \"working...\" done'",
-    "minikube:dashboard": "pkill 'minikube dashboard' || true && minikube dashboard >/dev/null &",
-    "minikube:tunnel": "pkill 'minikube tunnel' || true && minikube tunnel >/dev/null &",
-    "minikube:start": "minikube start --driver=docker",
-    "minikube:dns": "sudo echo && npm run minikube:tunnel && npm run minikube:dashboard && parallelshell 'minikube addons enable gcp-auth' 'minikube addons enable ingress' 'minikube addons enable ingress-dns' 'npx ts-node infrastructure/minikube/minikube-dns.ts'",
-    "minikube:deploy": "echo $(kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission) && python3 infrastructure/minikube/minikube.py && minikube kubectl -- apply -f infrastructure/minikube/minikube.yaml --validate=false",
-    "minikube:loadHomepage": "eval $(minikube docker-env) && (docker image inspect gcr.io/$(gcloud config get project)/homepage:latest >/dev/null 2>&1 && echo no || npm run build:homepage)",
-    "minikube:loadApi": "eval $(minikube docker-env) && (docker image inspect api:latest >/dev/null 2>&1 && echo no || docker build --target development -t api:latest -f infrastructure/api.Dockerfile .)",
-    "minikube:removeApi": "minikube image rm api || true",
-    "minikube:removeHomepage": "minikube image rm gcr.io/$(gcloud config get project)/homepage || true",
-    "init:lightning": "bash infrastructure/minikube/init-lightning.sh",
-    "clearcloudcache": "gsutil rm -ra gs://sudonym-development-bitcoin-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup-2/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup-3/** || true",
-    "loadAndStart": "npm run minikube:dns && npm run minikube:deploy",
-    "prepare": "husky install",
-    "lint:fix": "eslint \"**/{src,apps,libs,test}/**/*.ts\" --fix",
-    "lint": "eslint \"**/{src,apps,libs,test}/**/*.ts\"",
-    "prettier": "prettier --config .prettierrc.js '**/src/**/*.ts' --write"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sudonym-btc/sudonym.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sudonym-btc/sudonym/issues"
-  },
-  "homepage": "https://github.com/sudonym-btc/sudonym#readme",
-  "workspaces": [
-    "api",
-    "models",
-    "models/ts"
-  ],
-  "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ]
-  },
-  "dependencies": {
-    "dotenv": "^16.0.3",
-    "ts-node": "^10.9.1"
-  },
-  "devDependencies": {
-    "@clarencep/parallelshell": "^3.0.4",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1"
-  }
+	"name": "sudonym",
+	"version": "0.0.1",
+	"description": "sudonym monorepo",
+	"main": "index.js",
+	"private": true,
+	"scripts": {
+		"init:gcloud": "cd infrastructure/setup && bash ./setup.sh",
+		"deploy:production": "bash infrastructure/deploy.sh production",
+		"deploy:staging": "bash infrastructure/deploy.sh staging",
+		"deploy:test": "bash infrastructure/deploy.sh test",
+		"deploy:development": "sudo echo && npm run minikube:start && parallelshell 'npm run minikube:loadApi' 'npm run loadAndStart'",
+		"deploy:development:hard": "sudo echo && npm run deploy:development:clear && npm run deploy:development && npm run init:lightning",
+		"deploy:development:clear": "parallelshell 'minikube delete --all' 'npm run clearcloudcache'",
+		"build:homepage": "docker build -t gcr.io/$(gcloud config get project)/homepage -f infrastructure/homepage.Dockerfile ./homepage && docker push gcr.io/$(gcloud config get project)/homepage",
+		"prewatch:api": "echo $(killall ksync) && echo $(killall syncthing)",
+		"watch:api": "echo $(ksync init) && (ksync watch &) && sleep 5 && ksync delete --all && ksync create --reload=false --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
+		"watch:models": "ksync create --selector=app=development-api $(pwd)/models /usr/src/app/models",
+		"watch:wait": "bash -c 'while ksync get | grep watching > /dev/null; do sleep 1 echo \"working...\" done'",
+		"minikube:dashboard": "pkill 'minikube dashboard' || true && minikube dashboard >/dev/null &",
+		"minikube:tunnel": "pkill 'minikube tunnel' || true && minikube tunnel >/dev/null &",
+		"minikube:start": "minikube start --driver=docker",
+		"minikube:dns": "sudo echo && npm run minikube:tunnel && npm run minikube:dashboard && parallelshell 'minikube addons enable gcp-auth' 'minikube addons enable ingress' 'minikube addons enable ingress-dns' 'npx ts-node infrastructure/minikube/minikube-dns.ts'",
+		"minikube:deploy": "echo $(kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission) && python3 infrastructure/minikube/minikube.py && minikube kubectl -- apply -f infrastructure/minikube/minikube.yaml --validate=false",
+		"minikube:loadHomepage": "eval $(minikube docker-env) && (docker image inspect gcr.io/$(gcloud config get project)/homepage:latest >/dev/null 2>&1 && echo no || npm run build:homepage)",
+		"minikube:loadApi": "eval $(minikube docker-env) && (docker image inspect api:latest >/dev/null 2>&1 && echo no || docker build --target development -t api:latest -f infrastructure/api.Dockerfile .)",
+		"minikube:removeApi": "minikube image rm api || true",
+		"minikube:removeHomepage": "minikube image rm gcr.io/$(gcloud config get project)/homepage || true",
+		"init:lightning": "bash infrastructure/minikube/init-lightning.sh",
+		"clearcloudcache": "gsutil rm -ra gs://sudonym-development-bitcoin-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup-2/** || true && gsutil rm -ra gs://sudonym-development-lightning-backup-3/** || true",
+		"loadAndStart": "npm run minikube:dns && npm run minikube:deploy",
+		"prepare": "husky install",
+		"lint:fix": "eslint \"**/{src,apps,libs,test}/**/*.ts\" --fix",
+		"lint": "eslint \"**/{src,apps,libs,test}/**/*.ts\"",
+		"prettier": "prettier --config .prettierrc.js '**/src/**/*.ts' --write",
+		"cloudsqlproxy": "../cloud_sql_proxy -dir . -instances sudonym-lightning-production:us-central1:production-db=tcp:127.0.0.1:3306"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sudonym-btc/sudonym.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/sudonym-btc/sudonym/issues"
+	},
+	"homepage": "https://github.com/sudonym-btc/sudonym#readme",
+	"workspaces": [
+		"api",
+		"models",
+		"models/ts"
+	],
+	"lint-staged": {
+		"*.ts": [
+			"prettier --write",
+			"eslint --fix"
+		]
+	},
+	"dependencies": {
+		"dotenv": "^16.0.3",
+		"ts-node": "^10.9.1"
+	},
+	"devDependencies": {
+		"@clarencep/parallelshell": "^3.0.4",
+		"@typescript-eslint/eslint-plugin": "^5.41.0",
+		"@typescript-eslint/parser": "^5.41.0",
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.3",
+		"prettier": "^2.7.1"
+	}
 }

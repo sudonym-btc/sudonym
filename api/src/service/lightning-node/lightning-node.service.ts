@@ -98,10 +98,7 @@ export class LightningNodeService {
 		return [...firstHop, ...restHops];
 	}
 
-	async loadInfo() {
-		this.logger.verbose('Loading lightning node information.');
-
-		this.info = await this.getInfo();
+	async loadConnectedChannels() {
 		this.connectedChannels = await Promise.all(
 			await this.listChannels().then((i) =>
 				i
@@ -115,6 +112,16 @@ export class LightningNodeService {
 			)
 		);
 		this.logger.debug('channels', JSON.stringify(this.connectedChannels));
+		if (this.connectedChannels.length == 0) {
+			this.logger.warn('0 connected channels. Payments not possible');
+		}
+	}
+
+	async loadInfo() {
+		this.logger.verbose('Loading lightning node information.');
+
+		this.info = await this.getInfo();
+		await this.loadConnectedChannels();
 		this.peers = await this.listPeers();
 		this.logger.debug('peers', JSON.stringify(this.peers));
 
@@ -125,9 +132,6 @@ export class LightningNodeService {
 		this.logger.log(
 			`Loaded lightning node information. ${this.info.id}, channels: ${this.connectedChannels.length}, peers: ${this.peers.length}`
 		);
-		if (this.connectedChannels.length == 0) {
-			this.logger.warn('0 connected channels. Payments not possible');
-		}
 	}
 
 	async onModuleInit() {
@@ -231,6 +235,7 @@ export class LightningNodeService {
 		maxhops = null
 	) {
 		if (pubkey == this.info.id && !from_id) {
+			this.loadConnectedChannels(); // reload connected channels before choosing outgoing channel for self payment route calc
 			return await this.circularRoute(amount);
 		}
 

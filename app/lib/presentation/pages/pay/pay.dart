@@ -80,6 +80,7 @@ class _SendPageState extends State<SendPage> {
                               child: ReactiveTextField(
                                   formControlName: 'address',
                                   onEditingComplete: null,
+                                  autocorrect: false,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                       hintText: AppLocalizations.of(context)!
