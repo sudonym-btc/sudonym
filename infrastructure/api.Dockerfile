@@ -1,4 +1,5 @@
 FROM node:18-alpine AS build
+USER node
 WORKDIR /usr/src/app
 COPY ./api ./api
 COPY ./models ./models
@@ -29,6 +30,8 @@ RUN ls /usr/src/app/api/dist
 RUN apk del build-dependencies
 
 FROM node:18-alpine AS production
+USER node
+
 # Copy the bundled code from the build stage to the production image
 COPY --from=build /usr/src/app/prod_node_modules /usr/src/app/node_modules
 COPY --from=build /usr/src/app/api/prod_node_modules /usr/src/app/api/node_modules
@@ -43,6 +46,7 @@ RUN ls /usr/src/app/api/dist
 CMD ["node", "dist/main"]
 
 FROM node:18-alpine AS development
+USER node
 COPY --from=build /usr/src/app/ /usr/src/app
 WORKDIR /usr/src/app/api
 CMD ["npm", "run", "start:dev"]
