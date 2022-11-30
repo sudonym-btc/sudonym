@@ -8,7 +8,7 @@ RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip libzmq zero
 RUN npm config set fetch-retry-mintimeout 6000000
 RUN npm config set fetch-retry-maxtimeout 6000000
 RUN npm config set timeout 6000000
-
+ENV NODE_ENV development
 # Install packages
 RUN npm install --omit=dev
 RUN cp -R ./node_modules ./prod_node_modules
@@ -28,6 +28,10 @@ COPY --from=build /usr/src/app/api/dist /usr/src/app/api/dist
 COPY --from=build /usr/src/app/models/ts /usr/src/app/models/ts
 
 WORKDIR /usr/src/app/api
+# RUN ls /usr/src/app
+# RUN ls /usr/src/app/api
+# RUN ls /usr/src/app/api/dist
+
 CMD ["node", "dist/main"]
 
 FROM node:18-alpine AS development
