@@ -23,7 +23,7 @@
 		"minikube:dns": "sudo echo && npm run minikube:tunnel && npm run minikube:dashboard && parallelshell 'minikube addons enable gcp-auth' 'minikube addons enable ingress' 'minikube addons enable ingress-dns' 'npx ts-node infrastructure/minikube/minikube-dns.ts'",
 		"minikube:deploy": "echo $(kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission) && python3 infrastructure/minikube/minikube.py && minikube kubectl -- apply -f infrastructure/minikube/minikube.yaml --validate=false",
 		"minikube:loadHomepage": "eval $(minikube docker-env) && (docker image inspect gcr.io/$(gcloud config get project)/homepage:latest >/dev/null 2>&1 && echo no || npm run build:homepage)",
-		"minikube:loadApi": "eval $(minikube docker-env) && (docker image inspect api:latest >/dev/null 2>&1 && echo no || DOCKER_BUILDKIT=1 docker build --target development -t api:latest -f infrastructure/api.Dockerfile .)",
+		"minikube:loadApi": "eval $(minikube docker-env) && (docker image inspect api:latest >/dev/null 2>&1 && echo no || DOCKER_BUILDKIT=1 docker build --target production -t api:latest -f infrastructure/api.Dockerfile .)",
 		"minikube:loadApi:force": "minikube image load api --overwrite",
 		"minikube:removeApi": "minikube image rm api || true",
 		"minikube:removeHomepage": "minikube image rm gcr.io/$(gcloud config get project)/homepage || true",

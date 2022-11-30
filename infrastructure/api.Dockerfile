@@ -10,9 +10,9 @@ RUN npm config set fetch-retry-maxtimeout 6000000
 RUN npm config set timeout 6000000
 
 # Install packages
-RUN npm install --production
-RUN cp -R node_modules prod_node_modules
-RUN cp -R api/node_modules api/prod_node_modules
+RUN npm install --omit=dev
+RUN cp -R ./node_modules ./prod_node_modules
+RUN cp -R ./api/node_modules ./api/prod_node_modules
 RUN npm install
 
 # Build
@@ -21,14 +21,13 @@ RUN npm run build
 RUN apk del build-dependencies
 
 FROM node:18-alpine AS production
-WORKDIR /usr/src/app
 # Copy the bundled code from the build stage to the production image
-COPY --from=build /usr/src/app/prod_node_modules ./node_modules
-COPY --from=build /usr/src/app/api/prod_node_modules ./api/node_modules
-COPY --from=build /usr/src/app/api/dist ./api/dist
-COPY --from=build /usr/src/app/models/ts ./models/ts
+COPY --from=build /usr/src/app/prod_node_modules /usr/src/app/node_modules
+COPY --from=build /usr/src/app/api/prod_node_modules /usr/src/app/api/node_modules
+COPY --from=build /usr/src/app/api/dist /usr/src/app/api/dist
+COPY --from=build /usr/src/app/models/ts /usr/src/app/models/ts
+
 WORKDIR /usr/src/app/api
-RUN ls /usr/src/app
 CMD ["node", "dist/main"]
 
 FROM node:18-alpine AS development
