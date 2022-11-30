@@ -10,8 +10,12 @@ RUN npm config set fetch-retry-mintimeout 6000000
 RUN npm config set fetch-retry-maxtimeout 6000000
 RUN npm config set timeout 6000000
 ENV NODE_ENV development
+RUN ls /usr/src/app
+RUN ls /usr/src/app/api
 # Install packages
 RUN npm install --omit=dev
+RUN ls /usr/src/app
+RUN ls /usr/src/app/api
 RUN cp -R ./node_modules ./prod_node_modules
 RUN cp -R ./api/node_modules ./api/prod_node_modules
 RUN npm install
