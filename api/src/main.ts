@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { applyGlobals } from 'app.globals';
-import { SentryLogger } from 'helper/sentry';
+import { applyGlobals } from './app.globals';
 import { AppModule } from './app.module';
 import { downloadFiles } from './helper/config-loader';
+import { SentryLogger } from './helper/sentry';
 
 async function bootstrap() {
 	await downloadFiles();

@@ -126,7 +126,6 @@ def api(config, cluster_types):
                                     }, **({
                                         "image": "api",
                                         "imagePullPolicy": "IfNotPresent",
-                                        "command": ["npm", "run", "start:dev"]
                                     } if config["env"] == "development" else {}))
                                 ] + ([{
                                     "name": "cloud-sql-proxy",

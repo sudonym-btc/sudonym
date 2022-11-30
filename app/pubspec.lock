@@ -480,13 +480,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_loggy_dio:
-    dependency: "direct main"
-    description:
-      name: flutter_loggy_dio
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0+3"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -748,7 +741,7 @@ packages:
       name: loggy
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1+1"
+    version: "2.0.3"
   matcher:
     dependency: transitive
     description:
@@ -931,6 +924,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
+  pretty_dio_logger:
+    dependency: "direct main"
+    description:
+      name: pretty_dio_logger
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0-beta-1"
   process:
     dependency: transitive
     description:

@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import * as Factory from 'factory.ts';
 import { Pot } from '../classes/pot';
 import { RecursivePartial } from '../recursive-partial';

@@ -5,6 +5,7 @@ import {
 	IAddressParser,
 	TAddressType,
 } from '@sudonym/models';
+import axios from 'axios';
 import { bech32 } from 'bech32';
 import {
 	Network,
@@ -13,7 +14,6 @@ import {
 import * as bolt11 from 'bolt11';
 import { Buffer } from 'buffer';
 import { Config } from 'config/config';
-import fetch from 'node-fetch';
 import { LightningNodeService } from '../../../service/lightning-node/lightning-node.service';
 import { parseQuery } from '../action.service';
 import { fetchHttpOpts } from './http-agent';
@@ -45,7 +45,7 @@ export class AddressParser implements IAddressParser {
 				);
 				return Action.from({
 					originalAddress: trimmedAddress,
-					type: remoteResponse.data.tag
+					type: remoteResponse.data?.tag
 						? remoteResponse.data.tag.replace('Request', '')
 						: '',
 					remoteResponse,
@@ -83,21 +83,21 @@ export class AddressParser implements IAddressParser {
 		};
 	}
 
-	fetchRemoteLnUrl = async (invoice: string) => {
+	fetchRemoteLnUrl = async (
+		invoice: string
+	): Promise<ActionRemoteResponse<any>> => {
 		const url = this.parseLnUrlString(invoice);
 
 		this.logger.debug('Fetching LnUrl from ' + url);
-		const data = await fetch(url, fetchHttpOpts)
-			.then((r) => {
-				return r.json();
-			})
-			.then((data) => {
-				this.logger.debug('Fetched lnurl', data);
+		const data = await axios(url, fetchHttpOpts)
+			.then(async (r) => {
+				this.logger.debug('Fetched lnurl', r.data);
+
 				return {
-					success: data.statusCode
-						? data.statusCode.toString().startsWith(2)
-						: true,
-					data,
+					success: r.status
+						? r.status.toString().startsWith('2')
+						: true, // todo: Why returning true here
+					data: r.data,
 				};
 			})
 			.catch((e) => {
@@ -107,7 +107,7 @@ export class AddressParser implements IAddressParser {
 					message: e,
 				};
 			});
-		return data;
+		return ActionRemoteResponse.fromJson(data);
 	};
 
 	fetchRemoteLightningAddress = async (internetIdentifier: string) => {
@@ -135,10 +135,13 @@ export class AddressParser implements IAddressParser {
 		this.logger.debug('Fetching lnurl address', url);
 		return this.fetchRemoteLnUrl(url)
 			.then((d) => {
+				if (d.success == false) {
+					throw d;
+				}
 				return {
 					...d,
 					data: {
-						...d.data,
+						...(d.data ? {} : {}),
 						domain,
 						username,
 					},

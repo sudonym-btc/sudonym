@@ -1,13 +1,14 @@
+import { AxiosRequestConfig } from 'axios';
 import { getConfig } from 'config/config';
+import * as https from 'https';
 
-const https = require('https');
-
-export const fetchHttpOpts = {
-	cache: 'no-store',
+export const fetchHttpOpts: AxiosRequestConfig = {
 	headers: {
 		'Cache-Control': 'no-cache',
+		Pragma: 'no-cache',
+		Expires: '0',
 	},
-	agent: new https.Agent({
+	httpsAgent: new https.Agent({
 		rejectUnauthorized: !['development', 'test'].includes(getConfig().env),
 	}),
 };

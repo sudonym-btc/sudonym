@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:sudonym/config/index.dart';
@@ -28,12 +27,14 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   onInit() {
-    loggy.i('Listening to stream $endpoint');
+    loggy.d('Listening to stream $endpoint');
     websocketSub ??= websocket.getStream().listen((event) {
-      try {
-        Event e = Event.fromJson(jsonDecode(event));
+      if (event['name'] != null) {
+        Event e = Event.fromJson(event);
         if (e.name.split('.')[0].toLowerCase() == endpoint.toLowerCase()) {
           loggy.d('Websocket: ${e.name}');
+          loggy.d(e.data);
+
           if (e.name.split('.')[1] == 'created') {
             created.add(converter(e.data));
           } else if (e.name.split('.')[1] == 'updated') {
@@ -44,40 +45,34 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
             events.add(e);
           }
         }
-      } catch (e) {}
+      }
     });
   }
 
   Future<T> fetch(dynamic id) async {
-    return dio.get('/$endpoint/$id').then((value) {
-      return converter(value.data);
-    });
+    return dio.get('/$endpoint/$id').then((value) => converter(value.data));
   }
 
   Future<ListState<T>> list(
       {Map<String, dynamic>? where, List<List<String>>? order = order}) async {
     return dio.get('/$endpoint',
         queryParameters: {'where': where, 'order': order}).then((value) {
-      var list = (value.data['data'] as List).map((e) {
-        return converter(e) as T;
-      }).toList();
+      var list = (value.data['data'] as List).map((e) => converter(e)).toList();
 
       return ListState(list, {});
     });
   }
 
   Future<T> create(Map<String, dynamic> entity) async {
-    return dio.post('/$endpoint', data: entity).then((value) {
-      return converter(value.data);
-    });
+    return dio
+        .post('/$endpoint', data: entity)
+        .then((value) => converter(value.data));
   }
 
   Future<T> update(Map<String, dynamic> entity) async {
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
-        .then((value) {
-      return converter(value.data);
-    });
+        .then((value) => converter(value.data));
   }
 
   Future<dynamic> delete(dynamic id) async {
@@ -86,10 +81,7 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
 
   Future<ListState<T>> search(String term) async {
     return dio.get('/$endpoint').then((value) {
-      var list = (value.data as List).map((e) {
-        return converter(e) as T;
-      }).toList();
-
+      var list = (value.data as List).map((e) => converter(e)).toList();
       return ListState(list, {});
     });
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +28,7 @@ class WebsocketImpl extends Websocket
   @override
   disconnect() {
     if (socketSubscription != null) {
-      loggy.i('Disconnecting websocket');
+      loggy.d('Disconnecting websocket');
       socketSubscription!.cancel();
     }
   }
@@ -41,13 +42,13 @@ class WebsocketImpl extends Websocket
       'x-access-token': await FirebaseAuth.instance.currentUser?.getIdToken()
     });
 
-    loggy.i('Connecting websocket to $url');
+    loggy.d('Connecting websocket to $url');
 
     channel = WebSocketChannel.connect(url);
 
     socketSubscription = channel!.stream.listen((event) {
       _errorCount = 0;
-      stream.sink.add(event);
+      stream.sink.add(jsonDecode(event));
     }, onError: onError, onDone: () => onError(null), cancelOnError: true);
   }
 
@@ -63,12 +64,12 @@ class WebsocketImpl extends Websocket
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // loggy.i('changed state');
+    loggy.d('Changed app state');
     if (state == AppLifecycleState.resumed) connect();
   }
 
   void dispose() {
-    loggy.i('Websocket disposed');
+    loggy.d('Websocket disposed');
     WidgetsBinding.instance?.removeObserver(this);
   }
 }

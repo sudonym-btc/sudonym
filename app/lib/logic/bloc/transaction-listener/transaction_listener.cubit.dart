@@ -32,7 +32,7 @@ class TransactionListenerCubit extends Cubit<TransactionListenerCubitState>
   }
 
   void parseAddress(String address) {
-    loggy.i('Detected $address');
+    loggy.d('Detected $address');
     if (!state.ignoredAddresses.contains(address)) {
       emit(TransactionReady(
           address: address, ignoredAddresses: state.ignoredAddresses));

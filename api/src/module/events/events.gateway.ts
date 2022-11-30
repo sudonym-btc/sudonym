@@ -77,7 +77,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				user.uid,
 				this.users[user.uid].length
 			);
-			client.send('connected');
+			client.send(JSON.stringify({ ping: true }));
 		} else {
 			this.logger.verbose('No id provided for bsocket');
 			client.close();

@@ -8,9 +8,9 @@ import {
 	TAddressType,
 	Withdraw,
 } from '@sudonym/models';
+import axios from 'axios';
 import { Receiver } from 'module/receiver/receiver.model';
 import { ReceiverService } from 'module/receiver/receiver.service';
-import fetch from 'node-fetch';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
 import { CurrencyService } from '../currency/currency.service';
 import { Transaction } from '../transaction/transaction.model';
@@ -100,7 +100,7 @@ export class ActionService {
 				case 'lightningaddress':
 				case 'lnurl': {
 					const address = (
-						await this.getCallback(
+						(await this.getCallback(
 							(action.remoteResponse.data as any).callback,
 							{
 								amount: mSatoshiAmount,
@@ -117,8 +117,8 @@ export class ActionService {
 									// "identifier": string,
 								},
 							}
-						)
-					).pr;
+						)) as any
+					).pr; //todo: define types for ln stages
 
 					return Action.from({
 						...action,
@@ -197,7 +197,7 @@ export class ActionService {
 			u.searchParams.append(key, params[key]);
 		}
 		this.logger.debug('Getting callback ', u.toString());
-		return fetch(u, fetchHttpOpts).then((r) => r.json());
+		return axios(u.toString(), fetchHttpOpts).then((r) => r.data); //todo catch callback errors
 	}
 }
 

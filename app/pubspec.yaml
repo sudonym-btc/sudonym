@@ -26,7 +26,6 @@ dependencies:
     flutter_local_notifications: ^9.6.1
     flutter_localizations:
         sdk: flutter
-    flutter_loggy_dio: ^2.0.0+3
     flutter_ringtone_player: ^3.2.0
     flutter_slidable: ^2.0.0
     font_awesome_flutter: ^10.2.1
@@ -37,12 +36,13 @@ dependencies:
     intl: ^0.17.0
     local_auth: ^2.1.2
     logger: ^1.1.0
-    loggy: ^2.0.1+1
+    loggy: ^2.0.3
     mobile_scanner: ^2.0.0
     money_formatter: ^0.0.3
     native_flutter_proxy: ^0.1.15
     nfc_manager: ^3.2.0
     package_info_plus: ^3.0.1
+    pretty_dio_logger: ^1.2.0-beta-1
     qr_flutter: ^4.0.0
     reactive_forms: ^14.1.0
     rxdart: ^0.27.5

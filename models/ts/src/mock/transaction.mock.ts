@@ -1,7 +1,7 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import * as Factory from 'factory.ts';
-import { RecursivePartial } from '../recursive-partial';
 import { Transaction } from '../classes/transaction';
+import { RecursivePartial } from '../recursive-partial';
 
 const addresses = [
 	'paco@coincorner.io',

@@ -139,7 +139,6 @@ export const BaseController = <
 		)
 		@conditional(!!options.update, Put(':id'))
 		update(@Param('id') id, @Body() data: TUpdate) {
-			console.log(data);
 			return this.service.update(id, data);
 		}
 

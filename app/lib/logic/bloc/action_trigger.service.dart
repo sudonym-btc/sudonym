@@ -64,7 +64,6 @@ class ActionTriggerService with ActionLogger {
 
   ActionTriggerService() {
     actionStreamCallbacks.add((p0) {
-      print(p0);
       p0.pot ??= getIt<CurrentPotService>().pot;
       return p0;
     });
@@ -73,9 +72,9 @@ class ActionTriggerService with ActionLogger {
   trigger(ActionStream action) {
     final triggerStream = PublishSubject<ActionStream>();
 
-    loggy.i('triggering action ${action.link}');
+    loggy.d('Triggering action ${action.link}');
     if (!isValidAddress(action.link)) {
-      loggy.e('invalid link ${action.link}');
+      loggy.e('Invalid link ${action.link}');
       throw Error();
     }
     triggerStream
@@ -98,7 +97,7 @@ class ActionTriggerService with ActionLogger {
       },
       // test: (error) => error instanceof DioErr,
     ).listen((event) {
-      loggy.i('Payment flow completed');
+      loggy.d('Payment flow completed');
     });
 
     triggerStream.add(action);

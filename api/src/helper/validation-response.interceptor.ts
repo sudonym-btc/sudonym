@@ -3,7 +3,7 @@ import {
 	CallHandler,
 	ExecutionContext,
 	Injectable,
-	NestInterceptor
+	NestInterceptor,
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { Observable, throwError } from 'rxjs';
