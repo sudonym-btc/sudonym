@@ -43,7 +43,7 @@ RUN ls /usr/src/app
 RUN ls /usr/src/app/api
 RUN ls /usr/src/app/api/dist
 
-CMD ["node", "dist/main"]
+CMD ["ls", "&&", "node", "dist/main"]
 
 FROM node:18-alpine AS development
 USER node
