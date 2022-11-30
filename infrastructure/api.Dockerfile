@@ -1,4 +1,5 @@
 FROM node:18-alpine AS build
+USER node
 WORKDIR /usr/src/app
 COPY ./api ./api
 COPY ./models ./models
@@ -42,7 +43,7 @@ RUN ls /usr/src/app
 RUN ls /usr/src/app/api
 RUN ls /usr/src/app/api/dist
 
-CMD ["ls dist"]
+CMD ["dist/main"]
 
 FROM node:18-alpine AS development
 USER node
