@@ -32,10 +32,10 @@ FROM node:18-alpine AS production
 USER node
 
 # Copy the bundled code from the build stage to the production image
-COPY --from=build /usr/src/app/prod_node_modules /usr/src/app/node_modules
-COPY --from=build /usr/src/app/api/prod_node_modules /usr/src/app/api/node_modules
-COPY --from=build /usr/src/app/api/dist /usr/src/app/api/dist
-COPY --from=build /usr/src/app/models/ts /usr/src/app/models/ts
+COPY --from=build --chown=node:node  /usr/src/app/prod_node_modules /usr/src/app/node_modules
+COPY --from=build --chown=node:node  /usr/src/app/api/prod_node_modules /usr/src/app/api/node_modules
+COPY --from=build --chown=node:node  /usr/src/app/api/dist /usr/src/app/api/dist
+COPY --from=build --chown=node:node  /usr/src/app/models/ts /usr/src/app/models/ts
 
 WORKDIR /usr/src/app/api
 RUN ls /usr/src/app
