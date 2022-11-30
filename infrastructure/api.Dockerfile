@@ -1,5 +1,4 @@
 FROM node:18-alpine AS build
-USER node
 WORKDIR /usr/src/app
 COPY ./api ./api
 COPY ./models ./models
