@@ -18,6 +18,9 @@ RUN npm install
 # Build
 WORKDIR /usr/src/app/api
 RUN npm run build
+RUN ls /usr/src/app
+RUN ls /usr/src/app/api
+RUN ls /usr/src/app/api/dist
 RUN apk del build-dependencies
 
 FROM node:18-alpine AS production
@@ -28,9 +31,9 @@ COPY --from=build /usr/src/app/api/dist /usr/src/app/api/dist
 COPY --from=build /usr/src/app/models/ts /usr/src/app/models/ts
 
 WORKDIR /usr/src/app/api
-# RUN ls /usr/src/app
-# RUN ls /usr/src/app/api
-# RUN ls /usr/src/app/api/dist
+RUN ls /usr/src/app
+RUN ls /usr/src/app/api
+RUN ls /usr/src/app/api/dist
 
 CMD ["node", "dist/main"]
 
