@@ -5,8 +5,7 @@ COPY ./models ./models
 COPY ./package*.json ./
 
 RUN apk update
-RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip libzmq
-RUN apk add zeromq-dev zeromq 
+RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip libzmq zeromq-dev zeromq 
 RUN npm config set fetch-retry-mintimeout 6000000
 RUN npm config set fetch-retry-maxtimeout 6000000
 RUN npm config set timeout 6000000
@@ -43,7 +42,7 @@ RUN ls /usr/src/app
 RUN ls /usr/src/app/api
 RUN ls /usr/src/app/api/dist
 
-CMD ["node", "dist/main"]
+CMD ["tail", "-f", "/dev/null"]
 
 FROM node:18-alpine AS development
 USER node
