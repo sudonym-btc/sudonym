@@ -12,6 +12,7 @@ export class CurrencyService {
 		amount = 1,
 		time?: Date
 	): Promise<CurrencyResponse> {
+		console.log(from, to, amount, time);
 		return new CurrencyResponse(
 			amount == 0
 				? 0

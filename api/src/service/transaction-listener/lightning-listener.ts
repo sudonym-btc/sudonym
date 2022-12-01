@@ -136,7 +136,8 @@ export class LightningListener extends TransactionListener {
 				await this.currencyService.convert(
 					entity.currency,
 					'BTC',
-					entity.amount
+					entity.amount,
+					entity.createdAt
 				)
 			).amount;
 			this.logger.log('Converted');

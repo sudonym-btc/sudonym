@@ -36,8 +36,10 @@ export class ExchangeService {
 		quoteCurrency = 'BTC',
 		time?: Date
 	) {
+		console.log(fromCurrency, quoteCurrency, time);
 		if (fromCurrency == quoteCurrency) return 1;
 		const market = await this.fetchMarket(fromCurrency, quoteCurrency);
+		time = time || new Date();
 		const timestamp = time
 			? Date.UTC(
 					time.getUTCFullYear(),
