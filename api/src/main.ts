@@ -6,6 +6,7 @@ import { downloadFiles } from './helper/config-loader';
 import { SentryLogger } from './helper/sentry';
 
 async function bootstrap() {
+	console.log('Booting app');
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule, {
 		logger: new SentryLogger(),

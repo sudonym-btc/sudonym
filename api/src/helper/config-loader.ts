@@ -3,13 +3,14 @@ import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import { getConfig } from '../config/config';
 const storage = new Storage();
+export const CONFIG_FOLDER = __dirname + '/../config';
 
 // Downloads config files from google cloud project
 export async function downloadFiles(
 	force = false,
 	alreadyDone = () =>
 		['mock', 'development'].includes(getConfig().env) &&
-		fs.existsSync(process.cwd() + '/src/config/service-account.json')
+		fs.existsSync(CONFIG_FOLDER + '/service-account.json')
 ) {
 	console.log('Downloading files already done? ' + alreadyDone());
 	if (!alreadyDone() || force) {
@@ -27,7 +28,7 @@ export async function downloadFiles(
 		for (const file of files) {
 			// Ignore folders
 			if (file.name.split('.').length == 1) continue;
-			const destination = `${process.cwd()}/src/config/${file.name}`;
+			const destination = `${CONFIG_FOLDER}/${file.name}`;
 
 			try {
 				await bucket.file(file.name).download({

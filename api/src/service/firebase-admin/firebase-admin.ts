@@ -2,6 +2,7 @@ import { Provider } from '@nestjs/common';
 import { getConfig } from 'config/config';
 import admin, { ServiceAccount } from 'firebase-admin';
 import * as fs from 'fs';
+import { CONFIG_FOLDER } from 'helper/config-loader';
 
 export const FIREBASE_ADMIN = 'FB_ADMIN';
 
@@ -12,7 +13,7 @@ const fb = () => {
 		? {}
 		: (() => {
 				const serviceAccountPath =
-					process.cwd() + '/src/config/service-account.json';
+					CONFIG_FOLDER + '/service-account.json';
 				const serviceAccount = fs.existsSync(serviceAccountPath)
 					? require(serviceAccountPath)
 					: null;

@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import * as ccxt from 'ccxt';
 import * as fs from 'fs';
+import { CONFIG_FOLDER } from 'helper/config-loader';
 import { SettlementService } from '../../module/settlement/settlement.service';
 
 @Injectable()
@@ -13,12 +14,12 @@ export class ExchangeService {
 
 	async onModuleInit() {
 		this.exchanges = fs
-			.readdirSync('src/config/exchanges')
+			.readdirSync(CONFIG_FOLDER + '/exchanges')
 			.filter((f) => f.includes('.json'))
 			.map((f) => {
 				return new ccxt[f.split('.')[0]](
 					JSON.parse(
-						fs.readFileSync('src/config/exchanges/' + f, {
+						fs.readFileSync(CONFIG_FOLDER + '/exchanges/' + f, {
 							encoding: 'utf8',
 						})
 					)
