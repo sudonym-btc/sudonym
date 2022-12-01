@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { RecursivePartial } from '@sudonym/models/src/recursive-partial';
+import { RecursivePartial } from '@sudonym/models/dist/recursive-partial';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Config } from 'config/config';
 import { Subject } from 'rxjs';
