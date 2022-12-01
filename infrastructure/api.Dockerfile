@@ -12,6 +12,7 @@ RUN npm config set timeout 6000000
 ENV NODE_ENV development
 RUN ls /usr/src/app
 RUN ls /usr/src/app/api
+USER node
 # Install packages
 RUN npm install --omit=dev
 RUN ls /usr/src/app
