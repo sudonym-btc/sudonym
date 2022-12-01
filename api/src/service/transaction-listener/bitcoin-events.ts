@@ -4,7 +4,6 @@ import * as bitcoin from 'bitcoinjs-lib';
 import { Config } from 'config/config';
 import { Subject } from 'rxjs';
 import * as zmq from 'zeromq/v5-compat';
-const sock = zmq.socket('sub');
 
 type TxOutput = bitcoin.TxOutput & {
 	txid: string;
@@ -31,6 +30,8 @@ export class BitcoinEvents {
 	private readonly logger = new Logger(BitcoinEvents.name);
 
 	onModuleInit() {
+		const sock = zmq.socket('sub');
+
 		this.logger.verbose(
 			'Connecting to bitcoin message queue at ' + this.config.bitcoinMQ
 		);
