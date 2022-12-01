@@ -5,12 +5,12 @@ import { CurrencyService } from 'module/currency/currency.service';
 import { Op } from 'sequelize';
 import {
 	LightningError,
-	LightningNodeService,
+	LightningNodeService
 } from '../lightning-node/lightning-node.service';
 import {
 	LightningEvents,
 	SendPayResponse,
-	WaitSendPayResponse,
+	WaitSendPayResponse
 } from './lightning-events';
 import { TransactionListener } from './transaction-listener.interface';
 
@@ -131,6 +131,7 @@ export class LightningListener extends TransactionListener {
 	async triggerPayment(entity, invoice) {
 		// Attempt to trigger payment
 		try {
+			this.logger.log(entity);
 			const btcAmount = (
 				await this.currencyService.convert(
 					entity.currency,
@@ -138,6 +139,8 @@ export class LightningListener extends TransactionListener {
 					entity.amount
 				)
 			).amount;
+			this.logger.log('Converted');
+			this.logger.log(btcAmount);
 			this.logger.debug('Amount', btcAmount, btcAmount * MSATOSHIS);
 			const response = await this.lightningNodeService.pay(
 				invoice,
