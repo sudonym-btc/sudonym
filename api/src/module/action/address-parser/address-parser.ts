@@ -3,13 +3,13 @@ import {
 	Action,
 	ActionRemoteResponse,
 	IAddressParser,
-	TAddressType,
+	TAddressType
 } from '@sudonym/models';
 import axios from 'axios';
 import { bech32 } from 'bech32';
 import {
 	Network,
-	validate as validateBitcoinAddress,
+	validate as validateBitcoinAddress
 } from 'bitcoin-address-validation';
 import * as bolt11 from 'bolt11';
 import { Buffer } from 'buffer';
@@ -141,7 +141,7 @@ export class AddressParser implements IAddressParser {
 				return {
 					...d,
 					data: {
-						...(d.data ? {} : {}),
+						...d.data,
 						domain,
 						username,
 					},

@@ -7,6 +7,7 @@ export const fetchHttpOpts: AxiosRequestConfig = {
 		'Cache-Control': 'no-cache',
 		Pragma: 'no-cache',
 		Expires: '0',
+		'Accept-Encoding': 'application/json',
 	},
 	httpsAgent: new https.Agent({
 		rejectUnauthorized: !['development', 'test'].includes(getConfig().env),
