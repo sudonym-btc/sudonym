@@ -5,16 +5,16 @@ import { AppModule } from './app.module';
 import { downloadFiles } from './helper/config-loader';
 import { SentryLogger } from './helper/sentry';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const SegfaultHandler = require('segfault-handler');
+// const SegfaultHandler = require('segfault-handler');
 
-SegfaultHandler.registerHandler('crash.log'); // With no argument, SegfaultHandler will generate a generic log file name
+// SegfaultHandler.registerHandler('crash.log'); // With no argument, SegfaultHandler will generate a generic log file name
 
-// Optionally specify a callback function for custom logging. This feature is currently only supported for Node.js >= v0.12 running on Linux.
-SegfaultHandler.registerHandler('crash.log', function (signal, address, stack) {
-	// Do what you want with the signal, address, or stack (array)
-	// This callback will execute before the signal is forwarded on.
-	console.log(signal, address, stack);
-});
+// // Optionally specify a callback function for custom logging. This feature is currently only supported for Node.js >= v0.12 running on Linux.
+// SegfaultHandler.registerHandler('crash.log', function (signal, address, stack) {
+// 	// Do what you want with the signal, address, or stack (array)
+// 	// This callback will execute before the signal is forwarded on.
+// 	console.log(signal, address, stack);
+// });
 async function bootstrap() {
 	console.log('Booting app');
 	await downloadFiles();
