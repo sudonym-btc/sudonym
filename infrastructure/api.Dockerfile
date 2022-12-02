@@ -45,7 +45,6 @@ RUN ls /usr/src/app/api/dist
 CMD ["node", "dist/main"]
 
 FROM node:18-alpine AS development
-USER node
 COPY --from=build /usr/src/app/ /usr/src/app
 WORKDIR /usr/src/app/api
 CMD ["npm", "run", "start:dev"]

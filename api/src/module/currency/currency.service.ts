@@ -53,6 +53,7 @@ export class MockCurrencyService extends CurrencyService {
 	rates = [
 		['USD', 'BTC', 20000],
 		['USD', 'GBP', 1.2],
+		['GBP', 'BTC', 1.4],
 	];
 
 	async convert(from = 'BTC', to = 'BTC', amount = 0, time?) {

@@ -1,4 +1,6 @@
+import { HttpException } from '@nestjs/common';
 import * as Models from '@sudonym/models';
+import { authUserIdGetter } from 'helper/context-request';
 import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { Contact } from 'module/contact/contact.model';
@@ -9,6 +11,7 @@ import { Sender } from 'module/sender/sender.model';
 import {
 	AllowNull,
 	AutoIncrement,
+	BeforeCreate,
 	BelongsTo,
 	Column,
 	CreatedAt,
@@ -121,6 +124,18 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@CreatedAt
 	@Column
 	createdAt: Date;
+
+	@BeforeCreate
+	static canOnlyCreateTransactionsFromOwnPot = async (params) => {
+		if (
+			authUserIdGetter() &&
+			!(await Pot.accessors.canFind(params.potId))
+				.map((i) => i.id)
+				.includes(authUserIdGetter())
+		) {
+			throw new HttpException('Cannot create this transaction', 403);
+		}
+	};
 
 	static accessors = {
 		canFind: (id) =>

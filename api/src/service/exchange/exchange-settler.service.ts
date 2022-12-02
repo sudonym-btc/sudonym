@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Config } from 'config/config';
 import { Pot } from 'module/pot/pot.model';
-import { debounceTime, interval, merge, Subject } from 'rxjs';
+import { debounceTime, interval, merge, Subject, Subscription } from 'rxjs';
 import { Sequelize } from 'sequelize';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { PotService } from '../../module/pot/pot.service';
@@ -13,10 +14,26 @@ export class ExchangeSettlerService {
 	@Inject() exchangeService: ExchangeService;
 	@Inject() lightningNodeService: LightningNodeService;
 	@Inject() potService: PotService;
+	@Inject() config: Config;
 
 	run = new Subject();
+	subscription: Subscription;
 
-	async onModuleInit() {
+	async listen() {
+		if (this.subscription) this.subscription.unsubscribe();
+		if (this.config.settle) {
+			this.subscription = (
+				this.config.intervalSettle
+					? merge(this.run, interval(10 * 60 * 1000))
+					: this.run
+			)
+				.pipe(debounceTime(1000))
+				.subscribe(this.settle.bind(this));
+			await this.settle();
+		}
+	}
+
+	async onApplicationBootstrap() {
 		this.potService.onAfterUpdated.listen((entity) => {
 			if (
 				entity.changed('spendableBalance') ||
@@ -25,10 +42,13 @@ export class ExchangeSettlerService {
 				this.run.next(entity);
 			}
 		});
-		merge(this.run, interval(10 * 60 * 1000))
-			.pipe(debounceTime(1000))
-			.subscribe(this.settle.bind(this));
-		await this.settle();
+
+		this.config.onChanged.subscribe(this.listen.bind(this));
+
+		// Run after application has started up
+		setTimeout(() => {
+			this.listen();
+		}, 0);
 	}
 
 	async getLiabilities() {

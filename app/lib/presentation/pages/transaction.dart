@@ -289,7 +289,7 @@ class _ContactSection extends StatelessWidget {
           fetch: true,
           contact: Contact.fromJson({'id': entity.ContactAddress.contactId}));
     }
-    return ['lnurl', 'lightningaddress'].contains(entity.type)
+    return ['lightningaddress'].contains(entity.type)
         ? Button(
             icon: const Icon(Icons.add),
             text: AppLocalizations.of(context)!.createContact,

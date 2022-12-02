@@ -19,7 +19,7 @@ export interface TControllerAndService<TModel> {
 	update(id, params: RecursivePartial<TModel>): Promise<TModel>;
 	delete(id): Promise<TModel>;
 	list(
-		param: FindOptions,
+		param?: FindOptions,
 		options?
 	): Promise<{
 		data: TModel[];

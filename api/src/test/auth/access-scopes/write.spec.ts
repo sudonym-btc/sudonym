@@ -20,8 +20,8 @@ scaffoldGroup('Access Scopes', (scaffold) => {
 				spendableBalance: 1000,
 			});
 
-			expect(data.body.balance).not.toBe(1000);
-			expect(data.body.spendableBalance).not.toBe(1000);
+		expect(data.body.balance).not.toBe(1000);
+		expect(data.body.spendableBalance).not.toBe(1000);
 	});
 
 	it('should not be able to create pot balance', async () => {
@@ -39,8 +39,8 @@ scaffoldGroup('Access Scopes', (scaffold) => {
 				spendableBalance: 1000,
 			});
 
-			expect(data.body.balance).not.toBe(1000);
-			expect(data.body.spendableBalance).not.toBe(1000);
+		expect(data.body.balance).not.toBe(1000);
+		expect(data.body.spendableBalance).not.toBe(1000);
 	});
 
 	// it('should not be able to change transaction amount balance', () => {

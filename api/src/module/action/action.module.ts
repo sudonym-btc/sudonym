@@ -7,7 +7,7 @@ import { SharedModule } from '../shared.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { ActionController } from './action.controller';
 import { ActionService } from './action.service';
-import { AddressParser } from './address-parser/address-parser';
+import { AddressParserModule } from './address-parser/address-parser.module';
 
 @Module({
 	imports: [
@@ -17,9 +17,10 @@ import { AddressParser } from './address-parser/address-parser';
 		LightningNodeModule,
 		TransactionModule,
 		ReceiverModule,
+		AddressParserModule,
 	],
 	controllers: [ActionController],
-	providers: [ActionService, AddressParser],
+	providers: [ActionService],
 	exports: [ActionService],
 })
 export class ActionModule {}

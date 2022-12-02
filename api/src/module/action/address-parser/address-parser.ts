@@ -3,19 +3,18 @@ import {
 	Action,
 	ActionRemoteResponse,
 	IAddressParser,
-	TAddressType
+	TAddressType,
 } from '@sudonym/models';
 import axios from 'axios';
 import { bech32 } from 'bech32';
 import {
 	Network,
-	validate as validateBitcoinAddress
+	validate as validateBitcoinAddress,
 } from 'bitcoin-address-validation';
 import * as bolt11 from 'bolt11';
 import { Buffer } from 'buffer';
 import { Config } from 'config/config';
 import { LightningNodeService } from '../../../service/lightning-node/lightning-node.service';
-import { parseQuery } from '../action.service';
 import { fetchHttpOpts } from './http-agent';
 
 @Injectable()
@@ -259,3 +258,15 @@ const BITCOIN_SCHEME = 'bitcoin';
 const BOLT11_SCHEME = 'lnbc';
 const LNURL_SCHEME = 'lnurl';
 const BOLT12_SCHEME = 'lno1';
+
+export function parseQuery(queryString): any {
+	const query = {};
+	const pairs = (
+		queryString[0] === '?' ? queryString.substr(1) : queryString
+	).split('&');
+	for (let i = 0; i < pairs.length; i++) {
+		const pair = pairs[i].split('=');
+		query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+	}
+	return query;
+}

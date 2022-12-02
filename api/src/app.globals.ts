@@ -8,13 +8,13 @@ const logger = new Logger('Global');
 
 export const applyGlobals = (app: INestApplication) => {
 	logger.log('Applying global validators and interceptors');
-	app.useGlobalInterceptors(new ValidationErrorInterceptor());
-	app.useWebSocketAdapter(new WsAdapter(app));
-	app.use(requestLogger);
 	app.use(contextRequest(app.get(AuthService)));
+	app.use(requestLogger);
 	app.enableCors({
 		origin: true,
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 		credentials: true,
 	});
+	app.useGlobalInterceptors(new ValidationErrorInterceptor());
+	app.useWebSocketAdapter(new WsAdapter(app));
 };

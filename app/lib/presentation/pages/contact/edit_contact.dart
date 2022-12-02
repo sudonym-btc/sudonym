@@ -58,7 +58,8 @@ class EditContactFormState extends State<EditContactForm> {
           widget.entity!.ContactAddresses
               .map((e) => FormGroup({
                     'address': FormControl<String>(
-                        value: e.address, validators: [isValidAddressValidator])
+                        value: e.address,
+                        validators: [isValidLightningAddressValidator])
                   }))
               .toList(),
           validators: [Validators.minLength(1)])

@@ -2,29 +2,30 @@ import { AddressParser } from 'module/action/address-parser/address-parser';
 import { ContactService } from 'module/contact/contact.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import * as request from 'supertest';
-import { scaffoldGroup } from './mock/scaffold-group';
+import { runAsUser, scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Validation', (scaffold) => {
 	it('DTO validation error should be in same format as DB validation', async () => {
-		const data = await request(scaffold.app.getHttpServer()).get(
-			'/receiver/invoice?amount=str'
-		);
+		await runAsUser(scaffold.entities.user[0], async () => {
+			const data = await request(scaffold.app.getHttpServer()).get(
+				`/receiver/invoice?potId=${scaffold.entities.pot[0].id}&type=lnurl&amount=str`
+			);
 
-		expect(data.statusCode).toBe(400);
-		expect(data.body);
-		console.log(data.body);
+			expect(data.statusCode).toBe(400);
+			expect(data.body);
+			console.log(data.body);
 
-		const response = scaffold.app.get(ReceiverService).create({
-			potId: scaffold.entities.pot[0].id,
-			type: 'lnurl',
-			amount: 'str',
-		} as any);
+			const response = scaffold.app.get(ReceiverService).create({
+				potId: scaffold.entities.pot[0].id,
+				type: 'lnurl',
+				amount: 'str',
+			} as any);
 
-		await expect(response).rejects.toThrowError();
+			await expect(response).rejects.toThrowError();
 
-		// todo: Compare that errors are returned the same way
+			// todo: Compare that errors are returned the same way
+		});
 	});
-
 	it('create or update unique keys', async () => {
 		const first = await scaffold.app.get(ContactService).createOrUpdate({
 			userId: scaffold.entities.user[0].id,

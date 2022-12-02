@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { User } from '@sudonym/models';
 import { BaseController } from '../base.controller';
 import { UserService } from './user.service';
@@ -7,4 +7,9 @@ import { UserService } from './user.service';
 export class UserController extends BaseController({
 	service: UserService,
 	model: User,
-}) {}
+}) {
+	@Post('1')
+	poster(@Body() x) {
+		console.log(x);
+	}
+}

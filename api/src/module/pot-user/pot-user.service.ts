@@ -25,7 +25,6 @@ export class PotUserService extends BaseService(PotUser) {
 			await context.runAndReturn(async () => {
 				if (context.get('updatingIndexes')) return;
 				else {
-					console.log(rec);
 					context.set('updatingIndexes', true);
 					if (!rec.entity.changed('index')) return;
 					const movingForward =
@@ -49,12 +48,6 @@ export class PotUserService extends BaseService(PotUser) {
 								  },
 						},
 					})) {
-						console.log(
-							'updating',
-							potUser,
-							potUser.index + (movingForward ? 1 : -1),
-							movingForward
-						);
 						await this.update(potUser.id, {
 							index: potUser.index + (movingForward ? 1 : -1),
 						});

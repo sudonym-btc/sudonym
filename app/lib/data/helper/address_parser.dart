@@ -76,3 +76,10 @@ Map<String, dynamic>? isValidAddressValidator(AbstractControl control) {
           'Must be a valid lightning, onchain or lnurl address': control.value
         };
 }
+
+Map<String, dynamic>? isValidLightningAddressValidator(
+    AbstractControl control) {
+  return (control.value as String).isValidEmail()
+      ? null
+      : <String, dynamic>{'Must be a valid lightning address': control.value};
+}

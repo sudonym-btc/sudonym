@@ -10,8 +10,6 @@ scaffoldGroup('Transaction Access', (scaffold) => {
 			originalAddress: 'lnb',
 			address: 'lnbc',
 		});
+		// todo complete this
 	});
-
-	//TODO CHECK TRANSACTION CURRENCY BEFORE SENDING ANYWHERE
-	// TODO CHECK AMOUNT OF SATS REPORTED IS SAME AS CONVERTED RATE
 });

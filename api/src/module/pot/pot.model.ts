@@ -18,7 +18,6 @@ import {
 } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 import { PotUser } from '../pot-user/pot-user.model';
-const { Op } = require('sequelize');
 
 @Table({
 	scopes: Pot.scopes,

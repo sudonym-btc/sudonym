@@ -21,6 +21,11 @@ export class PotService extends BaseService(Pot) {
 				await this.potUserService.delete(potUser.id);
 			}
 		});
+		this.beforeDelete.hook(async (x) => {
+			if ((await this.list()).metadata.count <= 1) {
+				throw new Error('Cannot delete last pot');
+			}
+		});
 	}
 	async findForUser(userId = null, potId = null, potName = null) {
 		if (potId) {

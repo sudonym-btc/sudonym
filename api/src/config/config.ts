@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { SequelizeOptions } from 'sequelize-typescript';
 import { options as cmdargs } from '../cmd-line-args';
 import { configDevelopment } from './config-development';
@@ -17,15 +18,19 @@ const configs = {
 const env = process.env.NODE_ENV || 'development';
 
 export const getConfig = () => {
-	const c = {
-		...new Config(),
-		...configs[env](),
-	};
-	c.selfUrl = 'https://api.' + c.domain;
-	return c;
+	const config = new Config();
+	config.set(configs[env]());
+	config.set({
+		selfUrl: 'https://api.' + config.domain,
+	});
+	return config;
 };
 
 export class Config {
+	onChanged = new Subject();
+	constructor(config?: Partial<Config>) {
+		this.set(config);
+	}
 	env = env;
 	network = 'regtest';
 	domain = 'sudonym.app';
@@ -47,6 +52,15 @@ export class Config {
 	database: SequelizeOptions = {
 		dialect: 'sqlite',
 	};
+	settle = true;
+	intervalSettle = true;
 	wsPort = env == 'mock' ? Math.floor(Math.random() * 60000) + 1000 : 3001;
 	jwtSecret = 'testing'; // jwtSecret used in testing
+
+	set(config?: Partial<Config>) {
+		if (config) {
+			Object.assign(this, config);
+			this.onChanged.next(true);
+		}
+	}
 }

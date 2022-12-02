@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { applyGlobals } from 'app.globals';
+import { Config } from 'config/config';
 import { ActionService } from 'module/action/action.service';
 import { AddressParser } from 'module/action/address-parser/address-parser';
 import { AuthService } from 'module/auth/auth.service';
@@ -25,6 +26,7 @@ import { MockAuthService } from './classes/auth.service.mock';
 import { MockExchangeService } from './classes/exchange.service.mock';
 import { createPots } from './pot';
 import { createUsers } from './user';
+const bodyParser = require('body-parser');
 
 export type mockScaffold = {
 	app: INestApplication;
@@ -58,12 +60,13 @@ export const createMockApp = async () => {
 		.overrideProvider(ExchangeService)
 		.useClass(MockExchangeService)
 		.compile();
-	const app = moduleFixture.createNestApplication(null, {
+	const app = moduleFixture.createNestApplication({
 		// logger: console,
 	});
 
 	applyGlobals(app);
 	await app.init();
+	app.get(Config).set({ settle: false, intervalSettle: false });
 	return app;
 };
 

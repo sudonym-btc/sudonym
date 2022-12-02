@@ -116,6 +116,7 @@ export const BaseController = <
 				expectedType: options.create && options.create.input,
 				...(options.create ? options.create.validator : {}),
 				exceptionFactory,
+				skipUndefinedProperties: true, // todo: why are updates coming through undefined
 			})
 		)
 		@conditional(!!options.create, Post(''))
