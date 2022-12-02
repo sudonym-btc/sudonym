@@ -3,6 +3,7 @@ import {
 	CallHandler,
 	ExecutionContext,
 	Injectable,
+	Logger,
 	NestInterceptor,
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
@@ -11,6 +12,7 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ValidationErrorInterceptor implements NestInterceptor {
+	private readonly logger = new Logger('Validation');
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
 		return next.handle().pipe(
 			catchError((err) => {
@@ -26,7 +28,7 @@ export class ValidationErrorInterceptor implements NestInterceptor {
 							})
 					);
 				}
-				console.log(err);
+				this.logger.warn(err);
 				return throwError(() => err);
 			})
 		);

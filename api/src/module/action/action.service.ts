@@ -147,7 +147,7 @@ export class ActionService {
 
 	async execute(action: Action): Promise<Transaction | Receiver> {
 		if (action instanceof Payment) {
-			console.log({
+			this.logger.log({
 				originalAddress: action.originalAddress,
 				address: action.address,
 				type: getAddressType(action.originalAddress),

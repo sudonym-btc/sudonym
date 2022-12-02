@@ -1,10 +1,10 @@
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
-import { context } from 'helper/context-request';
+import { authUserIdGetter, context } from 'helper/context-request';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
 import { Transaction } from 'module/transaction/transaction.model';
-import { FindOptions } from 'sequelize';
+import { FindOptions, ValidationError, ValidationErrorItem } from 'sequelize';
 import {
 	AfterCreate,
 	AllowNull,
@@ -15,6 +15,7 @@ import {
 	HasMany,
 	PrimaryKey,
 	Table,
+	Validate,
 } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 import { PotUser } from '../pot-user/pot-user.model';
@@ -29,6 +30,39 @@ export class Pot extends BaseModel implements Models.Pot {
 	@Column
 	id: number;
 
+	@Validate({
+		unique: async (val) => {
+			if (
+				await Pot.findOne({
+					include: [
+						{
+							model: PotUser,
+							as: 'PotUsers',
+							where: {
+								userId: authUserIdGetter(),
+							},
+							required: true,
+						},
+					],
+					where: {
+						name: val,
+					},
+				})
+			)
+				throw new ValidationError('unique', [
+					new ValidationErrorItem(
+						'',
+						'unique violation',
+						'name',
+						val,
+						this,
+						'',
+						'',
+						[]
+					),
+				]);
+		},
+	})
 	@Column
 	name: string;
 

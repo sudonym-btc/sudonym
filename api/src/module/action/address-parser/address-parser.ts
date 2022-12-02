@@ -156,11 +156,6 @@ export class AddressParser implements IAddressParser {
 	};
 
 	fetchBolt11 = async (invoice: string) => {
-		console.log(invoice, invoice.includes(BOLT11_SCHEME));
-		// Check if Invoice starts with `lnbc` prefix
-		// if (!invoice.includes(BOLT11_SCHEME)) {
-		// 	return null;
-		// }
 		try {
 			this.logger.log('parsing');
 			// Decoded BOLT11 Invoice

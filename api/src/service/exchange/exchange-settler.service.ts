@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Config } from 'config/config';
 import { Pot } from 'module/pot/pot.model';
-import { debounceTime, interval, merge, Subject, Subscription } from 'rxjs';
+import { debounceTime, merge, Subject, Subscription, timer } from 'rxjs';
 import { Sequelize } from 'sequelize';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { PotService } from '../../module/pot/pot.service';
@@ -24,12 +24,11 @@ export class ExchangeSettlerService {
 		if (this.config.settle) {
 			this.subscription = (
 				this.config.intervalSettle
-					? merge(this.run, interval(10 * 60 * 1000))
+					? merge(this.run, timer(0, 10 * 60 * 1000))
 					: this.run
 			)
 				.pipe(debounceTime(1000))
 				.subscribe(this.settle.bind(this));
-			await this.settle();
 		}
 	}
 
@@ -75,34 +74,37 @@ export class ExchangeSettlerService {
 			// Check which currencies on this exchange we have more of than liabilties
 			const surplusCurrencies = Object.keys(
 				exchangeFunds[exchange]
-			).filter((i) => {
-				return (
+			).filter(
+				(i) =>
 					totalFunds[this.exchangeService.getRealName(i)] >
-					liabilities[currency]
-				);
-			});
-			// For each surplus currency
+					liabilities[this.exchangeService.getRealName(i)]
+			);
+
+			// For each surplus currency on the exchange
 			for (const surplusCurrency of surplusCurrencies) {
 				const surplusAmount =
-					totalFunds[surplusCurrency] -
-					(liabilities[surplusCurrency] || 0);
+					totalFunds[
+						this.exchangeService.getRealName(surplusCurrency)
+					] -
+					(liabilities[
+						this.exchangeService.getRealName(surplusCurrency)
+					] || 0);
 
-				// Check if surplus is enough to settle liability
+				// Check if surplus is enough to settle into any synonym of liability
 				for (const synonymousCurrency of this.exchangeService.getSynonyms(
 					currency
-				))
+				)) {
 					try {
-						if (
+						const surplusAmountInLiabilityCurrency =
 							(await this.exchangeService.fetchPriceAtTime(
 								surplusCurrency,
-								currency
+								synonymousCurrency
 							)) *
-								Math.min(
-									exchangeFunds[exchange][surplusCurrency],
-									surplusAmount
-								) >
-							amount
-						) {
+							Math.min(
+								exchangeFunds[exchange][surplusCurrency],
+								surplusAmount
+							);
+						if (surplusAmountInLiabilityCurrency > amount) {
 							{
 								this.logger.debug(
 									await this.exchangeService.trade(
@@ -124,6 +126,7 @@ export class ExchangeSettlerService {
 					} catch (e) {
 						this.logger.warn(e);
 					}
+				}
 			}
 		}
 		this.logger.warn('Could not make trade');
@@ -191,9 +194,9 @@ export class ExchangeSettlerService {
 		const liabilities = await this.getLiabilities();
 		this.logger.debug('Liabilities', liabilities, 'Funds', funds);
 		for (const key of Object.keys(liabilities)) {
-			if (liabilities[key] > funds[key]) {
+			if (liabilities[key] > (funds[key] || 0)) {
 				this.logger.log(key + ' funds lower than liabilities');
-				await this.buy(key, liabilities[key] - funds[key]);
+				await this.buy(key, liabilities[key] - (funds[key] || 0));
 			}
 		}
 	}

@@ -3,21 +3,23 @@ import { CurrencyService } from 'module/currency/currency.service';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { PotUserService } from 'module/pot-user/pot-user.service';
 import { PotService } from 'module/pot/pot.service';
-import { scaffoldGroup } from './mock/scaffold-group';
+import { runAsUser, scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Pot', (scaffold) => {
-	it('should delete pot', async () => {
-		let pot;
+	it('should create pot', async () => {
 		// Create a second pot
-		await context.run(async () => {
-			const req = {
-				auth: {
-					uid: scaffold.entities.user[0].id,
-				},
-			};
-
-			context.set('request', req);
-			pot = await scaffold.app.get(PotService).create({
+		await runAsUser(scaffold.entities.user[0], async () => {
+			let pot = await scaffold.app.get(PotService).create({
+				name: 'Test 2',
+				currency: 'BTC',
+			});
+			expect(pot.PotUsers[0].index).toBe(2);
+		});
+	});
+	it('should delete pot', async () => {
+		// Create a second pot
+		await runAsUser(scaffold.entities.user[0], async () => {
+			let pot = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
@@ -66,7 +68,13 @@ scaffoldGroup('Pot', (scaffold) => {
 	});
 
 	it('should not allow duplicate name', async () => {
-		//todo
+		// Create a second pot
+		await runAsUser(scaffold.entities.user[0], async () => {
+			expect(scaffold.app.get(PotService).create({
+				name: scaffold.entities.pot[0].name,
+				currency: 'BTC',
+			})).rejects.toThrow();
+		});
 	});
 
 	it('should reorder up', async () => {

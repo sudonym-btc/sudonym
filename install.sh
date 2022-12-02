@@ -13,12 +13,14 @@ if [ "$(uname)" = "Darwin" ] || [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; 
         # This package exposes the containers on the host directly.
         brew install chipmk/tap/docker-mac-net-connect
         sudo brew services start chipmk/tap/docker-mac-net-connect
-        
+
         open -a Docker
         gcloud components install kubectl
-        # Oly necessary for M1 chips
+        # Only necessary for M1 chips
         sudo gem uninstall cocoapods
         brew install cocoapods
+        # Might need 64 bit version of homebrew and install libsodium and simlink it to place zeromq is looking
+        # https://medium.com/mkdir-awesome/how-to-install-x86-64-homebrew-packages-on-apple-m1-macbook-54ba295230f
 
     elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
         sudo snap install kubectl --classic
@@ -40,7 +42,7 @@ if [ "$(uname)" = "Darwin" ] || [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; 
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         sudo apt-key fingerprint 0EBFCD88
         sudo add-apt-repository \
-        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+            "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
         $(lsb_release -cs) \
         stable"
         sudo apt-get update

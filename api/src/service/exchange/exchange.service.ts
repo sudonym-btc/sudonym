@@ -36,7 +36,6 @@ export class ExchangeService {
 		quoteCurrency = 'BTC',
 		time?: Date
 	) {
-		console.log(fromCurrency, quoteCurrency, time);
 		if (fromCurrency == quoteCurrency) return 1;
 		const market = await this.fetchMarket(fromCurrency, quoteCurrency);
 		time = time || new Date();
@@ -52,7 +51,8 @@ export class ExchangeService {
 			  )
 			: null;
 		if (time)
-			console.log(
+			this.logger.log(
+				'Fetching price',
 				market.symbol,
 				'1m',
 				time,
@@ -62,7 +62,7 @@ export class ExchangeService {
 		const response = await this.exchanges[0].fetchOHLCV(
 			market.symbol,
 			'1m',
-			timestamp - 1000 * 60 * 2, // Subtract two minutes so there will always be a ticker
+			timestamp - 1000 * 60 * 5, // Subtract 5 minutes so there will always be a ticker
 			100
 		);
 		return market.quote == quoteCurrency

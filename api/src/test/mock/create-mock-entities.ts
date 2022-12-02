@@ -7,6 +7,7 @@ import { AddressParser } from 'module/action/address-parser/address-parser';
 import { AuthService } from 'module/auth/auth.service';
 import { Pot } from 'module/pot/pot.model';
 import { Receiver } from 'module/receiver/receiver.model';
+import { ExchangeSettlerService } from 'service/exchange/exchange-settler.service';
 import { ExchangeService } from 'service/exchange/exchange.service';
 import { FIREBASE_ADMIN } from 'service/firebase-admin/firebase-admin';
 import { FirebaseNotificationService } from 'service/firebase-notification/firebase-notification.service';
@@ -23,6 +24,7 @@ import {
 	MockLightningNodeService,
 } from './classes';
 import { MockAuthService } from './classes/auth.service.mock';
+import { MockExchangeSettlerService } from './classes/exchange-settler.service.mock';
 import { MockExchangeService } from './classes/exchange.service.mock';
 import { createPots } from './pot';
 import { createUsers } from './user';
@@ -57,6 +59,8 @@ export const createMockApp = async () => {
 		.useValue(MockFirebaseAdmin)
 		.overrideProvider(AuthService)
 		.useClass(MockAuthService)
+		.overrideProvider(ExchangeSettlerService)
+		.useClass(MockExchangeSettlerService)
 		.overrideProvider(ExchangeService)
 		.useClass(MockExchangeService)
 		.compile();

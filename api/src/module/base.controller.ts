@@ -5,6 +5,7 @@ import {
 	Delete,
 	Get,
 	Inject,
+	Logger,
 	Param,
 	Post,
 	Put,
@@ -63,7 +64,7 @@ export const BaseController = <
 >(
 	options: BaseControllerOptions<TService, TModel, TCreate, TUpdate>
 ): Constructor<TBaseController<TService, TModel>> => {
-	// console.log(options);
+	const logger = new Logger(options.service.name);
 	const defaultOptions: Partial<
 		BaseControllerOptions<TService, TModel, TCreate, TUpdate>
 	> = {
@@ -80,15 +81,11 @@ export const BaseController = <
 		);
 	});
 
-	// if (options.model.name == 'Pot')
-	// 	console.log(options.update, options.create);
-
 	const exceptionFactory = (validationErrors: ValidationError[] = []) => {
-		console.log(validationErrors);
+		logger.log(validationErrors);
 		return new BadRequestException(validationErrors);
 	};
 
-	// console.log(options, AuthGuard);
 	const getGuards = (obj) =>
 		[...(obj.guards || []), obj.auth ? AuthGuard : null].filter((i) => !!i);
 	class X {
