@@ -39,8 +39,9 @@ export class ExchangeService {
 		if (fromCurrency == quoteCurrency) return 1;
 		const market = await this.fetchMarket(fromCurrency, quoteCurrency);
 		const format = (v: number) =>
-			market.quote == quoteCurrency ? v : 1 / v;
+			this.areSynonymous(quoteCurrency, market.quote) ? v : 1 / v;
 		const execute = async () => {
+			time = time || new Date();
 			if (!time) {
 				return (await this.exchanges[0].fetchTicker(market.symbol)).ask;
 			}
@@ -58,7 +59,7 @@ export class ExchangeService {
 				market.symbol,
 				'1m',
 				time,
-				timestamp, // Subtract two minutes so there will always be a ticker
+				timestamp - 1000 * 60 * 50, // Subtract 50 minutes so there will always be a ticker
 				100
 			);
 			return (
@@ -81,16 +82,10 @@ export class ExchangeService {
 		const markets = await this.exchanges[0].fetchMarkets();
 		const market = markets.find(
 			(m) =>
-				(findOne(this.getSynonyms(m.baseId), this.getSynonyms(from)) &&
-					findOne(
-						this.getSynonyms(m.quoteId),
-						this.getSynonyms(to)
-					)) ||
-				(findOne(this.getSynonyms(m.baseId), this.getSynonyms(to)) &&
-					findOne(
-						this.getSynonyms(m.quoteId),
-						this.getSynonyms(from)
-					))
+				(this.areSynonymous(m.baseId, from) &&
+					this.areSynonymous(m.quoteId, to)) ||
+				(this.areSynonymous(m.baseId, to) &&
+					this.areSynonymous(m.quoteId, from))
 		);
 		this.logger.debug('Market:', market?.symbol);
 		return market;
@@ -135,7 +130,14 @@ export class ExchangeService {
 		);
 	}
 	getSynonyms(currency: string) {
-		return [...(synonyms[currency] ? synonyms[currency] : []), currency];
+		const currKey =
+			Object.keys(synonyms).find((i) => synonyms[i].includes(currency)) ||
+			currency;
+		return [...(synonyms[currKey] ? synonyms[currKey] : []), currency];
+	}
+
+	areSynonymous(a: string, b: string) {
+		return findOne(this.getSynonyms(a), this.getSynonyms(b));
 	}
 }
 

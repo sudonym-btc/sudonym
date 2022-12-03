@@ -85,13 +85,16 @@ export class LightningNodeService {
 			]
 		);
 		this.logger.verbose('Got route back home', restHops);
-		const secondHop = (await this.getChannel(restHops[0].channel)).find(
+		const secondNode = (await this.getChannel(restHops[0].channel)).find(
 			(c) => c.destination == restHops[0].id
 		);
+		const totalPlusFirstNodeFee =
+			restHops[0].msatoshi +
+			this.calcHopFee(secondNode, restHops[0].msatoshi);
 		const firstHop = await this.getRoute(
 			incomingChannel.source,
-			restHops[0].msatoshi +
-				this.calcHopFee(secondHop, restHops[0].msatoshi),
+			totalPlusFirstNodeFee +
+				this.calcHopFee(outgoingChannel, totalPlusFirstNodeFee),
 			0,
 			restHops[0].delay + incomingChannel.delay
 		);
