@@ -1,38 +1,40 @@
-name: "tests"
+name: 'tests'
 on:
-  pull_request:
-    branches: [production, staging, test]
+    push:
+        branches: [production]
+    pull_request:
+        branches: [production, staging, test]
 jobs:
-  test_app:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Flutter action
-        uses: subosito/flutter-action@v2.3.0
-        with:
-          cache: true
-          cache-key: flutter # optional, change this to force refresh cache
-          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
-      - run: cd app && flutter test
-  test_api:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm install 
-      - run: npm run -w api build
-      - run: npm run -w api test
-    env:
-        DB_HOST: mysql
-        DB_PORT: 3306
-    services:
-      mysql:
-        image: mysql:8
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
-        ports:
-        - 3306:3306
+    test_app:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Flutter action
+              uses: subosito/flutter-action@v2.3.0
+              with:
+                  cache: true
+                  cache-key: flutter # optional, change this to force refresh cache
+                  cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+            - run: cd app && flutter test
+    test_api:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - run: npm install
+            - run: npm run -w api build
+            - run: npm run -w api test
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 1
+            DB_HOST: mysql
+            DB_PORT: 3306
+        services:
+            mysql:
+                image: mysql:8
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+                ports:
+                    - 3306:3306
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: 1

@@ -75,10 +75,16 @@ export class ExchangeService {
 		const markets = await this.exchanges[0].fetchMarkets();
 		const market = markets.find(
 			(m) =>
-				(this.getSynonyms(m.baseId).includes(from) &&
-					this.getSynonyms(m.quoteId).includes(to)) ||
-				(this.getSynonyms(m.baseId).includes(to) &&
-					this.getSynonyms(m.quoteId).includes(from))
+				(findOne(this.getSynonyms(m.baseId), this.getSynonyms(from)) &&
+					findOne(
+						this.getSynonyms(m.quoteId),
+						this.getSynonyms(to)
+					)) ||
+				(findOne(this.getSynonyms(m.baseId), this.getSynonyms(to)) &&
+					findOne(
+						this.getSynonyms(m.quoteId),
+						this.getSynonyms(from)
+					))
 		);
 		this.logger.debug('Market:', market?.symbol);
 		return market;
@@ -133,3 +139,13 @@ const synonyms = {
 
 export const isBitcoin = (type) =>
 	['lightningaddress', 'lnurl', 'bolt11', 'bolt12', 'onchain'].includes(type);
+
+/**
+ * @description determine if an array contains one or more items from another array.
+ * @param {array} haystack the array to search.
+ * @param {array} arr the array providing items to check for in the haystack.
+ * @return {boolean} true|false if haystack contains at least one item from arr.
+ */
+const findOne = (haystack, arr) => {
+	return arr.some((v) => haystack.includes(v));
+};
