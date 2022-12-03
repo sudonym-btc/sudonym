@@ -74,11 +74,27 @@ export class LightningNodeService {
 		const restHops = await this.getRoute(
 			this.info.id,
 			millisatoshis,
-			0,
+			20,
 			null,
 			firstChannelOut.destination,
 			null,
 			[
+				...this.connectedChannels
+					.filter(
+						(c) =>
+							c.msatoshi_to_them -
+								Math.max(
+									c.their_channel_reserve_satoshis,
+									c.our_channel_reserve_satoshis
+								) <
+							millisatoshis
+					)
+					.map((c) => [
+						c.short_channel_id + '/1',
+						c.short_channel_id + '/0',
+					])
+					.flat(), //exclude all incoming channels where they don't have enough to push to us.
+				// should be handled by getroute, but doesn't seem to take into account reserve requirements https://github.com/ElementsProject/lightning/issues/5772
 				firstChannelIn.short_channel_id +
 					'/' +
 					this.getDirection(firstChannelIn.source, this.info.id),
