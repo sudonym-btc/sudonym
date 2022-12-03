@@ -79,20 +79,26 @@ export class BalanceUpdaterService {
 		});
 
 		this.transactionService.afterUpdate.hook(async ({ entity }) => {
-			const pot = await this.potService.findOne(entity.potId);
-
-			let newBalance = pot.balance;
-			let newSpendableBalance = pot.spendableBalance;
-
-			const amountInPotCurrency = (
-				await this.currencyService.convert(
-					entity.currencyCode,
-					pot.currency,
-					entity.totalAmount || entity.amount
-				)
-			).amount;
-
 			if (entity.changed('status')) {
+				const pot = await this.potService.findOne(entity.potId);
+
+				let newBalance = pot.balance;
+				let newSpendableBalance = pot.spendableBalance;
+				this.logger.debug(
+					'Transaction status changed so updating balances'
+				);
+				const amountInPotCurrency = (
+					await this.currencyService.convert(
+						entity.currencyCode,
+						pot.currency,
+						entity.totalAmount || entity.amount
+					)
+				).amount;
+				this.logger.debug(
+					'Amount was ',
+					amountInPotCurrency,
+					pot.currency
+				);
 				// Increase spendable balance when outgoing fails
 				if (entity.outgoing) {
 					if (entity.status == false) {
@@ -107,6 +113,11 @@ export class BalanceUpdaterService {
 						newBalance -= amountInPotCurrency;
 					}
 				}
+
+				this.logger.debug('Updating to ', {
+					balance: newBalance,
+					spendableBalance: newSpendableBalance,
+				});
 
 				await this.potService.update(pot.id, {
 					balance: newBalance,
