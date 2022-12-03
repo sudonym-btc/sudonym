@@ -75,7 +75,7 @@ export class LightningNodeService {
 			this.info.id,
 			millisatoshis,
 			0,
-			200,
+			null,
 			firstChannelOut.destination,
 			null,
 			[
