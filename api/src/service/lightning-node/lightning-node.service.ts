@@ -69,7 +69,7 @@ export class LightningNodeService {
 		const firstChannelIn = channel.channels.find(
 			(c) => c.source != this.info.id
 		);
-		this.logger.log('selfpayment', firstChannelOut, firstChannelIn);
+		this.logger.log('selfpayment', firstChannelIn, firstChannelOut);
 		// Get route to current node from first peer which excludes the direct route
 		const restHops = await this.getRoute(
 			this.info.id,
@@ -88,9 +88,13 @@ export class LightningNodeService {
 		const secondChannel = (await this.getChannel(restHops[0].channel)).find(
 			(c) => c.destination == restHops[0].id
 		);
-		const totalPlusFirstNodeFee =
+		let totalPlusFirstNodeFee =
 			restHops[0].msatoshi +
 			this.calcHopFee(secondChannel, restHops[0].msatoshi);
+		totalPlusFirstNodeFee += this.calcHopFee(
+			firstChannelIn,
+			totalPlusFirstNodeFee
+		);
 		const firstHop = await this.getRoute(
 			firstChannelIn.source,
 			totalPlusFirstNodeFee +
