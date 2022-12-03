@@ -1,6 +1,4 @@
 import { Config } from 'config/config';
-import { context } from 'helper/context-request';
-import { User } from 'module/user/user.model';
 import {
 	createMockApp,
 	createMockEntities,
@@ -51,18 +49,5 @@ export const scaffoldGroup = (
 		}, 10000);
 
 		callback(scaffold);
-	});
-};
-
-export const runAsUser = (user: Partial<User>, cb) => {
-	return context.runAndReturn(async () => {
-		const req = {
-			auth: {
-				uid: user.id,
-			},
-		};
-
-		context.set('request', req);
-		return await cb();
 	});
 };

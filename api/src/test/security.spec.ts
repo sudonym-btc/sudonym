@@ -1,5 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { MSATOSHIS } from '@sudonym/models';
+import { runAsUser } from 'helper/context-request';
 import { BalanceLowError } from 'helper/errors';
 import { CurrencyService } from 'module/currency/currency.service';
 import { TransactionService } from 'module/transaction/transaction.service';
@@ -8,7 +9,7 @@ import { UserService } from 'module/user/user.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import * as request from 'supertest';
 import waitForExpect from 'wait-for-expect';
-import { runAsUser, scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Security', (scaffold) => {
 	const createNewUser = (user: Partial<User>) => {

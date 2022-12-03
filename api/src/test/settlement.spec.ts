@@ -1,4 +1,5 @@
 import { Config } from 'config/config';
+import { runAsUser } from 'helper/context-request';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { ExchangeSettlerService } from 'service/exchange/exchange-settler.service';
@@ -6,7 +7,7 @@ import { ExchangeService } from 'service/exchange/exchange.service';
 import waitForExpect from 'wait-for-expect';
 import { MockExchangeSettlerService } from './mock/classes/exchange-settler.service.mock';
 import { MockExchangeService } from './mock/classes/exchange.service.mock';
-import { runAsUser, scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Settlement', (scaffold) => {
 	const incomingTransaction = (params = {}) => ({

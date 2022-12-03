@@ -1,8 +1,9 @@
+import { runAsUser } from 'helper/context-request';
 import { AddressParser } from 'module/action/address-parser/address-parser';
 import { ContactService } from 'module/contact/contact.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import * as request from 'supertest';
-import { runAsUser, scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Validation', (scaffold) => {
 	it('DTO validation error should be in same format as DB validation', async () => {

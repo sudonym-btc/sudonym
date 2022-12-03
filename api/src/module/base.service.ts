@@ -1,6 +1,7 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import { Event } from '@sudonym/models';
 import { sequelizeCls } from 'database/database.providers';
+import { runAsUser } from 'helper/context-request';
 import { FindOptions, Op, UniqueConstraintError } from 'sequelize';
 import {
 	Constructor,
@@ -125,6 +126,24 @@ export const BaseService = <TModel extends BaseModel>(
 			});
 		}
 
+		async triggerEventForUsers(userIds, event, entity) {
+			// For each user fetch as correct scope
+			for (const user of userIds) {
+				await runAsUser({ id: user }, async () => {
+					const e = await this.findOne(entity.id);
+					await this.eventsService.trigger(
+						new TriggeredEvent(
+							new Event(
+								this.repo.name.toLowerCase() + '.' + event,
+								e
+							),
+							[user]
+						)
+					);
+				});
+			}
+		}
+
 		async update(id, params) {
 			return await this.repo.sequelize.transaction(
 				{ transaction: sequelizeCls.get('transaction') },
@@ -158,16 +177,8 @@ export const BaseService = <TModel extends BaseModel>(
 						this.newTransaction(async () => {
 							this.onAfterUpdated.execute(entity);
 
-							await this.eventsService.trigger(
-								new TriggeredEvent(
-									new Event(
-										this.repo.name.toLowerCase() +
-											'.updated',
-										entity
-									),
-									await this.getUserIds(entity.id)
-								)
-							);
+							const users = await this.getUserIds(entity.id);
+							this.triggerEventForUsers(users, 'updated', entity);
 						});
 					});
 
@@ -190,15 +201,10 @@ export const BaseService = <TModel extends BaseModel>(
 					t.afterCommit(async () => {
 						this.newTransaction(async () => {
 							this.onAfterCreated.execute(entity);
-							this.eventsService.trigger(
-								new TriggeredEvent(
-									new Event(
-										this.repo.name.toLowerCase() +
-											'.created',
-										entity
-									),
-									await this.getUserIds(entity.id)
-								)
+							this.triggerEventForUsers(
+								await this.getUserIds(entity.id),
+								'created',
+								entity
 							);
 						});
 					});

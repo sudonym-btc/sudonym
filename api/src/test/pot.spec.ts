@@ -1,15 +1,15 @@
-import { context } from 'helper/context-request';
+import { context, runAsUser } from 'helper/context-request';
 import { CurrencyService } from 'module/currency/currency.service';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { PotUserService } from 'module/pot-user/pot-user.service';
 import { PotService } from 'module/pot/pot.service';
-import { runAsUser, scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Pot', (scaffold) => {
 	it('should create pot', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			let pot = await scaffold.app.get(PotService).create({
+			const pot = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
@@ -70,10 +70,12 @@ scaffoldGroup('Pot', (scaffold) => {
 	it('should not allow duplicate name', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			expect(scaffold.app.get(PotService).create({
-				name: scaffold.entities.pot[0].name,
-				currency: 'BTC',
-			})).rejects.toThrow();
+			expect(
+				scaffold.app.get(PotService).create({
+					name: scaffold.entities.pot[0].name,
+					currency: 'BTC',
+				})
+			).rejects.toThrow();
 		});
 	});
 
