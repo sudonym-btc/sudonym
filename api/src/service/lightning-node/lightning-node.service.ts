@@ -63,40 +63,40 @@ export class LightningNodeService {
 					c.spendable_msatoshi >= millisatoshis &&
 					c.state == 'CHANNELD_NORMAL'
 			) || this.connectedChannels[0]; // Try sending with first channel if none fit filter and fail organically
-		const outgoingChannel = channel.channels.find(
-			(c) => c.destination != this.info.id
+		const firstChannelOut = channel.channels.find(
+			(c) => c.source == this.info.id
 		);
-		const incomingChannel = channel.channels.find(
-			(c) => c.destination == this.info.id
+		const firstChannelIn = channel.channels.find(
+			(c) => c.source != this.info.id
 		);
-		this.logger.log('selfpayment', outgoingChannel, incomingChannel);
+		this.logger.log('selfpayment', firstChannelOut, firstChannelIn);
 		// Get route to current node from first peer which excludes the direct route
 		const restHops = await this.getRoute(
 			this.info.id,
 			millisatoshis,
 			0,
 			200,
-			incomingChannel.source,
+			firstChannelOut.destination,
 			null,
 			[
-				incomingChannel.short_channel_id +
+				firstChannelIn.short_channel_id +
 					'/' +
-					this.getDirection(incomingChannel.source, this.info.id),
+					this.getDirection(firstChannelIn.source, this.info.id),
 			]
 		);
 		this.logger.verbose('Got route back home', restHops);
-		const secondNode = (await this.getChannel(restHops[0].channel)).find(
+		const secondChannel = (await this.getChannel(restHops[0].channel)).find(
 			(c) => c.destination == restHops[0].id
 		);
 		const totalPlusFirstNodeFee =
 			restHops[0].msatoshi +
-			this.calcHopFee(secondNode, restHops[0].msatoshi);
+			this.calcHopFee(secondChannel, restHops[0].msatoshi);
 		const firstHop = await this.getRoute(
-			incomingChannel.source,
+			firstChannelIn.source,
 			totalPlusFirstNodeFee +
-				this.calcHopFee(outgoingChannel, totalPlusFirstNodeFee),
+				this.calcHopFee(firstChannelOut, totalPlusFirstNodeFee),
 			0,
-			restHops[0].delay + incomingChannel.delay
+			restHops[0].delay + firstChannelIn.delay
 		);
 
 		return [...firstHop, ...restHops];
