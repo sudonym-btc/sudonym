@@ -75,8 +75,10 @@ export class ExchangeService {
 		const markets = await this.exchanges[0].fetchMarkets();
 		const market = markets.find(
 			(m) =>
-				(m.baseId == from && m.quoteId == to) ||
-				(m.baseId == to && m.quoteId == from)
+				(this.getSynonyms(m.baseId).includes(from) &&
+					this.getSynonyms(m.quoteId).includes(to)) ||
+				(this.getSynonyms(m.baseId).includes(to) &&
+					this.getSynonyms(m.quoteId).includes(from))
 		);
 		this.logger.debug('Market:', market?.symbol);
 		return market;
@@ -121,12 +123,12 @@ export class ExchangeService {
 		);
 	}
 	getSynonyms(currency: string) {
-		return synonyms[currency] || [currency];
+		return [...(synonyms[currency] ? synonyms[currency] : []), currency];
 	}
 }
 
 const synonyms = {
-	USD: ['USD', 'USDT'],
+	USD: ['USDT'],
 };
 
 export const isBitcoin = (type) =>

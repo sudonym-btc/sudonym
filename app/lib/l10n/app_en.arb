@@ -54,7 +54,7 @@
 			}
 		}
 	},
-	"paymentInProgress": "Payment is in progress",
+	"paymentInProgress": "Payment in progress",
 	"appInfo": "App info",
 	"confirm": "Confirm",
 	"logout": "Logout",

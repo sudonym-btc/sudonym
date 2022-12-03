@@ -3,6 +3,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/bloc/incoming_transaction_handler.service.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym.models/index.dart';
 
 class IncomingTransactionHandler extends StatefulWidget {
   final Widget child;
@@ -22,23 +23,30 @@ class IncomingTransactionHandlerState
 
   @override
   void initState() {
-    _incomingTransactionHandlerService.callbacks.after.add((event) {
-      if (event.outgoing == false) {
-        FlutterRingtonePlayer.playNotification();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) => TransactionPage(entity: event),
-              fullscreenDialog: true),
-        );
-      }
-      return event;
-    });
-
+    _incomingTransactionHandlerService.callbacks.after.add(callback);
     super.initState();
+  }
+
+  Transaction callback(Transaction event) {
+    if (event.outgoing == false) {
+      FlutterRingtonePlayer.playNotification();
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (context) => TransactionPage(entity: event),
+            fullscreenDialog: true),
+      );
+    }
+    return event;
   }
 
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    _incomingTransactionHandlerService.callbacks.remove(callback);
   }
 }

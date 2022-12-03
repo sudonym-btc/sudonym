@@ -84,6 +84,7 @@ export class LightningNodeService {
 					this.getDirection(incomingChannel.source, this.info.id),
 			]
 		);
+		this.logger.verbose('Got route back home', restHops);
 		const secondHop = (await this.getChannel(restHops[0].channel)).find(
 			(c) => c.destination == restHops[0].id
 		);
