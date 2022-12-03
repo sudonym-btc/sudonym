@@ -19,7 +19,7 @@ scaffoldGroup('Settlement', (scaffold) => {
 		outgoing: false,
 		...params,
 	});
-	it('should execute trade when liabilties mismatched', async () => {
+	it('should execute trade when liabilities mismatched', async () => {
 		scaffold.app.get(Config).set({
 			settle: true,
 		});

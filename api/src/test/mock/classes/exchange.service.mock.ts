@@ -1,4 +1,4 @@
-import { Balances, Exchange, Market, OHLCV, Order, Params } from 'ccxt';
+import { Balances, Exchange, Market, OHLCV, Order, Params, Ticker } from 'ccxt';
 import { ExchangeService } from 'service/exchange/exchange.service';
 
 class MockExchange extends Exchange {
@@ -62,6 +62,45 @@ class MockExchange extends Exchange {
 		return {
 			id: '123',
 		} as Order;
+	}
+
+	async fetchTicker(symbol: string, params?: Params): Promise<Ticker> {
+		switch (symbol) {
+			case 'BTC/USDT':
+				return {
+					symbol: 'BTC/USDT',
+					bid: 3,
+					ask: 3,
+					info: {},
+					timestamp: null,
+					datetime: null,
+					high: 3,
+					low: 3,
+				};
+			case 'BTC/GBP':
+				return {
+					symbol: 'BTC/GBP',
+					bid: 2,
+					ask: 2,
+					info: {},
+					timestamp: null,
+					datetime: null,
+					high: 2,
+					low: 2,
+				};
+			case 'GBP/USDT':
+				return {
+					symbol: 'GBP/USDT',
+					bid: 1.5,
+					ask: 1.5,
+					info: {},
+					timestamp: null,
+					datetime: null,
+					high: 1.5,
+					low: 1.5,
+				};
+		}
+		return null;
 	}
 
 	async fetchOHLCV(
