@@ -84,8 +84,8 @@ export class LightningNodeService {
 						(c) =>
 							c.msatoshi_to_them -
 								Math.max(
-									c.their_channel_reserve_satoshis,
-									c.our_channel_reserve_satoshis
+									c.their_channel_reserve_satoshis * 1000,
+									c.our_channel_reserve_satoshis * 1000
 								) <
 							millisatoshis
 					)
@@ -106,8 +106,8 @@ export class LightningNodeService {
 					(c) =>
 						c.msatoshi_to_them -
 							Math.max(
-								c.their_channel_reserve_satoshis,
-								c.our_channel_reserve_satoshis
+								c.their_channel_reserve_satoshis * 1000,
+								c.our_channel_reserve_satoshis * 1000
 							) <
 						millisatoshis
 				)
