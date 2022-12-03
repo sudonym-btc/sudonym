@@ -65,9 +65,12 @@ export class ExchangeService {
 				await this.exchanges[0].fetchOHLCV(
 					market.symbol,
 					'1m',
-					timestamp - 1000 * 60 * 5, // Subtract 5 minutes so there will always be a ticker
+					timestamp - 1000 * 60 * 50, // Subtract 50 minutes so there will always be a ticker
 					100
 				)
+			).sort((a, b) =>
+				// If a is further from the timestamp than b, sort a after b
+				Math.abs(a[0] - timestamp) > Math.abs(b[0] - timestamp) ? 1 : -1
 			)[0][1];
 		};
 		return format(await execute());
