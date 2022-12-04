@@ -75,7 +75,7 @@ export class LightningNodeService {
 			this.info.id,
 			millisatoshis,
 			20,
-			firstChannelOut.delay,
+			90,
 			firstChannelOut.destination,
 			null,
 			[
