@@ -98,6 +98,7 @@ export class LightningNodeService {
 				firstChannelIn.short_channel_id +
 					'/' +
 					this.getDirection(firstChannelIn.source, this.info.id),
+				...['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
 			]
 		);
 		this.logger.log([
@@ -123,19 +124,8 @@ export class LightningNodeService {
 		]);
 		this.logger.verbose('Got route back home', restHops);
 
-		// const secondChannel = (await this.getChannel(restHops[0].channel)).find(
-		// 	(c) => c.destination == restHops[0].id
-		// );
-		// let totalPlusFirstNodeFee =
-		// 	restHops[0].msatoshi +
-		// 	this.calcHopFee(secondChannel, restHops[0].msatoshi);
-		// totalPlusFirstNodeFee += this.calcHopFee(
-		// 	firstChannelIn,
-		// 	totalPlusFirstNodeFee
-		// );
-		// totalPlusFirstNodeFee += 100 * 1000;
 		const firstHop = await this.getRoute(
-			firstChannelIn.source,
+			firstChannelOut.destination,
 			restHops[0].msatoshi +
 				this.calcHopFee(firstChannelOut, restHops[0].msatoshi),
 			0,
@@ -310,16 +300,16 @@ export class LightningNodeService {
 		if (inv.payeeNodeKey == this.info.id) {
 			const circleRoute = await this.getRoute(
 				this.info.id,
-				hasAmount ? Number(inv.millisatoshis) : amount
+				hasAmount
+					? Number(inv.millisatoshis || inv.satoshis * 1000)
+					: Math.round(amount)
 			);
 
 			const args = [
 				circleRoute,
 				inv.tagsObject.payment_hash,
 				'selfpaymentlabel',
-				!hasAmount
-					? Math.round(amount)
-					: inv.millisatoshis || inv.satoshis * 1000,
+				circleRoute[circleRoute.length - 1].msatoshi,
 				invoice,
 				inv.tagsObject.payment_secret,
 				1,
@@ -341,7 +331,7 @@ export class LightningNodeService {
 			null, // [maxdelay]
 			null, //[exemptfee]
 			null, //[localinvreqid]
-			['758820x1587x1/0', '758820x1587x1/1'], //[exclude]
+			['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
 			null, //[maxfee]
 			null, //[description]
 		]);
