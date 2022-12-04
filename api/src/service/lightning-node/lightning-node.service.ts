@@ -138,7 +138,7 @@ export class LightningNodeService {
 			firstChannelIn.source,
 			totalPlusFirstNodeFee,
 			0,
-			restHops[0].delay + firstChannelIn.delay
+			restHops[0].delay + firstChannelIn.delay + 180
 		);
 
 		return [...firstHop, ...restHops];
