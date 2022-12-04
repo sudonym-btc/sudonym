@@ -61,6 +61,7 @@ class _OutgoingPending extends _TransactionStatusPage {
     return StatusPage(
         title: (AppLocalizations.of(context)!.paymentInProgress),
         subtitle: AmountText(
+            showLoader: false,
             fromCurrency: transaction.currencyCode,
             amount: transaction.amount,
             toCurrency: transaction.Pot.currency,
@@ -81,6 +82,7 @@ class _OutgoingFailed extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentError,
         subtitle: AmountText(
+            showLoader: false,
             fromCurrency: transaction.currencyCode,
             amount: transaction.amount,
             toCurrency: transaction.Pot.currency,
@@ -101,6 +103,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
         subtitle: AmountText(
+            showLoader: false,
             fromCurrency: transaction.currencyCode,
             amount: transaction.amount,
             toCurrency: transaction.Pot.currency,
@@ -126,6 +129,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
                       TableKey(
                           child: Text(AppLocalizations.of(context)!.amount)),
                       AmountText(
+                        showLoader: false,
                         amount: transaction.amount,
                         fromCurrency: transaction.currencyCode,
                         toCurrency: transaction.Pot.currency,
@@ -171,6 +175,7 @@ class _IncomingPending extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentIncoming,
         subtitle: AmountText(
+            showLoader: false,
             fromCurrency: transaction.currencyCode,
             amount: transaction.amount,
             toCurrency: transaction.Pot.currency,
@@ -191,6 +196,7 @@ class _IncomingComplete extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentReceived,
         subtitle: AmountText(
+            showLoader: false,
             fromCurrency: transaction.currencyCode,
             amount: transaction.amount,
             toCurrency: transaction.Pot.currency,
@@ -207,6 +213,7 @@ class _IncomingComplete extends _TransactionStatusPage {
             TableRow(children: [
               TableKey(child: Text(AppLocalizations.of(context)!.amount)),
               AmountText(
+                showLoader: false,
                 amount: transaction.amount,
                 fromCurrency: transaction.currencyCode,
                 toCurrency: transaction.Pot.currency,
@@ -267,6 +274,7 @@ class _IncomingFailed extends _TransactionStatusPage {
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentError,
         subtitle: AmountText(
+            showLoader: false,
             fromCurrency: transaction.currencyCode,
             amount: transaction.amount,
             toCurrency: transaction.Pot.currency,

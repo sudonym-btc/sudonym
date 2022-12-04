@@ -29,17 +29,19 @@ class TransactionListItem extends StatelessWidget {
                   children: [
                     SizedBox(
                         width: 75,
-                        child: AmountText(
-                            fromCurrency: entity.currencyCode,
-                            toCurrency: pot?.currency ?? entity.currencyCode,
-                            amount: entity.amount,
-                            date: entity.createdAt,
-                            builder: (state) => Text(state,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: entity.outgoing
-                                        ? Theme.of(context).errorColor
-                                        : Theme.of(context).primaryColor)))),
+                        child: Row(children: [
+                          AmountText(
+                              fromCurrency: entity.currencyCode,
+                              toCurrency: pot?.currency ?? entity.currencyCode,
+                              amount: entity.amount,
+                              date: entity.createdAt,
+                              builder: (state) => Text(state,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: entity.outgoing
+                                          ? Theme.of(context).errorColor
+                                          : Theme.of(context).primaryColor)))
+                        ])),
                     Expanded(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

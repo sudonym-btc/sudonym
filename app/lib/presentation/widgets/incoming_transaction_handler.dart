@@ -18,7 +18,7 @@ class IncomingTransactionHandler extends StatefulWidget {
 
 class IncomingTransactionHandlerState
     extends State<IncomingTransactionHandler> {
-  IncomingTransactionHandlerService _incomingTransactionHandlerService =
+  final IncomingTransactionHandlerService _incomingTransactionHandlerService =
       getIt<IncomingTransactionHandlerService>();
 
   @override

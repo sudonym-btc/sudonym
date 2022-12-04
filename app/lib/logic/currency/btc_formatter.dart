@@ -3,7 +3,7 @@ import 'package:sudonym.models/index.dart';
 
 String formatBTC(num amount) {
   if (amount > 0.1) {
-    return '${amount.toStringAsPrecision(4)} BTC';
+    return '${NumberFormat.compact().format(amount)} BTC';
   } else {
     return '${NumberFormat.compact().format(amount * SATOSHIS)} sats';
   }

@@ -21,40 +21,37 @@ class ReceivePage extends StatelessWidget {
     return Container(
         color: Theme.of(context).backgroundColor,
         child: SafeArea(
-            child: Container(
-                color: Colors.blue,
-                constraints: const BoxConstraints(maxWidth: 100),
-                child: DefaultTabController(
-                    length: 3,
-                    child: Scaffold(
-                      appBar: AppBar(
-                        title: Text(AppLocalizations.of(context)!.receive),
-                        bottom: const TabBar(
-                          tabs: [
-                            Tab(
-                                text: 'LNURL',
-                                icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
-                            Tab(
-                                text: 'ONCHAIN',
-                                icon: FaIcon(FontAwesomeIcons.link, size: 12)),
-                            Tab(
-                                text: 'BOLT11',
-                                icon: FaIcon(
-                                  FontAwesomeIcons.bolt,
-                                  size: 12,
-                                )),
-                            // Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
-                          ],
-                        ),
-                      ),
-                      body: TabBarView(
-                        children: [
-                          ReceiveLnUrl(pot: data.pot),
-                          ReceiveOnchain(pot: data.pot),
-                          ReceiveBolt11(pot: data.pot),
-                          // ReceiveBolt12(potId: data.potId),
-                        ],
-                      ),
-                    )))));
+            child: DefaultTabController(
+                length: 3,
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Text(AppLocalizations.of(context)!.receive),
+                    bottom: const TabBar(
+                      tabs: [
+                        Tab(
+                            text: 'LNURL',
+                            icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
+                        Tab(
+                            text: 'ONCHAIN',
+                            icon: FaIcon(FontAwesomeIcons.link, size: 12)),
+                        Tab(
+                            text: 'BOLT11',
+                            icon: FaIcon(
+                              FontAwesomeIcons.bolt,
+                              size: 12,
+                            )),
+                        // Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
+                      ],
+                    ),
+                  ),
+                  body: TabBarView(
+                    children: [
+                      ReceiveLnUrl(pot: data.pot),
+                      ReceiveOnchain(pot: data.pot),
+                      ReceiveBolt11(pot: data.pot),
+                      // ReceiveBolt12(potId: data.potId),
+                    ],
+                  ),
+                ))));
   }
 }

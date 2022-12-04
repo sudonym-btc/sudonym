@@ -84,6 +84,7 @@ class PaymentInfoPreview extends StatelessWidget {
           TableRow(children: [
             TableKey(child: Text(AppLocalizations.of(context)!.amount)),
             AmountText(
+                showLoader: false,
                 amount: entity.amount,
                 fromCurrency: entity.currency,
                 toCurrency: pot?.currency ?? entity.currency,
@@ -92,6 +93,7 @@ class PaymentInfoPreview extends StatelessWidget {
           TableRow(children: [
             TableKey(child: Text(AppLocalizations.of(context)!.fee)),
             AmountText(
+                showLoader: false,
                 amount: entity.fee,
                 fromCurrency: entity.feeCurrency,
                 toCurrency: pot?.currency ?? entity.feeCurrency,

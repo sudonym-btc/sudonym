@@ -17,12 +17,29 @@ class WebsocketImpl extends Websocket
   Config config;
   StreamController stream = StreamController.broadcast();
   StreamSubscription? socketSubscription;
+  StreamSubscription? pingSubscription;
   WebSocketChannel? channel;
   int _errorCount = 0;
+  DateTime? lastPing;
+  Timer? checker;
 
   WebsocketImpl(this.config) : super() {
     WidgetsFlutterBinding.ensureInitialized();
     WidgetsBinding.instance?.addObserver(this);
+    pingSubscription = stream.stream.listen((event) {
+      if (event['ping'] != null) {
+        loggy.v('websocket ping received');
+        lastPing = DateTime.now();
+      }
+    });
+
+    checker = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (lastPing != null &&
+          lastPing!.difference(DateTime.now()).inSeconds > 10 &&
+          channel != null) {
+        connect();
+      }
+    });
   }
 
   @override
@@ -69,6 +86,9 @@ class WebsocketImpl extends Websocket
   }
 
   void dispose() {
+    if (checker != null) checker!.cancel();
+    if (pingSubscription != null) pingSubscription!.cancel();
+    disconnect();
     loggy.d('Websocket disposed');
     WidgetsBinding.instance?.removeObserver(this);
   }

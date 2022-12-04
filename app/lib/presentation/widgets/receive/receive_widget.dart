@@ -92,6 +92,9 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             image = GestureDetector(
               onTap: copy,
               child: QrImage(
+                  dataModuleStyle: QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.circle),
+                  eyeStyle: QrEyeStyle(eyeShape: QrEyeShape.circle),
                   data: state.entity!.data,
                   foregroundColor:
                       Theme.of(context).appBarTheme.titleTextStyle!.color,
