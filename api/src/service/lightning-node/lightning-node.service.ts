@@ -75,7 +75,7 @@ export class LightningNodeService {
 			this.info.id,
 			millisatoshis,
 			20,
-			firstChannelOut.delay,
+			firstChannelOut.delay, // should be 34
 			firstChannelOut.destination,
 			null,
 			[
@@ -123,22 +123,23 @@ export class LightningNodeService {
 		]);
 		this.logger.verbose('Got route back home', restHops);
 
-		const secondChannel = (await this.getChannel(restHops[0].channel)).find(
-			(c) => c.destination == restHops[0].id
-		);
-		let totalPlusFirstNodeFee =
-			restHops[0].msatoshi +
-			this.calcHopFee(secondChannel, restHops[0].msatoshi);
-		totalPlusFirstNodeFee += this.calcHopFee(
-			firstChannelIn,
-			totalPlusFirstNodeFee
-		);
-		totalPlusFirstNodeFee += 100 * 1000;
+		// const secondChannel = (await this.getChannel(restHops[0].channel)).find(
+		// 	(c) => c.destination == restHops[0].id
+		// );
+		// let totalPlusFirstNodeFee =
+		// 	restHops[0].msatoshi +
+		// 	this.calcHopFee(secondChannel, restHops[0].msatoshi);
+		// totalPlusFirstNodeFee += this.calcHopFee(
+		// 	firstChannelIn,
+		// 	totalPlusFirstNodeFee
+		// );
+		// totalPlusFirstNodeFee += 100 * 1000;
 		const firstHop = await this.getRoute(
 			firstChannelIn.source,
-			totalPlusFirstNodeFee,
+			restHops[0].msatoshi +
+				this.calcHopFee(firstChannelOut, restHops[0].msatoshi),
 			0,
-			restHops[0].delay + firstChannelIn.delay + 180
+			restHops[0].delay + firstChannelOut.delay
 		);
 
 		return [...firstHop, ...restHops];
