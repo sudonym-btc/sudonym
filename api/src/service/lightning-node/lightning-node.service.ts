@@ -47,7 +47,7 @@ export class LightningNodeService {
 			method: 'GET',
 		});
 
-		this.logger.verbose(funds);
+		// this.logger.verbose(funds);
 
 		return (
 			(funds.outputs.reduce((acc, i) => acc + i.value, 0) +

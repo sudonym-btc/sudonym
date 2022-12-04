@@ -2,7 +2,7 @@ import { Inject, NotFoundException } from '@nestjs/common';
 import { Event } from '@sudonym/models';
 import { sequelizeCls } from 'database/database.providers';
 import { runAsUser } from 'helper/context-request';
-import { FindOptions, Op, UniqueConstraintError } from 'sequelize';
+import { FindOptions, Op, Transaction, UniqueConstraintError } from 'sequelize';
 import {
 	Constructor,
 	RecursivePartial,
@@ -130,6 +130,9 @@ export const BaseService = <TModel extends BaseModel>(
 			// For each user fetch as correct scope
 			for (const user of userIds) {
 				await runAsUser({ id: user }, async () => {
+					// if (this.repo.name == 'Pot') {
+					// 	console.log(sequelizeCls.get('transaction'), entity);
+					// }
 					const e = await this.findOne(entity.id);
 					await this.eventsService.trigger(
 						new TriggeredEvent(
@@ -173,12 +176,21 @@ export const BaseService = <TModel extends BaseModel>(
 
 					await this.afterUpdate.execute({ entity, params });
 
-					t.afterCommit(() => {
+					// Must wait for parent to commit, otherwise underlying records might not be udpated for other transactions
+					const getParent = (t: any): Transaction => {
+						if (t.parent) {
+							return getParent(t.parent);
+						}
+						return t;
+					};
+					getParent(t).afterCommit(async () => {
 						this.newTransaction(async () => {
 							this.onAfterUpdated.execute(entity);
-
-							const users = await this.getUserIds(entity.id);
-							this.triggerEventForUsers(users, 'updated', entity);
+							this.triggerEventForUsers(
+								await this.getUserIds(entity.id),
+								'updated',
+								entity
+							);
 						});
 					});
 

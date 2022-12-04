@@ -77,6 +77,8 @@ scaffoldGroup('Pot', (scaffold) => {
 				})
 			).rejects.toThrow();
 		});
+
+		// todo make sure events emit with correct transaction when triggering update event for example.
 	});
 
 	it('should reorder up', async () => {

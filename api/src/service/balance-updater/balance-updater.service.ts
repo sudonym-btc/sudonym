@@ -85,13 +85,13 @@ export class BalanceUpdaterService {
 				let newBalance = pot.balance;
 				let newSpendableBalance = pot.spendableBalance;
 				this.logger.debug(
-					'Transaction status changed so updating balances'
+					`Transaction status changed to ${entity.status} so updating balances`
 				);
 				const amountInPotCurrency = (
 					await this.currencyService.convert(
 						entity.currencyCode,
 						pot.currency,
-						entity.totalAmount || entity.amount
+						entity.amount
 					)
 				).amount;
 				this.logger.debug(
