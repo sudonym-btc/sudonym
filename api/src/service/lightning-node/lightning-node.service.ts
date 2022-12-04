@@ -127,7 +127,7 @@ export class LightningNodeService {
 		const firstHop = await this.getRoute(
 			firstChannelOut.destination,
 			restHops[0].msatoshi +
-				this.calcHopFee(firstChannelOut, restHops[0].msatoshi),
+				this.calcHopFee(firstChannelIn, restHops[0].msatoshi),
 			0,
 			restHops[0].delay + firstChannelOut.delay
 		);
