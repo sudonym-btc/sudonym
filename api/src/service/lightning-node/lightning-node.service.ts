@@ -75,7 +75,7 @@ export class LightningNodeService {
 			this.info.id,
 			millisatoshis,
 			20,
-			90,
+			firstChannelOut.delay,
 			firstChannelOut.destination,
 			null,
 			[
@@ -133,6 +133,7 @@ export class LightningNodeService {
 			firstChannelIn,
 			totalPlusFirstNodeFee
 		);
+		totalPlusFirstNodeFee += 100 * 1000;
 		const firstHop = await this.getRoute(
 			firstChannelIn.source,
 			totalPlusFirstNodeFee,
