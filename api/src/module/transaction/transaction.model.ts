@@ -8,6 +8,7 @@ import { PotUser } from 'module/pot-user/pot-user.model';
 import { Pot } from 'module/pot/pot.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
+import { User } from 'module/user/user.model';
 import {
 	AllowNull,
 	AutoIncrement,
@@ -80,6 +81,13 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@AllowNull(true)
 	@Column
 	contactAddressId: number;
+
+	@BelongsTo(() => User)
+	User: User;
+
+	@ForeignKey(() => User)
+	@Column
+	userId: string;
 
 	@BelongsTo(() => Pot)
 	Pot: Pot;

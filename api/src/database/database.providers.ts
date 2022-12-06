@@ -64,7 +64,9 @@ export const databaseProviders = [
 					SettlementTransaction,
 				],
 			});
-			await sequelize.sync({ force: false });
+			await sequelize.sync({
+				force: config.env == 'production' ? false : false,
+			});
 			return sequelize;
 		},
 	},

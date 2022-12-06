@@ -1,4 +1,4 @@
-import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
+import { MSATOSHIS, PaymentRequest, SATOSHIS } from '@sudonym/models';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { firstValueFrom } from 'rxjs';
@@ -84,6 +84,10 @@ scaffoldGroup('Payment', (scaffold) => {
 					})
 				),
 			]);
+		});
+
+		it('should not get info or pay an expired invoice', async () => {
+			const payreq: PaymentRequest = {};
 		});
 	});
 
