@@ -8,3 +8,5 @@ export class ContactController extends BaseController({
 	service: ContactService,
 	model: Contact,
 }) {}
+
+// todo: can only create contact for current user

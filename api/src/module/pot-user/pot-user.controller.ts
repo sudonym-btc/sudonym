@@ -7,4 +7,10 @@ import { PotUserService } from './pot-user.service';
 export class PotUserController extends BaseController({
 	service: PotUserService,
 	model: PotUser,
+	get: false,
+	create: false,
+	update: false,
+	delete: false,
 }) {}
+
+// todo: can only create pot users for pots that current user can edit

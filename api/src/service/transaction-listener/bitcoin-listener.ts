@@ -25,6 +25,16 @@ export class BitcoinListener extends TransactionListener {
 				});
 
 				if (receivers.metadata.count) {
+					if (
+						(
+							await this.transactionService.list({
+								where: { txid: (e as any).getId() },
+							})
+						).metadata.count
+					) {
+						// Already registered this transaction
+						return;
+					}
 					await this.transactionService.create({
 						type: 'onchain',
 						originalAddress: out.fromAddress,
@@ -33,9 +43,28 @@ export class BitcoinListener extends TransactionListener {
 						receiverId: receivers.data[0].id,
 						outgoing: false,
 						amount: out.value / SATOSHIS,
-						status: true,
+						status: null,
 						currencyCode: 'BTC',
-						txid: out.address,
+						txid: (e as any).getId(),
+					});
+				}
+			}
+		});
+
+		// Confirmation when block confirmed
+
+		this.bitcoinEvents.onBlock.subscribe(async (e) => {
+			for (const transaction of e.transactions) {
+				const tx = await this.transactionService.list({
+					where: {
+						outgoing: false,
+						txid: (transaction as any).getId(),
+					},
+				});
+
+				if (tx.metadata.count) {
+					await this.transactionService.update(tx.data[0].id, {
+						status: true,
 					});
 				}
 			}

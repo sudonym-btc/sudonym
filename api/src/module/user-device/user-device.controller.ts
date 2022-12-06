@@ -11,3 +11,4 @@ export class UserDeviceController extends BaseController({
 		update: true,
 	},
 }) {}
+// todo: can only create userDevice for current user

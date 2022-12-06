@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { RecursivePartial } from '@sudonym/models/dist/recursive-partial';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Config } from 'config/config';
 import { Subject } from 'rxjs';
+import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import * as zmq from 'zeromq';
 
 type TxOutput = bitcoin.TxOutput & {
@@ -27,6 +27,7 @@ export class BitcoinEvents {
 	@Inject(Config) private readonly config: Config;
 
 	onTransaction = new Subject<RecursivePartial<BitcoinEvent>>();
+	onBlock = new Subject<RecursivePartial<bitcoin.Block>>();
 	private readonly logger = new Logger(BitcoinEvents.name);
 
 	onModuleInit() {
@@ -43,6 +44,12 @@ export class BitcoinEvents {
 		sock.subscribe('rawblock');
 
 		sock.on('message', (topic, message) => {
+			if (topic.toString() === 'rawblock') {
+				const rawBlock = message.toString('hex');
+				const block = bitcoin.Block.fromHex(rawBlock);
+				this.onBlock.next(block);
+				console.log(block);
+			}
 			if (topic.toString() === 'rawtx') {
 				const rawTx = message.toString('hex');
 				const tx = bitcoin.Transaction.fromHex(rawTx) as BitcoinEvent;

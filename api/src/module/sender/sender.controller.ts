@@ -8,3 +8,4 @@ export class SenderController extends BaseController({
 	service: SenderService,
 	model: Sender,
 }) {}
+// todo: can only create sender for current user

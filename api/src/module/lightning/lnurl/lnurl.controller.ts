@@ -13,3 +13,4 @@ export class LnUrlController extends BaseController({
 	update: false,
 	list: false,
 }) {}
+// todo: why is there a controller if it has no endpoints??

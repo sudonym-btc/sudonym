@@ -8,3 +8,4 @@ export class BoltCardController extends BaseController({
 	service: BoltCardService,
 	model: BoltCard,
 }) {}
+// todo: can only create bolt card for current user

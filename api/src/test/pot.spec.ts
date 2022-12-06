@@ -19,7 +19,7 @@ scaffoldGroup('Pot', (scaffold) => {
 	it('should delete pot', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			let pot = await scaffold.app.get(PotService).create({
+			const pot = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});

@@ -31,3 +31,4 @@ export class PotController extends BaseController({
 		},
 	},
 }) {}
+// todo: look into GBP USD conversion error where £3 equallyed 5 dollars and then £4.10 equalled 5 dollars

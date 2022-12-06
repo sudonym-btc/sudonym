@@ -1,5 +1,6 @@
 import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
 import { transaction as bolt11Mock } from '@sudonym/models/src/mock/bolt11.mock';
+import { Block } from 'bitcoinjs-lib';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { firstValueFrom } from 'rxjs';
@@ -45,12 +46,13 @@ scaffoldGroup('Receive', (scaffold) => {
 				}),
 			]);
 		});
+	});
 
-		// it('should add unspendable from onchain payment', () => {});
-
-		it('should make spendable after received', async () => {
+	describe('Onchain', () => {
+		it('should make unspendable after received and make spendable after confirmed', async () => {
 			const satoshi = 500;
 			scaffold.app.get(BitcoinEvents).onTransaction.next({
+				getId: () => '123',
 				outs: [
 					{
 						fromAddress: 'bc1erwf',
@@ -59,15 +61,50 @@ scaffoldGroup('Receive', (scaffold) => {
 					},
 				],
 			});
-			await Promise.all([
+			const [tx] = await Promise.all([
 				firstValueFrom(
 					scaffold.app.get(TransactionService).onAfterCreated
 				).then((x) => {
-					expect(x.status).toBe(true);
+					expect(x.txid).toBe('123');
+					expect(x.status).toBe(null);
 					expect(x.currencyCode).toBe('BTC');
 					expect(x.amount).toBe(satoshi / SATOSHIS);
 					expect(x.potId).toBe(scaffold.entities.pot[0].id);
 					expect(x.outgoing).toBe(false);
+					return x;
+				}),
+				firstValueFrom(
+					scaffold.app.get(PotService).onAfterUpdated
+				).then((x) => {
+					expect(x.spendableBalance).toBe(
+						scaffold.entities.pot[0].spendableBalance
+					);
+					expect(x.balance).toBe(
+						scaffold.entities.pot[0].balance + satoshi / SATOSHIS
+					);
+				}),
+			]);
+
+			const block = {
+				transactions: [
+					{
+						getId: () => '123',
+					},
+				],
+			} as any as Block;
+
+			scaffold.app.get(BitcoinEvents).onBlock.next(block);
+
+			// Trigger block received containing tx id
+
+			await Promise.all([
+				firstValueFrom(
+					scaffold.app.get(TransactionService).onAfterUpdated
+				).then((x) => {
+					expect(x.txid).toBe(tx.txid);
+					expect(x.status).toBe(true);
+					expect(x.currencyCode).toBe('BTC');
+					expect(x.amount).toBe(satoshi / SATOSHIS);
 				}),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
