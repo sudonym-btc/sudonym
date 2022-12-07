@@ -95,8 +95,8 @@ class StatusPage extends StatelessWidget {
                 appBar: AppBar(
                   title: Text(pageTitle),
                 ),
-                body: Padding(
-                    padding: const EdgeInsets.all(padding * 2),
+                body: CustomPadding(
+                    multiplier: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: children,

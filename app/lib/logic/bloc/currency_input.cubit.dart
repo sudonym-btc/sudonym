@@ -31,26 +31,25 @@ class CurrencyInputOptions {
   List<String> currencies;
   String? initialCurrency;
   String? outputCurrency;
-  final num? min;
-  final num? max;
-  late String? minCurrency;
-  late String? maxCurrency;
+  Duration? debounceOutput;
   CurrencyInputOutput initialValue;
+  List<CurrencyInputOutput>? min;
+  List<CurrencyInputOutput>? max;
 
   CurrencyInputOptions(
       {this.controller,
       required this.initialValue,
-      this.min = 0,
-      this.max = 999999999,
-      this.minCurrency,
-      this.maxCurrency,
+      this.min,
+      this.max,
+      this.debounceOutput,
       this.currencies = defaultCurrencies,
       this.initialCurrency}) {
-    minCurrency ??= initialValue.currency;
-    maxCurrency ??= initialValue.currency;
+    min ??= List.empty();
+    max ??= List.empty();
     initialCurrency ??= initialValue.currency;
     controller ??= CurrencyInputController();
-    currencies = currencies.toSet().toList();
+    currencies = currencies.toSet().toList(); // Deduplicate
+    debounceOutput ??= const Duration(milliseconds: 0);
   }
 }
 
@@ -64,10 +63,11 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
 
   CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
     options.controller!.outputStream.stream
-        .distinct()
         .map((event) => event.amount)
-        .debounceTime(const Duration(milliseconds: 500))
-        .asyncMap(resolveValues)
+        .distinct()
+        .asyncMap(enforceConstraints)
+        .asyncMap(resolveAlt)
+        .debounceTime(options.debounceOutput!)
         .listen((event) {});
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
     _currencyRespository
@@ -120,7 +120,38 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     setCurrentCurrency(state.currCurrency + 1);
   }
 
-  resolveValues(num val) {
+  Future<num> enforceConstraints(num val) async {
+    safeEmit(state.copyWith(minLoading: true));
+    double min = await getMinInCurrentCurrency();
+    print(numToCurrentPrecision(min));
+    print(state.currVal);
+    if (numToCurrentPrecision(min) >= numToCurrentPrecision(val)) {
+      controller!.updateValue(
+          getDisplayValue(options.currencies[state.currCurrency], min));
+      setValue(min); // Must set true value as dislay value is vague
+      safeEmit(state.copyWith(negativeEnabled: false));
+    } else {
+      safeEmit(state.copyWith(negativeEnabled: true));
+    }
+    safeEmit(state.copyWith(minLoading: false));
+
+    safeEmit(state.copyWith(maxLoading: true));
+    double max = await getMaxInCurrentCurrency();
+
+    if (numToCurrentPrecision(max) <= numToCurrentPrecision(val)) {
+      controller!.updateValue(
+          getDisplayValue(options.currencies[state.currCurrency], max));
+      setValue(max); // Must set true value as dislay value is vague
+      safeEmit(state.copyWith(positiveEnabled: false));
+    } else {
+      safeEmit(state.copyWith(positiveEnabled: true));
+    }
+    safeEmit(state.copyWith(maxLoading: false));
+    return val;
+  }
+
+  Future<num> resolveAlt(num val) async {
+    // Loading the alt currency value
     safeEmit(
         state.copyWith(minLoading: true, maxLoading: true, altLoading: true));
     _currencyRespository
@@ -131,27 +162,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
         .then((value) {
       safeEmit(state.copyWith(altVal: value.amount, altLoading: false));
     });
-
-    _currencyRespository
-        .getRate(
-            fromCurrency: options.currencies[state.currCurrency],
-            toCurrency: options.minCurrency!,
-            amount: val)
-        .then((value) {
-      safeEmit(state.copyWith(
-          negativeEnabled: value.amount > options.min!, minLoading: false));
-    });
-
-    _currencyRespository
-        .getRate(
-            fromCurrency: options.currencies[state.currCurrency],
-            toCurrency: options.maxCurrency!,
-            amount: val)
-        .then((value) {
-      safeEmit(state.copyWith(
-          positiveEnabled: options.max == null || value.amount < options.max!,
-          maxLoading: false));
-    });
+    return val;
   }
 
   setValue(num val) {
@@ -160,60 +171,78 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     safeEmit(state.copyWith(currVal: val.toDouble()));
   }
 
-  getMultiplier() {
-    int multiplier = (getDisplayValue(
-                options.currencies[state.currCurrency], state.currVal) /
-            clickValueBase)
-        .toStringAsFixed(0)
-        .length;
+  getMultiplier([bool incrementing = true]) {
+    double currVal = getCurrentDisplayValue();
+    if (!incrementing) {
+      // If subtracting, the multiplier should be subtracted before entering the next order of magnitude to not jump straight to zero
+      currVal -= 0.0001;
+    }
+
+    int multiplier =
+        (currVal / clickValueBase).floor().toStringAsFixed(0).length;
     return max(0, multiplier - 1);
+  }
+
+  Future<double> getMinInCurrentCurrency() async {
+    if (options.min == null || options.min!.isEmpty) return 0;
+    return (await Future.wait(options.min!.map((e) =>
+            _currencyRespository.getRate(
+                fromCurrency: e.currency,
+                toCurrency: options.currencies[state.currCurrency],
+                amount: e.amount))))
+        .map((e) => e.amount)
+        .reduce(max)
+        .toDouble();
+  }
+
+  double numToCurrentPrecision(num input) {
+    return num.parse(input.toStringAsFixed(
+            options.currencies[state.currCurrency] == 'BTC' ? 8 : 2))
+        .toDouble();
+  }
+
+  Future<double> getMaxInCurrentCurrency() async {
+    if (options.max == null || options.max!.isEmpty) return 9999999999999;
+    return (await Future.wait(options.max!.map((e) =>
+            _currencyRespository.getRate(
+                fromCurrency: e.currency,
+                toCurrency: options.currencies[state.currCurrency],
+                amount: e.amount))))
+        .map((e) => e.amount)
+        .reduce(min)
+        .toDouble();
   }
 
   incrementValue() async {
     num clickVal = (clickValueBase * pow(10, getMultiplier()));
-    num newVal =
-        getDisplayValue(options.currencies[state.currCurrency], state.currVal) +
-            clickVal;
-    newVal = (newVal / clickVal).ceil() * clickVal;
+    num newVal = getCurrentDisplayValue() + clickVal;
+    newVal = (newVal / clickVal).round() * clickVal;
     controller!.updateValue(min(
-        getDisplayValue(options.currencies[state.currCurrency], await getMax()),
+        getDisplayValue(options.currencies[state.currCurrency],
+            await getMaxInCurrentCurrency()),
         newVal.toDouble()));
   }
 
-  Future<double> getMin() async {
-    return ((options.min ?? 0) *
-            (await _currencyRespository.getRate(
-                    fromCurrency: options.maxCurrency ??
-                        options.currencies[state.currCurrency],
-                    toCurrency: options.currencies[state.currCurrency]))
-                .amount)
-        .toDouble();
-  }
-
-  Future<double> getMax() async {
-    return ((options.max ?? 9999999999999) *
-            (await _currencyRespository.getRate(
-                    fromCurrency: options.maxCurrency ??
-                        options.currencies[state.currCurrency],
-                    toCurrency: options.currencies[state.currCurrency]))
-                .amount)
-        .toDouble();
-  }
-
   decrementValue() async {
-    num clickVal = (clickValueBase * pow(10, getMultiplier()));
-    num newVal =
-        getDisplayValue(options.currencies[state.currCurrency], state.currVal) -
-            clickVal;
-    newVal = (newVal / clickVal).floor() * clickVal;
+    num clickVal = (clickValueBase * pow(10, getMultiplier(false)));
+    num newVal = getCurrentDisplayValue() - clickVal;
+
+    newVal = (numToCurrentPrecision(newVal / clickVal)).ceil() *
+        clickVal; // should be display precision
     controller!.updateValue(max(
-        getDisplayValue(options.currencies[state.currCurrency], await getMin()),
+        getDisplayValue(options.currencies[state.currCurrency],
+            await getMinInCurrentCurrency()),
         newVal.toDouble()));
   }
 
   // Convert display value in sats to BTC value
   getRealValue(String curr, num value) {
     return value / (curr == 'BTC' ? SATOSHIS : 1);
+  }
+
+  double getCurrentDisplayValue() {
+    return getDisplayValue(
+        options.currencies[state.currCurrency], state.currVal);
   }
 
   double getDisplayValue(String curr, num value) {

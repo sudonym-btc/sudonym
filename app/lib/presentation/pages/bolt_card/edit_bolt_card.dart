@@ -23,8 +23,7 @@ class EditBoltCard extends StatelessWidget {
                 ? AppLocalizations.of(context)!.createBoltCard
                 : AppLocalizations.of(context)!.editBoltCard),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(padding),
+          body: CustomPadding(
             child: EditBoltCardForm(
                 entity: entity), // onSave: () => Navigator.pop(context),
           ),

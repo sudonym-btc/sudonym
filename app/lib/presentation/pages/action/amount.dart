@@ -32,14 +32,27 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
     currencies.addAll(['USD', 'BTC']);
     options = CurrencyInputOptions(
         currencies: currencies,
-        max: widget.action.maxAmount,
-        maxCurrency: widget.action.currency,
-        min: widget.action.minAmount,
-        minCurrency: widget.action.currency,
+        max: [
+          CurrencyInputOutput(widget.action.maxAmount, widget.action.currency),
+          ...(widget.pot != null
+              ? [
+                  CurrencyInputOutput(
+                      widget.pot!.spendableBalance, widget.pot!.currency),
+                ]
+              : [])
+        ],
+        min: [
+          CurrencyInputOutput(widget.action.minAmount, widget.action.currency)
+        ],
         initialCurrency: widget.pot?.currency,
         initialValue: CurrencyInputOutput(
             widget.action.minAmount ?? 0, widget.action.currency));
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant AmountPage<ActionTypeWithAmount> oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -50,14 +63,14 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
     );
 
     return Container(
-        color: Theme.of(context).backgroundColor,
-        child: SafeArea(
+      color: Theme.of(context).backgroundColor,
+      child: SafeArea(
           child: Scaffold(
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.amount),
               ),
-              body: (Padding(
-                  padding: const EdgeInsets.all(padding),
+              body: CustomPadding(
+                  multiplier: 2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,6 +93,6 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                       ])
                     ],
                   )))),
-        ));
+    );
   }
 }

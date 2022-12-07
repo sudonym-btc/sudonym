@@ -70,23 +70,15 @@ class ContactListItem extends StatelessWidget {
 
                 // The child of the Slidable is what the user sees when the
                 // component is not dragged.
-                child: InkWell(
-                    onTap: onPressed,
-                    child: Container(
-                        padding: const EdgeInsets.all(padding),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.blue.shade100,
-                              child: Text(state.entity!.name
-                                  .substring(0, 1)
-                                  .toString()),
-                            ),
-                            const HoriDivider(),
-                            SizedBox(
-                                child: Text(state.entity!.name.toString())),
-                          ],
-                        ))),
+                child: ListTile(
+                  onTap: onPressed,
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blue.shade100,
+                    child: Text(state.entity!.name.substring(0, 1).toString()),
+                  ),
+                  title: Text(state.entity!.name.toString()),
+                  subtitle: Text(state.entity?.ContactAddresses[0].address),
+                ),
               );
       },
     );

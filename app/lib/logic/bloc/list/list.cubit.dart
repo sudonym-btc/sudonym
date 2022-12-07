@@ -13,6 +13,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   String column = 'id';
   StreamSubscription? onCreated;
   StreamSubscription? onUpdated;
+  StreamSubscription? onDeleted;
   Function? getId;
 
   ListCubit(this._repository,
@@ -29,6 +30,15 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       loggy.d(
           "Created ${event.toJson()["id"].toString()} reloading ${_repository.endpoint}");
       order == 'DESC' ? loadPrevious() : loadNext();
+    });
+
+    onDeleted ??= _repository.deleted.stream.listen((event) {
+      loggy.d(
+          "Deleted ${event.toJson()["id"].toString()} reloading ${_repository.endpoint}");
+      safeEmit(state.copyWith(
+          data: state.data
+              .where((element) => element.id != event.toJson()['id'])
+              .toList()));
     });
 
     onUpdated ??= _repository.updated.stream.listen((event) async {

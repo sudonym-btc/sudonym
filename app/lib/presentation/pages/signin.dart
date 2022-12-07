@@ -17,8 +17,8 @@ class SigninPage extends StatelessWidget {
                 body: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                          padding: const EdgeInsets.all(padding * 2),
+                      CustomPadding(
+                          multiplier: 2,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

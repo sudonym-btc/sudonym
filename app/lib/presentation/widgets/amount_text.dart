@@ -39,7 +39,12 @@ class AmountTextState extends State<AmountText> {
   @override
   didUpdateWidget(AmountText t) {
     super.didUpdateWidget(t);
-    load();
+    if (t.amount != widget.amount ||
+        t.fromCurrency != widget.fromCurrency ||
+        t.toCurrency != widget.toCurrency ||
+        t.date != widget.date) {
+      load();
+    }
   }
 
   load() {

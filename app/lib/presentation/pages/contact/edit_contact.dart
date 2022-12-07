@@ -22,8 +22,8 @@ class EditContactPage extends StatelessWidget {
                 ? AppLocalizations.of(context)!.createContact
                 : AppLocalizations.of(context)!.editContact),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(padding),
+          body: CustomPadding(
+            multiplier: 2,
             child: EditContactForm(
                 onSave: () => Navigator.pop(context), entity: entity),
           ),

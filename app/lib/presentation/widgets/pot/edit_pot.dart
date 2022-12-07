@@ -34,8 +34,8 @@ class EditPot extends StatelessWidget {
                         ]
                       : [],
                 ),
-                body: Padding(
-                    padding: const EdgeInsets.all(padding * 2),
+                body: CustomPadding(
+                    multiplier: 2,
                     child: EditPotForm(
                         onSave: () => Navigator.pop(context),
                         entity: entity)))));

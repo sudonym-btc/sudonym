@@ -117,21 +117,19 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
               text: (AppLocalizations.of(context)!.share),
             ),
           ];
-          return Column(
+          return CustomPadding(
+              child: Column(
             children: [
               Expanded(
                   child: Stack(children: [
                 image,
               ])),
               const VertDivider(),
-              Padding(
-                  padding: const EdgeInsets.all(padding),
+              CustomPadding(
                   child: CurrencyInput(options: inputOptions, large: false)),
-              Padding(
-                  padding: const EdgeInsets.all(padding),
-                  child: ButtonBar(children: buttons))
+              CustomPadding(child: ButtonBar(children: buttons))
             ],
-          );
+          ));
         }));
   }
 }

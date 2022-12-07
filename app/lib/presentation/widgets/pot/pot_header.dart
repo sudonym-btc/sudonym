@@ -100,9 +100,9 @@ class PotHeaderState extends State<PotHeader> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           EditPot(entity: widget.entity))),
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: padding * 2, right: padding * 2),
+                              child: CustomPadding(
+                                  multiplierWidth: 2,
+                                  multiplierHeight: 0,
                                   child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

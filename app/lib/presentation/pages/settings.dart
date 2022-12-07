@@ -55,8 +55,7 @@ class CardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-        padding: EdgeInsets.all(padding * 2), child: BoltCardList());
+    return const CustomPadding(multiplier: 2, child: BoltCardList());
   }
 }
 
@@ -105,8 +104,8 @@ class LightningSectionState extends State<LightningSection> {
     //                           });
     //                         },
     //                         icon: const FaIcon(FontAwesomeIcons.copy))
-    return Padding(
-        padding: const EdgeInsets.all(padding * 2),
+    return CustomPadding(
+        multiplier: 2,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Header(AppLocalizations.of(context)!.lightning),
           const VertDivider(),
@@ -173,8 +172,8 @@ class AboutSectionState extends State<AboutSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(padding * 2),
+    return CustomPadding(
+        multiplier: 2,
         child: Table(children: [
           TableRow(children: [
             const TableCell(child: Info('App name')),

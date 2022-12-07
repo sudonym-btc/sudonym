@@ -5,8 +5,8 @@ import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
-const loadingCircle = Padding(
-    padding: EdgeInsets.all(padding * 2),
+const loadingCircle = CustomPadding(
+    multiplier: 2,
     child: Center(
         child: SizedBox(
             width: 20, height: 20, child: CircularProgressIndicator())));

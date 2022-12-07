@@ -67,8 +67,8 @@ class _SendPageState extends State<SendPage> {
                       icon: const FaIcon(FontAwesomeIcons.camera))
                 ],
               ),
-              body: Padding(
-                  padding: const EdgeInsets.all(padding * 2),
+              body: CustomPadding(
+                  multiplier: 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -63,8 +63,9 @@ class _HomePageState extends State<HomePage> {
         ],
         child: BlocBuilder<ListCubit<Pot>, ListCubitState<dynamic>>(
           builder: (context, state) {
-            List<Widget> children =
-                state.data.map<Widget>((e) => PotPage(entity: e)).toList();
+            List<Widget> children = state.data
+                .map<Widget>((e) => OnePage(child: PotPage(entity: e)))
+                .toList();
             if (state.data.length < 10) children.add(const AddPotSlide());
 
             return Container(
@@ -90,26 +91,45 @@ class _HomePageState extends State<HomePage> {
                                       children: children,
                                     ),
                                   ),
-                                  Padding(
-                                      padding: const EdgeInsets.all(padding),
+                                  CustomPadding(
                                       child: SmoothPageIndicator(
-                                        controller:
-                                            controller, // PageController
-                                        count: (children.isNotEmpty
-                                            ? children.length
-                                            : 1),
+                                    controller: controller, // PageController
+                                    count: (children.isNotEmpty
+                                        ? children.length
+                                        : 1),
 
-                                        // forcing the indicator to use a specific direction
-                                        effect: ExpandingDotsEffect(
-                                            dotHeight: 6,
-                                            dotWidth: 6,
-                                            activeDotColor: currentColor),
-                                      ))
+                                    // forcing the indicator to use a specific direction
+                                    effect: ExpandingDotsEffect(
+                                        dotHeight: 6,
+                                        dotWidth: 6,
+                                        activeDotColor: currentColor),
+                                  ))
                                 ],
                               ))));
           },
         ));
   }
+}
+
+class OnePage extends StatefulWidget {
+  final Widget child;
+
+  const OnePage({required this.child}) : super();
+
+  @override
+  _OnePageState createState() => new _OnePageState();
+}
+
+class _OnePageState extends State<OnePage>
+    with AutomaticKeepAliveClientMixin<OnePage> {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class AddPotSlide extends StatelessWidget {

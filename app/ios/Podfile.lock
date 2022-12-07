@@ -131,6 +131,8 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (1.7.2)
+  - image_picker_ios (0.0.1):
+    - Flutter
   - local_auth_ios (0.0.1):
     - Flutter
   - MLImage (1.0.0-beta2)
@@ -192,6 +194,7 @@ DEPENDENCIES:
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
   - native_flutter_proxy (from `.symlinks/plugins/native_flutter_proxy/ios`)
@@ -253,6 +256,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_ringtone_player/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
   local_auth_ios:
     :path: ".symlinks/plugins/local_auth_ios/ios"
   mobile_scanner:
@@ -301,6 +306,7 @@ SPEC CHECKSUMS:
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
+  image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   local_auth_ios: 0d333dde7780f669e66f19d2ff6005f3ea84008d
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitBarcodeScanning: b8257854f6afc1c8443d61ec6b98c28b35625df6
