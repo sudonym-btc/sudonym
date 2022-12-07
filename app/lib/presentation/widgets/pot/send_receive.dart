@@ -32,6 +32,9 @@ class SendReceive extends StatelessWidget {
                           children: [
                             Button(
                               text: AppLocalizations.of(context)!.receive,
+                              style: raisedButtonStyle.copyWith(
+                                  textStyle: const MaterialStatePropertyAll(
+                                      TextStyle(overflow: TextOverflow.fade))),
                               icon: const FaIcon(FontAwesomeIcons.inbox,
                                   size: 14),
                               onPressed: () {
@@ -41,6 +44,9 @@ class SendReceive extends StatelessWidget {
                             ),
                             Button(
                               text: AppLocalizations.of(context)!.send,
+                              style: raisedButtonStyle.copyWith(
+                                  textStyle: const MaterialStatePropertyAll(
+                                      TextStyle(overflow: TextOverflow.fade))),
                               icon: const FaIcon(FontAwesomeIcons.paperPlane,
                                   size: 14),
                               onPressed: () {

@@ -12,4 +12,6 @@ scaffoldGroup('Transaction Access', (scaffold) => {
 		});
 		// todo complete this
 	});
+
+	test('should add userId to transaction if user is creating it', () => {});
 });

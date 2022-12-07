@@ -27,13 +27,9 @@ class BoltCardList extends StatelessWidget {
                                   entity: BoltCard.fromJson({'name': ''}))))
                     })
           ]),
-          const SizedBox(
-            height: padding,
-          ),
+          const VertDivider(),
           Info(AppLocalizations.of(context)!.boltCardDescription),
-          const SizedBox(
-            height: padding,
-          ),
+          const VertDivider(),
           ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 300),
               child: ListWidget(

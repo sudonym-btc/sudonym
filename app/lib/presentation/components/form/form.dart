@@ -96,9 +96,7 @@ class _CustomFormState<
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     widget.builder(context, state),
-                    const SizedBox(
-                      height: padding,
-                    ),
+                    const VertDivider(),
                     ReactiveFormConsumer(
                       builder: (context, form, child) {
                         return form.dirty || !widget.hideSubmit

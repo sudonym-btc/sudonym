@@ -51,12 +51,17 @@ class StatusPage extends StatelessWidget {
         );
 
     List<Widget> children = [];
-    if (title != null) children.add(Header(title));
+    if (title != null) {
+      children.add(FittedBox(
+          alignment: Alignment.centerLeft,
+          fit: BoxFit.scaleDown,
+          child: Header(title)));
+    }
     if (subtitle != null || subtitleText != null) {
       children.add(subtitle ?? Subtitle(subtitleText));
     }
     if (title != null || subtitle != null || subtitleText != null) {
-      children.add(const SizedBox(height: padding * 2));
+      children.add(const VertDivider(2));
     }
     if (content == null && icon == null) {
       children.add(Expanded(child: Container()));
@@ -91,7 +96,7 @@ class StatusPage extends StatelessWidget {
                   title: Text(pageTitle),
                 ),
                 body: Padding(
-                    padding: const EdgeInsets.all(padding),
+                    padding: const EdgeInsets.all(padding * 2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: children,

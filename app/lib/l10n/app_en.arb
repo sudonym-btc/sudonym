@@ -125,5 +125,7 @@
 		}
 	},
 	"time": "Time",
-	"to": "To"
+	"to": "To",
+	"ok": "OK",
+	"potCurrencyDescription": "Anything sent to this pot will immediately be converted and held in the specified currency."
 }

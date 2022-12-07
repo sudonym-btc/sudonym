@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sudonym/presentation/index.dart';
 
 showCustomSnackbar({
   required BuildContext context,
@@ -46,7 +47,7 @@ showCustomSnackbar({
             },
           ),
         ),
-        SizedBox(width: 12.0),
+        const HoriDivider(),
         Expanded(child: Text(contentText)),
         InkWell(
           splashColor: Colors.white,
@@ -61,7 +62,7 @@ showCustomSnackbar({
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(width: 8.0),
+                const HoriDivider(0.5),
                 Text(
                   actionText,
                   style: TextStyle(color: Theme.of(context).primaryColorLight),

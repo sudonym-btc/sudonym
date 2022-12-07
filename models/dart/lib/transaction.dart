@@ -7,6 +7,7 @@ class Transaction extends BaseClass {
   dynamic /* String | null */ onchainId;
   dynamic /* String | null */ invoiceId;
   dynamic /* String | null */ txid;
+  dynamic /* String | null */ userId;
   num potId;
   dynamic /* PotModel . Pot | null */ Pot;
   dynamic /* num | null */ receiverId;
@@ -30,6 +31,7 @@ class Transaction extends BaseClass {
       this.onchainId,
       this.invoiceId,
       this.txid,
+      this.userId,
       this.potId,
       this.Pot,
       this.receiverId,
@@ -57,6 +59,7 @@ class Transaction extends BaseClass {
         json["onchainId"],
         json["invoiceId"],
         json["txid"],
+        json["userId"],
         json["potId"],
         json["Pot"] != null ? PotModel.Pot.fromJson(json["Pot"]) : null,
         json["receiverId"],
@@ -85,6 +88,7 @@ class Transaction extends BaseClass {
       "onchainId": this.onchainId,
       "invoiceId": this.invoiceId,
       "txid": this.txid,
+      "userId": this.userId,
       "potId": this.potId,
       "Pot": this.Pot,
       "receiverId": this.receiverId,

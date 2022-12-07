@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -23,16 +24,20 @@ class SettingsPage extends StatelessWidget {
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     const LightningSection(),
                     // const CardSection(),
-                    const SizedBox(
-                      height: padding * 2,
-                    ),
+                    const VertDivider(2),
                     ExpansionTile(
+                      textColor: Theme.of(context).primaryColor,
+                      iconColor: Theme.of(context).primaryColor,
+                      tilePadding: const EdgeInsets.fromLTRB(
+                          padding * 2, 0, padding * 2, 0),
                       title: Text(AppLocalizations.of(context)!.appInfo),
-                      children: <Widget>[
+                      children: const <Widget>[
                         AboutSection(),
                       ],
                     ),
                     ListTile(
+                      contentPadding: const EdgeInsets.fromLTRB(
+                          padding * 2, 0, padding * 2, 0),
                       title: Text(AppLocalizations.of(context)!.logout),
                       // foregroundColor: Colors.red,
                       onTap: (() async {
@@ -70,6 +75,8 @@ class LightningSectionState extends State<LightningSection> {
         value: getIt<AuthCubit>().user!.lightningAddress,
         validators: [
           Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(30),
           Validators.pattern(r'^[a-z0-9_.-]+$',
               validationMessage: 'Must only include characters a-z0-9_.-')
         ]),
@@ -84,13 +91,25 @@ class LightningSectionState extends State<LightningSection> {
 
   @override
   Widget build(BuildContext context) {
+    // IconButton(
+    //                         onPressed: () {
+    //                           FlutterClipboard.copy(
+    //                                   getIt<AuthCubit>().user!.lightningAddress)
+    //                               .then((value) {
+    //                             SnackBar snackBar = SnackBar(
+    //                               content: Text(AppLocalizations.of(context)!
+    //                                   .copiedToClipboard),
+    //                             );
+    //                             ScaffoldMessenger.of(context)
+    //                                 .showSnackBar(snackBar);
+    //                           });
+    //                         },
+    //                         icon: const FaIcon(FontAwesomeIcons.copy))
     return Padding(
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Header(AppLocalizations.of(context)!.lightning),
-          const SizedBox(
-            height: padding,
-          ),
+          const VertDivider(),
           Info(AppLocalizations.of(context)!.lightningAddressDescription),
           CustomForm<UserCubit, UserCubitState, User>(
               entity: getIt<AuthCubit>().user!,
@@ -101,6 +120,12 @@ class LightningSectionState extends State<LightningSection> {
                     ReactiveTextField(
                         formControlName: 'lightningAddress',
                         onEditingComplete: null,
+                        autocorrect: false,
+                        inputFormatters: [
+                          LightningAddressTextFormatter(),
+                          FilteringTextInputFormatter.allow(
+                              RegExp('[a-z0-9_.-]')),
+                        ],
                         validationMessages: {
                           'unique': (error) =>
                               AppLocalizations.of(context)!.nameAlreadyTaken
@@ -149,7 +174,7 @@ class AboutSectionState extends State<AboutSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(padding * 2),
         child: Table(children: [
           TableRow(children: [
             const TableCell(child: Info('App name')),
@@ -168,5 +193,16 @@ class AboutSectionState extends State<AboutSection> {
             TableCell(child: Info(buildNumber))
           ]),
         ]));
+  }
+}
+
+class LightningAddressTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toLowerCase(),
+      selection: newValue.selection,
+    );
   }
 }

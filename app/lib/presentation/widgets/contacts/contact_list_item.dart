@@ -82,9 +82,7 @@ class ContactListItem extends StatelessWidget {
                                   .substring(0, 1)
                                   .toString()),
                             ),
-                            const SizedBox(
-                              width: padding,
-                            ),
+                            const HoriDivider(),
                             SizedBox(
                                 child: Text(state.entity!.name.toString())),
                           ],

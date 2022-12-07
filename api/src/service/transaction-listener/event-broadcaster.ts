@@ -21,7 +21,7 @@ export class EventBroadcaster {
 				);
 				await this.eventsService.trigger(
 					new TriggeredEvent(
-						new Event('receiver.received', receiver),
+						new Event(null, 'receiver.received', receiver),
 						await this.receiverService.getUserIds(receiver.id)
 					)
 				);
@@ -34,7 +34,11 @@ export class EventBroadcaster {
 					);
 					await this.eventsService.trigger(
 						new TriggeredEvent(
-							new Event('receiver.received', parentReceiver),
+							new Event(
+								null,
+								'receiver.received',
+								parentReceiver
+							),
 							await this.receiverService.getUserIds(
 								parentReceiver.id
 							)

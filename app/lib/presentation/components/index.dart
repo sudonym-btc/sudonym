@@ -1,6 +1,7 @@
 export 'button/button.dart';
 export 'cubit_wrapper.dart';
 export 'form/form.dart';
+export 'helper/index.dart';
 export 'input/button/button_bar.dart';
 export 'input/currency/currency_input.dart';
 export 'notifications/base_notification.dart';

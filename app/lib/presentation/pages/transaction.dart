@@ -88,11 +88,19 @@ class _OutgoingFailed extends _TransactionStatusPage {
             toCurrency: transaction.Pot.currency,
             date: transaction.createdAt,
             builder: (val) => Subtitle(AppLocalizations.of(context)!
-                .outgoingPaymentError(val, transaction.originalAddress))),
+                .outgoingPaymentError(
+                    val, replaceLongAddress(transaction.originalAddress)))),
         content: Text(transaction.errorMessage ?? ''),
         color: Theme.of(context).errorColor);
   }
 }
+
+var replaceLongAddress = (String input, [int maxLength = 21]) {
+  if (input.length > maxLength) {
+    return '${input.substring(0, maxLength)}...';
+  }
+  return input;
+};
 
 class _OutgoingComplete extends _TransactionStatusPage {
   const _OutgoingComplete({required Transaction transaction})
@@ -115,9 +123,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _ContactSection(transaction),
-              const SizedBox(
-                height: padding * 2,
-              ),
+              const VertDivider(2),
               Table(
                   columnWidths: const {
                     0: IntrinsicColumnWidth(),
@@ -155,8 +161,10 @@ class _OutgoingComplete extends _TransactionStatusPage {
                     TableRow(children: [
                       TableKey(child: Text(AppLocalizations.of(context)!.time)),
                       Timeago(
-                        builder: ((context, value) => Text(timeago
-                            .format(transaction.createdAt, locale: 'en'))),
+                        builder: ((context, value) => Text(timeago.format(
+                            transaction.createdAt,
+                            locale:
+                                Localizations.localeOf(context).toString()))),
                         date: transaction.createdAt,
                       )
                     ]),
@@ -183,6 +191,17 @@ class _IncomingPending extends _TransactionStatusPage {
             builder: (val) => Subtitle(AppLocalizations.of(context)!
                 .paymentIsCurrentlyInTransit(val))),
         content: loader,
+        // actions: ButtonBar(
+        //   children: [
+        //     ElevatedButton(
+        //       style: raisedButtonStyle,
+        //       onPressed: () {
+        //         Navigator.of(context).pop();
+        //       },
+        //       child: Text(AppLocalizations.of(context)!.ok),
+        //     )
+        //   ],
+        // ),
         color: Colors.indigo.shade800);
   }
 }
@@ -238,13 +257,33 @@ class _IncomingComplete extends _TransactionStatusPage {
             TableRow(children: [
               TableKey(child: Text(AppLocalizations.of(context)!.time)),
               Timeago(
-                builder: ((context, value) =>
-                    Text(timeago.format(transaction.createdAt, locale: 'en'))),
+                builder: ((context, value) => Text(timeago.format(
+                    transaction.createdAt,
+                    locale: Localizations.localeOf(context).toString()))),
                 date: transaction.createdAt,
               )
             ]),
           ],
         ),
+        // actions: ButtonBar(
+        //   children: [
+        //     ElevatedButton(
+        //       style: raisedButtonStyle.copyWith(
+        //           backgroundColor: MaterialStatePropertyAll(
+        //               Color.fromARGB(20, 255, 255, 255)),
+        //           foregroundColor: MaterialStatePropertyAll(
+        //               Color.fromARGB(200, 255, 255, 255)),
+        //           side: MaterialStatePropertyAll(BorderSide.merge(
+        //               BorderSide(color: Colors.white.withAlpha(100), width: 1),
+        //               BorderSide(
+        //                   color: Colors.white.withAlpha(100), width: 1)))),
+        //       onPressed: () {
+        //         Navigator.of(context).pop();
+        //       },
+        //       child: Text(AppLocalizations.of(context)!.ok),
+        //     )
+        //   ],
+        // ),
         color: Colors.green);
   }
 }

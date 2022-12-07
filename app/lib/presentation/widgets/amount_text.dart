@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
@@ -35,6 +34,12 @@ class AmountTextState extends State<AmountText> {
     val = FormatCurrency().format(widget.fromCurrency, widget.amount);
     load();
     super.initState();
+  }
+
+  @override
+  didUpdateWidget(AmountText t) {
+    super.didUpdateWidget(t);
+    load();
   }
 
   load() {

@@ -87,9 +87,7 @@ class _SendPageState extends State<SendPage> {
                                           .addressInputHint,
                                       labelText: AppLocalizations.of(context)!
                                           .address))),
-                          SizedBox(
-                            width: padding,
-                          ),
+                          const HoriDivider(),
                           ReactiveFormConsumer(
                             builder: (context, form, child) {
                               return Button(
@@ -106,7 +104,7 @@ class _SendPageState extends State<SendPage> {
                           ),
                         ]),
                       ),
-                      const SizedBox(height: padding * 2),
+                      const VertDivider(2),
                       CheckClipboard(
                         pot: widget.pot,
                       ),
@@ -186,7 +184,7 @@ class CheckClipboardState extends State<CheckClipboard> {
               ),
               onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
                   context: context, link: address!, pot: widget.pot))),
-          const SizedBox(height: padding * 2),
+          const VertDivider(2),
         ]);
       }
       return Container();
@@ -209,7 +207,7 @@ class CheckClipboardState extends State<CheckClipboard> {
             ? Text(AppLocalizations.of(context)!.noAddressToPaste)
             : null,
       ),
-      const SizedBox(height: padding * 2),
+      const VertDivider(2),
     ]);
   }
 }

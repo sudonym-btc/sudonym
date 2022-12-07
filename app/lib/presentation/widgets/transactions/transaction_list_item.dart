@@ -58,8 +58,11 @@ class TransactionListItem extends StatelessWidget {
                         width: 50,
                         child: Center(
                             child: Timeago(
-                          builder: ((context, value) => Text(timeago
-                              .format(entity.createdAt, locale: 'en_short'))),
+                          builder: ((context, value) => Text(timeago.format(
+                              entity.createdAt,
+                              locale:
+                                  Localizations.localeOf(context).toString() +
+                                      '_short'))),
                           date: entity.createdAt,
                         ))),
                   ],

@@ -11,14 +11,14 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
 		 */
-		return queryInterface.removeColumn('Settlements', 'id').then(() =>
-			queryInterface.addColumn('Settlements', 'id', {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-				allowNull: false,
-			})
-		);
+		return queryInterface.addColumn('Transactions', 'userId', {
+			type: DataTypes.STRING,
+			allowNull: true,
+			references: {
+				model: 'Users', // name of Target model
+				key: 'id', // key in Target model that we're referencing
+			},
+		});
 	},
 
 	async down(queryInterface, Sequelize) {
@@ -28,6 +28,6 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.dropTable('users');
 		 */
-		return;
+		return queryInterface.removeColumn('Transactions', 'userId');
 	},
 };

@@ -11,6 +11,7 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/firebase_options.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 void main(List<String> args) {
   mainCommon(null);
@@ -50,6 +51,12 @@ void mainCommon(String? env) async {
           }));
 
   FlutterError.onError = (details) => print(details);
+  timeago.setLocaleMessages('de_short', timeago.DeShortMessages());
+  timeago.setLocaleMessages('fr_short', timeago.FrShortMessages());
+  timeago.setLocaleMessages('es_short', timeago.EsShortMessages());
+  timeago.setLocaleMessages('de', timeago.DeMessages());
+  timeago.setLocaleMessages('fr', timeago.FrMessages());
+  timeago.setLocaleMessages('es', timeago.EsMessages());
 }
 
 class App extends StatelessWidget {

@@ -113,9 +113,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       ? '...'
                       : FormatCurrency().format(
                           options.currencies[state.altCurrency], state.altVal)),
-                  const SizedBox(
-                    height: padding,
-                  ),
+                  const VertDivider(),
                 ]);
             if (large) {
               return Column(
@@ -123,16 +121,12 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   input,
-                  const SizedBox(
-                    height: padding * 2,
-                  ),
+                  const VertDivider(2),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       negativeButton,
-                      const SizedBox(
-                        width: padding * 2,
-                      ),
+                      const HoriDivider(2),
                       positiveButton
                     ],
                   )
@@ -149,13 +143,9 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                         Expanded(
                           child: input,
                         ),
-                        const SizedBox(
-                          width: padding / 2,
-                        ),
+                        const HoriDivider(0.5),
                         negativeButton,
-                        const SizedBox(
-                          width: padding / 2,
-                        ),
+                        const HoriDivider(0.5),
                         positiveButton
                       ])
                 ]);

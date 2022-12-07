@@ -119,9 +119,7 @@ class EditContactFormState extends State<EditContactForm> {
                         labelText: 'Contact name',
                       ),
                     ),
-                    const SizedBox(
-                      height: padding,
-                    ),
+                    const VertDivider(),
                     ReactiveFormArray(
                         formArrayName: 'ContactAddresses',
                         builder: (context, formArray, child) => Column(
@@ -130,9 +128,7 @@ class EditContactFormState extends State<EditContactForm> {
                                   .map(_buildAddress)
                                   .toList(),
                             )),
-                    const SizedBox(
-                      height: padding,
-                    ),
+                    const VertDivider(),
                     // Button.flat(onPressed: addAddress, text: 'Add Address')
                   ]));
         }));

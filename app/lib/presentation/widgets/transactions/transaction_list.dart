@@ -17,9 +17,7 @@ class TransactionList extends StatelessWidget {
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Header(AppLocalizations.of(context)!.transactions),
-          const SizedBox(
-            height: padding,
-          ),
+          const VertDivider(),
           Expanded(
               child: ListWidget(
             builder: (el) {

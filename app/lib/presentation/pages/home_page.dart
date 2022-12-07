@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sudonym/data/index.dart';
@@ -27,11 +28,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     l = ListCubit<Pot>(getIt<PotRepository>(),
-        column: '\$PotUsers.index\$', order: 'ASC', getId: (Pot element) {
-      print(element.toJson());
-      print(element.PotUsers);
-      return element.PotUsers[0].index;
-    });
+        column: '\$PotUsers.index\$',
+        order: 'ASC',
+        getId: (Pot element) => element.PotUsers[0].index);
     super.initState();
   }
 
@@ -66,7 +65,7 @@ class _HomePageState extends State<HomePage> {
           builder: (context, state) {
             List<Widget> children =
                 state.data.map<Widget>((e) => PotPage(entity: e)).toList();
-            children.add(const AddPotSlide());
+            if (state.data.length < 10) children.add(const AddPotSlide());
 
             return Container(
                 color: Theme.of(context).backgroundColor,
@@ -120,7 +119,7 @@ class AddPotSlide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Button(
-            text: 'Add Pot',
+            text: AppLocalizations.of(context)!.createPot,
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const EditPot()));

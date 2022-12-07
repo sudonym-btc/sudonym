@@ -15,9 +15,7 @@ class ContactList extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           Header(AppLocalizations.of(context)!.contacts),
-          const SizedBox(
-            height: padding,
-          ),
+          const VertDivider(),
           Expanded(
               child: ListWidget(
             builder: (el) => ContactListItem(

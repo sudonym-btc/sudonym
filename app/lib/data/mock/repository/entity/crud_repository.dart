@@ -55,14 +55,20 @@ abstract class MockCrudRepository<T extends BaseClass>
             return true;
           } else {
             return where.keys.every((key) {
+              if (key.contains('\$')) {
+                //todo cant order by keys of child elements
+                return true;
+              }
+              var obj = element.toJson()[key];
+
               if (where[key].runtimeType == int) {
-                return element.toJson()[key] == where[key];
+                return obj == where[key];
               }
               if (where[key]['gt'] != null) {
-                return element.toJson()[key] > where[key]['gt'];
+                return obj > where[key]['gt'];
               }
               if (where[key]['lt'] != null) {
-                return element.toJson()[key] < where[key]['lt'];
+                return obj < where[key]['lt'];
               }
               return false;
             });

@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/dio/auth.interceptor.dart';
+import 'package:sudonym/data/dio/cache.interceptor.dart';
 
 @module
 abstract class RegisterModule {
@@ -19,8 +20,8 @@ abstract class RegisterModule {
           error: true,
           compact: true,
           maxWidth: 90))
-      ..interceptors.add(AuthInterceptor());
-    // ..interceptors.add(cacheInterceptor);
+      ..interceptors.add(AuthInterceptor())
+      ..interceptors.add(cacheInterceptor);
     return dio;
   }
 }

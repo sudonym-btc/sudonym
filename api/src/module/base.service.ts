@@ -130,13 +130,11 @@ export const BaseService = <TModel extends BaseModel>(
 			// For each user fetch as correct scope
 			for (const user of userIds) {
 				await runAsUser({ id: user }, async () => {
-					// if (this.repo.name == 'Pot') {
-					// 	console.log(sequelizeCls.get('transaction'), entity);
-					// }
 					const e = await this.findOne(entity.id);
 					await this.eventsService.trigger(
 						new TriggeredEvent(
 							new Event(
+								null,
 								this.repo.name.toLowerCase() + '.' + event,
 								e
 							),
@@ -275,6 +273,7 @@ export const BaseService = <TModel extends BaseModel>(
 							this.eventsService.trigger(
 								new TriggeredEvent(
 									new Event(
+										null,
 										this.repo.name.toLowerCase() +
 											'.deleted',
 										entity

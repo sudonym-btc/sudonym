@@ -5,7 +5,7 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
-class PotHeader extends StatelessWidget {
+class PotHeader extends StatefulWidget {
   final Pot entity;
   final Function? onMoveRight;
   final Function? onMoveLeft;
@@ -16,6 +16,11 @@ class PotHeader extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => PotHeaderState();
+}
+
+class PotHeaderState extends State<PotHeader> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PotListReorganizerCubit, PotListState>(
@@ -31,7 +36,7 @@ class PotHeader extends StatelessWidget {
                     // The start action pane is the one at the left or the top side.
                     startActionPane:
                         BlocProvider.of<PotListReorganizerCubit>(context)
-                                .canMoveLeft(entity)
+                                .canMoveLeft(widget.entity)
                             ? ActionPane(
                                 // A motion is a widget used to control how the pane animates.
                                 motion: const ScrollMotion(),
@@ -46,7 +51,7 @@ class PotHeader extends StatelessWidget {
                                     onPressed: (BuildContext context) async {
                                       BlocProvider.of<PotListReorganizerCubit>(
                                               context)
-                                          .onMoveLeft(entity);
+                                          .onMoveLeft(widget.entity);
                                     },
                                     backgroundColor:
                                         Theme.of(context).primaryColor,
@@ -59,7 +64,7 @@ class PotHeader extends StatelessWidget {
                             : null,
                     endActionPane:
                         BlocProvider.of<PotListReorganizerCubit>(context)
-                                .canMoveRight(entity)
+                                .canMoveRight(widget.entity)
                             ? ActionPane(
                                 // A motion is a widget used to control how the pane animates.
                                 motion: const ScrollMotion(),
@@ -74,7 +79,7 @@ class PotHeader extends StatelessWidget {
                                     onPressed: (BuildContext context) async {
                                       BlocProvider.of<PotListReorganizerCubit>(
                                               context)
-                                          .onMoveRight(entity);
+                                          .onMoveRight(widget.entity);
                                     },
                                     backgroundColor:
                                         Theme.of(context).primaryColor,
@@ -94,7 +99,7 @@ class PotHeader extends StatelessWidget {
                               onTap: () => Navigator.of(context).push(
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          EditPot(entity: entity))),
+                                          EditPot(entity: widget.entity))),
                               child: Padding(
                                   padding: const EdgeInsets.only(
                                       left: padding * 2, right: padding * 2),
@@ -102,13 +107,16 @@ class PotHeader extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Subtitle(entity.name ?? ''),
+                                        Subtitle(widget.entity.name ?? ''),
                                         Header(FormatCurrency().format(
-                                            entity.currency, entity.balance)),
-                                        entity.currency == 'BTC'
+                                            widget.entity.currency,
+                                            widget.entity.spendableBalance)),
+                                        widget.entity.currency == 'BTC'
                                             ? AmountText(
-                                                amount: entity.balance,
-                                                fromCurrency: entity.currency,
+                                                amount: widget
+                                                    .entity.spendableBalance,
+                                                fromCurrency:
+                                                    widget.entity.currency,
                                                 toCurrency: 'USD',
                                                 builder: (val) =>
                                                     Info('≈ $val'),

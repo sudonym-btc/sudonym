@@ -92,9 +92,9 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             image = GestureDetector(
               onTap: copy,
               child: QrImage(
-                  dataModuleStyle: QrDataModuleStyle(
+                  dataModuleStyle: const QrDataModuleStyle(
                       dataModuleShape: QrDataModuleShape.circle),
-                  eyeStyle: QrEyeStyle(eyeShape: QrEyeShape.circle),
+                  eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.circle),
                   data: state.entity!.data,
                   foregroundColor:
                       Theme.of(context).appBarTheme.titleTextStyle!.color,
@@ -123,7 +123,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                   child: Stack(children: [
                 image,
               ])),
-              const SizedBox(height: padding),
+              const VertDivider(),
               Padding(
                   padding: const EdgeInsets.all(padding),
                   child: CurrencyInput(options: inputOptions, large: false)),

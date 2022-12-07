@@ -35,7 +35,7 @@ class EditPot extends StatelessWidget {
                       : [],
                 ),
                 body: Padding(
-                    padding: const EdgeInsets.all(padding),
+                    padding: const EdgeInsets.all(padding * 2),
                     child: EditPotForm(
                         onSave: () => Navigator.pop(context),
                         entity: entity)))));
@@ -66,7 +66,7 @@ class EditPotFormState extends State<EditPotForm> {
         formGroup: () => FormGroup({
               'name': FormControl<String>(
                   value: widget.entity?.name ?? '',
-                  validators: [Validators.required]),
+                  validators: [Validators.required, Validators.maxLength(21)]),
               'currency': FormControl<String>(
                   value: widget.entity?.currency ?? 'BTC',
                   validators: [Validators.required])
@@ -79,7 +79,7 @@ class EditPotFormState extends State<EditPotForm> {
                     labelText: AppLocalizations.of(context)!.potName,
                   ),
                 ),
-                const SizedBox(height: padding),
+                const VertDivider(),
                 ReactiveDropdownField(
                   formControlName: 'currency',
                   decoration: InputDecoration(
@@ -95,12 +95,14 @@ class EditPotFormState extends State<EditPotForm> {
                                 width: 20,
                                 height: 20,
                               ),
-                              const SizedBox(width: padding),
+                              const HoriDivider(),
                               Text(currency)
                             ]),
                           ))
                       .toList(),
-                )
+                ),
+                const VertDivider(2),
+                Info(AppLocalizations.of(context)!.potCurrencyDescription)
               ],
             ));
   }

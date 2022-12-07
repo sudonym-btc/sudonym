@@ -22,7 +22,7 @@ class WebsocketImpl extends Websocket
   int _errorCount = 0;
   DateTime? lastPing;
   Timer? checker;
-
+  List<String> acked = [];
   WebsocketImpl(this.config) : super() {
     WidgetsFlutterBinding.ensureInitialized();
     WidgetsBinding.instance?.addObserver(this);
@@ -63,10 +63,29 @@ class WebsocketImpl extends Websocket
 
     channel = WebSocketChannel.connect(url);
 
-    socketSubscription = channel!.stream.listen((event) {
-      _errorCount = 0;
-      stream.sink.add(jsonDecode(event));
-    }, onError: onError, onDone: () => onError(null), cancelOnError: true);
+    socketSubscription = channel!.stream.listen(onReceived,
+        onError: onError, onDone: () => onError(null), cancelOnError: true);
+  }
+
+  void onReceived(dynamic msg) {
+    _errorCount = 0;
+    var event = jsonDecode(msg);
+    if (event['id'] != null) {
+      if (!acked.contains(event['id'])) {
+        stream.sink.add(event);
+        ack(event['id']);
+      }
+    }
+  }
+
+  void ack(messageId) {
+    acked.add(messageId);
+    if (channel != null) {
+      channel?.sink.add(jsonEncode({
+        'id': messageId,
+        'event': 'ack',
+      }));
+    }
   }
 
   void onError(dynamic e) async {
