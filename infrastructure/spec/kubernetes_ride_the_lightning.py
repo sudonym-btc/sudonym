@@ -182,6 +182,17 @@ def ride_the_lightning(config, cluster_types):
                                                 "name": getVolumeClaimName(lightning_rest_base_name + "-macaroon", 3),
                                                 "mountPath": "RTL/certs3",
                                             },] if config["env"] == "development" else []),
+
+                                        "resources": {
+                                            "limits": {
+                                                "cpu": "0.01",
+                                                "memory": "60Mi"
+                                            },
+                                            "requests": {
+                                                "cpu": "0.0001",
+                                                "memory": "40Mi"
+                                            }
+                                        }
                                     }
                                 ],
                                 "volumes": [

@@ -232,6 +232,17 @@ def lightning(config, cluster_types):
                                                 "mountPath": lightning_dir,
                                             },
                                         ],
+
+                                        "resources": {
+                                            "limits": {
+                                                "cpu": "0.1",
+                                                "memory": "750Mi"
+                                            },
+                                            "requests": {
+                                                "cpu": "0.01",
+                                                "memory": "400Mi"
+                                            }
+                                        }
                                     }
                                 ],
                                 "volumes": [

@@ -46,7 +46,9 @@ def lightning_rest(config, cluster_types):
                             + str(config["lightningRest"]["docPort"])
                             + """,
         "PROTOCOL": "http",
-        "EXECMODE": "test",
+        "EXECMODE": """ 
+                            + ("\"production\"" if config["env"] == "production" else "\"test\"")
+                            + """,
         "LNRPCPATH": "/rpc/lightning-rpc",
         "RPCCOMMANDS": ["*"]
     }
@@ -165,6 +167,17 @@ def lightning_rest(config, cluster_types):
                                                     "mountPath": "/usr/src/app/certs",
                                                 },
                                             ],
+
+                                            "resources": {
+                                                "limits": {
+                                                    "cpu": "0.01",
+                                                    "memory": "50Mi"
+                                                },
+                                                "requests": {
+                                                    "cpu": "0.005",
+                                                    "memory": "50Mi"
+                                                }
+                                            }
                                         }
                                     ],
                                     "volumes": [

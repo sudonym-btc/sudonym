@@ -243,6 +243,16 @@ def bitcoin(config, cluster_types):
                                                 "mountPath": data_dir,
                                             },
                                         ],
+                                        "resources": {
+                                            "limits": {
+                                                "cpu": "0.1",
+                                                "memory": "2Gi"
+                                            },
+                                            "requests": {
+                                                "cpu": "0.01",
+                                                "memory": "2Gi"
+                                            }
+                                        }
                                     }
                                 ],
                                 "volumes": [

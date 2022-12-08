@@ -1,9 +1,6 @@
-from helper import (
-    getDeploymentName,
-    getServiceName,
-    getVolumeClaimName,
-)
+from helper import getDeploymentName, getServiceName, getVolumeClaimName
 from kubernetes_cluster import cluster
+
 
 def homepage(config, cluster_types):
 
@@ -68,6 +65,16 @@ def homepage(config, cluster_types):
                                                 "name": "main",
                                             }
                                         ],
+                                        "resources": {
+                                                "limits": {
+                                                    "cpu": "0.01",
+                                                    "memory": "50Mi"
+                                                },
+                                                "requests": {
+                                                    "cpu": "0.0001",
+                                                    "memory": "50Mi"
+                                                }
+                                            }
                                     }
                                 ]
                             },

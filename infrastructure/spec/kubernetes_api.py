@@ -121,6 +121,16 @@ def api(config, cluster_types):
                                             "httpGet": {
                                                 "port": config["api"]["port"]
                                             }
+                                        },
+                                        "resources": {
+                                            "limits": {
+                                                "cpu": "0.4",
+                                                "memory": "500Mi"
+                                            },
+                                            "requests": {
+                                                "cpu": "0.4",
+                                                "memory": "500Mi"
+                                            }
                                         }
                                        
                                     }, **({
