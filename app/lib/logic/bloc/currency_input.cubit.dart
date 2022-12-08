@@ -123,8 +123,6 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
   Future<num> enforceConstraints(num val) async {
     safeEmit(state.copyWith(minLoading: true));
     double min = await getMinInCurrentCurrency();
-    print(numToCurrentPrecision(min));
-    print(state.currVal);
     if (numToCurrentPrecision(min) >= numToCurrentPrecision(val)) {
       controller!.updateValue(
           getDisplayValue(options.currencies[state.currCurrency], min));

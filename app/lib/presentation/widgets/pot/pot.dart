@@ -40,23 +40,19 @@ class NarrowLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
-      Column(children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [PotHeader(entity: entity), SendReceive(entity: entity)],
-        ),
-        const VertDivider(2),
-        Expanded(child: TransactionList(pot: entity))
-        //  SlidingUpPanel(
-        //     body: Container(),
-        //     minHeight: 150,
-        //     boxShadow: null,
-        //     panel:
-      ])
-    ];
-
-    return Stack(children: children);
+    return Column(children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [PotHeader(entity: entity), SendReceive(entity: entity)],
+      ),
+      const VertDivider(2),
+      Expanded(child: TransactionList(pot: entity))
+      //  SlidingUpPanel(
+      //     body: Container(),
+      //     minHeight: 150,
+      //     boxShadow: null,
+      //     panel:
+    ]);
   }
 }
 

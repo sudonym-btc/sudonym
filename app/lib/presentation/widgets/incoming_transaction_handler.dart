@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:sudonym/config/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/bloc/incoming_transaction_handler.service.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -16,8 +17,8 @@ class IncomingTransactionHandler extends StatefulWidget {
   }
 }
 
-class IncomingTransactionHandlerState
-    extends State<IncomingTransactionHandler> {
+class IncomingTransactionHandlerState extends State<IncomingTransactionHandler>
+    with IncomingTransactionLogger {
   final IncomingTransactionHandlerService _incomingTransactionHandlerService =
       getIt<IncomingTransactionHandlerService>();
 
@@ -28,6 +29,7 @@ class IncomingTransactionHandlerState
   }
 
   Transaction callback(Transaction event) {
+    loggy.i('Incoming transaction callback ${event.id}');
     if (event.outgoing == false) {
       FlutterRingtonePlayer.playNotification();
       Navigator.of(context).push(

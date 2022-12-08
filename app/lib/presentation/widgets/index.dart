@@ -19,7 +19,6 @@ export 'receive/onchain.dart';
 export 'receive/receive_widget.dart';
 export 'screen_slideable/measurable.dart';
 export 'screen_slideable/screen_slideable.dart';
-export 'send/qr.dart';
 export 'snackbar/snackbar.dart';
 export 'status_page/status_page.dart';
 export 'transactions/transaction_list.dart';

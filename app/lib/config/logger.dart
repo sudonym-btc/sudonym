@@ -35,3 +35,7 @@ mixin NotificationLogger {
 mixin CubitLogger {
   Logger get loggy => Logger();
 }
+
+mixin IncomingTransactionLogger {
+  Logger get loggy => Logger();
+}
