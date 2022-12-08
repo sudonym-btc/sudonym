@@ -1,6 +1,8 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/config/index.dart';
@@ -90,24 +92,31 @@ class LightningSectionState extends State<LightningSection> {
 
   @override
   Widget build(BuildContext context) {
-    // IconButton(
-    //                         onPressed: () {
-    //                           FlutterClipboard.copy(
-    //                                   getIt<AuthCubit>().user!.lightningAddress)
-    //                               .then((value) {
-    //                             SnackBar snackBar = SnackBar(
-    //                               content: Text(AppLocalizations.of(context)!
-    //                                   .copiedToClipboard),
-    //                             );
-    //                             ScaffoldMessenger.of(context)
-    //                                 .showSnackBar(snackBar);
-    //                           });
-    //                         },
-    //                         icon: const FaIcon(FontAwesomeIcons.copy))
     return CustomPadding(
         multiplier: 2,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Header(AppLocalizations.of(context)!.lightning),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Subheader(AppLocalizations.of(context)!.lightning),
+                IconButton(
+                    iconSize:
+                        Theme.of(context).textTheme.displayMedium!.fontSize,
+                    onPressed: () {
+                      FlutterClipboard.copy(
+                              getIt<AuthCubit>().user!.lightningAddress +
+                                  '@${getIt<Config>().domain}')
+                          .then((value) {
+                        SnackBar snackBar = SnackBar(
+                          content: Text(
+                              AppLocalizations.of(context)!.copiedToClipboard),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      });
+                    },
+                    icon: const FaIcon(FontAwesomeIcons.copy))
+              ]),
           const VertDivider(),
           Info(AppLocalizations.of(context)!.lightningAddressDescription),
           CustomForm<UserCubit, UserCubitState, User>(

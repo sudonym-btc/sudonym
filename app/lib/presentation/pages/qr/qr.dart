@@ -58,7 +58,6 @@ class _QRPageState extends State<QRPage> {
                               onPressed: () async {
                                 XFile? image = await _picker.pickImage(
                                     source: ImageSource.gallery);
-                                print(image);
                                 if (image != null) {
                                   if (!await controller
                                       .analyzeImage(image.path)) {
@@ -69,8 +68,6 @@ class _QRPageState extends State<QRPage> {
                                     );
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);
-                                  } else {
-                                    print("QR");
                                   }
                                 }
                               },

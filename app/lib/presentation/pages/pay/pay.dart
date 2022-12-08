@@ -81,6 +81,16 @@ class _SendPageState extends State<SendPage> {
                                   formControlName: 'address',
                                   onEditingComplete: null,
                                   autocorrect: false,
+                                  onSubmitted: form.valid
+                                      ? (control) =>
+                                          getIt<ActionTriggerService>().trigger(
+                                              ActionStream(
+                                                  context: context,
+                                                  link: form
+                                                      .control('address')
+                                                      .value,
+                                                  pot: widget.pot))
+                                      : null,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                       hintText: AppLocalizations.of(context)!
@@ -90,7 +100,9 @@ class _SendPageState extends State<SendPage> {
                           const HoriDivider(),
                           ReactiveFormConsumer(
                             builder: (context, form, child) {
-                              return Button(
+                              return IconButton(
+                                icon: Icon(Icons.arrow_forward_ios),
+                                iconSize: 20,
                                 onPressed: form.valid
                                     ? () => getIt<ActionTriggerService>()
                                         .trigger(ActionStream(
@@ -98,7 +110,7 @@ class _SendPageState extends State<SendPage> {
                                             link: form.control('address').value,
                                             pot: widget.pot))
                                     : null,
-                                text: 'OK',
+                                // text: 'OK',
                               );
                             },
                           ),
@@ -112,10 +124,16 @@ class _SendPageState extends State<SendPage> {
                           child: Column(children: [
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Header(AppLocalizations.of(context)!.contacts),
-                              Button(
-                                  text: AppLocalizations.of(context)!.add,
+                              Subheader(AppLocalizations.of(context)!.contacts),
+                              IconButton(
+                                  iconSize: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium!
+                                      .fontSize,
+                                  icon: FaIcon(FontAwesomeIcons.plus),
+                                  // text: AppLocalizations.of(context)!.add,
                                   onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(

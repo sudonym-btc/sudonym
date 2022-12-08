@@ -16,7 +16,7 @@ class TransactionList extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Header(AppLocalizations.of(context)!.transactions),
+          Subheader(AppLocalizations.of(context)!.transactions),
           const VertDivider(),
           Expanded(
               child: ListWidget(

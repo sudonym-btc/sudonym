@@ -33,7 +33,12 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
     options = CurrencyInputOptions(
         currencies: currencies,
         max: [
-          CurrencyInputOutput(widget.action.maxAmount, widget.action.currency),
+          ...(widget.action.maxAmount != null
+              ? [
+                  CurrencyInputOutput(
+                      widget.action.maxAmount, widget.action.currency)
+                ]
+              : []),
           ...(widget.pot != null
               ? [
                   CurrencyInputOutput(
@@ -42,7 +47,12 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
               : [])
         ],
         min: [
-          CurrencyInputOutput(widget.action.minAmount, widget.action.currency)
+          ...(widget.action.maxAmount != null
+              ? [
+                  CurrencyInputOutput(
+                      widget.action.minAmount, widget.action.currency)
+                ]
+              : [])
         ],
         initialCurrency: widget.pot?.currency,
         initialValue: CurrencyInputOutput(
