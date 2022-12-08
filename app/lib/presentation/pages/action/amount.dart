@@ -24,6 +24,7 @@ class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
 
 class _AmountPageState extends State<AmountPage> with AmountLogger {
   late CurrencyInputOptions options;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
   @override
   Widget build(BuildContext context) {
     CurrencyInput currencyInput = CurrencyInput(
+      form: _formKey,
       options: options,
       large: false,
     );
@@ -81,28 +83,33 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
               ),
               body: CustomPadding(
                   multiplier: 2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(child: Center(child: currencyInput)),
-                      ButtonBar(children: [
-                        Button(
-                          text: AppLocalizations.of(context)!.confirm,
-                          icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                              size: 14),
-                          onPressed: () {
-                            widget.action.amount =
-                                options.controller!.value.amount;
-                            widget.action.currency =
-                                options.controller!.value.currency;
-                            widget.onDone(widget.action);
-                          },
-                        )
-                      ])
-                    ],
-                  )))),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(child: Center(child: currencyInput)),
+                          ButtonBar(children: [
+                            Button(
+                              text: AppLocalizations.of(context)!.confirm,
+                              icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                                  size: 14),
+                              onPressed: _formKey.currentState != null &&
+                                      _formKey.currentState!.validate()
+                                  ? () {
+                                      widget.action.amount =
+                                          options.controller!.value.amount;
+                                      widget.action.currency =
+                                          options.controller!.value.currency;
+                                      widget.onDone(widget.action);
+                                    }
+                                  : null,
+                            )
+                          ])
+                        ],
+                      ))))),
     );
   }
 }

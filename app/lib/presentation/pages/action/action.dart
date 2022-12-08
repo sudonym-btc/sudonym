@@ -30,7 +30,6 @@ class ActionPage extends StatelessWidget {
         (err.response as dynamic).statusCode == 503) {
       var el =
           err.response?.data?['withdraw'] ?? err.response?.data?['payment'];
-      print(el);
       var reason = el['remoteResponse']?['data']?['reason'];
       return StatusPage(
           title: 'Error',

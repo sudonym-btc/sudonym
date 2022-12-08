@@ -123,10 +123,10 @@ def api(config, cluster_types):
                                             }
                                         },
                                         "resources": {
-                                            "limits": {
-                                                "cpu": "0.4",
-                                                "memory": "500Mi"
-                                            },
+                                            # "limits": {
+                                            #     "cpu": "0.4",
+                                            #     "memory": "500Mi"
+                                            # },
                                             "requests": {
                                                 "cpu": "0.4",
                                                 "memory": "500Mi"

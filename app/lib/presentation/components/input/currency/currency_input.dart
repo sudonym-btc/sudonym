@@ -7,18 +7,20 @@ import 'package:sudonym/presentation/index.dart';
 
 class CurrencyInput extends FormField<CurrencyInputOutput> {
   final CurrencyInputOptions options;
+  final GlobalKey<FormState> form;
   final void Function(CurrencyInputOutput)? onChanged;
   final bool large;
 
   CurrencyInput({
     required this.options,
     this.large = false,
+    required this.form,
     this.onChanged,
     super.key,
   }) : super(
             builder: (FormFieldState<CurrencyInputOutput> state) =>
                 (state as _CurrencyInputState)
-                    .constructWidget(state.context, options, large));
+                    .constructWidget(state.context, form, options, large));
 
   @override
   FormFieldState<CurrencyInputOutput> createState() => _CurrencyInputState();
@@ -31,8 +33,8 @@ class CurrencyInputOutput {
 }
 
 class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
-  Widget constructWidget(
-      BuildContext context, CurrencyInputOptions options, bool large) {
+  Widget constructWidget(BuildContext context, GlobalKey<FormState> form,
+      CurrencyInputOptions options, bool large) {
     return BlocProvider(
         create: (_) => CurrencyInputCubit(options),
         child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
@@ -82,13 +84,13 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       contentPadding: EdgeInsets.zero,
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
+                      errorText: state.error,
                       prefixText:
                           '${getCurrencySymbol(options.currencies[state.currCurrency])}  ',
                       prefixStyle: Theme.of(context)
                           .textTheme
                           .displayLarge!
                           .copyWith(
-                              // fontSize: 44,
                               color: Theme.of(context)
                                   .textTheme
                                   .displayLarge!

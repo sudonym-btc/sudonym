@@ -136,6 +136,13 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     safeEmit(state.copyWith(maxLoading: true));
     double max = await getMaxInCurrentCurrency();
 
+    if (min > max) {
+      safeEmit(state.copyWith(error: 'Max amount is less than minimum'));
+      return val;
+    } else {
+      safeEmit(state.copyWith(error: null));
+    }
+
     if (numToCurrentPrecision(max) <= numToCurrentPrecision(val)) {
       controller!.updateValue(
           getDisplayValue(options.currencies[state.currCurrency], max));
@@ -259,6 +266,7 @@ class CurrencyInputCubitState extends Equatable {
   final int altCurrency;
   final num currVal;
   final num altVal;
+  final String? error;
 
   const CurrencyInputCubitState({
     this.currencies = defaultCurrencies,
@@ -271,6 +279,7 @@ class CurrencyInputCubitState extends Equatable {
     this.altCurrency = 1,
     this.currVal = 0,
     this.altVal = 0,
+    this.error,
   });
 
   CurrencyInputCubitState copyWith(
@@ -283,7 +292,8 @@ class CurrencyInputCubitState extends Equatable {
           int? currCurrency,
           int? altCurrency,
           num? currVal,
-          num? altVal}) =>
+          num? altVal,
+          String? error}) =>
       CurrencyInputCubitState(
           currencies: currencies ?? this.currencies,
           positiveEnabled: positiveEnabled ?? this.positiveEnabled,
@@ -294,7 +304,8 @@ class CurrencyInputCubitState extends Equatable {
           currCurrency: currCurrency ?? this.currCurrency,
           altCurrency: altCurrency ?? this.altCurrency,
           currVal: currVal ?? this.currVal,
-          altVal: altVal ?? this.altVal);
+          altVal: altVal ?? this.altVal,
+          error: error ?? this.error);
 
   @override
   List<Object?> get props => [
@@ -306,6 +317,7 @@ class CurrencyInputCubitState extends Equatable {
         currCurrency,
         altCurrency,
         currVal,
-        altVal
+        altVal,
+        error
       ];
 }

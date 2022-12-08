@@ -41,7 +41,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			for (const pendingItem of this.pendingEvents) {
 				this.logger.log(
 					'Resending unacked message',
-					pendingItem.event.name
+					pendingItem.event.name,
+					pendingItem.event.id
 				);
 				pendingItem.client.send(JSON.stringify(pendingItem.event));
 			}
@@ -56,6 +57,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				uid,
 				(this.users[uid] || []).length
 			);
+			console.log(this.users[uid].length);
 			for (const sock of this.users[uid] || []) {
 				const clonedE = {
 					...e,
@@ -68,6 +70,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					event: clonedE,
 				});
 
+				console.log(this.pendingEvents);
+
 				sock.send(JSON.stringify(clonedE));
 			}
 		}
@@ -78,17 +82,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.pendingEvents = this.pendingEvents.filter(
 			(i) => i.client != client
 		);
+		this.logger.verbose('Websocket client disconnected');
 		for (const i of Object.keys(this.users)) {
-			for (const key in this.users[i]) {
-				if (this.users[i][key] == client) {
-					delete this.users[i][key];
-					this.logger.verbose(
-						'Websocket client disconnected',
-						i,
-						this.users[i].length
-					);
-				}
-			}
+			this.users[i] = this.users[i].filter((sock) => sock != client);
 		}
 	}
 
@@ -103,6 +99,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		});
 
 		if (user && user.uid) {
+			let lastPing = new Date();
 			this.users[user.uid] = this.users[user.uid] || [];
 			this.users[user.uid].push(client);
 			this.logger.verbose(
@@ -110,14 +107,21 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				user.uid,
 				this.users[user.uid].length
 			);
-			const interval = setInterval(
-				() => client.send(JSON.stringify({ ping: true })),
-				5000
-			);
-
+			const ping = () => {
+				if ((new Date().valueOf() - lastPing.valueOf()) / 1000 > 5) {
+					clearInterval(interval);
+					this.handleDisconnect(client);
+				}
+				this.logger.verbose('ping ' + user.uid);
+				client.send(JSON.stringify({ id: uuid(), ping: true }));
+			};
+			const interval = setInterval(ping, 3000);
+			ping();
 			// When the client ACKs a message, remove from pending messages
 			client.on('message', (msg: Buffer) => {
 				const event = JSON.parse(msg.toString());
+				this.logger.verbose(event);
+				lastPing = new Date();
 				if (event.event == 'ack') {
 					this.pendingEvents = this.pendingEvents.filter(
 						(i) => i.event.id != event.id
@@ -126,6 +130,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			});
 			client.on('disconnect', () => {
 				clearInterval(interval);
+				this.handleDisconnect(client);
 			});
 		} else {
 			this.logger.verbose('No id provided for bsocket');

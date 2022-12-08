@@ -35,8 +35,7 @@ class WebsocketImpl extends Websocket
 
     checker = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (lastPing != null &&
-          lastPing!.difference(DateTime.now()).inSeconds > 10 &&
-          channel != null) {
+          DateTime.now().difference(lastPing!).inSeconds > 5) {
         connect();
       }
     });
