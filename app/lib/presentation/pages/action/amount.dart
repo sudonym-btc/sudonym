@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -24,7 +25,7 @@ class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
 
 class _AmountPageState extends State<AmountPage> with AmountLogger {
   late CurrencyInputOptions options;
-  final _formKey = GlobalKey<FormState>();
+  late FormGroup formGroup;
 
   @override
   void initState() {
@@ -58,6 +59,11 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
         initialCurrency: widget.pot?.currency,
         initialValue: CurrencyInputOutput(
             widget.action.minAmount ?? 0, widget.action.currency));
+    formGroup = FormGroup({
+      'amount': FormControl<CurrencyInputOutput>(
+        value: options.initialValue,
+      ),
+    });
     super.initState();
   }
 
@@ -69,7 +75,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
   @override
   Widget build(BuildContext context) {
     CurrencyInput currencyInput = CurrencyInput(
-      form: _formKey,
+      form: formGroup,
       options: options,
       large: false,
     );
@@ -83,33 +89,36 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
               ),
               body: CustomPadding(
                   multiplier: 2,
-                  child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(child: Center(child: currencyInput)),
-                          ButtonBar(children: [
-                            Button(
-                              text: AppLocalizations.of(context)!.confirm,
-                              icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                                  size: 14),
-                              onPressed: _formKey.currentState != null &&
-                                      _formKey.currentState!.validate()
-                                  ? () {
-                                      widget.action.amount =
-                                          options.controller!.value.amount;
-                                      widget.action.currency =
-                                          options.controller!.value.currency;
-                                      widget.onDone(widget.action);
-                                    }
-                                  : null,
-                            )
-                          ])
-                        ],
-                      ))))),
+                  child: ReactiveForm(
+                      formGroup: formGroup,
+                      child: ReactiveFormConsumer(
+                          builder: (context, formGroup, child) => Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(child: Center(child: currencyInput)),
+                                  ButtonBar(children: [
+                                    Button(
+                                      text:
+                                          AppLocalizations.of(context)!.confirm,
+                                      icon: const FaIcon(
+                                          FontAwesomeIcons.paperPlane,
+                                          size: 14),
+                                      onPressed: formGroup.valid
+                                          ? () {
+                                              widget.action.amount = options
+                                                  .controller!.value.amount;
+                                              widget.action.currency = options
+                                                  .controller!.value.currency;
+                                              widget.onDone(widget.action);
+                                            }
+                                          : null,
+                                    )
+                                  ])
+                                ],
+                              )))))),
     );
   }
 }

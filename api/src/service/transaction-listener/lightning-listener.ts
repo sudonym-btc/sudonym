@@ -6,12 +6,12 @@ import { Transaction } from 'module/transaction/transaction.model';
 import { Op } from 'sequelize';
 import {
 	LightningError,
-	LightningNodeService
+	LightningNodeService,
 } from '../lightning-node/lightning-node.service';
 import {
 	LightningEvents,
 	SendPayResponse,
-	WaitSendPayResponse
+	WaitSendPayResponse,
 } from './lightning-events';
 import { TransactionListener } from './transaction-listener.interface';
 
@@ -43,6 +43,7 @@ export class LightningListener extends TransactionListener {
 						address: receivers.data[0].data,
 						potId: receivers.data[0].potId,
 						receiverId: receivers.data[0].id,
+						description: e.data.description,
 						outgoing: false,
 						amount:
 							(e.data.msatoshi || e.data.msatoshi_received) / //depends if amount in invoice as to which key to access

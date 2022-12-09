@@ -51,7 +51,11 @@ class TransactionListItem extends StatelessWidget {
                           style:
                               const TextStyle(overflow: TextOverflow.ellipsis),
                         ),
-                        Info(getDescription(context, entity)),
+                        Info(
+                          getDescription(context, entity),
+                          style:
+                              const TextStyle(overflow: TextOverflow.ellipsis),
+                        ),
                       ],
                     )),
                     SizedBox(
@@ -83,5 +87,7 @@ getTitle(BuildContext context, Transaction entity) {
 }
 
 getDescription(BuildContext context, Transaction entity) {
-  return entity.description ?? AppLocalizations.of(context)!.noDescription;
+  return entity.description != null && entity.description != ''
+      ? entity.description
+      : AppLocalizations.of(context)!.noDescription;
 }

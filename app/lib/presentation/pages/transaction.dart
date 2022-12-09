@@ -158,6 +158,17 @@ class _OutgoingComplete extends _TransactionStatusPage {
                             ])
                           ]
                         : []),
+                    ...((transaction.description != null &&
+                            transaction.description != '')
+                        ? [
+                            TableRow(children: [
+                              TableKey(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .description)),
+                              Text(transaction.description ?? '')
+                            ])
+                          ]
+                        : []),
                     TableRow(children: [
                       TableKey(child: Text(AppLocalizations.of(context)!.time)),
                       Timeago(
@@ -251,6 +262,16 @@ class _IncomingComplete extends _TransactionStatusPage {
                           overflow: TextOverflow.ellipsis,
                         ),
                       )
+                    ])
+                  ]
+                : []),
+            ...((transaction.description != '')
+                ? [
+                    TableRow(children: [
+                      TableKey(
+                          child:
+                              Text(AppLocalizations.of(context)!.description)),
+                      Text(transaction.description ?? '')
                     ])
                   ]
                 : []),

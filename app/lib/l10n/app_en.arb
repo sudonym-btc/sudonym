@@ -128,5 +128,6 @@
 	"to": "To",
 	"ok": "OK",
 	"potCurrencyDescription": "Anything sent to this pot will immediately be converted and held in the specified currency.",
-	"noQRFound": "No QR code found."
+	"noQRFound": "No QR code found.",
+	"description": "Description"
 }

@@ -56,6 +56,9 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@Column(DataType.TEXT('medium')) // Must be enough data to hold payerData and metadata image base 64, to be hashed into bolt11 description
 	description: string;
 
+	@Column(DataType.TEXT('medium'))
+	comment: string;
+
 	@Column(DataType.JSON)
 	payerData: any;
 

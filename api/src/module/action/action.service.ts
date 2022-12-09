@@ -74,6 +74,11 @@ export class ActionService {
 					return Action.from({
 						...action,
 						address: action.originalAddress,
+						comment: await (
+							await this.lightningNodeService.decodeInvoice(
+								action.originalAddress
+							)
+						).tagsObject.description,
 						fee,
 						feeCurrency: 'BTC',
 					});
@@ -123,6 +128,11 @@ export class ActionService {
 					return Action.from({
 						...action,
 						address,
+						comment: await (
+							await this.lightningNodeService.decodeInvoice(
+								address
+							)
+						).tagsObject.description,
 						fee:
 							(await this.lightningNodeService.getFeesInvoice(
 								address,
@@ -153,6 +163,7 @@ export class ActionService {
 				type: getAddressType(action.originalAddress),
 				amount: action.amount,
 				currencyCode: action.currency,
+				description: action.comment,
 				outgoing: true,
 				potId: action.potId,
 			});
@@ -162,6 +173,7 @@ export class ActionService {
 				type: getAddressType(action.originalAddress),
 				amount: action.amount,
 				currencyCode: action.currency,
+				description: action.comment,
 				outgoing: true,
 				potId: action.potId,
 			});

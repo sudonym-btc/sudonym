@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 class CurrencyInput extends FormField<CurrencyInputOutput> {
   final CurrencyInputOptions options;
-  final GlobalKey<FormState> form;
+  final FormGroup? form;
   final void Function(CurrencyInputOutput)? onChanged;
   final bool large;
 
   CurrencyInput({
     required this.options,
     this.large = false,
-    required this.form,
+    this.form,
     this.onChanged,
     super.key,
   }) : super(
@@ -33,12 +34,19 @@ class CurrencyInputOutput {
 }
 
 class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
-  Widget constructWidget(BuildContext context, GlobalKey<FormState> form,
+  Widget constructWidget(BuildContext context, FormGroup? form,
       CurrencyInputOptions options, bool large) {
     return BlocProvider(
         create: (_) => CurrencyInputCubit(options),
         child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
           builder: (context, state) {
+            if (form != null) {
+              if (state.error != null) {
+                form.setErrors({'amount': state.error});
+              } else {
+                form.control('amount').removeError('amount');
+              }
+            }
             Ink negativeButton = Ink(
                 decoration: buttonDecoration(context, state.negativeEnabled),
                 child: IconButton(
@@ -85,6 +93,11 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       errorText: state.error,
+                      helperText: state.altLoading
+                          ? '...'
+                          : FormatCurrency().format(
+                              options.currencies[state.altCurrency],
+                              state.altVal),
                       prefixText:
                           '${getCurrencySymbol(options.currencies[state.currCurrency])}  ',
                       prefixStyle: Theme.of(context)
@@ -111,11 +124,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     keyboardType: TextInputType.number,
                   ),
-                  Info(state.altLoading
-                      ? '...'
-                      : FormatCurrency().format(
-                          options.currencies[state.altCurrency], state.altVal)),
-                  const VertDivider(),
+                  // const VertDivider(),
                 ]);
             if (large) {
               return Column(

@@ -11,6 +11,7 @@ export class Receiver extends BaseClass {
 		public data: string,
 		public lnurlId: string | null,
 		public description: string | null,
+		public comment: string | null,
 		public payerData: any | null,
 		public received: number | null,
 		public createdAt: Date
@@ -29,6 +30,7 @@ export class Receiver extends BaseClass {
 			json['data'],
 			json['lnurlId'],
 			json['description'],
+			json['comment'],
 			json['payerData'],
 			json['received'],
 			json['createdAt']
@@ -46,6 +48,7 @@ export class Receiver extends BaseClass {
 			data: this.data,
 			lnurlId: this.lnurlId,
 			description: this.description,
+			comment: this.comment,
 			payerData: this.payerData,
 			received: this.received,
 			createdAt: this.createdAt,
