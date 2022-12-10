@@ -41,7 +41,9 @@ export class LightningEvents {
 
 		ws.on('error', (data) => {
 			this.logger.error('error: %s', data);
-			this.reconnect();
+			setTimeout(() => {
+				this.reconnect();
+			}, 2000);
 		});
 
 		ws.on('open', () => {
@@ -50,7 +52,9 @@ export class LightningEvents {
 
 		ws.on('close', () => {
 			this.logger.error('Disconnected from lightning message queue');
-			this.reconnect();
+			setTimeout(() => {
+				this.reconnect();
+			}, 2000);
 		});
 	}
 
