@@ -47,7 +47,7 @@ def lightning_rest(config, cluster_types):
                             + """,
         "PROTOCOL": "http",
         "EXECMODE": """ 
-                            + ("\"production\"" if config["env"] == "production" else "\"test\"")
+                            + ("\"test\"" if config["env"] == "production" else "\"test\"")
                             + """,
         "LNRPCPATH": "/rpc/lightning-rpc",
         "RPCCOMMANDS": ["*"]
