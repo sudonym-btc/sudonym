@@ -67,7 +67,7 @@ class StatusPage extends StatelessWidget {
       children.add(Expanded(child: Container()));
     } else {
       if (content != null) {
-        children.add(content!);
+        children.add(Expanded(child: content!));
       }
       if (icon != null) {
         children.add(Expanded(
@@ -82,7 +82,7 @@ class StatusPage extends StatelessWidget {
     }
 
     if (actions != null) {
-      children.addAll([Expanded(child: Container()), actions!]);
+      children.addAll([actions!]);
     }
 
     return Theme(

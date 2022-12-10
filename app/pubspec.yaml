@@ -56,6 +56,8 @@ dependencies:
     timeago: ^3.3.0
     timeago_flutter: ^1.2.0
     universal_io: ^2.0.4
+    url_launcher: ^6.1.7
+    vibration: ^1.7.6
     web_socket_channel: ^2.2.0
 dev_dependencies:
     build_runner: any
@@ -72,9 +74,9 @@ dev_dependencies:
     widgetbook: ^2.4.1
 flutter:
     assets:
-        - assets/mastercardLogo.png
+        - assets/logo.png
         - assets/fonts/
-        - assets/visaLogo.png
+        - assets/audio/
         - assets/currencies/
     generate: true
     uses-material-design: true

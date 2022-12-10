@@ -6,9 +6,22 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
-class TransactionList extends StatelessWidget {
+class TransactionList extends StatefulWidget {
   final Pot pot;
   const TransactionList({required this.pot, Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => TransactionListState();
+}
+
+class TransactionListState extends State<TransactionList> {
+  late ListCubit list;
+  @override
+  void initState() {
+    list = ListCubit(getIt<TransactionRepository>(),
+        where: {'potId': widget.pot.id});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +29,9 @@ class TransactionList extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(padding * 2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Subheader(AppLocalizations.of(context)!.transactions),
+          GestureDetector(
+              onTap: () => list.loadPrevious(),
+              child: Subheader(AppLocalizations.of(context)!.transactions)),
           const VertDivider(),
           Expanded(
               child: ListWidget(
@@ -31,12 +46,11 @@ class TransactionList extends StatelessWidget {
                     }
                     return TransactionListItem(
                       entity: state.entity!,
-                      pot: pot,
+                      pot: widget.pot,
                     );
                   });
             },
-            list: () => ListCubit(getIt<TransactionRepository>(),
-                where: {'potId': pot.id}),
+            list: () => list,
             emptyText: (AppLocalizations.of(context)!.noTransactionsFound),
           ))
         ]));

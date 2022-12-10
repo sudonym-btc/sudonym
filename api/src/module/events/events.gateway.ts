@@ -57,7 +57,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				uid,
 				(this.users[uid] || []).length
 			);
-			console.log(this.users[uid].length);
 			for (const sock of this.users[uid] || []) {
 				const clonedE = {
 					...e,
@@ -69,8 +68,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					client: sock,
 					event: clonedE,
 				});
-
-				console.log(this.pendingEvents);
 
 				sock.send(JSON.stringify(clonedE));
 			}
@@ -85,6 +82,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.logger.verbose('Websocket client disconnected');
 		for (const i of Object.keys(this.users)) {
 			this.users[i] = this.users[i].filter((sock) => sock != client);
+			this.logger.verbose(
+				this.users[i].length + ' users left for id ' + i
+			);
 		}
 	}
 
@@ -111,6 +111,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				if ((new Date().valueOf() - lastPing.valueOf()) / 1000 > 5) {
 					clearInterval(interval);
 					this.handleDisconnect(client);
+					return;
 				}
 				this.logger.verbose('ping ' + user.uid);
 				client.send(JSON.stringify({ id: uuid(), ping: true }));

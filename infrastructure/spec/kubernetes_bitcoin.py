@@ -245,8 +245,8 @@ def bitcoin(config, cluster_types):
                                         ],
                                         "resources": {
                                             "limits": {
-                                                "cpu": "0.1",
-                                                "memory": "2Gi"
+                                                "cpu": "0.5",
+                                                "memory": "4Gi"
                                             },
                                             "requests": {
                                                 "cpu": "0.01",

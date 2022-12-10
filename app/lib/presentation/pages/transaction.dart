@@ -5,9 +5,10 @@ import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timeago_flutter/timeago_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-Widget loader = const Expanded(
-    child: Center(child: CircularProgressIndicator(color: Colors.white)));
+Widget loader =
+    const Center(child: CircularProgressIndicator(color: Colors.white));
 
 class TransactionPage extends StatelessWidget {
   final Transaction? entity;
@@ -18,6 +19,9 @@ class TransactionPage extends StatelessWidget {
     return CubitWrapper<TransactionCubit, TransactionCubitState, Transaction>(
         entity:
             entity ?? ModalRoute.of(context)?.settings.arguments as Transaction,
+        refresh: (state) =>
+            state.entity?.status ==
+            null, // Keep refreshing if null as websockets might fail on bad connection
         builder: ((context, state) {
           if (state.loading || state.entity == null) {
             return StatusPage(
@@ -118,69 +122,64 @@ class _OutgoingComplete extends _TransactionStatusPage {
             date: transaction.createdAt,
             builder: (val) => Subtitle(
                 AppLocalizations.of(context)!.paymentOutgoingSuccess(val))),
-        content: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ContactSection(transaction),
-              const VertDivider(2),
-              Table(
-                  columnWidths: const {
-                    0: IntrinsicColumnWidth(),
-                    1: FlexColumnWidth(),
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    TableRow(children: [
-                      TableKey(
-                          child: Text(AppLocalizations.of(context)!.amount)),
-                      AmountText(
-                        showLoader: false,
-                        amount: transaction.amount,
-                        fromCurrency: transaction.currencyCode,
-                        toCurrency: transaction.Pot.currency,
-                        date: transaction.createdAt,
-                      )
-                    ]),
-                    ...((transaction.originalAddress != '' &&
-                            transaction.originalAddress != null)
-                        ? [
-                            TableRow(children: [
-                              TableKey(
-                                  child: Text(
-                                      AppLocalizations.of(context)!.address)),
-                              Text(
-                                transaction.originalAddress,
-                                style: const TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              )
-                            ])
-                          ]
-                        : []),
-                    ...((transaction.description != null &&
-                            transaction.description != '')
-                        ? [
-                            TableRow(children: [
-                              TableKey(
-                                  child: Text(AppLocalizations.of(context)!
-                                      .description)),
-                              Text(transaction.description ?? '')
-                            ])
-                          ]
-                        : []),
-                    TableRow(children: [
-                      TableKey(child: Text(AppLocalizations.of(context)!.time)),
-                      Timeago(
-                        builder: ((context, value) => Text(timeago.format(
-                            transaction.createdAt,
-                            locale:
-                                Localizations.localeOf(context).toString()))),
-                        date: transaction.createdAt,
-                      )
-                    ]),
-                  ]),
-            ]),
+        content:
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _ContactSection(transaction),
+          Table(
+              columnWidths: const {
+                0: IntrinsicColumnWidth(),
+                1: FlexColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                TableRow(children: [
+                  TableKey(child: Text(AppLocalizations.of(context)!.amount)),
+                  AmountText(
+                    showLoader: false,
+                    amount: transaction.amount,
+                    fromCurrency: transaction.currencyCode,
+                    toCurrency: transaction.Pot.currency,
+                    date: transaction.createdAt,
+                  )
+                ]),
+                ...((transaction.originalAddress != '' &&
+                        transaction.originalAddress != null)
+                    ? [
+                        TableRow(children: [
+                          TableKey(
+                              child:
+                                  Text(AppLocalizations.of(context)!.address)),
+                          Text(
+                            transaction.originalAddress,
+                            style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        ])
+                      ]
+                    : []),
+                ...((transaction.description != null &&
+                        transaction.description != '')
+                    ? [
+                        TableRow(children: [
+                          TableKey(
+                              child: Text(
+                                  AppLocalizations.of(context)!.description)),
+                          Text(transaction.description ?? '')
+                        ])
+                      ]
+                    : []),
+                TableRow(children: [
+                  TableKey(child: Text(AppLocalizations.of(context)!.time)),
+                  Timeago(
+                    builder: ((context, value) => Text(timeago.format(
+                        transaction.createdAt,
+                        locale: Localizations.localeOf(context).toString()))),
+                    date: transaction.createdAt,
+                  )
+                ]),
+              ]),
+        ]),
         color: Colors.green);
   }
 }
@@ -202,17 +201,38 @@ class _IncomingPending extends _TransactionStatusPage {
             builder: (val) => Subtitle(AppLocalizations.of(context)!
                 .paymentIsCurrentlyInTransit(val))),
         content: loader,
-        // actions: ButtonBar(
-        //   children: [
-        //     ElevatedButton(
-        //       style: raisedButtonStyle,
-        //       onPressed: () {
-        //         Navigator.of(context).pop();
-        //       },
-        //       child: Text(AppLocalizations.of(context)!.ok),
-        //     )
-        //   ],
-        // ),
+        actions: Column(
+          children: [
+            ...(transaction.type == 'onchain'
+                ? [
+                    ButtonBar(children: [
+                      ElevatedButton(
+                        style: raisedButtonStyle,
+                        onPressed: () async {
+                          String url =
+                              'https://mempool.space/tx/${transaction.txid}';
+                          if (!await launchUrl(Uri.parse(url))) {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        child:
+                            Text(AppLocalizations.of(context)!.trackInMempool),
+                      )
+                    ]),
+                    VertDivider()
+                  ]
+                : []),
+            // ButtonBar(children: [
+            //   ElevatedButton(
+            //     style: raisedButtonStyle,
+            //     onPressed: () {
+            //       Navigator.of(context).pop();
+            //     },
+            //     child: Text(AppLocalizations.of(context)!.ok),
+            //   )
+            // ])
+          ],
+        ),
         color: Colors.indigo.shade800);
   }
 }
@@ -265,7 +285,8 @@ class _IncomingComplete extends _TransactionStatusPage {
                     ])
                   ]
                 : []),
-            ...((transaction.description != '')
+            ...((transaction.description != null &&
+                    transaction.description != '')
                 ? [
                     TableRow(children: [
                       TableKey(
@@ -352,24 +373,30 @@ class _ContactSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (entity.ContactAddress?.contactId != null) {
-      return ContactListItem(
-          actions: false,
-          fetch: true,
-          contact: Contact.fromJson({'id': entity.ContactAddress.contactId}));
+      return Column(children: [
+        ContactListItem(
+            actions: false,
+            fetch: true,
+            contact: Contact.fromJson({'id': entity.ContactAddress.contactId})),
+        const VertDivider(2),
+      ]);
     }
     return ['lightningaddress'].contains(entity.type)
-        ? Button(
-            icon: const Icon(Icons.add),
-            text: AppLocalizations.of(context)!.createContact,
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditContactPage(
-                            entity: Contact.fromJson({
-                          'ContactAddresses': [
-                            {'address': entity.originalAddress}
-                          ]
-                        })))))
+        ? Column(children: [
+            Button(
+                icon: const Icon(Icons.add),
+                text: AppLocalizations.of(context)!.createContact,
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditContactPage(
+                                entity: Contact.fromJson({
+                              'ContactAddresses': [
+                                {'address': entity.originalAddress}
+                              ]
+                            }))))),
+            const VertDivider(2),
+          ])
         : Container();
   }
 }

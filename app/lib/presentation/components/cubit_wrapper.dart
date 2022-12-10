@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/data/index.dart';
@@ -11,11 +13,15 @@ class CubitWrapper<
     T extends BaseClass> extends StatelessWidget {
   final T entity;
   final bool fetch;
+  final bool Function(CS state)? refresh;
   final Widget Function(BuildContext context, CS state) builder;
+  final Function(BuildContext context, CS state)? listener;
 
   const CubitWrapper(
       {required this.entity,
       required this.builder,
+      this.listener,
+      this.refresh,
       this.fetch = true,
       super.key});
 
@@ -30,9 +36,17 @@ class CubitWrapper<
           if (fetch) {
             c.fetch(entity.toJson()['id']);
           }
+          Timer.periodic(const Duration(seconds: 10), (timer) {
+            if (refresh != null && refresh!(c.state)) {
+              c.fetch(entity.toJson()['id']);
+            }
+          });
           return c;
         },
         lazy: false,
-        child: BlocBuilder<C, CS>(builder: builder));
+        child: BlocConsumer<C, CS>(
+          builder: builder,
+          listener: listener ?? (context, state) => {},
+        ));
   }
 }

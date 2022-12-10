@@ -74,7 +74,7 @@
 	"editPot": "Edit pot",
 	"copiedToClipboard": "Copied to clipboard",
 	"lightning": "Lightning",
-	"lightningAddressDescription": "This is the email address that other wallets that support lightning addresses are able to send money to.",
+	"lightningAddressDescription": "This email address allows other wallets to send you money.",
 	"nameAlreadyTaken": "This name is already taken",
 	"addCard": "Add card",
 	"boltCardDescription": "Write your account details to an NFC card so that you can tap them to a point of sales device to pay.",
@@ -129,5 +129,6 @@
 	"ok": "OK",
 	"potCurrencyDescription": "Anything sent to this pot will immediately be converted and held in the specified currency.",
 	"noQRFound": "No QR code found.",
-	"description": "Description"
+	"description": "Description",
+	"trackInMempool": "Track in mempool"
 }

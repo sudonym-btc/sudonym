@@ -140,8 +140,7 @@ class LightningSectionState extends State<LightningSection> {
                         },
                         decoration: InputDecoration(
                             hintText: 'satoshi',
-                            labelText:
-                                AppLocalizations.of(context)!.lightningAddress,
+                            labelText: AppLocalizations.of(context)!.address,
                             suffixText: '@${getIt<Config>().domain}')),
                   ],
                 );

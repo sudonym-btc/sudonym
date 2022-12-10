@@ -241,7 +241,7 @@ export class LightningNodeService {
 		return this.rpc('invoice', [
 			amount,
 			label || uuid(),
-			description || uuid(),
+			description || '',
 			null,
 			null,
 			preimage,

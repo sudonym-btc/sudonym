@@ -176,11 +176,11 @@ export class AddressParser implements IAddressParser {
 		}
 	};
 
-	getType(address: string): [TAddressType, string] {
-		this.logger.debug('Parsing', address);
+	getType(originalAddress: string): [TAddressType, string] {
+		this.logger.debug('Parsing', originalAddress);
 
 		// Trim whitespace and remove protocol and query
-		address = address.trim().replace(/(^\w+:|^)\/\//, '');
+		let address = originalAddress.trim().replace(/(^\w+:|^)\/\//, '');
 		if (!address || address === '') {
 			return null;
 		}
@@ -214,6 +214,10 @@ export class AddressParser implements IAddressParser {
 					: Network[this.config.bitcoin.network] // Don't check for valid network if in testing mode
 			)
 		) {
+			const query = parseQuery(originalAddress.split('?').pop());
+			if (query && query.lightning) {
+				return this.getType(query.lightning);
+			}
 			return ['onchain', address.split('?')[0]];
 		}
 		return [null, address];

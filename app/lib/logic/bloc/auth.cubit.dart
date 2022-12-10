@@ -22,7 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
         setUser(null, null);
       } else {
         setUser(null, event);
-        websocket.connect();
+        websocket.forceReconnect();
         setUser(
             await _userRepository
                 .create({'id': event.uid, 'firebaseId': event.uid}),

@@ -19,7 +19,7 @@ class ReceiverPageState extends State<ReceiverPage> {
   Transaction? handle(Transaction t) {
     // Don't bubble this event to global transaction handler if already on this page
     if (t.receiverId == widget.entity.id) {
-      FlutterRingtonePlayer.playNotification();
+      FlutterRingtonePlayer.play(fromAsset: 'assets/audio/ping.mp3');
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => TransactionPage(entity: t),

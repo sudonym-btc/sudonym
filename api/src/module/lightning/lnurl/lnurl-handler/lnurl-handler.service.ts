@@ -50,6 +50,9 @@ export class LnUrlHandlerService {
 					type: 'bolt11',
 					amount: query.amount / MSATOSHIS,
 					amountCurrency: 'BTC',
+					comment: query.comment
+						? decodeURIComponent(query.comment)
+						: null,
 					payerData:
 						payerData && payerData.length
 							? JSON.parse(payerData)

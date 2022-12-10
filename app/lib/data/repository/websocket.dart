@@ -36,13 +36,16 @@ class WebsocketImpl extends Websocket
     checker = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (lastPing != null &&
           DateTime.now().difference(lastPing!).inSeconds > 5) {
-        connect();
+        lastPing = DateTime.now();
+        loggy.i('Websocket reconnecting due to periodic checker');
+        forceReconnect();
       }
     });
   }
 
   @override
   disconnect() {
+    if (channel != null) channel = null;
     if (socketSubscription != null) {
       loggy.d('Disconnecting websocket');
       socketSubscription!.cancel();
@@ -51,7 +54,7 @@ class WebsocketImpl extends Websocket
 
   @override
   connect() async {
-    disconnect();
+    if (channel != null) return;
     Uri url = Uri.parse(
             '${config.apiUrl.replaceAll('http', 'ws')}:${config.websocketPort}/socket.io')
         .replace(queryParameters: {
@@ -64,6 +67,12 @@ class WebsocketImpl extends Websocket
 
     socketSubscription = channel!.stream.listen(onReceived,
         onError: onError, onDone: () => onError(null), cancelOnError: true);
+  }
+
+  @override
+  forceReconnect() async {
+    disconnect();
+    connect();
   }
 
   void onReceived(dynamic msg) {
@@ -91,6 +100,7 @@ class WebsocketImpl extends Websocket
     loggy.e(e);
     await Future.delayed(Duration(milliseconds: 500 * _errorCount));
     _errorCount++;
+    loggy.i('Websocket reconnecting due to error');
     await connect();
   }
 
@@ -100,7 +110,10 @@ class WebsocketImpl extends Websocket
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     loggy.d('Changed app state');
-    if (state == AppLifecycleState.resumed) connect();
+    if (state == AppLifecycleState.resumed) {
+      loggy.i('Websocket reconnecting due to state change');
+      forceReconnect();
+    }
   }
 
   void dispose() {
@@ -114,6 +127,7 @@ class WebsocketImpl extends Websocket
 
 abstract class Websocket {
   connect();
+  forceReconnect();
   disconnect();
   Stream getStream();
 }

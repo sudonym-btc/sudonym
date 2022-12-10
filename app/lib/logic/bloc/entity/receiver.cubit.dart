@@ -20,8 +20,10 @@ class ReceiverCubit
     receiveSubscription ??= repository.events.stream.listen((dynamic event) {
       if (state.entity != null && event.name == 'receiver.received') {
         if (event.data['id'] == state.entity!.id ||
-            event.data['parentId'] == state.entity!.id) {
-          // TODO: Reload the invoice after usage
+            event.data['parentId'] == state.entity!.id &&
+                state.entity!.type == 'bolt11') {
+          getInvoice(
+              state.entity!.potId, state.entity!.type, state.entity!.amount);
         }
       }
     });

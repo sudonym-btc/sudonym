@@ -31,7 +31,7 @@ class IncomingTransactionHandlerState extends State<IncomingTransactionHandler>
   Transaction callback(Transaction event) {
     loggy.i('Incoming transaction callback ${event.id}');
     if (event.outgoing == false) {
-      FlutterRingtonePlayer.playNotification();
+      FlutterRingtonePlayer.play(fromAsset: 'assets/audio/ping.mp3');
       Navigator.of(context).push(
         MaterialPageRoute(
             builder: (context) => TransactionPage(entity: event),

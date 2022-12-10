@@ -8,7 +8,7 @@ import 'package:sudonym.models/index.dart';
 @lazySingleton
 @injectable
 class IncomingTransactionHandlerService with ActionLogger {
-  late TransactionRepository _transactionRepository =
+  final TransactionRepository _transactionRepository =
       getIt<TransactionRepository>();
   final CallbackHandler<Transaction> callbacks = CallbackHandler<Transaction>();
 

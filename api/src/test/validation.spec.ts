@@ -70,7 +70,7 @@ scaffoldGroup('Validation', (scaffold) => {
 				'lnbcrt9849383230p1p3kgwy7sp5t5e3n4w60dxntfvejf7xssscn9r4rs533a937mgeyejuhaqragtspp55qjjg0g67txkkxd2ttay0r0f2me3ggq9eghfrepy9k9kxamlxdhqdp6x93k2en98yckgtf5xymxxtf5xe3k2tfcx9nxztf3vyerzdrpxdjr2vrxvyxqyjw5qcqp29qyysgqsyjr8pzfzejavzuec9zx502v68vp47vennf5cctt3nqgllym6s9xsvjy7ced9sz7yy80qldpgyfkvaxqwtqn7dtawf0uvrakl7kcw7gpff0gxy', // with amount
 			],
 			lnurl: [
-				'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09&lightning:lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
+				'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09&lightning=lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
 				'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
 			],
 		};
