@@ -170,12 +170,12 @@ def lightning_rest(config, cluster_types):
 
                                             "resources": {
                                                 "limits": {
-                                                    "cpu": "0.01",
+                                                    "cpu": "0.1",
                                                     "memory": "50Mi"
                                                 },
                                                 "requests": {
-                                                    "cpu": "0.005",
-                                                    "memory": "50Mi"
+                                                    "cpu": "0.01",
+                                                    "memory": "200Mi"
                                                 }
                                             }
                                         }
