@@ -1,10 +1,12 @@
 import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
 import { transaction as bolt11Mock } from '@sudonym/models/src/mock/bolt11.mock';
-import { Block } from 'bitcoinjs-lib';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { firstValueFrom } from 'rxjs';
-import { BitcoinEvents } from 'service/transaction-listener/bitcoin-events';
+import {
+	BitcoinBlock,
+	BitcoinEvents,
+} from 'service/transaction-listener/bitcoin-events';
 import { LightningEvents } from 'service/transaction-listener/lightning-events';
 import { scaffoldGroup } from '../mock/scaffold-group';
 
@@ -58,7 +60,7 @@ scaffoldGroup('Receive', (scaffold) => {
 						fromAddress: 'bc1erwf',
 						address: scaffold.entities.onchainReceiver.data,
 						value: satoshi,
-					},
+					} as any,
 				],
 			});
 			const [tx] = await Promise.all([
@@ -88,10 +90,11 @@ scaffoldGroup('Receive', (scaffold) => {
 			const block = {
 				transactions: [
 					{
+						outs: [],
 						getId: () => '123',
 					},
 				],
-			} as any as Block;
+			} as BitcoinBlock;
 
 			scaffold.app.get(BitcoinEvents).onBlock.next(block);
 
