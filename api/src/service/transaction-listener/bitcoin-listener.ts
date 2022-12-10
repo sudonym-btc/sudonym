@@ -21,7 +21,7 @@ export class BitcoinListener extends TransactionListener {
 			const receivers = await this.receiveService.list({
 				where: {
 					data: {
-						[Op.like]: '%' + out.address + '%',
+						[Op.like]: out.address + '%',
 					},
 				},
 			});
