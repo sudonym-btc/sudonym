@@ -25,8 +25,10 @@ class _QRPageState extends State<QRPage> {
 
   @override
   void initState() {
-    controller.barcodes.listen((barcode) {
-      final String? code = barcode.rawValue;
+    controller.barcodes
+        .map((event) => event.rawValue)
+        .distinct()
+        .listen((code) {
       getIt<ActionTriggerService>().trigger(
           ActionStream(context: context, link: code!, pot: widget.pot));
     });

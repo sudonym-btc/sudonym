@@ -19,6 +19,12 @@ export class LightningEvents {
 		return this.config.lightningREST.replace('http', 'ws');
 	}
 
+	getMacaroon() {
+		return Buffer.from(fs.readFileSync(getConfig().macaroonFile)).toString(
+			'base64'
+		);
+	}
+
 	reconnect() {
 		this.logger.debug(
 			'Connecting to lightning message queue at ' + this.getUrl()
@@ -26,9 +32,7 @@ export class LightningEvents {
 		const ws = new WebSocket(this.getUrl() + '/v1/ws', ['json'], {
 			rejectUnauthorized: false,
 			headers: {
-				'sec-websocket-protocol': Buffer.from(
-					fs.readFileSync(getConfig().macaroonFile)
-				).toString('base64'),
+				'sec-websocket-protocol': this.getMacaroon(),
 			},
 		});
 		ws.on('message', (data) => {

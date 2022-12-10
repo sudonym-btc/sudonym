@@ -25,9 +25,6 @@ export class LnUrlHandlerService {
 		const tag = await this.serve(id);
 		switch (tag.tag) {
 			case 'payRequest': {
-				// JSON.parse(urldecode(query.payerdata))
-				// JSON.parse(urldecode(query.comment))
-
 				const payerData = query.payerdata
 					? decodeURIComponent(query.payerdata)
 					: '';
@@ -42,6 +39,13 @@ export class LnUrlHandlerService {
 						lnurlId: id,
 					},
 				});
+
+				const skimDescription = (metadata) =>
+					((metadata || []).find((i) => i[0] === 'text/plain') ||
+						[])[1];
+				const skimLongDescription = (metadata) =>
+					((metadata || []).find((i) => i[0] === 'text/long-desc') ||
+						[])[1];
 				// Create a new receiver, this time bolt11 not lnurl
 				const receiver = await this.receiveService.create({
 					parentId: parentReceiver.id,
@@ -52,7 +56,9 @@ export class LnUrlHandlerService {
 					amountCurrency: 'BTC',
 					comment: query.comment
 						? decodeURIComponent(query.comment)
-						: null,
+						: skimDescription(metadata) ||
+						  skimLongDescription(metadata) ||
+						  null,
 					payerData:
 						payerData && payerData.length
 							? JSON.parse(payerData)

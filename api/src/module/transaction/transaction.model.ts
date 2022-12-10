@@ -9,6 +9,7 @@ import { Pot } from 'module/pot/pot.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
 import { User } from 'module/user/user.model';
+import { DataTypes } from 'sequelize';
 import {
 	AllowNull,
 	AutoIncrement,
@@ -53,7 +54,7 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	type: string;
 
-	@Column
+	@Column(DataTypes.TEXT('medium'))
 	description: string;
 
 	@Column(DataType.STRING(1024))
@@ -86,6 +87,7 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	User: User;
 
 	@ForeignKey(() => User)
+	@AllowNull(true)
 	@Column
 	userId: string;
 
