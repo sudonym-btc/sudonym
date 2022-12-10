@@ -20,7 +20,7 @@ export class LightningEvents {
 	}
 
 	reconnect() {
-		this.logger.verbose(
+		this.logger.debug(
 			'Connecting to lightning message queue at ' + this.getUrl()
 		);
 		const ws = new WebSocket(this.getUrl() + '/v1/ws', ['json'], {
@@ -39,15 +39,8 @@ export class LightningEvents {
 			this.onEvent.next(data);
 		});
 
-		ws.on('error', (data) => {
-			this.logger.error('error: %s', data);
-			setTimeout(() => {
-				this.reconnect();
-			}, 2000);
-		});
-
 		ws.on('open', () => {
-			this.logger.verbose('Connected to lightning message queue');
+			this.logger.debug('Connected to lightning message queue');
 		});
 
 		ws.on('close', () => {
