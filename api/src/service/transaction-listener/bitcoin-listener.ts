@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SATOSHIS } from '@sudonym/models';
 import { CurrencyService } from 'module/currency/currency.service';
 import { TransactionService } from 'module/transaction/transaction.service';
+import { Op } from 'sequelize';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
 import { BitcoinEvents, BitcoinTransaction } from './bitcoin-events';
 import { TransactionListener } from './transaction-listener.interface';
@@ -19,7 +20,9 @@ export class BitcoinListener extends TransactionListener {
 		for (const out of e.outs.filter((i) => i.address)) {
 			const receivers = await this.receiveService.list({
 				where: {
-					data: out.address,
+					data: {
+						[Op.like]: '%' + out.address + '%',
+					},
 				},
 			});
 
