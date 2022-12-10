@@ -58,7 +58,7 @@
 	"editPot": "Editar bote",
 	"copiedToClipboard": "Copiado al portapapeles",
 	"lightning": "Lightning",
-	"lightningAddressDescription": "Esta es la dirección de correo electrónico a la que otras billeteras que admiten direcciones Lightning pueden enviar dinero.",
+	"lightningAddressDescription": "Esta es la dirección de correo electrónico a la que otras billeteras pueden enviar dinero.",
 	"nameAlreadyTaken": "Este nombre ya ha sido tomado",
 	"addCard": "Agregar tarjeta",
 	"boltCardDescription": "Escriba los detalles de su cuenta en una tarjeta NFC para que pueda tocarlos en un dispositivo de punto de venta para pagar.",

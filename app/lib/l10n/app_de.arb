@@ -58,7 +58,7 @@
 	"editPot": "Topf bearbeiten",
 	"copiedToClipboard": "In die Zwischenablage kopiert",
 	"lightning": "Lightning",
-	"lightningAddressDescription": "Dies ist die E-Mail-Adresse, an die andere Wallets, die Lightning-Adressen unterstützen, Geld senden können.",
+	"lightningAddressDescription": "Dies ist die E-Mail-Adresse an die andere Wallets Geld senden können.",
 	"nameAlreadyTaken": "Dieser Name ist bereits vergeben",
 	"addCard": "Karte hinzufügen",
 	"boltCardDescription": "Schreiben Sie Ihre Kontodaten auf eine NFC-Karte, damit Sie sie zum Bezahlen an ein Point-of-Sale-Gerät tippen können.",
@@ -83,5 +83,9 @@
 	"incomingPaymentError": "Eingehende Zahlung von {amount} fehlgeschlagen",
 	"incomingPaymentSuccess": "Zahlung von {amount} erhalten",
 	"time": "Um",
-	"to": "An"
+	"to": "An",
+	"potCurrencyDescription": "Alles, wass an diesem Topf geschickt wird, wird in der spezifizierten Währung aufbewahrt.",
+	"noQRFound": "Kein QR code gefunden.",
+	"description": "Beschreibung",
+	"trackInMempool": "Im mempool verfolgen"
 }
