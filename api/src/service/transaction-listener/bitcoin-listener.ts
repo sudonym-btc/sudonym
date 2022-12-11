@@ -43,8 +43,6 @@ export class BitcoinListener extends TransactionListener {
 				tx.outs.filter((out) => receiver.data.includes(out.address));
 			const matchedTx = txs.find((tx) => getMatchedOuts(tx).length);
 
-			console.log(matchedTx);
-
 			if (
 				(
 					await this.transactionService.list({

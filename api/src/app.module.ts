@@ -4,7 +4,9 @@ import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 import { ContactModule } from 'module/contact/contact.module';
 import { PotUserModule } from 'module/pot-user/pot-user.module';
 import { SenderModule } from 'module/sender/sender.module';
+import { BalanceModule } from 'service/exchange/balance.module';
 import { ExchangeSettlerModule } from 'service/exchange/exchange-settler.module';
+import { ExchangeModule } from 'service/exchange/exchange.module';
 import { FirebaseNotificationModule } from 'service/firebase-notification/firebase-notification.module';
 import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
 import { AppController } from './app.controller';
@@ -27,6 +29,8 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 	imports: [
 		ConfigModule,
 		TransactionListenerModule,
+		BalanceModule,
+		ExchangeModule,
 		ExchangeSettlerModule,
 		TransactionContactLinkerModule,
 		DatabaseModule,

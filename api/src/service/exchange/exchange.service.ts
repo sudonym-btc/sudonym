@@ -1,5 +1,12 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+	CACHE_MANAGER,
+	forwardRef,
+	Inject,
+	Injectable,
+	Logger,
+} from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import * as ccxt from 'ccxt';
 import { Config } from 'config/config';
 import * as fs from 'fs';
 import { CONFIG_FOLDER } from 'helper/config-loader';
@@ -10,27 +17,34 @@ import { Exchange, getCurrencySynonyms, getRealCurrencyName } from './exchange';
 export class ExchangeService {
 	private readonly logger = new Logger(ExchangeService.name);
 	@Inject(CACHE_MANAGER) private cacheManager: Cache;
-	@Inject(BalanceService) private readonly balanceService: BalanceService;
+	@Inject(forwardRef(() => BalanceService))
+	private readonly balanceService: BalanceService;
 	@Inject() config: Config;
 
-	exchanges: Exchange[] = [];
+	exchanges: Exchange[];
 
 	async onModuleInit() {
 		this.exchanges = fs
 			.readdirSync(CONFIG_FOLDER + '/exchanges')
 			.filter((f) => f.includes('.json'))
-			.map((f) => {
-				return new Exchange[f.split('.')[0]](
-					JSON.parse(
-						fs.readFileSync(CONFIG_FOLDER + '/exchanges/' + f, {
-							encoding: 'utf8',
-						})
+			.map(
+				(f) =>
+					new Exchange(
+						new ccxt[f.split('.')[0]](
+							JSON.parse(
+								fs.readFileSync(
+									CONFIG_FOLDER + '/exchanges/' + f,
+									{
+										encoding: 'utf8',
+									}
+								)
+							)
+						)
 					)
-				);
-			});
+			);
 
 		for (const exchange of this.exchanges) {
-			await exchange.fetchMarkets();
+			await exchange.exchange.fetchMarkets();
 		}
 	}
 
@@ -44,7 +58,7 @@ export class ExchangeService {
 		for (const exchange of this.exchanges) {
 			// Check which currencies on this exchange we have more of than liabilties
 			const surplusCurrencies = Object.keys(
-				exchangeFunds[exchange.id]
+				exchangeFunds[exchange.exchange.id]
 			).filter(
 				(i) =>
 					totalFunds[getRealCurrencyName(i)] >
@@ -68,7 +82,9 @@ export class ExchangeService {
 								synonymousCurrency
 							)) *
 							Math.min(
-								exchangeFunds[exchange.id][surplusCurrency],
+								exchangeFunds[exchange.exchange.id][
+									surplusCurrency
+								],
 								surplusAmount
 							);
 						if (surplusAmountInLiabilityCurrency > amount) {
@@ -101,9 +117,9 @@ export class ExchangeService {
 	) {
 		const errors = [];
 		for (const exchange of this.exchanges) {
-			const key = `${exchange.name}${fromCurrency}/${quoteCurrency}:${time}`;
+			const key = `${exchange.exchange.id}${fromCurrency}/${quoteCurrency}:${time}`;
 			const ttl = time ? 0 : 60;
-			return this.cacheManager.wrap(
+			const response = await this.cacheManager.wrap(
 				key,
 				() =>
 					exchange.fetchPriceAtTime(
@@ -113,13 +129,14 @@ export class ExchangeService {
 					),
 				ttl
 			);
+			return response;
 		}
 	}
 
 	async listFunds(): Promise<{ [key: string]: { [key: string]: number } }> {
 		const funds = {};
 		for (const exchange of this.exchanges) {
-			funds[exchange.id] = await exchange
+			funds[exchange.exchange.id] = await exchange.exchange
 				.fetchBalance()
 				.then((u) => u.free);
 		}

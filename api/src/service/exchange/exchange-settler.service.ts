@@ -64,7 +64,7 @@ export class ExchangeSettlerService {
 					.buy(key, liabilities[key] - (funds[key] || 0))
 					.then((order) => {
 						this.settlementService.create({
-							// fromCurrency: order.
+							// fromCurrency: order.dfd
 						});
 					});
 			}

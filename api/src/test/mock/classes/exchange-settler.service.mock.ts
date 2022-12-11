@@ -2,5 +2,5 @@ import { ExchangeSettlerService } from 'service/exchange/exchange-settler.servic
 
 export class MockExchangeSettlerService extends ExchangeSettlerService {
 	async onModuleInit(): Promise<void> {}
-	buy = jest.fn(super.buy);
+	settle = jest.fn(super.settle);
 }

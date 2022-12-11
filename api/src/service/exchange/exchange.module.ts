@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, forwardRef, Module } from '@nestjs/common';
 import { BalanceModule } from './balance.module';
 import { ExchangeService } from './exchange.service';
 
 @Module({
-	imports: [BalanceModule],
+	imports: [forwardRef(() => BalanceModule), CacheModule.register()],
 	controllers: [],
 	providers: [ExchangeService],
 	exports: [ExchangeService],

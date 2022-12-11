@@ -1,8 +1,10 @@
 import { Logger } from '@nestjs/common';
 import * as ccxt from 'ccxt';
 
-export class Exchange extends ccxt.Exchange {
+export class Exchange {
 	private readonly logger = new Logger(Exchange.name);
+
+	constructor(public exchange: ccxt.Exchange) {}
 
 	async fetchPriceAtTime(
 		fromCurrency = 'BTC',
@@ -16,7 +18,7 @@ export class Exchange extends ccxt.Exchange {
 		const execute = async () => {
 			time = time || new Date();
 			if (!time) {
-				return (await this.fetchTicker(market.symbol)).ask;
+				return (await this.exchange.fetchTicker(market.symbol)).ask;
 			}
 			const timestamp = Date.UTC(
 				time.getUTCFullYear(),
@@ -36,7 +38,7 @@ export class Exchange extends ccxt.Exchange {
 				100
 			);
 			return (
-				await this.fetchOHLCV(
+				await this.exchange.fetchOHLCV(
 					market.symbol,
 					'1m',
 					timestamp - 1000 * 60 * 50, // Subtract 50 minutes so there will always be a ticker
@@ -52,7 +54,7 @@ export class Exchange extends ccxt.Exchange {
 
 	async fetchMarket(from, to) {
 		this.logger.debug('Finding market for', from, to);
-		const markets = await this.fetchMarkets();
+		const markets = await this.exchange.fetchMarkets();
 		const market = markets.find(
 			(m) =>
 				(currenciesAreSynonymous(m.baseId, from) &&
@@ -66,7 +68,7 @@ export class Exchange extends ccxt.Exchange {
 
 	async trade(from, to, amount) {
 		const market = await this.fetchMarket(from, to);
-		return await this.createMarketOrder(
+		return await this.exchange.createMarketOrder(
 			market.symbol,
 			market.quote == to ? 'sell' : 'buy',
 			market.quote == to

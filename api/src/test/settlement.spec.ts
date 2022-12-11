@@ -2,10 +2,8 @@ import { Config } from 'config/config';
 import { runAsUser } from 'helper/context-request';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { ExchangeService } from 'service/exchange/exchange';
-import { ExchangeSettlerService } from 'service/exchange/exchange-settler.service';
+import { ExchangeService } from 'service/exchange/exchange.service';
 import waitForExpect from 'wait-for-expect';
-import { MockExchangeSettlerService } from './mock/classes/exchange-settler.service.mock';
 import { MockExchangeService } from './mock/classes/exchange.service.mock';
 import { scaffoldGroup } from './mock/scaffold-group';
 
@@ -42,9 +40,7 @@ scaffoldGroup('Settlement', (scaffold) => {
 
 		await waitForExpect(() => {
 			const calls = (
-				scaffold.app.get(
-					ExchangeSettlerService
-				) as MockExchangeSettlerService
+				scaffold.app.get(ExchangeService) as MockExchangeService
 			).buy.mock.calls;
 			expect(calls.length).toBe(1);
 			expect(calls[0][0]).toBe('USD');
@@ -52,7 +48,7 @@ scaffoldGroup('Settlement', (scaffold) => {
 
 			const exchangeCalls = (
 				scaffold.app.get(ExchangeService) as MockExchangeService
-			).trade.mock.calls;
+			).exchanges[0].trade.mock.calls;
 			expect(exchangeCalls.length).toBe(1);
 			expect(exchangeCalls[0][0]).toBe('BTC');
 			expect(exchangeCalls[0][1]).toBe('USDT');
