@@ -16,7 +16,7 @@ export class LightningAddressController {
 
 	@Get('.well-known/lnurlp/:user')
 	async lightningAddress(@Param('user') lightningAddress) {
-		let indexOfLastStop = lightningAddress.lastIndexOf('.');
+		let indexOfLastStop = lightningAddress.lastIndexOf(':');
 		indexOfLastStop =
 			indexOfLastStop >= 0 ? indexOfLastStop : lightningAddress.length;
 		const user = await User.findOne({
