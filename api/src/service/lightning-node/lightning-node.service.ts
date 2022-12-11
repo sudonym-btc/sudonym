@@ -47,8 +47,6 @@ export class LightningNodeService {
 			method: 'GET',
 		});
 
-		// this.logger.verbose(funds);
-
 		return (
 			(funds.outputs.reduce((acc, i) => acc + i.value, 0) +
 				funds.channels.reduce((acc, i) => acc + i.channel_sat, 0)) /
@@ -56,13 +54,24 @@ export class LightningNodeService {
 		);
 	}
 
-	async circularRoute(millisatoshis) {
-		const channel =
-			this.connectedChannels.find(
-				(c) =>
-					c.spendable_msatoshi >= millisatoshis &&
-					c.state == 'CHANNELD_NORMAL'
-			) || this.connectedChannels[0]; // Try sending with first channel if none fit filter and fail organically
+	canRouteThrough(c, millisatoshis, outgoing = true) {
+		if (c.state != 'CHANNELD_NORMAL') return false;
+		if (outgoing)
+			return (
+				c.msatoshi_to_us - c.our_channel_reserve_satoshis * 1000 >
+				millisatoshis
+			);
+		return (
+			c.msatoshi_to_them - c.their_channel_reserve_satoshis * 1000 >
+			millisatoshis
+		);
+	}
+
+	async circularRoute(millisatoshis, cltv = null) {
+		const channel = this.connectedChannels.find((c) =>
+			this.canRouteThrough(c, millisatoshis, true)
+		); // Try sending with first channel if none fit filter and fail organically
+		console.log(channel);
 		const firstChannelOut = channel.channels.find(
 			(c) => c.source == this.info.id
 		);
@@ -70,71 +79,38 @@ export class LightningNodeService {
 			(c) => c.source != this.info.id
 		);
 		this.logger.log('selfpayment', firstChannelIn, firstChannelOut);
-		// Get route to current node from first peer which excludes the direct route
-		const restHops = await this.getRoute(
+		const a: [string, number, number, number, string, any, any] = [
 			this.info.id,
 			millisatoshis,
 			20,
-			firstChannelOut.delay, // should be 34
+			cltv,
 			firstChannelOut.destination,
 			null,
 			[
-				...this.connectedChannels
-					.filter(
-						(c) =>
-							c.msatoshi_to_them -
-								Math.max(
-									c.their_channel_reserve_satoshis * 1000,
-									c.our_channel_reserve_satoshis * 1000
-								) <
-							millisatoshis
-					)
-					.map((c) => [
-						c.short_channel_id + '/1',
-						c.short_channel_id + '/0',
-					])
-					.flat(), //exclude all incoming channels where they don't have enough to push to us.
-				// should be handled by getroute, but doesn't seem to take into account reserve requirements https://github.com/ElementsProject/lightning/issues/5772
-				firstChannelIn.short_channel_id +
-					'/' +
-					this.getDirection(firstChannelIn.source, this.info.id),
+				`${firstChannelIn.short_channel_id}/${this.getDirection(
+					firstChannelIn.source,
+					this.info.id
+				)}`,
 				...['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
 				...['719062x216x1/0', '719062x216x1/1'], // manually exluding WoS-bfx channel, faulty for some reason
-			]
-		);
-		this.logger.log([
-			...this.connectedChannels
-				.filter(
-					(c) =>
-						c.msatoshi_to_them -
-							Math.max(
-								c.their_channel_reserve_satoshis * 1000,
-								c.our_channel_reserve_satoshis * 1000
-							) <
-						millisatoshis
-				)
-				.map((c) => [
-					c.short_channel_id + '/1',
-					c.short_channel_id + '/0',
-				])
-				.flat(), //exclude all incoming channels where they don't have enough to push to us.
-			// should be handled by getroute, but doesn't seem to take into account reserve requirements https://github.com/ElementsProject/lightning/issues/5772
-			firstChannelIn.short_channel_id +
-				'/' +
-				this.getDirection(firstChannelIn.source, this.info.id),
-		]);
+			],
+		];
+		this.logger.log(a);
+
+		// Get route to current node from first peer which excludes the direct route
+		const restHops = await this.getRoute(...a);
 		this.logger.verbose('Got route back home', restHops);
 
-		const secondChannel = (await this.getChannel(restHops[0].channel)).find(
-			(c) => c.destination == restHops[0].id
-		);
-		let totalPlusFirstNodeFee =
+		// const secondChannel = (await this.getChannel(restHops[0].channel)).find(
+		// 	(c) => c.destination == restHops[0].id
+		// );
+		const totalPlusFirstNodeFee =
 			restHops[0].msatoshi +
 			this.calcHopFee(firstChannelIn, restHops[0].msatoshi);
-		totalPlusFirstNodeFee += this.calcHopFee(
-			secondChannel,
-			restHops[0].msatoshi
-		);
+		// totalPlusFirstNodeFee += this.calcHopFee(
+		// 	secondChannel,
+		// 	restHops[0].msatoshi
+		// );
 
 		const firstHop = await this.getRoute(
 			firstChannelOut.destination,
@@ -272,7 +248,7 @@ export class LightningNodeService {
 	}
 
 	async getRoute(
-		pubkey,
+		pubkey: string,
 		amount = 1000,
 		riskfactor = 0,
 		cltv = null,
@@ -282,8 +258,8 @@ export class LightningNodeService {
 		maxhops = null
 	) {
 		if (pubkey == this.info.id && !from_id) {
-			this.loadConnectedChannels(); // reload connected channels before choosing outgoing channel for self payment route calc
-			return await this.circularRoute(amount);
+			await this.loadConnectedChannels(); // reload connected channels before choosing outgoing channel for self payment route calc
+			return await this.circularRoute(amount, cltv);
 		}
 
 		return (

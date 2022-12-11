@@ -234,10 +234,10 @@ def lightning(config, cluster_types):
                                         ],
 
                                         "resources": {
-                                            "limits": {
-                                                "cpu": "0.1",
-                                                "memory": "750Mi"
-                                            },
+                                            # "limits": {
+                                            #     "cpu": "0.1",
+                                            #     "memory": "750Mi"
+                                            # },
                                             "requests": {
                                                 "cpu": "0.01",
                                                 "memory": "400Mi"

@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PotModule } from 'module/pot/pot.module';
 import { SettlementModule } from 'module/settlement/settlement.module';
-import { LightningNodeModule } from 'service/lightning-node/lightning-node.module';
+import { BalanceModule } from './balance.module';
 import { ExchangeSettlerService } from './exchange-settler.service';
 import { ExchangeModule } from './exchange.module';
 
 @Module({
-	imports: [LightningNodeModule, PotModule, SettlementModule, ExchangeModule],
+	imports: [SettlementModule, ExchangeModule, BalanceModule],
 	controllers: [],
 	providers: [ExchangeSettlerService],
 	exports: [],

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/data/index.dart';
@@ -31,16 +29,17 @@ class CubitWrapper<
         key: ValueKey(entity.toJson()['id'].toString()),
         create: (_) {
           C c = getIt.get<C>();
-          c.set(entity);
 
+          // If meant to remote fetch, don't set entity as we can show loader during this time
+          // If entity already set, deciding when to show loader is more difficult
           if (fetch) {
             c.fetch(entity.toJson()['id']);
+          } else {
+            c.set(entity);
           }
-          Timer.periodic(const Duration(seconds: 10), (timer) {
-            if (refresh != null && refresh!(c.state)) {
-              c.fetch(entity.toJson()['id']);
-            }
-          });
+          if (refresh != null) {
+            c.setRefresher(const Duration(seconds: 10), refresh!);
+          }
           return c;
         },
         lazy: false,

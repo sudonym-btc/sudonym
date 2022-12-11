@@ -13,12 +13,8 @@ class PotPage extends StatelessWidget {
     return CubitWrapper<PotCubit, PotCubitState, Pot>(
         entity: entity,
         builder: (BuildContext context, state) {
-          if (state.loading) {
-            if (state.entity!.name != null) {
-              // children.add(const LinearProgressIndicator());
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
+          if (state.loading && state.entity == null) {
+            return const Center(child: CircularProgressIndicator());
           }
           return LayoutBuilder(builder: (context, constraints) {
             if (constraints.maxWidth > 500) {

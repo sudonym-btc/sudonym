@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { getConfig } from 'config/config';
 import { ExchangeModule } from 'service/exchange/exchange.module';
 import { SharedModule } from '../shared.module';
@@ -6,7 +6,7 @@ import { CurrencyController } from './currency.controller';
 import { CurrencyService, MockCurrencyService } from './currency.service';
 
 @Module({
-	imports: [SharedModule, ExchangeModule],
+	imports: [SharedModule, ExchangeModule, CacheModule.register()],
 	controllers: [CurrencyController],
 	providers: [
 		{

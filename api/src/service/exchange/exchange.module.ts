@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { SettlementModule } from 'module/settlement/settlement.module';
+import { BalanceModule } from './balance.module';
 import { ExchangeService } from './exchange.service';
 
 @Module({
-	imports: [SettlementModule],
+	imports: [BalanceModule],
 	controllers: [],
 	providers: [ExchangeService],
 	exports: [ExchangeService],

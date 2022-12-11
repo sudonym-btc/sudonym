@@ -1,5 +1,5 @@
 import { Balances, Exchange, Market, OHLCV, Order, Params, Ticker } from 'ccxt';
-import { ExchangeService } from 'service/exchange/exchange.service';
+import { ExchangeService } from 'service/exchange/exchange';
 
 class MockExchange extends Exchange {
 	balances = {

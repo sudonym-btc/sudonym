@@ -6,16 +6,17 @@ COPY ./package*.json ./
 
 RUN apk update
 RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip libzmq zeromq-dev zeromq 
-RUN npm config set fetch-retry-mintimeout 6000000
-RUN npm config set fetch-retry-maxtimeout 6000000
-RUN npm config set timeout 6000000
+RUN npm set progress=false \
+    && npm config set fetch-retry-mintimeout 6000000 \
+    && npm config set fetch-retry-maxtimeout 6000000 \
+    && npm config set timeout 6000000
 ENV NODE_ENV development
 
 # Install packages
-RUN npm install --omit=dev
+RUN npm ci --omit=dev --no-audit
 RUN cp -R ./node_modules ./prod_node_modules
 RUN cp -R ./api/node_modules ./api/prod_node_modules
-RUN npm install
+RUN npm install --no-audit
 
 # Build
 WORKDIR /usr/src/app/api

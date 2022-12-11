@@ -53,7 +53,7 @@ scaffoldGroup('Receive', (scaffold) => {
 	describe('Onchain', () => {
 		it('should make unspendable after received and make spendable after confirmed', async () => {
 			const satoshi = 500;
-			scaffold.app.get(BitcoinEvents).onTransaction.next({
+			const chainTx = {
 				getId: () => '123',
 				outs: [
 					{
@@ -62,7 +62,8 @@ scaffoldGroup('Receive', (scaffold) => {
 						value: satoshi,
 					} as any,
 				],
-			});
+			};
+			scaffold.app.get(BitcoinEvents).onTransaction.next(chainTx);
 			const [tx] = await Promise.all([
 				firstValueFrom(
 					scaffold.app.get(TransactionService).onAfterCreated
@@ -88,12 +89,7 @@ scaffoldGroup('Receive', (scaffold) => {
 			]);
 
 			const block = {
-				transactions: [
-					{
-						outs: [],
-						getId: () => '123',
-					},
-				],
+				transactions: [chainTx],
 			} as BitcoinBlock;
 
 			scaffold.app.get(BitcoinEvents).onBlock.next(block);

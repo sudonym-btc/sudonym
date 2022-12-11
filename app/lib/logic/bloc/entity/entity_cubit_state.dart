@@ -21,6 +21,7 @@ abstract class EntityCubit<EntityRepo extends CrudRepository<EntityType>,
   late Function stateClass;
   StreamSubscription? updater;
   bool shouldListen;
+  Timer? refresher;
 
   EntityCubit(
       {required StateType initialState,
@@ -75,10 +76,21 @@ abstract class EntityCubit<EntityRepo extends CrudRepository<EntityType>,
         (listenChanges() ?? true);
   }
 
+  setRefresher(Duration d, bool Function(StateType) refresh) {
+    refresher = Timer.periodic(d, (timer) {
+      if (refresh(state)) {
+        fetch(state.entity.toJson()['id']);
+      }
+    });
+  }
+
   @override
   Future<void> close() {
     if (updater != null) {
       updater!.cancel();
+    }
+    if (refresher != null) {
+      refresher!.cancel();
     }
     return super.close();
   }

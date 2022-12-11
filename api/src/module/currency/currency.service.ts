@@ -13,13 +13,8 @@ export class CurrencyService {
 		time?: Date
 	): Promise<CurrencyResponse> {
 		return new CurrencyResponse(
-			amount == 0
-				? 0
-				: (await this.exchangeService.fetchPriceAtTime(
-						from,
-						to,
-						time
-				  )) * amount
+			(await this.exchangeService.fetchPriceAtTime(from, to, time)) *
+				amount
 		);
 	}
 

@@ -23,7 +23,7 @@ class TransactionPage extends StatelessWidget {
             state.entity?.status ==
             null, // Keep refreshing if null as websockets might fail on bad connection
         builder: ((context, state) {
-          if (state.loading || state.entity == null) {
+          if (state.loading && state.entity == null) {
             return StatusPage(
                 title: null,
                 subtitle: null,
