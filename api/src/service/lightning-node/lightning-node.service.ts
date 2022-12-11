@@ -68,10 +68,10 @@ export class LightningNodeService {
 	}
 
 	async circularRoute(millisatoshis, cltv = null) {
+		this.logger.log('last ctlv ' + cltv);
 		const channel = this.connectedChannels.find((c) =>
 			this.canRouteThrough(c, millisatoshis, true)
 		); // Try sending with first channel if none fit filter and fail organically
-		console.log(channel);
 		const firstChannelOut = channel.channels.find(
 			(c) => c.source == this.info.id
 		);
@@ -83,7 +83,7 @@ export class LightningNodeService {
 			this.info.id,
 			millisatoshis,
 			20,
-			cltv,
+			34, //cltv,
 			firstChannelOut.destination,
 			null,
 			[
