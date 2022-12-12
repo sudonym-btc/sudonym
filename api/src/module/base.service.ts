@@ -93,6 +93,7 @@ export const BaseService = <TModel extends BaseModel>(
 
 		async list(params: FindOptions, options: ListOptions = { scopes: [] }) {
 			params = parseParams(params);
+			console.log(params);
 			const scopes = [
 				...(options.scopes || []),
 				this.repo.scopes.find ? this.repo.scopes.find() : null,

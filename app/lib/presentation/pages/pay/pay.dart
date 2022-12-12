@@ -39,7 +39,7 @@ class _SendPageState extends State<SendPage> {
         .listen((event) {
       listCubit.setWhere(event.isNotEmpty
           ? {
-              'name': {'like': event}
+              'name': {'like': '%$event%'}
             }
           : {});
       listCubit.reset();
@@ -196,7 +196,7 @@ class CheckClipboardState extends State<CheckClipboard> {
           ListTile(
               leading: Icon(Icons.paste),
               title: Text(
-                AppLocalizations.of(context)!.paste + ' "$address"',
+                '${AppLocalizations.of(context)!.paste} "$address"',
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),

@@ -121,7 +121,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			// When the client ACKs a message, remove from pending messages
 			client.on('message', (msg: Buffer) => {
 				const event = JSON.parse(msg.toString());
-				this.logger.verbose(event);
+				// this.logger.verbose(event);
 				lastPing = new Date();
 				if (event.event == 'ack') {
 					this.pendingEvents = this.pendingEvents.filter(

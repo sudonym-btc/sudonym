@@ -19,6 +19,22 @@ scaffoldGroup('User', (scaffold) => {
 		expect(data.body.lightningAddress).toBeTruthy();
 	});
 
+	it('should not create new user with wrong details', async () => {
+		const data = await request(scaffold.app.getHttpServer())
+			.post('/user')
+			.send({
+				firebaseId: 'longfbif',
+				id: 'longfbif',
+			})
+			.set({
+				'x-access-token': scaffold.app
+					.get(JwtService)
+					.sign({ uid: 'test' }),
+			});
+		expect(data.body.id).toBe('test');
+		expect(data.body.firebaseId).toBe('test');
+	});
+
 	it('should not allow duplicate lightningAddress', async () => {
 		const data = await request(scaffold.app.getHttpServer())
 			.post('/user')
