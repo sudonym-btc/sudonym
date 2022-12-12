@@ -1,4 +1,4 @@
-FROM elementsproject/lightningd:latest
+FROM elementsproject/lightningd:v0.12.1
 ENV GCSFUSE_REPO gcsfuse-stretch
 
 RUN sed -i 's/bullseye\/updates/bullseye-security/g' /etc/apt/sources.list

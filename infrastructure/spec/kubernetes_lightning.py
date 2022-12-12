@@ -153,37 +153,23 @@ def lightning(config, cluster_types):
                                         if config["backup"]
                                         else {},
                                         "name": addNum(base_name, num),
-                                        "image": "gcr.io/"
-                                        + config["project"]
-                                        + "/fuse-lightning",
-                                        "command": [
-                                            "/bin/sh",
-                                            "-ec",
-                                            (
-                                                f"{mount} &&"
-                                                if config["backup"]
-                                                else ""
-                                            )
-                                            + " ./entrypoint.sh "
-                                            + " ".join(
-                                                [
-                                                    "--alias=" + config["appName"] + addNum(("-" + config["env"]) if config["env"] != "production" else "", num),
-                                                    "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
-                                                    "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
-                                                    "--bitcoin-rpcconnect="
-                                                    + getServiceName(bitcoin_base_name),
-                                                    "--bitcoin-rpcport="
-                                                    + str(config["bitcoin"]["rpcPort"]),
-                                                    "--log-level=" + config["loglevel"],
-                                                    "--lightning-dir=" + lightning_dir,
-                                                    "--rpc-file=/rpc/lightning-rpc",
-                                                    "--large-channels",
-                                                    "--addr=0.0.0.0:"
-                                                    + str(config["lightning"]["port"]),
-                                                    "--experimental-offers",
-                                                    "--network=" + chain_name
-                                                ]
-                                            ),
+                                        "image": "elementsproject/lightningd:v0.12.1",
+                                        "args": [
+                                            "--alias=" + config["appName"] + addNum(("-" + config["env"]) if config["env"] != "production" else "", num),
+                                            "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
+                                            "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
+                                            "--bitcoin-rpcconnect="
+                                            + getServiceName(bitcoin_base_name),
+                                            "--bitcoin-rpcport="
+                                            + str(config["bitcoin"]["rpcPort"]),
+                                            "--log-level=" + config["loglevel"],
+                                            "--lightning-dir=" + lightning_dir,
+                                            "--rpc-file=/rpc/lightning-rpc",
+                                            "--large-channels",
+                                            "--addr=0.0.0.0:"
+                                            + str(config["lightning"]["port"]),
+                                            "--experimental-offers",
+                                            "--network=" + chain_name
                                         ],
                                         "env": [
                                             {"name": "EXPOSE_TCP", "value": "true"},
