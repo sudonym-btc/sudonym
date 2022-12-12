@@ -85,6 +85,7 @@ def lightning(config, cluster_types):
                 "properties": {
                     "apiVersion": "v1",
                     "kind": "Service",
+                    "namespace": "default",
                     "metadata": {
                         "name": getServiceName(base_name + "-pub", num),
                         "labels": {
