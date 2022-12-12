@@ -72,6 +72,7 @@ scaffoldGroup('Validation', (scaffold) => {
 			lnurl: [
 				'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09&lightning=lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
 				'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
+				'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv?picc=23432',
 			],
 		};
 

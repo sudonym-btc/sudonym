@@ -153,17 +153,10 @@ def bitcoin(config, cluster_types):
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
                                         "name": base_name,
-                                        "image": "gcr.io/"
-                                        + config["project"]
-                                        + "/fuse-bitcoin",
+                                        "image": "ruimarinho/bitcoin-core:23.0",
                                         "command": [
                                             "sh",
                                             "-c",
-                                            (
-                                                "" # backup gsutil copy
-                                                if config["backup"]
-                                                else ""
-                                            ) +
                                         "bitcoind "
                                             + " ".join(
                                                 [

@@ -113,7 +113,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					this.handleDisconnect(client);
 					return;
 				}
-				this.logger.verbose('ping ' + user.uid);
+				// this.logger.verbose('ping ' + user.uid);
 				client.send(JSON.stringify({ id: uuid(), ping: true }));
 			};
 			const interval = setInterval(ping, 3000);

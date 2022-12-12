@@ -28,7 +28,7 @@ class WebsocketImpl extends Websocket
     WidgetsBinding.instance?.addObserver(this);
     pingSubscription = stream.stream.listen((event) {
       if (event['ping'] != null) {
-        loggy.v('websocket ping received');
+        // loggy.v('websocket ping received');
         lastPing = DateTime.now();
       }
     });

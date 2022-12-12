@@ -65,9 +65,9 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     options.controller!.outputStream.stream
         .map((event) => event.amount)
         .distinct()
+        .debounceTime(options.debounceOutput!)
         .asyncMap(enforceConstraints)
         .asyncMap(resolveAlt)
-        .debounceTime(options.debounceOutput!)
         .listen((event) {});
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
     _currencyRespository

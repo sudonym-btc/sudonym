@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-import '../buttons.dart';
-import '../inputs.dart';
-import '../notifications.dart';
-import '../typography.dart';
-import '../widgets/widgets.dart';
+import './buttons.dart';
+import './inputs.dart';
+import './notifications.dart';
+import './pages.dart';
+import './typography.dart';
+import './widgets/widgets.dart';
 
 void main() {
   runApp(const HotreloadWidgetbook());
@@ -18,7 +19,7 @@ class HotreloadWidgetbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Widgetbook.material(
-      categories: [buttons, inputs, typography, widgets, notifications],
+      categories: [pages, buttons, inputs, typography, widgets, notifications],
       themes: [
         WidgetbookTheme(
           name: 'Light',
@@ -29,7 +30,7 @@ class HotreloadWidgetbook extends StatelessWidget {
           data: getTheme(light: false),
         ),
       ],
-      appInfo: AppInfo(name: 'Example'),
+      appInfo: AppInfo(name: 'Sudonym'),
     );
   }
 }

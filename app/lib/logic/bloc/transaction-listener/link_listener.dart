@@ -14,11 +14,12 @@ class LinkListener extends TransactionListenerSubtype {
 // Get the initial/first link.
 // This is useful when app was terminated (i.e. not started)
     final uri = await appLinks.getInitialAppLink();
+    print('first link');
     if (uri != null) {
       streamController.add(uri.toString());
     }
 
-    appLinks.uriLinkStream.listen((e) {
+    _s = appLinks.uriLinkStream.listen((e) {
       streamController.add(e.toString());
     });
   }

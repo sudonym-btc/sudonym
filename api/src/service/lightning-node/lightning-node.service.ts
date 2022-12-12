@@ -83,7 +83,7 @@ export class LightningNodeService {
 			this.info.id,
 			millisatoshis,
 			20,
-			34, //cltv,
+			cltv, //cltv,
 			firstChannelOut.destination,
 			null,
 			[
@@ -91,8 +91,8 @@ export class LightningNodeService {
 					firstChannelIn.source,
 					this.info.id
 				)}`,
-				...['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
-				...['719062x216x1/0', '719062x216x1/1'], // manually exluding WoS-bfx channel, faulty for some reason
+				// ...['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
+				// ...['719062x216x1/0', '719062x216x1/1'], // manually exluding WoS-bfx channel, faulty for some reason
 			],
 		];
 		this.logger.log(a);

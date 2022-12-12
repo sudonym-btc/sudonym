@@ -35,10 +35,12 @@ extension LnUrlValidator on String {
   bool isValidLnUrlAddress() {
     if (contains('://') && ('https://${split('://').last}').isValidUrl()) {
       return true;
+    } else if (split(':').last.isValidEmail()) {
+      return true;
     }
     try {
       const Bech32Codec().decode(
-        this,
+        split(':').last,
         length,
       );
       return true;
