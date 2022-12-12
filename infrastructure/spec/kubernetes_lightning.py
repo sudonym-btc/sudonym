@@ -79,6 +79,30 @@ def lightning(config, cluster_types):
                 },
             },
             {
+                "name": getServiceName(base_name + "-pub", num),
+                "type": cluster_types["Service"],
+                "metadata": {"dependsOn": [kube_type_name,config["env"] + "-ip"]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "Service",
+                    "metadata": {
+                        "name": getServiceName(base_name + "-pub", num),
+                        "labels": {
+                            "app": addNum(base_name + "-pub", num)
+                        },
+                    },
+                    "spec": {
+                        "selector": {"app": addNum(base_name, num)},
+                        "ports": [{
+                            "port":  config["lightning"]["port"],
+                            "targetPort":  config["lightning"]["port"]
+                        }],
+                        "type": "LoadBalancer",
+                        "loadBalancerIP": "$(ref." + config["env"] + "-ip.address)"
+                    }
+                }
+            },
+            {
                 "name": getServiceName(base_name, num),
                 "type": cluster_types["Service"],
                 "metadata": {"dependsOn": [kube_type_name]},
@@ -166,13 +190,13 @@ def lightning(config, cluster_types):
                                             "--lightning-dir=" + lightning_dir,
                                             "--rpc-file=/rpc/lightning-rpc",
                                             "--large-channels",
-                                            "--addr=0.0.0.0:"
+                                            "--bind-addr=0.0.0.0:"
                                             + str(config["lightning"]["port"]),
                                             "--experimental-offers",
                                             "--network=" + chain_name,
                                         ] + ([
-                                            "--announce-addr=ln." + config["domain"],
-                                            "--announce-addr-dns=1"
+                                            "--announce-addr=34.67.91.68:" + str(config["lightning"]["port"]),
+                                            # "--announce-addr-dns=1"
                                             ] if config["env"] == "production" else []),
                                         "env": [
                                             {"name": "EXPOSE_TCP", "value": "true"},
