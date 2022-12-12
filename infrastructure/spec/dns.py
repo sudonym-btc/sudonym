@@ -60,6 +60,12 @@ def dns(config, cluster_types):
                             "ttl": 50,
                             "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
                         },
+                         {
+                            "name": "ln." + domain + ".",
+                            "type": "A",
+                            "ttl": 50,
+                            "rrdatas": ["$(ref." + config["env"] + "-ip.address)"],
+                        },
                     ],
                 },
             }

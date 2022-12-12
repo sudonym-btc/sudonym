@@ -1,16 +1,12 @@
 from helper import getDeploymentName, getServiceName, getVolumeClaimName
-from kubernetes_lightning import lightning
-from kubernetes_cluster import cluster
-from kubernetes_lightning_rest import lightning_rest
-
-from kubernetes_db import kubernetes_db
-from kubernetes_ride_the_lightning import ride_the_lightning
-from kubernetes_lightning_rest import lightning_rest
-from kubernetes_cluster import cluster
-from kubernetes_bitcoin import bitcoin
-from kubernetes_lightning_rest import lightning_rest
 from kubernetes_api import api
+from kubernetes_bitcoin import bitcoin
+from kubernetes_cluster import cluster
+from kubernetes_db import kubernetes_db
 from kubernetes_homepage import homepage
+from kubernetes_lightning import lightning
+from kubernetes_lightning_rest import lightning_rest
+from kubernetes_ride_the_lightning import ride_the_lightning
 from kubernetes_web import web
 
 

@@ -169,8 +169,11 @@ def lightning(config, cluster_types):
                                             "--addr=0.0.0.0:"
                                             + str(config["lightning"]["port"]),
                                             "--experimental-offers",
-                                            "--network=" + chain_name
-                                        ],
+                                            "--network=" + chain_name,
+                                        ] + ([
+                                            "--announce-addr=ln." + config["domain"],
+                                            "--announce-addr-dns=1"
+                                            ] if config["env"] == "production" else []),
                                         "env": [
                                             {"name": "EXPOSE_TCP", "value": "true"},
                                             {
