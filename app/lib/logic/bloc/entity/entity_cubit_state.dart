@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
@@ -14,20 +15,26 @@ class EntityCubitState<T> {
   EntityCubitState({this.entity, this.loading = false});
 }
 
-abstract class EntityCubit<EntityRepo extends CrudRepository<EntityType>,
-        StateType extends EntityCubitState, EntityType extends BaseClass>
-    extends Cubit<StateType> with CubitLogger, SafeEmit {
+abstract class EntityCubit<
+        EntityRepo extends CrudRepository<EntityType>,
+        StateType extends EntityCubitState,
+        EntityType extends BaseClass> extends Cubit<StateType>
+    with CubitLogger, SafeEmit, WidgetsBindingObserver {
   EntityRepo repository = getIt<EntityRepo>();
   late Function stateClass;
   StreamSubscription? updater;
   bool shouldListen;
+  bool Function(StateType)? shouldRefreshOnFocus;
   Timer? refresher;
 
   EntityCubit(
       {required StateType initialState,
       required this.stateClass,
+      this.shouldRefreshOnFocus,
       this.shouldListen = true})
-      : super(initialState);
+      : super(initialState) {
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   listenChanges() {
     // Subscribe if not currently listening
@@ -82,6 +89,22 @@ abstract class EntityCubit<EntityRepo extends CrudRepository<EntityType>,
         fetch(state.entity.toJson()['id']);
       }
     });
+  }
+
+  setFocusRefresher(bool Function(StateType) refresh) {
+    shouldRefreshOnFocus = refresh;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) {
+    loggy.d('Changed app state cubit state');
+    if (appState == AppLifecycleState.resumed &&
+        state.entity != null &&
+        shouldRefreshOnFocus != null &&
+        shouldRefreshOnFocus!(state)) {
+      loggy.i('Reloading entity due to state change');
+      fetch(state.entity.toJson()['id']);
+    }
   }
 
   @override

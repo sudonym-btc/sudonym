@@ -12,6 +12,7 @@ class CubitWrapper<
   final T entity;
   final bool fetch;
   final bool Function(CS state)? refresh;
+  final bool Function(CS state)? refreshOnFocus;
   final Widget Function(BuildContext context, CS state) builder;
   final Function(BuildContext context, CS state)? listener;
 
@@ -20,6 +21,7 @@ class CubitWrapper<
       required this.builder,
       this.listener,
       this.refresh,
+      this.refreshOnFocus,
       this.fetch = true,
       super.key});
 
@@ -39,6 +41,9 @@ class CubitWrapper<
           }
           if (refresh != null) {
             c.setRefresher(const Duration(seconds: 10), refresh!);
+          }
+          if (refreshOnFocus != null) {
+            c.setFocusRefresher(refreshOnFocus!);
           }
           return c;
         },

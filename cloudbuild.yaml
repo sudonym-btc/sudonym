@@ -44,7 +44,7 @@ steps:
 
     # ADJUST VERSION NUMBERS IN DEPLOYMENT FILE
 
-    - id: 'Setting API image tag'
+    - id: 'api_image_tag'
       waitFor:
           - '-'
       name: ubuntu
@@ -54,7 +54,7 @@ steps:
               '-c',
               'sed "s/api:latest/api:$SHORT_SHA/g" -i infrastructure/spec/kubernetes_api.py',
           ]
-    - id: 'Setting Web App image tag'
+    - id: 'web_app_image_tag'
       waitFor:
           - '-'
       name: ubuntu
@@ -70,6 +70,8 @@ steps:
     # BUILD API
     - id: 'api'
       name: 'gcr.io/cloud-builders/docker'
+      waitFor:
+          - '-'
       args:
           [
               'build',
@@ -86,7 +88,7 @@ steps:
       env:
           - 'DOCKER_BUILDKIT=1'
 
-    - id: 'push api'
+    - id: 'push_api'
       waitFor:
           - 'api'
       name: 'gcr.io/cloud-builders/docker'
@@ -116,6 +118,8 @@ steps:
     #   args: [ 'push', 'gcr.io/$PROJECT_ID/web:$SHORT_SHA']
 
     - id: 'deploy'
+      waitFor:
+          - 'push_api'
       name: 'gcr.io/$PROJECT_ID/helm'
       entrypoint: 'bash'
       args: ['./infrastructure/deploy.sh', '$BRANCH_NAME']

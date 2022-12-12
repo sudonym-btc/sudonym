@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
@@ -14,13 +15,23 @@ class TransactionList extends StatefulWidget {
   State<StatefulWidget> createState() => TransactionListState();
 }
 
-class TransactionListState extends State<TransactionList> {
+class TransactionListState extends State<TransactionList>
+    with ListLogger, WidgetsBindingObserver {
   late ListCubit list;
   @override
   void initState() {
     list = ListCubit(getIt<TransactionRepository>(),
         where: {'potId': widget.pot.id});
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    loggy.d('Changed app state');
+    if (state == AppLifecycleState.resumed) {
+      list.loadPrevious();
+    }
   }
 
   @override
@@ -40,6 +51,7 @@ class TransactionListState extends State<TransactionList> {
                       Transaction>(
                   entity: el,
                   fetch: false,
+                  refreshOnFocus: ((state) => state.entity?.status == null),
                   builder: (context, state) {
                     if (state.loading) {
                       return Container();

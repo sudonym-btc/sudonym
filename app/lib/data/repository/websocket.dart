@@ -25,7 +25,7 @@ class WebsocketImpl extends Websocket
   List<String> acked = [];
   WebsocketImpl(this.config) : super() {
     WidgetsFlutterBinding.ensureInitialized();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     pingSubscription = stream.stream.listen((event) {
       if (event['ping'] != null) {
         // loggy.v('websocket ping received');
