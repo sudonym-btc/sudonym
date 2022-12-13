@@ -20,15 +20,24 @@ def lightning(config, cluster_types):
 
         gcs_log = " --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs " if config["loglevel"] == "debug" else ""
         lightning_dir = "/root/.lightning"
+        lightning_recovery_file = f"{lightning_dir}/{chain_name}/emergency.recover"
         backup_dir = "/backup"
         bucket = "sudonym-" + getBackupName(base_name, num)
-        
-        mount = f"""mkdir -p {backup_dir} && 
-            echo $(gcsfuse --limit-ops-per-sec=10 {gcs_log} {bucket} {backup_dir}) &&
-            cp -ar {backup_dir}/. {lightning_dir} >> /proc/1/fd/1 && ls -la {lightning_dir}"""
+        backup_recovery_file = f"{backup_dir}/emergency.recover"
 
-        unmount = f"""cp -ar {lightning_dir}/. {backup_dir} >> /proc/1/fd/1 &&
-        fusermount -u {backup_dir}"""
+        print(lightning_recovery_file)
+        print(backup_recovery_file)
+        
+        mount = f"""mkdir -p {backup_dir} &&
+            echo $(gcsfuse --limit-ops-per-sec=10 {gcs_log} {bucket} {backup_dir}) &&
+            [ -f "{backup_recovery_file}" ] && cp {backup_recovery_file} {lightning_recovery_file} && \
+            (while true;
+            do 
+                cp -u {lightning_recovery_file} {backup_dir}
+                sleep 1 &
+            done;)"""
+
+        unmount = f"""fusermount -u {backup_dir}"""
 
         return [
             {
@@ -156,15 +165,16 @@ def lightning(config, cluster_types):
                                             "capabilities": {"add": ["SYS_ADMIN"]},
                                         },
                                         "lifecycle": {
-                                            "postStart": {
-                                                "exec": {
-                                                    "command": [
-                                                        '/bin/sh',
-                                                        '-c',
-                                                        "echo 'hello from postStart hook' >> /proc/1/fd/1"
-                                                    ],
-                                                }
-                                            },
+                                            # "postStart": {
+                                            #     "exec": {
+                                            #         "command": [
+                                            #             '/bin/sh',
+                                            #             '-c',
+                                            #             mount,
+                                            #             " >> /proc/1/fd/1"
+                                            #         ],
+                                            #     }
+                                            # },
                                             "preStop": {
                                                 "exec": {
                                                     "command": [
@@ -178,8 +188,19 @@ def lightning(config, cluster_types):
                                         if config["backup"]
                                         else {},
                                         "name": addNum(base_name, num),
-                                        "image": "elementsproject/lightningd:v0.12.1",
-                                        "args": [
+                                        "image": "gcr.io/"
+                                        + config["project"]
+                                        + "/fuse-lightning",
+                                        "command": [
+                                            "/bin/sh",
+                                            "-ec",
+                                            (
+                                                f"{mount} &"
+                                                if config["backup"]
+                                                else ""
+                                            )
+                                            + " ./entrypoint.sh "
+                                            + " ".join([
                                             "--alias=" + config["appName"] + addNum(("-" + config["env"]) if config["env"] != "production" else "", num),
                                             "--bitcoin-rpcuser=$(BITCOIN_RPC_USER)",
                                             "--bitcoin-rpcpassword=$(BITCOIN_RPC_PASSWORD)",
@@ -198,7 +219,7 @@ def lightning(config, cluster_types):
                                         ] + ([
                                             "--announce-addr=34.67.91.68:" + str(config["lightning"]["port"]),
                                             # "--announce-addr-dns=1"
-                                            ] if config["env"] == "production" else []),
+                                            ] if config["env"] == "production" else []))],
                                         "env": [
                                             {"name": "EXPOSE_TCP", "value": "true"},
                                             {

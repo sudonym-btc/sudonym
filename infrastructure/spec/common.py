@@ -30,7 +30,7 @@ config = {
             "tier": "db-f1-micro",
             "backup": False
         },
-        "backup": False,
+        "backup": True,
         "loglevel": "debug"
     },
     "production": {
