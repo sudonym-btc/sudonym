@@ -156,7 +156,7 @@ workflows:
           cd app
           flutter build appbundle --build-number=$BUILD_NUMBER -t lib/main_production.dart --release
           flutter build apk --build-number=$BUILD_NUMBER -t lib/main_production.dart --release
-      - *ghrelease
+      # - *ghrelease
     publishing:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS

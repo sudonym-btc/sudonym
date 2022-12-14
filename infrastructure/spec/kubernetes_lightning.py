@@ -160,6 +160,7 @@ def lightning(config, cluster_types):
                             "spec": {
                                 "containers": [
                                     {
+                                        "serviceAccountName": "lightning",
                                         "securityContext": {
                                             "privileged": True,
                                             "capabilities": {"add": ["SYS_ADMIN"]},
