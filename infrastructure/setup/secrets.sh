@@ -1,4 +1,3 @@
-gcloud secrets describe $ENV-cert-resolver
 # Create service account secret for DNS certificate cert-manager
 (gcloud secrets describe $ENV-cert-resolver >/dev/null 2>&1 && echo "already got secret") ||
     (gcloud iam service-accounts keys create key.json \
@@ -12,7 +11,7 @@ gcloud secrets add-iam-policy-binding $ENV-cert-resolver \
 # Create service account secret for lightning backup
 (gcloud secrets describe $ENV-lightning-service-account >/dev/null 2>&1 && echo "already got secret") ||
     (gcloud iam service-accounts keys create key.json \
-        --iam-account $ENV-lightning-service-account@$PROJECT_ID.iam.gserviceaccount.com &&
+        --iam-account $ENV-lightning@$PROJECT_ID.iam.gserviceaccount.com &&
         gcloud secrets create $ENV-lightning-service-account --data-file=key.json && rm key.json)
 
 # Create a random password for RTL lightning node admin if it does not yet exist

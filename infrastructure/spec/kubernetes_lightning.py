@@ -21,6 +21,7 @@ def lightning(config, cluster_types):
         gcs_log = " --log-file /home/log.txt --debug_gcs --debug_fuse --debug_http --debug_fs " if config["loglevel"] == "debug" else ""
         lightning_dir = "/root/.lightning"
         lightning_recovery_file = f"{lightning_dir}/{chain_name}/emergency.recover"
+        lightning_secret_file = f"{lightning_dir}/{chain_name}/hsm_secret"
         backup_dir = "/backup"
         bucket = "sudonym-" + getBackupName(base_name, num)
         backup_recovery_file = f"{backup_dir}/emergency.recover"
@@ -30,11 +31,12 @@ def lightning(config, cluster_types):
         
         mount = f"""mkdir -p {backup_dir} &&
             echo $(gcsfuse --key-file=/sa/key.json {gcs_log} {bucket} {backup_dir}) &&
-            [ -f "{backup_recovery_file}" ] && cp {backup_recovery_file} {lightning_recovery_file} && \
             (while true;
             do 
+                cp -u {lightning_secret_file} {backup_dir}
                 cp -u {lightning_recovery_file} {backup_dir}
-                sleep 1 &
+                echo "backing up"
+                sleep 1
             done;)"""
 
         unmount = f"""fusermount -u {backup_dir}"""
@@ -65,6 +67,9 @@ def lightning(config, cluster_types):
                         "uniformBucketLevelAccess": {
                             "enabled": True
                         },
+                    },
+                    "versioning": {
+                        "enabled": True
                     },
                 },
             },
@@ -322,7 +327,7 @@ def lightning(config, cluster_types):
                                     {
                                         "name": "sa",
                                         "secret": {
-                                            "name":  config["env"] + "-lightning-service-account"
+                                            "secretName":  config["env"] + "-lightning-service-account"
                                         }
                                     }
                                 ],
