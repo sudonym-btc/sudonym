@@ -41,6 +41,19 @@ def lightning(config, cluster_types):
 
         return [
             {
+                "name": base_name + "-service-account",
+                "type": cluster_types["ServiceAccount"],
+                "metadata": {"dependsOn": [kube_type_name]},
+                "properties": {
+                    "apiVersion": "v1",
+                    "kind": "ServiceAccount",
+                    "namespace": "default",
+                    "metadata": {
+                        "name": "lightning"
+                    }
+                }
+            },
+            {
                 "type": "storage.v1.bucket",
                 "name": "sudonym-" + getBackupName(base_name, num),
                 "properties": {
