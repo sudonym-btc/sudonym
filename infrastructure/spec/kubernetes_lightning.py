@@ -158,9 +158,9 @@ def lightning(config, cluster_types):
                         "template": {
                             "metadata": {"labels": {"app": addNum(base_name, num)}},
                             "spec": {
+                                "serviceAccountName": "lightning",
                                 "containers": [
                                     {
-                                        "serviceAccountName": "lightning",
                                         "securityContext": {
                                             "privileged": True,
                                             "capabilities": {"add": ["SYS_ADMIN"]},
