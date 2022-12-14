@@ -29,7 +29,7 @@ def lightning(config, cluster_types):
         print(backup_recovery_file)
         
         mount = f"""mkdir -p {backup_dir} &&
-            echo $(gcsfuse --limit-ops-per-sec=10 {gcs_log} {bucket} {backup_dir}) &&
+            echo $(gcsfuse --key-file=/sa/key.json {gcs_log} {bucket} {backup_dir}) &&
             [ -f "{backup_recovery_file}" ] && cp {backup_recovery_file} {lightning_recovery_file} && \
             (while true;
             do 
@@ -280,6 +280,10 @@ def lightning(config, cluster_types):
                                                 ),
                                                 "mountPath": lightning_dir,
                                             },
+                                            {
+                                                "name": "sa",
+                                                "mountPath": "/sa",
+                                            },
                                         ],
 
                                         "resources": {
@@ -315,6 +319,12 @@ def lightning(config, cluster_types):
                                             )
                                         },
                                     },
+                                    {
+                                        "name": "sa",
+                                        "secret": {
+                                            "name":  config["env"] + "-lightning-service-account"
+                                        }
+                                    }
                                 ],
                             },
                         },

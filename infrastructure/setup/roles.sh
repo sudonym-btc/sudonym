@@ -33,7 +33,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 # Lightning permissions
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:$ENV-lightning@$PROJECT_ID.iam.gserviceaccount.com" \
-    --role="roles/storage.objectAdmin"
+    --role="roles/storage.admin"
 
 # Kubernetes should be able to use the api service account
 gcloud iam service-accounts add-iam-policy-binding \
