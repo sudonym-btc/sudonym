@@ -109,7 +109,7 @@ class WebsocketImpl extends Websocket
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    loggy.d('Changed app state');
+    loggy.v('Changed app state registered in websocket');
     if (state == AppLifecycleState.resumed) {
       loggy.i('Websocket reconnecting due to state change');
       forceReconnect();
@@ -121,7 +121,7 @@ class WebsocketImpl extends Websocket
     if (pingSubscription != null) pingSubscription!.cancel();
     disconnect();
     loggy.d('Websocket disposed');
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 }
 

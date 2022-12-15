@@ -45,6 +45,16 @@
 			<string>com.sudonym.wallet</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+			  <string>sudonym</string>
+			</array>
+		  </dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.sudonym.wallet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
 				<string>lnurlw</string>
 			</array>
 		</dict>

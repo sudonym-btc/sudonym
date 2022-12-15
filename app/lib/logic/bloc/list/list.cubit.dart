@@ -138,6 +138,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     loggy.d('Unsubscribing to ${_repository.endpoint}');
     await onCreated?.cancel();
     await onUpdated?.cancel();
+    await onDeleted?.cancel();
     return super.close();
   }
 

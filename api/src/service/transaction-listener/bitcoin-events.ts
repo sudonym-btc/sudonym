@@ -60,7 +60,7 @@ export class BitcoinEvents {
 					bitcoin.Transaction.fromHex(rawTx) as BitcoinTransaction
 				);
 
-				this.logger.debug(
+				this.logger.verbose(
 					'Received onchain transaction',
 					tx.getId(),
 					tx

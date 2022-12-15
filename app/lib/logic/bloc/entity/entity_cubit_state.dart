@@ -97,12 +97,12 @@ abstract class EntityCubit<
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState appState) {
-    loggy.d('Changed app state cubit state');
     if (appState == AppLifecycleState.resumed &&
         state.entity != null &&
         shouldRefreshOnFocus != null &&
         shouldRefreshOnFocus!(state)) {
-      loggy.i('Reloading entity due to state change');
+      loggy.v('Changed app state registered in cubit state');
+      loggy.v('Reloading entity due to state change');
       fetch(state.entity.toJson()['id']);
     }
   }
@@ -115,6 +115,7 @@ abstract class EntityCubit<
     if (refresher != null) {
       refresher!.cancel();
     }
+    WidgetsBinding.instance.removeObserver(this);
     return super.close();
   }
 }

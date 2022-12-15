@@ -35,7 +35,6 @@ def lightning(config, cluster_types):
             do 
                 cp -u {lightning_secret_file} {backup_dir}
                 cp -u {lightning_recovery_file} {backup_dir}
-                echo "backing up"
                 sleep 1
             done;)"""
 
@@ -231,6 +230,7 @@ def lightning(config, cluster_types):
                                             "--lightning-dir=" + lightning_dir,
                                             "--rpc-file=/rpc/lightning-rpc",
                                             "--large-channels",
+                                            "--disable-mpp",
                                             "--bind-addr=0.0.0.0:"
                                             + str(config["lightning"]["port"]),
                                             "--experimental-offers",
@@ -285,11 +285,10 @@ def lightning(config, cluster_types):
                                                 ),
                                                 "mountPath": lightning_dir,
                                             },
-                                            {
+                                        ] + ([{
                                                 "name": "sa",
                                                 "mountPath": "/sa",
-                                            },
-                                        ],
+                                            }] if config['backup'] == True else []),
 
                                         "resources": {
                                             # "limits": {
@@ -323,14 +322,13 @@ def lightning(config, cluster_types):
                                                 base_name + "-backup", num
                                             )
                                         },
-                                    },
-                                    {
+                                    }
+                                ]+ ([{
                                         "name": "sa",
                                         "secret": {
                                             "secretName":  config["env"] + "-lightning-service-account"
                                         }
-                                    }
-                                ],
+                                    }] if config['backup'] == True else []),
                             },
                         },
                     },

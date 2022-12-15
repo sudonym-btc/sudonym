@@ -3,6 +3,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sudonym/injection.dart';
+import 'package:twitter_login/twitter_login.dart';
 
 @Injectable(as: AuthRepository, env: Env.allButMock)
 class AuthRepositoryImpl implements AuthRepository {
@@ -23,6 +24,57 @@ class AuthRepositoryImpl implements AuthRepository {
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  @override
+  Future<UserCredential?> loginWithTwitter() async {
+    // Create a TwitterLogin instance
+    final twitterLogin = TwitterLogin(
+        apiKey: 'REDACTED',
+        apiSecretKey: 'REDACTED',
+        redirectURI: 'sudonym://');
+
+    // Trigger the sign-in flow
+    final authResult = await twitterLogin.login(forceLogin: true);
+
+    switch (authResult.status!) {
+      case TwitterLoginStatus.loggedIn:
+        // Create a credential from the access token
+        final twitterAuthCredential = TwitterAuthProvider.credential(
+          accessToken: authResult.authToken!,
+          secret: authResult.authTokenSecret!,
+        );
+
+        // Once signed in, return the UserCredential
+        return await FirebaseAuth.instance
+            .signInWithCredential(twitterAuthCredential);
+      case TwitterLoginStatus.cancelledByUser:
+        return null;
+      case TwitterLoginStatus.error:
+        throw authResult;
+    }
+  }
+
+  @override
+  Future<UserCredential?> loginWithApple() async {
+    // Create a TwitterLogin instance
+    final twitterLogin = TwitterLogin(
+        apiKey: 'REDACTED',
+        apiSecretKey: 'REDACTED',
+        redirectURI: '<your_scheme>://');
+
+    // Trigger the sign-in flow
+    final authResult = await twitterLogin.login();
+
+    // Create a credential from the access token
+    final twitterAuthCredential = TwitterAuthProvider.credential(
+      accessToken: authResult.authToken!,
+      secret: authResult.authTokenSecret!,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance
+        .signInWithCredential(twitterAuthCredential);
   }
 
   @override
@@ -52,7 +104,8 @@ class AuthRepositoryImpl implements AuthRepository {
 abstract class AuthRepository {
   Future<UserCredential?> loginWithGoogle();
   Future<UserCredential?> loginWithFacebook();
+  Future<UserCredential?> loginWithTwitter();
+  Future<UserCredential?> loginWithApple();
   Future logout();
   Stream<User?> onStateChanged();
-  // Future<UserCredential> loginWithTwitter();
 }

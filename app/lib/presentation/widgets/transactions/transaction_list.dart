@@ -27,8 +27,14 @@ class TransactionListState extends State<TransactionList>
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    loggy.d('Changed app state');
+    loggy.v('Changed app state registered in transaction list');
     if (state == AppLifecycleState.resumed) {
       list.loadPrevious();
     }

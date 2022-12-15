@@ -46,6 +46,11 @@ class AuthCubit extends Cubit<AuthState> {
     await _authRepository.loginWithGoogle();
   }
 
+  loginWithTwitter() async {
+    emit(LoadingState());
+    await _authRepository.loginWithTwitter();
+  }
+
   loginWithFacebook() async {
     emit(LoadingState());
     await _authRepository.loginWithFacebook();

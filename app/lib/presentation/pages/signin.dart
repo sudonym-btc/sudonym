@@ -33,11 +33,17 @@ class SigninPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(AppLocalizations.of(context)!.signInWith),
-                          Container(height: padding * 2),
+                          const VertDivider(2),
                           Button(
                             text: 'Google',
                             onPressed:
                                 context.read<AuthCubit>().loginWithGoogle,
+                          ),
+                          const VertDivider(),
+                          Button(
+                            text: 'Twitter',
+                            onPressed:
+                                context.read<AuthCubit>().loginWithTwitter,
                           ),
                           // Container(height: padding),
                           // Button(
