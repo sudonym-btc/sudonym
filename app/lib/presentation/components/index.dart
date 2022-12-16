@@ -5,6 +5,7 @@ export 'helper/index.dart';
 export 'input/button/button_bar.dart';
 export 'input/currency/currency_input.dart';
 export 'typography/emphasized.dart';
+export 'typography/error.dart';
 export 'typography/header.dart';
 export 'typography/info.dart';
 export 'typography/subheader.dart';

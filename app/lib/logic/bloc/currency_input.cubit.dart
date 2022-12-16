@@ -121,15 +121,25 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
   }
 
   Future<num> enforceConstraints(num val) async {
+    safeEmit(state.copyWith(hasError: false));
     safeEmit(state.copyWith(minLoading: true));
+    Map<String, dynamic>? error;
     double min = await getMinInCurrentCurrency();
-    if (numToCurrentPrecision(min) >= numToCurrentPrecision(val)) {
-      controller!.updateValue(
-          getDisplayValue(options.currencies[state.currCurrency], min));
-      setValue(min); // Must set true value as dislay value is vague
-      safeEmit(state.copyWith(negativeEnabled: false));
-    } else {
-      safeEmit(state.copyWith(negativeEnabled: true));
+
+    // Disable decrement button when already at minimum
+    // controller!.updateValue(
+    //     getDisplayValue(options.currencies[state.currCurrency], min));
+    // setValue(min); // Must set true value as dislay value is vague
+    safeEmit(state.copyWith(
+        negativeEnabled:
+            numToCurrentPrecision(val) > numToCurrentPrecision(min)));
+
+    // Return error when below minimum
+    if (val < min) {
+      error = {
+        'min':
+            FormatCurrency().format(options.currencies[state.currCurrency], min)
+      };
     }
     safeEmit(state.copyWith(minLoading: false));
 
@@ -137,11 +147,16 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     double max = await getMaxInCurrentCurrency();
 
     if (min > max) {
-      safeEmit(state.copyWith(error: 'Max amount is less than minimum'));
+      safeEmit(state.copyWith(hasError: true, error: {
+        'max':
+            FormatCurrency().format(options.currencies[state.currCurrency], max)
+      }));
       return val;
-    } else {
-      safeEmit(state.copyWith(error: null));
     }
+
+    safeEmit(state.copyWith(
+        positiveEnabled:
+            numToCurrentPrecision(max) < numToCurrentPrecision(val)));
 
     if (numToCurrentPrecision(max) <= numToCurrentPrecision(val)) {
       controller!.updateValue(
@@ -152,6 +167,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
       safeEmit(state.copyWith(positiveEnabled: true));
     }
     safeEmit(state.copyWith(maxLoading: false));
+    safeEmit(state.copyWith(hasError: error != null, error: error));
     return val;
   }
 
@@ -234,10 +250,12 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
 
     newVal = (numToCurrentPrecision(newVal / clickVal)).ceil() *
         clickVal; // should be display precision
+    double min = await getMinInCurrentCurrency();
     controller!.updateValue(max(
-        getDisplayValue(options.currencies[state.currCurrency],
-            await getMinInCurrentCurrency()),
+        getDisplayValue(options.currencies[state.currCurrency], min),
         newVal.toDouble()));
+    setValue(max(
+        min, newVal.toDouble())); // Must set exact value too due to precision
   }
 
   // Convert display value in sats to BTC value
@@ -266,7 +284,7 @@ class CurrencyInputCubitState extends Equatable {
   final int altCurrency;
   final num currVal;
   final num altVal;
-  final String? error;
+  final Map<String, dynamic>? error;
 
   const CurrencyInputCubitState({
     this.currencies = defaultCurrencies,
@@ -293,7 +311,8 @@ class CurrencyInputCubitState extends Equatable {
           int? altCurrency,
           num? currVal,
           num? altVal,
-          String? error}) =>
+          bool? hasError,
+          Map<String, dynamic>? error}) =>
       CurrencyInputCubitState(
           currencies: currencies ?? this.currencies,
           positiveEnabled: positiveEnabled ?? this.positiveEnabled,
@@ -305,7 +324,7 @@ class CurrencyInputCubitState extends Equatable {
           altCurrency: altCurrency ?? this.altCurrency,
           currVal: currVal ?? this.currVal,
           altVal: altVal ?? this.altVal,
-          error: error ?? this.error);
+          error: hasError == false ? null : error ?? this.error);
 
   @override
   List<Object?> get props => [

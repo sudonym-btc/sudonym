@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
@@ -42,7 +43,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
           builder: (context, state) {
             if (form != null) {
               if (state.error != null) {
-                form.setErrors({'amount': state.error});
+                form.control('amount').setErrors({'amount': state.error});
               } else {
                 form.control('amount').removeError('amount');
               }
@@ -92,7 +93,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       contentPadding: EdgeInsets.zero,
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      errorText: state.error,
+                      errorText: formatError(context, state.error),
                       helperText: state.altLoading
                           ? '...'
                           : FormatCurrency().format(
@@ -162,5 +163,15 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                 ]);
           },
         ));
+  }
+}
+
+formatError(BuildContext context, Map<String, dynamic>? error) {
+  if (error == null) return null;
+  if (error['min'] != null) {
+    return AppLocalizations.of(context)!.minAmount(error['min']);
+  }
+  if (error['max'] != null) {
+    return AppLocalizations.of(context)!.maxAmount(error['max']);
   }
 }

@@ -124,6 +124,22 @@
 			}
 		}
 	},
+	"minAmount": "Amount most be greater than {amount}",
+	"@minAmount": {
+		"placeholders": {
+			"amount": {
+				"type": "String"
+			}
+		}
+	},
+	"maxAmount": "Amount must be less than {amount}",
+	"@maxAmount": {
+		"placeholders": {
+			"amount": {
+				"type": "String"
+			}
+		}
+	},	
 	"time": "Time",
 	"to": "To",
 	"ok": "OK",

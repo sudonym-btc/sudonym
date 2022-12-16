@@ -26,39 +26,41 @@ class SigninPage extends StatelessWidget {
                               const Header('Sudonym')
                             ],
                           )),
-                      Expanded(
-                          child: Center(
-                              child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(AppLocalizations.of(context)!.signInWith),
-                          const VertDivider(2),
-                          Button(
-                            text: 'Google',
-                            onPressed:
-                                context.read<AuthCubit>().loginWithGoogle,
-                          ),
-                          const VertDivider(),
-                          Button(
-                            text: 'Twitter',
-                            onPressed:
-                                context.read<AuthCubit>().loginWithTwitter,
-                          ),
-                          // Container(height: padding),
-                          // Button(
-                          //   text: 'Facebook',
-                          //   onPressed:
-                          //       context.read<AuthCubit>().loginWithFacebook,
-                          // )
-                          // SignInButton(
-                          //   Buttons.Google,
-                          // ),
-                          // SignInButton(
-                          //   Buttons.Facebook,
-                          // )
-                        ],
-                      )))
+                      BlocBuilder<AuthCubit, AuthState>(
+                          builder: ((context, state) => Expanded(
+                                  child: Center(
+                                      child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: state is LoadingState
+                                    ? [const CircularProgressIndicator()]
+                                    : [
+                                        Text(AppLocalizations.of(context)!
+                                            .signInWith),
+                                        const VertDivider(2),
+                                        Button(
+                                          text: 'Google',
+                                          onPressed: context
+                                              .read<AuthCubit>()
+                                              .loginWithGoogle,
+                                        ),
+                                        const VertDivider(),
+                                        Button(
+                                          text: 'Twitter',
+                                          onPressed: context
+                                              .read<AuthCubit>()
+                                              .loginWithTwitter,
+                                        ),
+                                        ...(state.error != null
+                                            ? [
+                                                CustomPadding(
+                                                  multiplier: 2,
+                                                  child: ErrorText(state.error),
+                                                )
+                                              ]
+                                            : [])
+                                      ],
+                              )))))
                     ]))));
   }
 }

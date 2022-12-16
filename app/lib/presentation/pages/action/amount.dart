@@ -92,33 +92,32 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                   child: ReactiveForm(
                       formGroup: formGroup,
                       child: ReactiveFormConsumer(
-                          builder: (context, formGroup, child) => Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(child: Center(child: currencyInput)),
-                                  ButtonBar(children: [
-                                    Button(
-                                      text:
-                                          AppLocalizations.of(context)!.confirm,
-                                      icon: const FaIcon(
-                                          FontAwesomeIcons.paperPlane,
-                                          size: 14),
-                                      onPressed: formGroup.valid
-                                          ? () {
-                                              widget.action.amount = options
-                                                  .controller!.value.amount;
-                                              widget.action.currency = options
-                                                  .controller!.value.currency;
-                                              widget.onDone(widget.action);
-                                            }
-                                          : null,
-                                    )
-                                  ])
-                                ],
-                              )))))),
+                          builder: (context, formGroup, child) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(child: Center(child: currencyInput)),
+                            ButtonBar(children: [
+                              Button(
+                                text: AppLocalizations.of(context)!.confirm,
+                                icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                                    size: 14),
+                                onPressed: formGroup.valid
+                                    ? () {
+                                        widget.action.amount =
+                                            options.controller!.value.amount;
+                                        widget.action.currency =
+                                            options.controller!.value.currency;
+                                        widget.onDone(widget.action);
+                                      }
+                                    : null,
+                              )
+                            ])
+                          ],
+                        );
+                      }))))),
     );
   }
 }

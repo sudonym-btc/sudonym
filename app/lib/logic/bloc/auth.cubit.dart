@@ -43,17 +43,38 @@ class AuthCubit extends Cubit<AuthState> {
 
   loginWithGoogle() async {
     emit(LoadingState());
-    await _authRepository.loginWithGoogle();
+    try {
+      fb.UserCredential? response = await _authRepository.loginWithGoogle();
+      if (response == null) {
+        emit(LoadedState(null, null));
+      }
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+    }
   }
 
   loginWithTwitter() async {
     emit(LoadingState());
-    await _authRepository.loginWithTwitter();
+    try {
+      fb.UserCredential? response = await _authRepository.loginWithTwitter();
+      if (response == null) {
+        emit(LoadedState(null, null));
+      }
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+    }
   }
 
   loginWithFacebook() async {
     emit(LoadingState());
-    await _authRepository.loginWithFacebook();
+    try {
+      fb.UserCredential? response = await _authRepository.loginWithFacebook();
+      if (response == null) {
+        emit(LoadedState(null, null));
+      }
+    } catch (e) {
+      emit(ErrorState(e.toString()));
+    }
   }
 
   setUser(User? u, fb.User? fbUser) {
@@ -76,19 +97,21 @@ class AuthCubit extends Cubit<AuthState> {
 abstract class AuthState {
   final User? user;
   final fb.User? firebaseUser;
-  AuthState(this.user, this.firebaseUser);
+  final String? error;
+  AuthState(this.user, this.firebaseUser, this.error);
 }
 
 class LoadingState extends AuthState {
-  LoadingState() : super(null, null);
+  LoadingState() : super(null, null, null);
 }
 
 class LoadedState extends AuthState {
-  LoadedState(User? user, fb.User? firebaseUser) : super(user, firebaseUser);
+  LoadedState(User? user, fb.User? firebaseUser)
+      : super(user, firebaseUser, null);
 
   List<User?> get props => [user];
 }
 
 class ErrorState extends AuthState {
-  ErrorState() : super(null, null);
+  ErrorState(String error) : super(null, null, error);
 }

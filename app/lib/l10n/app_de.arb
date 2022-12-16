@@ -82,6 +82,8 @@
 	"outgoingPaymentError": "Ausgehende Zahlung von {amount} an {address} fehlgeschlagen",
 	"incomingPaymentError": "Eingehende Zahlung von {amount} fehlgeschlagen",
 	"incomingPaymentSuccess": "Zahlung von {amount} erhalten",
+	"minAmount": "Muss mehr als {amount} sein",
+	"maxAmount": "Muss weniger als {amount} sein",
 	"time": "Um",
 	"to": "An",
 	"potCurrencyDescription": "Alles, wass an diesem Topf geschickt wird, wird in der spezifizierten Währung aufbewahrt.",

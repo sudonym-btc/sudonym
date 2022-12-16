@@ -117,8 +117,8 @@ class LightningSectionState extends State<LightningSection> {
                     },
                     icon: const FaIcon(FontAwesomeIcons.copy))
               ]),
-          const VertDivider(),
           Info(AppLocalizations.of(context)!.lightningAddressDescription),
+          const VertDivider(),
           CustomForm<UserCubit, UserCubitState, User>(
               entity: getIt<AuthCubit>().user!,
               formGroup: () => g,

@@ -28,20 +28,28 @@ class TransactionListItem extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                        width: 75,
-                        child: Row(children: [
-                          AmountText(
-                              fromCurrency: entity.currencyCode,
-                              toCurrency: pot?.currency ?? entity.currencyCode,
-                              amount: entity.amount,
-                              date: entity.createdAt,
-                              builder: (state) => Text(state,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: entity.outgoing
-                                          ? Theme.of(context).errorColor
-                                          : Theme.of(context).primaryColor)))
-                        ])),
+                        width: 55,
+                        child: FittedBox(
+                            alignment: Alignment.centerLeft,
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  AmountText(
+                                      fromCurrency: entity.currencyCode,
+                                      toCurrency:
+                                          pot?.currency ?? entity.currencyCode,
+                                      amount: entity.amount,
+                                      date: entity.createdAt,
+                                      builder: (state) => Text(state,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: entity.outgoing
+                                                  ? Theme.of(context).errorColor
+                                                  : Theme.of(context)
+                                                      .primaryColor)))
+                                ]))),
+                    HoriDivider(),
                     Expanded(
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,15 +68,23 @@ class TransactionListItem extends StatelessWidget {
                     )),
                     SizedBox(
                         width: 50,
-                        child: Center(
-                            child: Timeago(
-                          builder: ((context, value) => Text(timeago.format(
-                              entity.createdAt,
-                              locale:
-                                  Localizations.localeOf(context).toString() +
-                                      '_short'))),
-                          date: entity.createdAt,
-                        ))),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Timeago(
+                                builder: ((context, value) => Text(
+                                      timeago.format(entity.createdAt,
+                                          locale:
+                                              Localizations.localeOf(context)
+                                                      .toString() +
+                                                  '_short'),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    )),
+                                date: entity.createdAt,
+                              )
+                            ])),
                   ],
                 ))));
   }

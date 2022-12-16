@@ -35,7 +35,7 @@ class AuthRepositoryImpl implements AuthRepository {
         redirectURI: 'sudonym://');
 
     // Trigger the sign-in flow
-    final authResult = await twitterLogin.login(forceLogin: true);
+    final authResult = await twitterLogin.loginV2(forceLogin: true);
 
     switch (authResult.status!) {
       case TwitterLoginStatus.loggedIn:
