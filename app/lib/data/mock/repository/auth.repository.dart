@@ -10,7 +10,6 @@ import 'package:sudonym/injection.dart';
 @Injectable(as: AuthRepository, env: [Env.mock])
 class MockAuthRepository implements AuthRepository {
   StreamController<User?> authStateChanges = StreamController.broadcast();
-
   @override
   Future<UserCredential> loginWithGoogle() async {
     final googleSignIn = MockGoogleSignIn();

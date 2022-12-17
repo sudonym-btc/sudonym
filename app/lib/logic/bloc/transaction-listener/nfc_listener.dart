@@ -1,9 +1,9 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
+import 'package:universal_io/io.dart';
 
 @singleton
 class NFCListener extends TransactionListenerSubtype with NFCLogger {
@@ -20,14 +20,17 @@ class NFCListener extends TransactionListenerSubtype with NFCLogger {
   }
 
   listen() async {
-    loggy.d(await NfcManager.instance.isAvailable());
     loggy.d('Starting NFC');
     // Start Session
     NfcManager.instance.startSession(onDiscovered: handleTag);
   }
 
   init() async {
-    if (!Platform.isIOS) {
+    if (!Platform.isIOS &&
+        !Platform.isMacOS &&
+        !Platform.isWindows &&
+        !Platform.isLinux &&
+        !kIsWeb) {
       if (await NfcManager.instance.isAvailable()) {
         listen();
       }

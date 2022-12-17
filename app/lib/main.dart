@@ -17,7 +17,7 @@ void main(List<String> args) {
   mainCommon(null);
 }
 
-void mainCommon(String? env) async {
+Future<void> mainSetup(String? env) async {
   env = env ?? const String.fromEnvironment('ENV');
   env = env == '' ? Env.mock : env;
 
@@ -37,6 +37,17 @@ void mainCommon(String? env) async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   configureInjection(env);
+  FlutterError.onError = (details) => print(details);
+  timeago.setLocaleMessages('de_short', timeago.DeShortMessages());
+  timeago.setLocaleMessages('fr_short', timeago.FrShortMessages());
+  timeago.setLocaleMessages('es_short', timeago.EsShortMessages());
+  timeago.setLocaleMessages('de', timeago.DeMessages());
+  timeago.setLocaleMessages('fr', timeago.FrMessages());
+  timeago.setLocaleMessages('es', timeago.EsMessages());
+}
+
+void mainCommon(String? env) async {
+  await mainSetup(env);
 
   await SentryFlutter.init(
       (options) => options.dsn =
@@ -49,14 +60,6 @@ void mainCommon(String? env) async {
             print('Error :  $error');
             print('StackTrace :  $stackTrace');
           }));
-
-  FlutterError.onError = (details) => print(details);
-  timeago.setLocaleMessages('de_short', timeago.DeShortMessages());
-  timeago.setLocaleMessages('fr_short', timeago.FrShortMessages());
-  timeago.setLocaleMessages('es_short', timeago.EsShortMessages());
-  timeago.setLocaleMessages('de', timeago.DeMessages());
-  timeago.setLocaleMessages('fr', timeago.FrMessages());
-  timeago.setLocaleMessages('es', timeago.EsMessages());
 }
 
 class App extends StatelessWidget {
@@ -69,7 +72,7 @@ class App extends StatelessWidget {
       title: 'Sudonym',
       theme: getTheme(),
       darkTheme: getTheme(light: false),
-      home: const AuthGate(),
+      home: const AuthGate(child: HomePage()),
       // builder: (BuildContext context, Widget? widget) {
       //   ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
       //     return StatusPage(

@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import * as Factory from 'factory.ts';
 import { Transaction } from '../classes/transaction';
 import { RecursivePartial } from '../recursive-partial';
+import { factory as potFactory } from './pot.mock';
 
 const addresses = [
 	'paco@coincorner.io',
@@ -14,6 +15,7 @@ const addressTypes = ['lightningaddress', 'bolt11', 'lnurl', 'onchain'];
 export const factory = Factory.Sync.makeFactory<RecursivePartial<Transaction>>({
 	id: Factory.each((i) => i),
 	txid: Factory.each((i) => i.toString()),
+	Pot: Factory.each((i) => potFactory.build()),
 	potId: Factory.each((i) => i),
 	outgoing: Factory.each((i) => Boolean(Math.random() > 0.5)),
 	description: Factory.each((i) =>
@@ -24,9 +26,9 @@ export const factory = Factory.Sync.makeFactory<RecursivePartial<Transaction>>({
 			'New bike',
 		])
 	),
-	address: Factory.each((i) => addresses[addresses.length % i]),
-	originalAddress: Factory.each((i) => addresses[addresses.length % i]),
-	type: Factory.each((i) => addressTypes[addresses.length % i]),
+	address: Factory.each((i) => addresses[i % addresses.length]),
+	originalAddress: Factory.each((i) => addresses[i % addresses.length]),
+	type: Factory.each((i) => addressTypes[i % addresses.length]),
 	status: Factory.each(() => Boolean(Math.round(Math.random()))),
 	transactionId: Factory.each((i) => i),
 	amount: Factory.each(() => parseFloat((Math.random() * 2).toFixed(0))),

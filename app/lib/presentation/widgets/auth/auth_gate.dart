@@ -5,7 +5,8 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({Key? key}) : super(key: key);
+  final Widget child;
+  const AuthGate({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class AuthGate extends StatelessWidget {
           if (state is LoadedState && state.user != null) {
             return MultiBlocProvider(providers: [
               BlocProvider(create: (_) => getIt<TransactionListenerCubit>())
-            ], child: _LoggedInWidget());
+            ], child: _LoggedInWidget(child: child));
           } else if (state.firebaseUser != null) {
             return const SplashPage();
           }
@@ -29,6 +30,8 @@ class AuthGate extends StatelessWidget {
 }
 
 class _LoggedInWidget extends StatefulWidget {
+  final Widget child;
+  const _LoggedInWidget({required this.child});
   @override
   State<StatefulWidget> createState() => _LoggedInWidgetState();
 }
@@ -61,7 +64,7 @@ class _LoggedInWidgetState extends State<_LoggedInWidget> {
                 ActionStream(context: context, link: state.address.toString()));
           }
         },
-        child: const MessageHandler(
-            child: IncomingTransactionHandler(child: HomePage())));
+        child: MessageHandler(
+            child: IncomingTransactionHandler(child: widget.child)));
   }
 }

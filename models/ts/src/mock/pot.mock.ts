@@ -16,7 +16,7 @@ export const factory = Factory.Sync.makeFactory<RecursivePartial<Pot>>({
 				'cinema fund',
 				'round up',
 				'pet!',
-			][i]
+			][i % 8]
 	),
 	currency: Factory.each((i) => faker.helpers.arrayElement(['BTC', 'USD'])),
 	balance: Factory.each((i) => Math.random() * 10),

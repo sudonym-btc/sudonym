@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/data/index.dart';
@@ -36,7 +37,7 @@ class ClipboardListener extends TransactionListenerSubtype {
   }
 
   bool canReadClipboardUndetected() {
-    if (Platform.isIOS) {
+    if (Platform.isIOS || kIsWeb) {
       return false;
     }
     return true;

@@ -1,11 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
+import 'package:universal_io/io.dart';
 
 class MessageHandler extends StatefulWidget {
   final Widget child;
@@ -29,6 +31,7 @@ class _MessageHandlerState extends State<MessageHandler>
   @override
   initState() {
     super.initState();
+    if (kIsWeb || Platform.isMacOS) return;
 
     _fcm.requestPermission();
 
