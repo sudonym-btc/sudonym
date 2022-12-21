@@ -33,10 +33,12 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
         color: Colors.indigo.shade800,
         title: AppLocalizations.of(context)!.paymentInfo,
         subtitleText: AppLocalizations.of(context)!.gatheredPaymentInformation,
-        content: PaymentInfoPreview(
-          entity: r,
-          pot: pot,
-        ),
+        content: Column(children: [
+          PaymentInfoPreview(
+            entity: r,
+            pot: pot,
+          )
+        ]),
         actions: ButtonBar(children: [
           ElevatedButton.icon(
             label: Text(AppLocalizations.of(context)!.send),
