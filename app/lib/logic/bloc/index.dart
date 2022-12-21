@@ -7,6 +7,7 @@ export 'entity/contact.cubit.dart';
 export 'entity/entity_cubit_state.dart';
 export 'entity/pot.cubit.dart';
 export 'entity/receiver.cubit.dart';
+export 'entity/sender.cubit.dart';
 export 'entity/transaction.cubit.dart';
 export 'entity/user.cubit.dart';
 export 'list/list.cubit.dart';

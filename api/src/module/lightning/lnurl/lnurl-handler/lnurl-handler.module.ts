@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CurrencyModule } from 'module/currency/currency.module';
 import { PotModule } from 'module/pot/pot.module';
 import { ReceiverModule } from 'module/receiver/receiver.module';
 import { SenderModule } from 'module/sender/sender.module';
@@ -11,6 +12,7 @@ import { LnUrlHandlerService } from './lnurl-handler.service';
 @Module({
 	imports: [
 		SharedModule,
+		CurrencyModule,
 		PotModule,
 		ReceiverModule,
 		SenderModule,

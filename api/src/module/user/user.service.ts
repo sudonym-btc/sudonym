@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { authUserIdGetter } from 'helper/context-request';
 import { PotService } from 'module/pot/pot.service';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
 import { generateUsername } from 'unique-username-generator';
@@ -17,6 +18,7 @@ export class UserService extends BaseService(User) {
 		});
 	}
 	async create(params: RecursivePartial<User>) {
+		params.firebaseId = params.id = authUserIdGetter();
 		try {
 			const data = await this.findOne(params.id);
 			return this.update(data.id, params);

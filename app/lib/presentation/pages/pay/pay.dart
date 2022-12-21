@@ -120,6 +120,10 @@ class _SendPageState extends State<SendPage> {
                       CheckClipboard(
                         pot: widget.pot,
                       ),
+                      CreateRedeem(
+                        pot: widget.pot,
+                      ),
+                      VertDivider(),
                       Expanded(
                           child: Column(children: [
                         Row(
@@ -166,6 +170,40 @@ class _SendPageState extends State<SendPage> {
   }
 }
 
+class CreateRedeem extends StatelessWidget {
+  final Pot? pot;
+  const CreateRedeem({this.pot, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+        leading: Icon(Icons.redeem),
+        title: Text(
+          AppLocalizations.of(context)!.createRedeem,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AmountPage<Payment>(
+                options: CurrencyInputOptions(
+                  initialValue: CurrencyInputOutput(0, pot!.currency),
+                ),
+                onDone: (output) async {
+                  Sender sender = await getIt<SenderRepository>().create({
+                    'potId': pot!.id,
+                    'type': 'lnurl',
+                    'limitMax': output.amount,
+                    'amountCurrency': output.currency
+                  });
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SenderPage(entity: sender)),
+                      (route) => route.isFirst);
+                }))));
+  }
+}
+
 class CheckClipboard extends StatefulWidget {
   final Pot? pot;
   const CheckClipboard({this.pot, super.key});
@@ -192,40 +230,34 @@ class CheckClipboardState extends State<CheckClipboard> {
   Widget build(BuildContext context) {
     if (getIt<ClipboardListener>().canReadClipboardUndetected()) {
       if (address != null) {
-        return Column(children: [
-          ListTile(
-              leading: Icon(Icons.paste),
-              title: Text(
-                '${AppLocalizations.of(context)!.paste} "$address"',
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-              onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
-                  context: context, link: address!, pot: widget.pot))),
-          const VertDivider(2),
-        ]);
+        return ListTile(
+            leading: Icon(Icons.paste),
+            title: Text(
+              '${AppLocalizations.of(context)!.paste} "$address"',
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            onTap: () => getIt<ActionTriggerService>().trigger(ActionStream(
+                context: context, link: address!, pot: widget.pot)));
       }
       return Container();
     }
-    return Column(children: [
-      ListTile(
-        leading: const Icon(Icons.paste),
-        title: Text(AppLocalizations.of(context)!.checkClipboard),
-        onTap: () => getIt<ClipboardListener>().check().then((value) {
-          setState(() {
-            hasChecked = true;
-          });
-          if (value != null) {
-            address = value;
-            getIt<ActionTriggerService>().trigger(
-                ActionStream(context: context, link: value, pot: widget.pot));
-          }
-        }),
-        subtitle: hasChecked && address == null
-            ? Text(AppLocalizations.of(context)!.noAddressToPaste)
-            : null,
-      ),
-      const VertDivider(2),
-    ]);
+    return ListTile(
+      leading: const Icon(Icons.paste),
+      title: Text(AppLocalizations.of(context)!.checkClipboard),
+      onTap: () => getIt<ClipboardListener>().check().then((value) {
+        setState(() {
+          hasChecked = true;
+        });
+        if (value != null) {
+          address = value;
+          getIt<ActionTriggerService>().trigger(
+              ActionStream(context: context, link: value, pot: widget.pot));
+        }
+      }),
+      subtitle: hasChecked && address == null
+          ? Text(AppLocalizations.of(context)!.noAddressToPaste)
+          : null,
+    );
   }
 }

@@ -118,7 +118,11 @@ class ActionTriggerService with ActionLogger {
             return Navigator.of(actionStream.context).pushReplacement(
                 MaterialPageRoute(
                     builder: (context) => AmountPage<Payment>(
-                        action: value, pot: actionStream.pot, onDone: next)));
+                        options:
+                            getCurrencyInputOptions(actionStream.pot!, value),
+                        onDone: (output) {
+                          next(value);
+                        })));
           }
           return next(value);
         })
@@ -126,7 +130,7 @@ class ActionTriggerService with ActionLogger {
           final route = MaterialPageRoute(
               builder: (context) => PayInfoPage(
                   action: value,
-                  pot: actionStream.pot,
+                  pot: actionStream.pot!,
                   onDone: next,
                   onError: err));
           if (firstPageAmount) {
@@ -167,7 +171,13 @@ class ActionTriggerService with ActionLogger {
             return Navigator.of(actionStream.context).pushReplacement(
                 MaterialPageRoute(
                     builder: (context) => AmountPage<Withdraw>(
-                        action: value, pot: actionStream.pot, onDone: next)));
+                        options:
+                            getCurrencyInputOptions(actionStream.pot!, value),
+                        onDone: (output) {
+                          value.amount = output.amount;
+                          value.currency = output.currency;
+                          next(value);
+                        })));
           }
           return next(value);
         })
@@ -208,6 +218,32 @@ class ActionTriggerService with ActionLogger {
 //         .where((event) => event.withdraw != null)
 //         .map((event) => event.withdraw);
 //   }
+}
+
+getCurrencyInputOptions(Pot pot, dynamic a) {
+  return CurrencyInputOptions(
+      currencies: [
+        ...(pot != null ? [pot!.currency] : []),
+        'USD',
+        'BTC'
+      ],
+      max: [
+        ...(a.maxAmount != null
+            ? [CurrencyInputOutput(a.maxAmount, a.currency)]
+            : []),
+        ...(pot != null
+            ? [
+                CurrencyInputOutput(pot!.spendableBalance, pot!.currency),
+              ]
+            : [])
+      ],
+      min: [
+        ...(a.maxAmount != null
+            ? [CurrencyInputOutput(a.minAmount, a.currency)]
+            : [])
+      ],
+      initialCurrency: pot.currency,
+      initialValue: CurrencyInputOutput(a.minAmount ?? 0, a.currency));
 }
 
 class CallbackHandler<T> {

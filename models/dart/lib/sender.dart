@@ -15,7 +15,7 @@ class Sender extends BaseClass {
   dynamic /* num | null */ limitYear;
   dynamic /* num | null */ limitMin;
   dynamic /* num | null */ limitMax;
-  String data;
+  dynamic /* String | null */ data;
   dynamic /* DateTime | null */ createdAt;
   Sender(
       this.id,

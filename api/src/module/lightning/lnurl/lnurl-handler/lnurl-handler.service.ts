@@ -2,6 +2,7 @@ import { HttpException, Inject, Logger } from '@nestjs/common';
 import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { getAddressType } from 'module/action/action.service';
+import { CurrencyService } from 'module/currency/currency.service';
 import { Pot } from 'module/pot/pot.model';
 import { PotService } from 'module/pot/pot.service';
 import { Receiver } from 'module/receiver/receiver.model';
@@ -12,6 +13,7 @@ import { TransactionService } from 'module/transaction/transaction.service';
 import { LnUrlService } from '../lnurl.service';
 
 export class LnUrlHandlerService {
+	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
 	@Inject(ReceiverService) receiveService: ReceiverService;
 	@Inject(PotService) potService: PotService;
@@ -88,27 +90,42 @@ export class LnUrlHandlerService {
 						lnurlId: id,
 					},
 				});
-				this.logger.debug(sender.toJSON());
+
+				const amountLeft = (
+					await this.currencyService.convert(
+						sender.amountCurrency,
+						'BTC',
+						await this.senderService.amountLeft(sender)
+					)
+				).amount;
+
+				this.logger.debug(sender.toJSON(), amountLeft);
 				const parsed = bolt11.decode(query.pr);
 				this.logger.debug('withdrawing to ', sender.toJSON());
+				if (amountLeft * MSATOSHIS > parseInt(parsed.millisatoshis)) {
+					const pot = await this.potService.findForUser(
+						sender.userId,
+						sender.potId
+					);
+					this.logger.debug(pot);
+					await this.transactionService.create({
+						outgoing: true,
+						potId: pot.id,
+						senderId: sender.id,
+						address: query.pr,
+						originalAddress: query.pr,
+						txid: query.pr,
+						type: getAddressType(query.pr),
+						amount: parseInt(parsed.millisatoshis) / MSATOSHIS,
+						currencyCode: 'BTC',
+					});
 
-				const pot = await this.potService.findForUser(
-					sender.userId,
-					sender.potId
-				);
-				await this.transactionService.create({
-					outgoing: true,
-					potId: pot.id,
-					senderId: sender.id,
-					address: query.pr,
-					originalAddress: query.pr,
-					txid: query.pr,
-					type: getAddressType(query.pr),
-					amount: parseInt(parsed.millisatoshis) / MSATOSHIS,
-					currencyCode: 'BTC',
-				});
-
-				return { status: 'OK' };
+					return { status: 'OK' };
+				}
+				return {
+					status: 'ERROR',
+					message: 'No amount left to withdraw',
+				};
 			}
 		}
 

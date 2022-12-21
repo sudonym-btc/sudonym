@@ -82,6 +82,7 @@
 	"submit": "Submit",
 	"noAddressToPaste": "No address to paste",
 	"checkClipboard": "Check clipboard",
+	"createRedeem": "Create redeem code",
 	"paste": "Paste",
 	"receiving": "Receiving",
 	"received": "Received",
@@ -124,7 +125,7 @@
 			}
 		}
 	},
-	"minAmount": "Amount most be greater than {amount}",
+	"minAmount": "Amount must be greater than {amount}",
 	"@minAmount": {
 		"placeholders": {
 			"amount": {
@@ -143,6 +144,7 @@
 	"time": "Time",
 	"to": "To",
 	"ok": "OK",
+	"back": "Back",
 	"potCurrencyDescription": "Anything sent to this pot will immediately be converted and held in the specified currency.",
 	"noQRFound": "No QR code found.",
 	"description": "Description",

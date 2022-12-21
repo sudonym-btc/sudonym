@@ -41,10 +41,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
   void initState() {
     inputOptions = CurrencyInputOptions(
         initialValue: CurrencyInputOutput(0, widget.pot.currency),
-        currencies: [
-          widget.pot.currency,
-          widget.pot.currency == 'BTC' ? 'USD' : 'BTC'
-        ]);
+        currencies: [widget.pot.currency, 'USD', 'BTC']);
 
     getIt<ActionTriggerService>().callbacks.add(cb);
 

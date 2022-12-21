@@ -1,8 +1,13 @@
 import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
+import { runAsUser } from 'helper/context-request';
+import * as lnurl from 'lnurl';
 import { PotService } from 'module/pot/pot.service';
+import { ReceiverService } from 'module/receiver/receiver.service';
+import { SenderService } from 'module/sender/sender.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { firstValueFrom } from 'rxjs';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
+import * as request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { scaffoldGroup } from '../mock/scaffold-group';
 
@@ -141,6 +146,54 @@ scaffoldGroup('Payment', (scaffold) => {
 					})
 				),
 			]);
+		});
+		it('should re-add balance from failed payment', () => {});
+	});
+
+	describe('lnurl withdraw', () => {
+		it('should not allow more withdrawals than limitMax', async () => {
+			const sender = await scaffold.app.get(SenderService).create({
+				type: 'lnurl',
+				amountCurrency: 'BTC',
+				limitMax: 1,
+				potId: scaffold.entities.pot[0].id,
+			});
+			const data = await request(scaffold.app.getHttpServer()).get(
+				lnurl.decode(sender.data).split('/api.mock.sudonym.app').pop()
+			);
+
+			const receiver = await runAsUser(scaffold.entities.user[0], () =>
+				scaffold.app.get(ReceiverService).create({
+					potId: scaffold.entities.pot[0].id,
+					type: 'bolt11',
+					amount: 0.5,
+					amountCurrency: 'BTC',
+				})
+			);
+			const payment = await request(scaffold.app.getHttpServer()).get(
+				data.body.callback.split('/api.mock.sudonym.app').pop() +
+					'?pr=' +
+					receiver.data
+			);
+
+			expect(
+				await scaffold.app.get(SenderService).amountLeft(sender)
+			).toBe(0.5);
+
+			const receiver2 = await runAsUser(scaffold.entities.user[0], () =>
+				scaffold.app.get(ReceiverService).create({
+					potId: scaffold.entities.pot[0].id,
+					type: 'bolt11',
+					amount: 0.6,
+					amountCurrency: 'BTC',
+				})
+			);
+			const payment2 = await request(scaffold.app.getHttpServer()).get(
+				data.body.callback.split('/api.mock.sudonym.app').pop() +
+					'?pr=' +
+					receiver2.data
+			);
+			expect(payment2.body.status).toEqual('ERROR');
 		});
 		it('should re-add balance from failed payment', () => {});
 	});

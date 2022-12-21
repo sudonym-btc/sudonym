@@ -16,7 +16,7 @@ export class Sender extends BaseClass {
 		public limitYear: number | null,
 		public limitMin: number | null,
 		public limitMax: number | null,
-		public data: string,
+		public data: string | null,
 		public createdAt: Date | null
 	) {
 		super();

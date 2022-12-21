@@ -4,6 +4,7 @@ import { context } from 'helper/context-request';
 import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { Pot } from 'module/pot/pot.model';
 import {
+	AllowNull,
 	AutoIncrement,
 	BeforeCreate,
 	BelongsTo,
@@ -45,6 +46,7 @@ export class Sender extends BaseModel implements Models.Sender {
 		params.userId = context.get('request')?.auth?.uid;
 	}
 
+	@AllowNull(false)
 	@ForeignKey(() => Pot)
 	@Column
 	potId: number;

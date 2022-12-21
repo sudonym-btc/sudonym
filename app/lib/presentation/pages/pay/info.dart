@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
@@ -9,12 +10,12 @@ import 'package:sudonym.models/index.dart';
 
 class PayInfoPage extends ActionFlow<Payment, Payment> {
   final Payment action;
-  final Pot? pot;
+  final Pot pot;
   const PayInfoPage(
       {super.key,
       required super.onDone,
       required super.onError,
-      this.pot,
+      required this.pot,
       required this.action});
 
   @override
@@ -28,27 +29,52 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
     );
   }
 
-  StatusPage donePage(BuildContext context, r) {
-    return StatusPage(
-        color: Colors.indigo.shade800,
-        title: AppLocalizations.of(context)!.paymentInfo,
-        subtitleText: AppLocalizations.of(context)!.gatheredPaymentInformation,
-        content: Column(children: [
-          PaymentInfoPreview(
-            entity: r,
-            pot: pot,
-          )
-        ]),
-        actions: ButtonBar(children: [
-          ElevatedButton.icon(
-            label: Text(AppLocalizations.of(context)!.send),
-            icon: const FaIcon(FontAwesomeIcons.paperPlane, size: iconSize),
-            onPressed: () {
-              onDone(r);
-            },
-            style: raisedButtonStyle,
-          )
-        ]));
+  Widget donePage(BuildContext context, r) {
+    return BlocProvider(
+        create: (_) => CurrencyInputCubit(CurrencyInputOptions(
+            max: [CurrencyInputOutput(pot.spendableBalance, pot.currency)],
+            min: [CurrencyInputOutput(r.minAmount, r.currency)],
+            initialValue: CurrencyInputOutput(r.amount, r.currency)))
+          ..enforceConstraints(r.minAmount),
+        child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
+            builder: (context, state) {
+          return StatusPage(
+              color: Colors.indigo.shade800,
+              title: AppLocalizations.of(context)!.paymentInfo,
+              subtitleText:
+                  AppLocalizations.of(context)!.gatheredPaymentInformation,
+              content: Column(children: [
+                PaymentInfoPreview(
+                  entity: r,
+                  pot: pot,
+                )
+              ]),
+              actions: Column(children: [
+                ...(state.error != null
+                    ? [
+                        CustomPadding(
+                            child: ErrorText(formatError(context, state.error)))
+                      ]
+                    : []),
+                ButtonBar(children: [
+                  state.error != null
+                      ? Button(
+                          text: AppLocalizations.of(context)!.back,
+                          onPressed: () => Navigator.of(context).pop(),
+                          // style: raisedButtonStyle,
+                        )
+                      : ElevatedButton.icon(
+                          label: Text(AppLocalizations.of(context)!.send),
+                          icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                              size: iconSize),
+                          onPressed: () {
+                            onDone(r);
+                          },
+                          style: raisedButtonStyle,
+                        )
+                ])
+              ]));
+        }));
   }
 
   StatusPage errorPage(BuildContext context, Object err) {

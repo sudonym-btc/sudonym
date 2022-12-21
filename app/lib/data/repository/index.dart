@@ -7,6 +7,7 @@ export 'entity/crud_repository.dart';
 export 'entity/pot.repository.dart';
 export 'entity/pot_user.repository.dart';
 export 'entity/receiver.repository.dart';
+export 'entity/sender.repository.dart';
 export 'entity/transaction.repository.dart';
 export 'entity/user-device.repository.dart';
 export 'entity/user.repository.dart';
