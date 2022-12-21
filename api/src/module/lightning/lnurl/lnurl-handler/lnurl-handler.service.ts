@@ -195,22 +195,25 @@ export class LnUrlHandlerService {
 			(tag.params as PaymentRequest).maxSendable = 0.01 * MSATOSHIS;
 			(tag.params as PaymentRequest).commentAllowed = 200;
 		} else if (tag.params.tag == 'withdrawRequest') {
-			(tag.params as WithdrawRequest).maxWithdrawable =
+			(tag.params as WithdrawRequest).maxWithdrawable = Math.floor(
 				(
 					await this.currencyService.convert(
 						sender.amountCurrency,
 						'BTC',
 						await this.senderService.amountLeft(sender)
 					)
-				).amount * MSATOSHIS;
+				).amount * MSATOSHIS
+			);
 			(tag.params as WithdrawRequest).minWithdrawable = sender.limitMin
-				? (
-						await this.currencyService.convert(
-							sender.amountCurrency,
-							'BTC',
-							sender.limitMin
-						)
-				  ).amount * MSATOSHIS
+				? Math.ceil(
+						(
+							await this.currencyService.convert(
+								sender.amountCurrency,
+								'BTC',
+								sender.limitMin
+							)
+						).amount * MSATOSHIS
+				  )
 				: 1000;
 			(tag.params as WithdrawRequest).defaultDescription =
 				'Withdrawning from sudonym';
