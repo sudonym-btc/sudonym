@@ -10,7 +10,7 @@ class StatusPage extends StatelessWidget {
   final IconData? icon;
   final Widget? content;
   final Widget? actions;
-  final Color color;
+  final Color? color;
 
   const StatusPage(
       {Key? key,
@@ -21,27 +21,31 @@ class StatusPage extends StatelessWidget {
       this.icon,
       this.content,
       this.actions,
-      required this.color})
+      this.color})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ThemeData currTheme = Theme.of(context);
     ThemeData newTheme = currTheme.copyWith(
-        backgroundColor: color,
-        appBarTheme: currTheme.appBarTheme.copyWith(
-            foregroundColor: Colors.white,
-            toolbarTextStyle: const TextStyle(color: Colors.white),
-            titleTextStyle: const TextStyle(color: Colors.white),
-            iconTheme: const IconThemeData(color: Colors.white),
-            // actionsIconTheme: const IconThemeData(color: textColor),
-            backgroundColor: color,
-            elevation: 0),
-        scaffoldBackgroundColor: color,
-        textTheme: currTheme.textTheme.apply(
-          bodyColor: Colors.white.withAlpha(240),
-          displayColor: Colors.white.withAlpha(150),
-        ),
+        backgroundColor: color ?? currTheme.backgroundColor,
+        appBarTheme: color != null
+            ? currTheme.appBarTheme.copyWith(
+                foregroundColor: Colors.white,
+                toolbarTextStyle: const TextStyle(color: Colors.white),
+                titleTextStyle: const TextStyle(color: Colors.white),
+                iconTheme: const IconThemeData(color: Colors.white),
+                // actionsIconTheme: const IconThemeData(color: textColor),
+                backgroundColor: color,
+                elevation: 0)
+            : currTheme.appBarTheme,
+        scaffoldBackgroundColor: color ?? currTheme.scaffoldBackgroundColor,
+        textTheme: color != null
+            ? currTheme.textTheme.apply(
+                bodyColor: Colors.white.withAlpha(240),
+                displayColor: Colors.white.withAlpha(150),
+              )
+            : currTheme.textTheme,
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all(Colors.black),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
@@ -10,9 +9,11 @@ import 'package:sudonym.models/index.dart';
 class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
     with AmountLogger {
   final CurrencyInputOptions options;
-  final void Function(CurrencyInputOutput) onDone;
+  final String? text;
+  final dynamic Function(CurrencyInputOutput) onDone;
 
-  const AmountPage({required this.options, required this.onDone, Key? key})
+  const AmountPage(
+      {required this.options, required this.onDone, this.text, Key? key})
       : super(key: key);
 
   @override
@@ -23,6 +24,7 @@ class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
 
 class _AmountPageState extends State<AmountPage> with AmountLogger {
   late FormGroup formGroup;
+  bool loading = false;
 
   @override
   void initState() {
@@ -68,13 +70,24 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                             Expanded(child: Center(child: currencyInput)),
                             ButtonBar(children: [
                               Button(
-                                text: AppLocalizations.of(context)!.confirm,
-                                icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                                    size: 14),
+                                text: widget.text ??
+                                    AppLocalizations.of(context)!.confirm,
+                                icon: loading
+                                    ? SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator())
+                                    : null,
                                 onPressed: formGroup.valid
-                                    ? () {
-                                        widget.onDone(
+                                    ? () async {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        await widget.onDone(
                                             widget.options.controller!.value);
+                                        setState(() {
+                                          loading = false;
+                                        });
                                       }
                                     : null,
                               )

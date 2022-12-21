@@ -63,19 +63,35 @@ class SenderPage extends StatelessWidget {
               text: (AppLocalizations.of(context)!.share),
             ),
           ];
-          return StatusPage(
-            color: Colors.white,
-            content: CustomPadding(
-                child: Column(
-              children: [
-                Expanded(
-                    child: Stack(children: [
-                  image,
-                ])),
-              ],
-            )),
-            actions: ButtonBar(children: buttons),
-          );
+          return Scaffold(
+              appBar: AppBar(
+                title: const Text('Voucher'),
+              ),
+              body: SafeArea(
+                  child: CustomPadding(
+                      multiplier: 2,
+                      child: Column(
+                        children: [
+                          Expanded(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const VertDivider(2),
+                              image,
+                              const VertDivider(),
+                              CustomPadding(
+                                  child: AmountText(
+                                amount: entity.limitMax,
+                                fromCurrency: entity.amountCurrency,
+                                toCurrency: entity.amountCurrency,
+                                builder: ((val) => Info(
+                                    'This $val voucher can be redeemed by anyone with this code.')),
+                              ))
+                            ],
+                          )),
+                          ButtonBar(children: buttons)
+                        ],
+                      ))));
         }));
   }
 }

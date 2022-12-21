@@ -180,6 +180,17 @@ scaffoldGroup('Payment', (scaffold) => {
 				await scaffold.app.get(SenderService).amountLeft(sender)
 			).toBe(0.5);
 
+			expect(
+				(
+					await request(scaffold.app.getHttpServer()).get(
+						lnurl
+							.decode(sender.data)
+							.split('/api.mock.sudonym.app')
+							.pop()
+					)
+				).body.maxWithdrawable
+			).toBe(0.5 * MSATOSHIS);
+
 			const receiver2 = await runAsUser(scaffold.entities.user[0], () =>
 				scaffold.app.get(ReceiverService).create({
 					potId: scaffold.entities.pot[0].id,

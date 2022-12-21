@@ -123,7 +123,7 @@ class _SendPageState extends State<SendPage> {
                       CreateRedeem(
                         pot: widget.pot,
                       ),
-                      VertDivider(),
+                      const VertDivider(),
                       Expanded(
                           child: Column(children: [
                         Row(
@@ -185,6 +185,7 @@ class CreateRedeem extends StatelessWidget {
         ),
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => AmountPage<Payment>(
+                text: AppLocalizations.of(context)!.create,
                 options: CurrencyInputOptions(
                   initialValue: CurrencyInputOutput(0, pot!.currency),
                 ),
@@ -198,6 +199,7 @@ class CreateRedeem extends StatelessWidget {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
+                          fullscreenDialog: true,
                           builder: (context) => SenderPage(entity: sender)),
                       (route) => route.isFirst);
                 }))));

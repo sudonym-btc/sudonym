@@ -73,6 +73,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
         ],
         child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
+          bool loading = state.loading || state.entity?.data == null;
           copy() {
             FocusScope.of(context).unfocus();
 
@@ -84,8 +85,10 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             });
           }
 
-          Widget image = const Center(child: CircularProgressIndicator());
-          if (!state.loading && state.entity?.data != null) {
+          Widget image = Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Center(child: CircularProgressIndicator())]);
+          if (!loading) {
             image = GestureDetector(
               onTap: copy,
               child: QrImage(
@@ -114,13 +117,45 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
               text: (AppLocalizations.of(context)!.share),
             ),
           ];
+          Widget indicator = Opacity(
+              opacity: 0.5,
+              child: CustomPadding(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    Column(
+                      children: [
+                        Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            child: CustomPadding(
+                                multiplierHeight: 0.2,
+                                child: Info(
+                                  widget.type.toUpperCase(),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ))),
+                        const VertDivider(),
+                        Info(AppLocalizations.of(context)!.swipeForMoreOptions)
+                      ],
+                    ),
+                  ])));
           return CustomPadding(
               child: Column(
             children: [
               Expanded(
-                  child: Stack(children: [
-                image,
-              ])),
+                  child: Column(
+                mainAxisAlignment: loading
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+                children: [
+                  ...(loading ? [] : [indicator]),
+                  image,
+                ],
+              )),
               const VertDivider(),
               CustomPadding(
                   child: CurrencyInput(options: inputOptions, large: false)),

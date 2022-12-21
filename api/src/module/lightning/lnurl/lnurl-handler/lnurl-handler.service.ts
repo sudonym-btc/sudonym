@@ -195,9 +195,25 @@ export class LnUrlHandlerService {
 			(tag.params as PaymentRequest).maxSendable = 0.01 * MSATOSHIS;
 			(tag.params as PaymentRequest).commentAllowed = 200;
 		} else if (tag.params.tag == 'withdrawRequest') {
-			// "payLink": string
+			(tag.params as WithdrawRequest).maxWithdrawable =
+				(
+					await this.currencyService.convert(
+						sender.amountCurrency,
+						'BTC',
+						await this.senderService.amountLeft(sender)
+					)
+				).amount * MSATOSHIS;
+			(tag.params as WithdrawRequest).minWithdrawable = sender.limitMin
+				? (
+						await this.currencyService.convert(
+							sender.amountCurrency,
+							'BTC',
+							sender.limitMin
+						)
+				  ).amount * MSATOSHIS
+				: 1000;
 			(tag.params as WithdrawRequest).defaultDescription =
-				'Withdrawn desciption';
+				'Withdrawning from sudonym';
 			// (tag.params as WithdrawRequest).payLink = :todo generate payRequest URL;
 		}
 		return tag.params;
