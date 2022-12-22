@@ -21,7 +21,9 @@ class FormatCurrency {
           symbolAndNumberSeparator: '',
           fractionDigits: 2,
         ));
-    return (num.parse(amount.toDouble().toStringAsFixed(2)) == 0 ? '≈' : '') +
+    return (num.parse(amount.toDouble().toStringAsFixed(2)) == 0 && amount > 0
+            ? '≈'
+            : '') +
         fmf.output.symbolOnLeft;
   }
 }

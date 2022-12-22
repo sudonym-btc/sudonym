@@ -225,7 +225,7 @@ class ActionTriggerService with ActionLogger {
 getCurrencyInputOptions(Pot pot, dynamic a) {
   return CurrencyInputOptions(
       currencies: [
-        ...(pot != null ? [pot!.currency] : []),
+        pot.currency,
         'USD',
         'BTC'
       ],
@@ -235,12 +235,12 @@ getCurrencyInputOptions(Pot pot, dynamic a) {
             : []),
         ...(pot != null
             ? [
-                CurrencyInputOutput(pot!.spendableBalance, pot!.currency),
+                CurrencyInputOutput(pot.spendableBalance, pot.currency),
               ]
             : [])
       ],
       min: [
-        ...(a.maxAmount != null
+        ...(a.minAmount != null
             ? [CurrencyInputOutput(a.minAmount, a.currency)]
             : [])
       ],

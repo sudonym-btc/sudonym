@@ -33,10 +33,9 @@ class PayExecutePage extends ActionFlow<Payment, Transaction> {
         content: Text(err.toString()),
         actions: ButtonBar(
           children: [
-            ElevatedButton(
-              style: raisedButtonStyle,
+            Button(
               onPressed: () {},
-              child: Text(AppLocalizations.of(context)!.retry),
+              text: AppLocalizations.of(context)!.retry,
             )
           ],
         ));

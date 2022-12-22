@@ -206,8 +206,7 @@ class _IncomingPending extends _TransactionStatusPage {
             ...(transaction.type == 'onchain'
                 ? [
                     ButtonBar(children: [
-                      ElevatedButton(
-                        style: raisedButtonStyle,
+                      Button(
                         onPressed: () async {
                           String url =
                               'https://mempool.space/tx/${transaction.txid}';
@@ -215,20 +214,18 @@ class _IncomingPending extends _TransactionStatusPage {
                             throw 'Could not launch $url';
                           }
                         },
-                        child:
-                            Text(AppLocalizations.of(context)!.trackInMempool),
+                        text: AppLocalizations.of(context)!.trackInMempool,
                       )
                     ]),
-                    VertDivider()
+                    const VertDivider()
                   ]
                 : []),
             // ButtonBar(children: [
-            //   ElevatedButton(
-            //     style: raisedButtonStyle,
+            //   Button(
             //     onPressed: () {
             //       Navigator.of(context).pop();
             //     },
-            //     child: Text(AppLocalizations.of(context)!.ok),
+            //     text: AppLocalizations.of(context)!.ok,
             //   )
             // ])
           ],
@@ -309,7 +306,7 @@ class _IncomingComplete extends _TransactionStatusPage {
         ),
         // actions: ButtonBar(
         //   children: [
-        //     ElevatedButton(
+        //     Button(
         //       style: raisedButtonStyle.copyWith(
         //           backgroundColor: MaterialStatePropertyAll(
         //               Color.fromARGB(20, 255, 255, 255)),
@@ -322,7 +319,7 @@ class _IncomingComplete extends _TransactionStatusPage {
         //       onPressed: () {
         //         Navigator.of(context).pop();
         //       },
-        //       child: Text(AppLocalizations.of(context)!.ok),
+        //       text: AppLocalizations.of(context)!.ok,
         //     )
         //   ],
         // ),

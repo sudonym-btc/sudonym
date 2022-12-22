@@ -49,7 +49,8 @@ class CurrencyInputOptions {
     max ??= List.empty();
     initialCurrency ??= initialValue.currency;
     controller ??= CurrencyInputController();
-    currencies = currencies.toSet().toList(); // Deduplicate
+    currencies = {...currencies, ...defaultCurrencies, initialValue.currency}
+        .toList(); // Deduplicate
     debounceOutput ??= const Duration(milliseconds: 0);
   }
 }
@@ -66,10 +67,10 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
     options.controller!.outputStream.stream
         .map((event) => event.amount)
+        .asyncMap(resolveAlt)
         .distinct()
         .debounceTime(options.debounceOutput!)
         .asyncMap(enforceConstraints)
-        .asyncMap(resolveAlt)
         .listen((event) {});
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
     _currencyRespository
@@ -100,18 +101,20 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   }
 
   setCurrentCurrency(int i) {
-    num newCurrVal = getDisplayValue(getAltCurrency(), state.altVal);
-    int newCurr = i >= state.currencies.length ? 0 : i;
+    num newCurrValDisplay = getDisplayValue(getAltCurrency(), state.altVal);
+    num newCurrVal = state.altVal;
+
+    int newCurr = i >= options.currencies.length ? 0 : i;
     safeEmit(state.copyWith(
         currCurrency: newCurr,
-        altCurrency: newCurr + 1 >= state.currencies.length ? 0 : newCurr + 1,
+        altCurrency: newCurr + 1 >= options.currencies.length ? 0 : newCurr + 1,
         altVal: 0,
         minLoading: true,
         maxLoading: true,
         altLoading: true));
     createController();
-    controller!.updateValue(newCurrVal.toDouble());
-    setValue(getRealValue(getCurrentCurrency(), controller!.numberValue));
+    controller!.updateValue(newCurrValDisplay.toDouble());
+    setValue(newCurrVal);
     clickValueBase = getCurrentCurrency() == 'BTC' ? 1000 : 1;
   }
 
@@ -124,7 +127,6 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     safeEmit(state.copyWith(minLoading: true));
     Map<String, dynamic>? error;
     double min = await getMinInCurrentCurrency();
-
     // Disable decrement button when already at minimum
     // controller!.updateValue(
     //     getDisplayValue(getCurrentCurrency(), min));

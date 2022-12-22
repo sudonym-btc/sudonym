@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
@@ -63,10 +62,10 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
                           onPressed: () => Navigator.of(context).pop(),
                           // style: raisedButtonStyle,
                         )
-                      : ElevatedButton.icon(
-                          label: Text(AppLocalizations.of(context)!.send),
-                          icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                              size: iconSize),
+                      : Button(
+                          text: AppLocalizations.of(context)!.send,
+                          // icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                          //     size: iconSize),
                           onPressed: () {
                             onDone(r);
                           },

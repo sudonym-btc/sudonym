@@ -20,10 +20,9 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
         content: Text(err.toString()),
         actions: ButtonBar(
           children: [
-            ElevatedButton(
-              style: raisedButtonStyle,
+            Button(
               onPressed: () {},
-              child: Text(AppLocalizations.of(context)!.retry),
+              text: AppLocalizations.of(context)!.retry,
             )
           ],
         ));
