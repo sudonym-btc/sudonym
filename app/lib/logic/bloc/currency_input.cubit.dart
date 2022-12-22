@@ -6,6 +6,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
@@ -54,7 +55,8 @@ class CurrencyInputOptions {
 }
 
 @injectable
-class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
+class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
+    with SafeEmit, AmountLogger {
   final CurrencyRepository _currencyRespository = getIt<CurrencyRepository>();
   final CurrencyInputOptions options;
   MoneyMaskedTextController? controller;
@@ -76,15 +78,14 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
             toCurrency: options.initialCurrency!,
             amount: options.initialValue.amount)
         .then((value) {
-      controller!.updateValue(getDisplayValue(
-          options.currencies[state.currCurrency], value.amount));
+      controller!
+          .updateValue(getDisplayValue(getCurrentCurrency(), value.amount));
       setValue(value.amount);
     });
   }
 
   createController() {
-    int wantedPrecision =
-        options.currencies[state.currCurrency] == 'BTC' ? 0 : 2;
+    int wantedPrecision = getCurrentCurrency() == 'BTC' ? 0 : 2;
 
     if (controller?.precision != wantedPrecision) {
       controller = MoneyMaskedTextController(
@@ -92,15 +93,14 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
           decimalSeparator: wantedPrecision > 0 ? '.' : '',
           thousandSeparator: ',',
           precision: wantedPrecision)
-        ..addListener(() => setValue(getRealValue(
-            options.currencies[state.currCurrency], controller!.numberValue)));
+        ..addListener(() => setValue(
+            getRealValue(getCurrentCurrency(), controller!.numberValue)));
       safeEmit(state.copyWith());
     }
   }
 
   setCurrentCurrency(int i) {
-    num newCurrVal =
-        getDisplayValue(options.currencies[state.altCurrency], state.altVal);
+    num newCurrVal = getDisplayValue(getAltCurrency(), state.altVal);
     int newCurr = i >= state.currencies.length ? 0 : i;
     safeEmit(state.copyWith(
         currCurrency: newCurr,
@@ -111,9 +111,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
         altLoading: true));
     createController();
     controller!.updateValue(newCurrVal.toDouble());
-    setValue(getRealValue(
-        options.currencies[state.currCurrency], controller!.numberValue));
-    clickValueBase = options.currencies[state.currCurrency] == 'BTC' ? 1000 : 1;
+    setValue(getRealValue(getCurrentCurrency(), controller!.numberValue));
+    clickValueBase = getCurrentCurrency() == 'BTC' ? 1000 : 1;
   }
 
   toggleCurrency() {
@@ -128,7 +127,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
 
     // Disable decrement button when already at minimum
     // controller!.updateValue(
-    //     getDisplayValue(options.currencies[state.currCurrency], min));
+    //     getDisplayValue(getCurrentCurrency(), min));
     // setValue(min); // Must set true value as dislay value is vague
     safeEmit(state.copyWith(
         negativeEnabled:
@@ -136,10 +135,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
 
     // Return error when below minimum
     if (val < min) {
-      error = {
-        'min':
-            FormatCurrency().format(options.currencies[state.currCurrency], min)
-      };
+      error = {'min': FormatCurrency().format(getCurrentCurrency(), min)};
     }
     safeEmit(state.copyWith(minLoading: false));
 
@@ -147,10 +143,9 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     double max = await getMaxInCurrentCurrency();
 
     if (min > max) {
-      safeEmit(state.copyWith(hasError: true, error: {
-        'max':
-            FormatCurrency().format(options.currencies[state.currCurrency], max)
-      }));
+      safeEmit(state.copyWith(
+          hasError: true,
+          error: {'max': FormatCurrency().format(getCurrentCurrency(), max)}));
       return val;
     }
 
@@ -159,8 +154,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
             numToCurrentPrecision(max) < numToCurrentPrecision(val)));
 
     if (numToCurrentPrecision(max) <= numToCurrentPrecision(val)) {
-      controller!.updateValue(
-          getDisplayValue(options.currencies[state.currCurrency], max));
+      controller!.updateValue(getDisplayValue(getCurrentCurrency(), max));
       setValue(max); // Must set true value as dislay value is vague
       safeEmit(state.copyWith(positiveEnabled: false));
     } else {
@@ -177,8 +171,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
         state.copyWith(minLoading: true, maxLoading: true, altLoading: true));
     _currencyRespository
         .getRate(
-            fromCurrency: options.currencies[state.currCurrency],
-            toCurrency: options.currencies[state.altCurrency],
+            fromCurrency: getCurrentCurrency(),
+            toCurrency: getAltCurrency(),
             amount: val)
         .then((value) {
       safeEmit(state.copyWith(altVal: value.amount, altLoading: false));
@@ -188,7 +182,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
 
   setValue(num val) {
     options.controller!.outputStream
-        .add(CurrencyInputOutput(val, options.currencies[state.currCurrency]));
+        .add(CurrencyInputOutput(val, getCurrentCurrency()));
     safeEmit(state.copyWith(currVal: val.toDouble()));
   }
 
@@ -209,7 +203,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     return (await Future.wait(options.min!.map((e) =>
             _currencyRespository.getRate(
                 fromCurrency: e.currency,
-                toCurrency: options.currencies[state.currCurrency],
+                toCurrency: getCurrentCurrency(),
                 amount: e.amount))))
         .map((e) => e.amount)
         .reduce(max)
@@ -217,8 +211,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
   }
 
   double numToCurrentPrecision(num input) {
-    return num.parse(input.toStringAsFixed(
-            options.currencies[state.currCurrency] == 'BTC' ? 8 : 2))
+    return num.parse(
+            input.toStringAsFixed(getCurrentCurrency() == 'BTC' ? 8 : 2))
         .toDouble();
   }
 
@@ -227,7 +221,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     return (await Future.wait(options.max!.map((e) =>
             _currencyRespository.getRate(
                 fromCurrency: e.currency,
-                toCurrency: options.currencies[state.currCurrency],
+                toCurrency: getCurrentCurrency(),
                 amount: e.amount))))
         .map((e) => e.amount)
         .reduce(min)
@@ -239,8 +233,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     num newVal = getCurrentDisplayValue() + clickVal;
     newVal = (newVal / clickVal).round() * clickVal;
     controller!.updateValue(min(
-        getDisplayValue(options.currencies[state.currCurrency],
-            await getMaxInCurrentCurrency()),
+        getDisplayValue(getCurrentCurrency(), await getMaxInCurrentCurrency()),
         newVal.toDouble()));
   }
 
@@ -251,16 +244,26 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState> with SafeEmit {
     newVal = (numToCurrentPrecision(newVal / clickVal)).ceil() *
         clickVal; // should be display precision
     double min = await getMinInCurrentCurrency();
-    controller!.updateValue(max(
-        getDisplayValue(options.currencies[state.currCurrency], min),
-        newVal.toDouble()));
-    setValue(max(
-        min, newVal.toDouble())); // Must set exact value too due to precision
+    double val =
+        max(min, getRealValue(getCurrentCurrency(), newVal.toDouble()));
+    double valDisplay =
+        max(getDisplayValue(getCurrentCurrency(), min), newVal.toDouble());
+
+    controller!.updateValue(valDisplay);
+    setValue(val); // Must set exact value too due to precision
   }
 
   // Convert display value in sats to BTC value
   getRealValue(String curr, num value) {
     return value / (curr == 'BTC' ? SATOSHIS : 1);
+  }
+
+  String getCurrentCurrency() {
+    return options.currencies[state.currCurrency];
+  }
+
+  String getAltCurrency() {
+    return options.currencies[state.altCurrency];
   }
 
   double getCurrentDisplayValue() {

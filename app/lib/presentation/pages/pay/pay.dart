@@ -187,13 +187,18 @@ class CreateRedeem extends StatelessWidget {
             builder: (context) => AmountPage<Payment>(
                 text: AppLocalizations.of(context)!.create,
                 options: CurrencyInputOptions(
-                    initialValue: CurrencyInputOutput(0, pot!.currency),
+                    initialValue: CurrencyInputOutput(
+                        pot.currency == 'BTC' ? 1 / SATOSHIS : 0.01,
+                        pot.currency),
+                    min: [
+                      CurrencyInputOutput(1 / SATOSHIS, 'BTC'),
+                    ],
                     max: [
                       CurrencyInputOutput(pot.spendableBalance, pot.currency)
                     ]),
                 onDone: (output) async {
                   Sender sender = await getIt<SenderRepository>().create({
-                    'potId': pot!.id,
+                    'potId': pot.id,
                     'type': 'lnurl',
                     'limitMax': output.amount,
                     'amountCurrency': output.currency
