@@ -129,7 +129,7 @@ export class LnUrlHandlerService {
 				}
 				return {
 					status: 'ERROR',
-					message: 'No amount left to withdraw',
+					reason: 'Amount could not be withdrawn',
 				};
 			}
 		}
