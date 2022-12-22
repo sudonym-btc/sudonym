@@ -65,7 +65,7 @@ class SenderPage extends StatelessWidget {
           ];
           return Scaffold(
               appBar: AppBar(
-                title: const Text('Voucher'),
+                title: Text(AppLocalizations.of(context)!.voucher),
               ),
               body: SafeArea(
                   child: CustomPadding(
@@ -85,7 +85,8 @@ class SenderPage extends StatelessWidget {
                                 fromCurrency: entity.amountCurrency,
                                 toCurrency: entity.amountCurrency,
                                 builder: ((val) => Info(
-                                    'This $val voucher can be redeemed by anyone with this code.')),
+                                    AppLocalizations.of(context)!
+                                        .voucherDescription(val))),
                               ))
                             ],
                           )),

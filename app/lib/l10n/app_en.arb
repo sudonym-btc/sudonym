@@ -84,6 +84,16 @@
 	"checkClipboard": "Check clipboard",
 	"createRedeem": "Create redeem code",
 	"swipeForMoreOptions": "Swipe for more options",
+	"voucher": "Voucher",
+	"voucherDescription": "This {amount} voucher can be redeemed by anyone with this code.",
+	"@voucherDescription": {
+		"placeholders": {
+			"amount": {
+				"example": "£4.20",
+				"type": "String"
+			}
+		}
+	},
 	"paste": "Paste",
 	"receiving": "Receiving",
 	"received": "Received",

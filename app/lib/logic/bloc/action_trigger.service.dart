@@ -120,7 +120,9 @@ class ActionTriggerService with ActionLogger {
                     builder: (context) => AmountPage<Payment>(
                         options:
                             getCurrencyInputOptions(actionStream.pot!, value),
-                        onDone: (output) {
+                        onDone: (output) async {
+                          value.amount = output.amount;
+                          value.currency = output.currency;
                           next(value);
                         })));
           }
@@ -173,7 +175,7 @@ class ActionTriggerService with ActionLogger {
                     builder: (context) => AmountPage<Withdraw>(
                         options:
                             getCurrencyInputOptions(actionStream.pot!, value),
-                        onDone: (output) {
+                        onDone: (output) async {
                           value.amount = output.amount;
                           value.currency = output.currency;
                           next(value);

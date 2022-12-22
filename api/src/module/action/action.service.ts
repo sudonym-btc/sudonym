@@ -104,7 +104,7 @@ export class ActionService {
 				}
 				case 'lightningaddress':
 				case 'lnurl': {
-					const address = (
+					const callback = (
 						(await this.getCallback(
 							(action.remoteResponse.data as any).callback,
 							{
@@ -124,6 +124,12 @@ export class ActionService {
 							}
 						)) as any
 					).pr; //todo: define types for ln stages
+
+					if (callback.status != 'OK') {
+						throw callback;
+					}
+
+					const address = callback.pr;
 
 					return Action.from({
 						...action,
@@ -209,10 +215,7 @@ export class ActionService {
 			u.searchParams.append(key, params[key]);
 		}
 		this.logger.debug('Getting callback ', u.toString());
-		return axios(u.toString(), fetchHttpOpts).then((r) => {
-			this.logger.debug('callback data', r.data);
-			return r.data;
-		}); //todo catch callback errors
+		return axios(u.toString(), fetchHttpOpts).then((r) => r.data); //todo catch callback errors
 	}
 }
 

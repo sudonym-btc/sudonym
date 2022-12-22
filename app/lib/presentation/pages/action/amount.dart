@@ -10,7 +10,7 @@ class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
     with AmountLogger {
   final CurrencyInputOptions options;
   final String? text;
-  final dynamic Function(CurrencyInputOutput) onDone;
+  final Future<void> Function(CurrencyInputOutput) onDone;
 
   const AmountPage(
       {required this.options, required this.onDone, this.text, Key? key})
@@ -78,7 +78,7 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                                         width: 16,
                                         child: CircularProgressIndicator())
                                     : null,
-                                onPressed: formGroup.valid
+                                onPressed: formGroup.valid && !loading
                                     ? () async {
                                         setState(() {
                                           loading = true;

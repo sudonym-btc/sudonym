@@ -66,17 +66,31 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   Future<T> create(Map<String, dynamic> entity) async {
     return dio
         .post('/$endpoint', data: entity)
-        .then((value) => converter(value.data));
+        .then((value) => converter(value.data))
+        .then((value) {
+      created.add(value);
+      return value;
+    });
   }
 
   Future<T> update(Map<String, dynamic> entity) async {
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
-        .then((value) => converter(value.data));
+        .then((value) => converter(value.data))
+        .then((value) {
+      updated.add(value);
+      return value;
+    });
   }
 
   Future<dynamic> delete(dynamic id) async {
-    return dio.delete('/$endpoint/$id');
+    return dio
+        .delete('/$endpoint/$id')
+        .then((value) => converter(value.data))
+        .then((value) {
+      deleted.add(value);
+      return value;
+    });
   }
 
   Future<ListState<T>> search(String term) async {
