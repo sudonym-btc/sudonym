@@ -123,7 +123,7 @@ export class ActionService {
 						}
 					)) as any; //todo: define types for ln stages
 
-					if (callback.status != 'OK') {
+					if (callback.status == 'ERROR') {
 						throw callback;
 					}
 
