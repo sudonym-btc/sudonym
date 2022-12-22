@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -12,6 +13,9 @@ class PotPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CubitWrapper<PotCubit, PotCubitState, Pot>(
         entity: entity,
+        refreshOnFocus: (state) => true,
+        refresh: (state) =>
+            getIt<CurrentPotService>().pot?.id == state.entity?.id,
         builder: (BuildContext context, state) {
           if (state.loading && state.entity == null) {
             return const Center(child: CircularProgressIndicator());

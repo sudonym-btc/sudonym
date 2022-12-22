@@ -22,7 +22,7 @@ class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
   }
 }
 
-class _AmountPageState extends State<AmountPage> with AmountLogger {
+class _AmountPageState extends State<AmountPage> with AmountLogger, SafeState {
   late FormGroup formGroup;
   bool loading = false;
 
@@ -80,12 +80,12 @@ class _AmountPageState extends State<AmountPage> with AmountLogger {
                                     : null,
                                 onPressed: formGroup.valid && !loading
                                     ? () async {
-                                        setState(() {
+                                        safeState(() {
                                           loading = true;
                                         });
                                         await widget.onDone(
                                             widget.options.controller!.value);
-                                        setState(() {
+                                        safeState(() {
                                           loading = false;
                                         });
                                       }

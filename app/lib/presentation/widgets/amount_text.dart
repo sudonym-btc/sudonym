@@ -26,7 +26,7 @@ class AmountText extends StatefulWidget {
   }
 }
 
-class AmountTextState extends State<AmountText> {
+class AmountTextState extends State<AmountText> with SafeState {
   String val = '';
   bool loading = false;
   @override
@@ -48,7 +48,7 @@ class AmountTextState extends State<AmountText> {
   }
 
   load() {
-    setState(() {
+    safeState(() {
       loading = true;
     });
     getIt<CurrencyRepository>()
@@ -57,7 +57,7 @@ class AmountTextState extends State<AmountText> {
             toCurrency: widget.toCurrency,
             amount: widget.amount,
             time: widget.date)
-        .then((value) => setState(() {
+        .then((value) => safeState(() {
               val = FormatCurrency().format(widget.toCurrency, value.amount);
               loading = false;
             }));

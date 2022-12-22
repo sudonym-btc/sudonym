@@ -4,11 +4,14 @@ import 'package:sudonym/logic/index.dart';
 import 'package:universal_io/io.dart';
 
 class FormatCurrency {
+  NumberFormat getInfo(String currency) {
+    return NumberFormat.simpleCurrency(
+        locale: Platform.localeName, name: currency);
+  }
+
   String format(String currency, num amount) {
     if (currency == 'BTC') return formatBTC(amount);
-    var format = NumberFormat.simpleCurrency(
-        locale: Platform.localeName, name: currency);
-
+    NumberFormat format = getInfo(currency);
     MoneyFormatter fmf = MoneyFormatter(
         amount: amount.toDouble(),
         settings: MoneyFormatterSettings(
@@ -18,7 +21,7 @@ class FormatCurrency {
           symbolAndNumberSeparator: '',
           fractionDigits: 2,
         ));
-    return (num.parse(amount.toDouble().toStringAsFixed(3)) == 0 ? '≈' : '') +
+    return (num.parse(amount.toDouble().toStringAsFixed(2)) == 0 ? '≈' : '') +
         fmf.output.symbolOnLeft;
   }
 }
