@@ -209,7 +209,10 @@ export class ActionService {
 			u.searchParams.append(key, params[key]);
 		}
 		this.logger.debug('Getting callback ', u.toString());
-		return axios(u.toString(), fetchHttpOpts).then((r) => r.data); //todo catch callback errors
+		return axios(u.toString(), fetchHttpOpts).then((r) => {
+			this.logger.debug('callback data', r.data);
+			return r.data;
+		}); //todo catch callback errors
 	}
 }
 
