@@ -171,8 +171,8 @@ class _SendPageState extends State<SendPage> {
 }
 
 class CreateRedeem extends StatelessWidget {
-  final Pot? pot;
-  const CreateRedeem({this.pot, super.key});
+  final Pot pot;
+  const CreateRedeem({required this.pot, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -187,8 +187,10 @@ class CreateRedeem extends StatelessWidget {
             builder: (context) => AmountPage<Payment>(
                 text: AppLocalizations.of(context)!.create,
                 options: CurrencyInputOptions(
-                  initialValue: CurrencyInputOutput(0, pot!.currency),
-                ),
+                    initialValue: CurrencyInputOutput(0, pot!.currency),
+                    max: [
+                      CurrencyInputOutput(pot.spendableBalance, pot.currency)
+                    ]),
                 onDone: (output) async {
                   Sender sender = await getIt<SenderRepository>().create({
                     'potId': pot!.id,
