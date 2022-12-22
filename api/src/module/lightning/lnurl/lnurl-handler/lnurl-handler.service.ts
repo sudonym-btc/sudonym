@@ -1,5 +1,10 @@
 import { HttpException, Inject, Logger } from '@nestjs/common';
-import { MSATOSHIS, PaymentRequest, WithdrawRequest } from '@sudonym/models';
+import {
+	MSATOSHIS,
+	PaymentRequest,
+	SATOSHIS,
+	WithdrawRequest,
+} from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { getAddressType } from 'module/action/action.service';
 import { CurrencyService } from 'module/currency/currency.service';
@@ -195,15 +200,16 @@ export class LnUrlHandlerService {
 			(tag.params as PaymentRequest).maxSendable = 0.01 * MSATOSHIS;
 			(tag.params as PaymentRequest).commentAllowed = 200;
 		} else if (tag.params.tag == 'withdrawRequest') {
-			(tag.params as WithdrawRequest).maxWithdrawable = Math.floor(
-				(
-					await this.currencyService.convert(
-						sender.amountCurrency,
-						'BTC',
-						await this.senderService.amountLeft(sender)
-					)
-				).amount * MSATOSHIS
-			);
+			(tag.params as WithdrawRequest).maxWithdrawable =
+				Math.floor(
+					(
+						await this.currencyService.convert(
+							sender.amountCurrency,
+							'BTC',
+							await this.senderService.amountLeft(sender)
+						)
+					).amount * SATOSHIS
+				) * 1000;
 			(tag.params as WithdrawRequest).minWithdrawable = sender.limitMin
 				? Math.ceil(
 						(
@@ -212,8 +218,8 @@ export class LnUrlHandlerService {
 								'BTC',
 								sender.limitMin
 							)
-						).amount * MSATOSHIS
-				  )
+						).amount * SATOSHIS
+				  ) * 1000
 				: 1000;
 			(tag.params as WithdrawRequest).defaultDescription =
 				'Withdrawning from sudonym';
