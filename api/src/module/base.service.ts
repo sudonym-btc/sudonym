@@ -100,7 +100,7 @@ export const BaseService = <TModel extends BaseModel>(
 
 			const data = await this.repo
 				.scope(scopes as any)
-				.findAndCountAll(parseFindParams(params));
+				.findAndCountAll(params);
 
 			return {
 				data: data.rows,
@@ -293,24 +293,6 @@ export const BaseService = <TModel extends BaseModel>(
 	return X;
 };
 
-const parseFindParams = (params) => {
-	if (!params) return null;
-	Object.keys(params).forEach((key) => {
-		if (key == 'limit') {
-			params[key] = parseInt(params[key]);
-		}
-		if (['lt', 'gt', 'eq', 'like'].includes(key)) {
-			params[Op[key]] = params[key];
-			delete params[key];
-			key = Op[key];
-		}
-		if (typeof params[key] === 'object') {
-			params[key] = parseFindParams(params[key]);
-		}
-	});
-	return params;
-};
-
 class ListOptions {
 	scopes;
 }
@@ -321,17 +303,21 @@ const parseParams = (params) => {
 		if (Array.isArray(params)) {
 			return params.map(parseParams);
 		}
-		return Reflect.ownKeys(params).reduce(
-			(acc, i) => ({
-				...acc,
-				[typeof i == 'string'
-					? i.includes('.')
-						? i // '$' + i + '$' could add this but currently adding on frontend
-						: i
-					: i]: parseParams(params[i]),
-			}),
-			{}
-		);
+		return Reflect.ownKeys(params).map((key) => {
+			if (key == 'limit') {
+				params[key] = parseInt(params[key]);
+			}
+			if (typeof key == 'string') {
+				if (['lt', 'gt', 'eq', 'like'].includes(key)) {
+					params[Op[key]] = params[key];
+					delete params[key];
+					key = Op[key];
+				}
+			}
+			if (typeof params[key] === 'object') {
+				params[key] = parseParams(params[key]);
+			}
+		}, {});
 	}
 	return params;
 };
