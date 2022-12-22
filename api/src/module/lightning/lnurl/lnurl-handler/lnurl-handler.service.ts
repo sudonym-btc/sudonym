@@ -107,7 +107,7 @@ export class LnUrlHandlerService {
 				this.logger.debug(sender.toJSON(), amountLeft);
 				const parsed = bolt11.decode(query.pr);
 				this.logger.debug('withdrawing to ', sender.toJSON());
-				if (amountLeft * MSATOSHIS > parseInt(parsed.millisatoshis)) {
+				if (amountLeft * MSATOSHIS >= parseInt(parsed.millisatoshis)) {
 					const pot = await this.potService.findForUser(
 						sender.userId,
 						sender.potId
@@ -129,7 +129,12 @@ export class LnUrlHandlerService {
 				}
 				return {
 					status: 'ERROR',
-					reason: 'Amount could not be withdrawn',
+					reason:
+						'Amount could not be withdrawn: ' +
+						amountLeft * MSATOSHIS +
+						' msats available, but ' +
+						parseInt(parsed.millisatoshis) +
+						' requested',
 				};
 			}
 		}
