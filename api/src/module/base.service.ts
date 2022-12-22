@@ -303,7 +303,7 @@ const parseParams = (params) => {
 		if (Array.isArray(params)) {
 			return params.map(parseParams);
 		}
-		return Reflect.ownKeys(params).map((key) => {
+		Reflect.ownKeys(params).map((key) => {
 			if (key == 'limit') {
 				params[key] = parseInt(params[key]);
 			}
