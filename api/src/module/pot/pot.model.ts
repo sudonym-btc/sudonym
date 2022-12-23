@@ -13,6 +13,7 @@ import {
 	DataType,
 	Default,
 	HasMany,
+	HasOne,
 	PrimaryKey,
 	Table,
 	Validate,
@@ -37,7 +38,7 @@ export class Pot extends BaseModel implements Models.Pot {
 					include: [
 						{
 							model: PotUser,
-							as: 'PotUsers',
+							as: 'PotUser',
 							where: {
 								userId: authUserIdGetter(),
 							},
@@ -78,6 +79,9 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	@Column
 	currency: CurrencyCode;
+
+	@HasOne(() => PotUser)
+	PotUser: PotUser;
 
 	@HasMany(() => PotUser)
 	PotUsers: PotUser[];
@@ -122,7 +126,7 @@ export class Pot extends BaseModel implements Models.Pot {
 	static scopes = {
 		orderByIndex: () =>
 			({
-				order: [[{ model: PotUser, as: 'PotUsers' }, 'index', 'asc']],
+				order: [[{ model: PotUser, as: 'PotUser' }, 'index', 'asc']],
 			} as FindOptions),
 		find: () => ({
 			...(context.get('request')?.auth
@@ -130,7 +134,7 @@ export class Pot extends BaseModel implements Models.Pot {
 						include: [
 							{
 								model: PotUser,
-								as: 'PotUsers',
+								as: 'PotUser',
 								required: true,
 								where: {
 									userId: context.get('request')?.auth?.uid,

@@ -127,7 +127,8 @@ export class LightningNodeService {
 			firstChannelOut.destination,
 			totalPlusFirstNodeFee,
 			0,
-			restHops[0].delay + secondChannel.delay,
+			restHops[0].delay +
+				Math.max(secondChannel.delay, firstChannelIn.delay),
 			null,
 			null,
 			null,
