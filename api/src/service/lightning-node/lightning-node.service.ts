@@ -291,7 +291,7 @@ export class LightningNodeService {
 					? Number(inv.millisatoshis || inv.satoshis * 1000)
 					: Math.round(amount),
 				null,
-				inv.tagsObject.min_final_cltv_expiry
+				inv.tagsObject.min_final_cltv_expiry + 20
 			);
 
 			const args = [
