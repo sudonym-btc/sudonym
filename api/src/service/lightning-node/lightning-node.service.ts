@@ -92,7 +92,6 @@ export class LightningNodeService {
 					this.info.id
 				)}`,
 				// ...['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
-				// ...['719062x216x1/0', '719062x216x1/1'], // manually exluding WoS-bfx channel, faulty for some reason
 			],
 		];
 		this.logger.log(a);
@@ -116,7 +115,7 @@ export class LightningNodeService {
 			firstChannelOut.destination,
 			totalPlusFirstNodeFee,
 			0,
-			restHops[0].delay + firstChannelOut.delay
+			restHops[0].delay
 		);
 
 		return [...firstHop, ...restHops];
