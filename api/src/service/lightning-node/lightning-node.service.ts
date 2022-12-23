@@ -91,7 +91,7 @@ export class LightningNodeService {
 					firstChannelIn.source,
 					this.info.id
 				)}`,
-				this.connectedChannels
+				...this.connectedChannels
 					.filter(
 						(c) => !this.canRouteThrough(c, millisatoshis, false)
 					)
