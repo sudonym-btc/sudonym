@@ -61,16 +61,19 @@ class _QRPageState extends State<QRPage> {
                                 XFile? image = await _picker.pickImage(
                                     source: ImageSource.gallery);
                                 if (image != null) {
-                                  if (!await controller
-                                      .analyzeImage(image.path)) {
-                                    SnackBar snackBar = SnackBar(
-                                      content: Text(
-                                          AppLocalizations.of(context)!
-                                              .noQRFound),
-                                    );
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);
-                                  }
+                                  controller
+                                      .analyzeImage(image.path)
+                                      .then((value) {
+                                    if (!value) {
+                                      SnackBar snackBar = SnackBar(
+                                        content: Text(
+                                            AppLocalizations.of(context)!
+                                                .noQRFound),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    }
+                                  });
                                 }
                               },
                               icon: FaIcon(FontAwesomeIcons.photoFilm))

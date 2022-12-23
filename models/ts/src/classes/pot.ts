@@ -1,5 +1,5 @@
 import { BaseClass } from './base-class';
-import { PotUser } from './pot-user';
+import * as PotUserModel from './pot-user';
 //todo: add polyfill for toList function needed in dart to js too
 export class Pot extends BaseClass {
 	constructor(
@@ -8,7 +8,8 @@ export class Pot extends BaseClass {
 		public currency: string = 'BTC',
 		public balance: number | null = 0,
 		public spendableBalance: number | null = 0,
-		public PotUsers: PotUser[] | any
+		public PotUser: PotUserModel.PotUser | any,
+		public PotUsers: PotUserModel.PotUser[] | any
 	) {
 		super();
 	}
@@ -20,8 +21,13 @@ export class Pot extends BaseClass {
 			json['currency'],
 			json['balance'],
 			json['spendableBalance'],
+			json['PotUser'] != null
+				? PotUserModel.PotUser.fromJson(json['PotUser'])
+				: null,
 			json['PotUsers'] != null
-				? json['PotUsers'].map((i) => PotUser.fromJson(i)).toList()
+				? json['PotUsers']
+						.map((i) => PotUserModel.PotUser.fromJson(i))
+						.toList()
 				: []
 		);
 	}
@@ -33,6 +39,7 @@ export class Pot extends BaseClass {
 			currency: this.currency,
 			balance: this.balance,
 			spendableBalance: this.spendableBalance,
+			PotUser: this.PotUser != null ? this.PotUser.toJson() : null,
 			PotUsers: this.PotUsers.map((i) => i.toJson()).toList(),
 		};
 	}

@@ -22,7 +22,7 @@ class EditPot extends StatelessWidget {
                   title: Text(entity?.id == null
                       ? AppLocalizations.of(context)!.createPot
                       : AppLocalizations.of(context)!.editPot),
-                  actions: entity?.id != null && entity?.PotUsers[0].index != 1
+                  actions: entity?.id != null && entity?.PotUser.index != 1
                       ? [
                           IconButton(
                               onPressed: () {

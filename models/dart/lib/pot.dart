@@ -1,5 +1,5 @@
 import "base-class.dart" show BaseClass;
-import "pot-user.dart" show PotUser;
+import "pot-user.dart" as PotUserModel;
 
 //todo: add polyfill for toList function needed in dart to js too
 class Pot extends BaseClass {
@@ -8,12 +8,14 @@ class Pot extends BaseClass {
   String currency;
   dynamic /* num | null */ balance;
   dynamic /* num | null */ spendableBalance;
-  dynamic /* List < PotUser > | dynamic */ PotUsers;
+  dynamic /* PotUserModel . PotUser | dynamic */ PotUser;
+  dynamic /* List < PotUserModel . PotUser > | dynamic */ PotUsers;
   Pot(this.id,
       [this.name = "",
       this.currency = "BTC",
       this.balance = 0,
       this.spendableBalance = 0,
+      this.PotUser,
       this.PotUsers])
       : super() {
     /* super call moved to initializer */;
@@ -25,8 +27,13 @@ class Pot extends BaseClass {
         json["currency"],
         json["balance"],
         json["spendableBalance"],
+        json["PotUser"] != null
+            ? PotUserModel.PotUser.fromJson(json["PotUser"])
+            : null,
         json["PotUsers"] != null
-            ? json["PotUsers"].map((i) => PotUser.fromJson(i)).toList()
+            ? json["PotUsers"]
+                .map((i) => PotUserModel.PotUser.fromJson(i))
+                .toList()
             : []);
   }
 
@@ -37,6 +44,7 @@ class Pot extends BaseClass {
       "currency": this.currency,
       "balance": this.balance,
       "spendableBalance": this.spendableBalance,
+      "PotUser": this.PotUser != null ? this.PotUser.toJson() : null,
       "PotUsers": this.PotUsers.map((i) => i.toJson()).toList()
     };
   }

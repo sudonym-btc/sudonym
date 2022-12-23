@@ -11,6 +11,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   Map<String, dynamic> where;
   String order = 'DESC';
   String column = 'id';
+  int limit;
   StreamSubscription? onCreated;
   StreamSubscription? onUpdated;
   StreamSubscription? onDeleted;
@@ -20,6 +21,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
       {this.where = const {},
       this.column = 'id',
       this.getId,
+      this.limit = 10,
       this.order = 'DESC'})
       : super(const ListCubitState(data: [], metadata: {}, loading: false)) {
     getId ??= (dynamic element) => element.id;
@@ -73,6 +75,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
                 ? {'lt': getSmallestId()}
                 : {'lt': getLargestId()}
           },
+          limit: limit,
           order: [
             [...column.replaceAll('\$', '').split('.'), order]
           ].toList());
@@ -100,6 +103,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
                 ? {'gt': getLargestId()}
                 : {'gt': getSmallestId()}
           },
+          limit: limit,
           order: [
             [...column.replaceAll('\$', '').split('.'), order]
           ].toList());

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
@@ -29,13 +28,15 @@ class PayExecutePage extends ActionFlow<Payment, Transaction> {
         color: Colors.red,
         title: AppLocalizations.of(context)!.failed,
         subtitleText: AppLocalizations.of(context)!.failedToCreateTransactions,
-        icon: FontAwesomeIcons.circleExclamation,
+        // icon: FontAwesomeIcons.circleExclamation,
         content: Text(err.toString()),
         actions: ButtonBar(
           children: [
             Button(
-              onPressed: () {},
-              text: AppLocalizations.of(context)!.retry,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              text: AppLocalizations.of(context)!.back,
             )
           ],
         ));

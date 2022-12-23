@@ -54,9 +54,14 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   Future<ListState<T>> list(
-      {Map<String, dynamic>? where, List<List<String>>? order = order}) async {
-    return dio.get('/$endpoint',
-        queryParameters: {'where': where, 'order': order}).then((value) {
+      {Map<String, dynamic>? where,
+      List<List<String>>? order = order,
+      int limit = 10}) async {
+    return dio.get('/$endpoint', queryParameters: {
+      'where': where,
+      'order': order,
+      'limit': limit
+    }).then((value) {
       var list = (value.data['data'] as List).map((e) => converter(e)).toList();
 
       return ListState(list, {});

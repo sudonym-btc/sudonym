@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:loggy/loggy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/firebase_options.dart';
@@ -25,12 +24,6 @@ Future<void> mainSetup(String? env) async {
   if ([Env.mock, Env.dev, Env.test].contains(env)) {
     HttpOverrides.global = MyHttpOverrides();
   }
-
-  Loggy.initLoggy(
-    logPrinter: (kReleaseMode)
-        ? const PrettyPrinter(showColors: true)
-        : const PrettyPrinter(showColors: true),
-  );
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

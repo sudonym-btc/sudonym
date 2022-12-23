@@ -36,7 +36,9 @@ class TransactionListState extends State<TransactionList>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     loggy.v('Changed app state registered in transaction list');
     if (state == AppLifecycleState.resumed) {
-      list.loadPrevious();
+      if (getIt<CurrentPotService>().pot?.id == widget.pot.id) {
+        list.loadPrevious();
+      }
     }
   }
 

@@ -88,6 +88,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
           Widget image = Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [Center(child: CircularProgressIndicator())]);
+
           if (!loading) {
             image = GestureDetector(
               onTap: copy,
@@ -117,6 +118,20 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
               text: (AppLocalizations.of(context)!.share),
             ),
           ];
+
+          Widget type = Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Theme.of(context).primaryColor,
+              ),
+              child: CustomPadding(
+                  multiplierHeight: 0.2,
+                  child: Info(
+                    widget.type.toUpperCase(),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )));
+
           Widget indicator = Opacity(
               opacity: 0.5,
               child: CustomPadding(
@@ -125,35 +140,22 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                       children: [
                     Column(
                       children: [
-                        Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            child: CustomPadding(
-                                multiplierHeight: 0.2,
-                                child: Info(
-                                  widget.type.toUpperCase(),
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ))),
+                        type,
                         const VertDivider(),
                         Info(AppLocalizations.of(context)!.swipeForMoreOptions)
                       ],
                     ),
                   ])));
+
           return CustomPadding(
               child: Column(
             children: [
               Expanded(
                   child: Column(
-                mainAxisAlignment: loading
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.start,
+                // mainAxisAlignment: loading ? MainAxisAlignment.center : null,
                 children: [
                   ...(loading ? [] : [indicator]),
-                  image,
+                  Expanded(child: image),
                 ],
               )),
               const VertDivider(),

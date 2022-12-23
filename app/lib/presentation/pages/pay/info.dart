@@ -66,9 +66,11 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
                           text: AppLocalizations.of(context)!.send,
                           // icon: const FaIcon(FontAwesomeIcons.paperPlane,
                           //     size: iconSize),
-                          onPressed: () {
-                            onDone(r);
-                          },
+                          onPressed: state.maxLoading || state.minLoading
+                              ? null
+                              : () {
+                                  onDone(r);
+                                },
                           style: raisedButtonStyle,
                         )
                 ])

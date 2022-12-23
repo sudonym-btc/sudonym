@@ -21,6 +21,12 @@ export const factory = Factory.Sync.makeFactory<RecursivePartial<Pot>>({
 	currency: Factory.each((i) => faker.helpers.arrayElement(['BTC', 'USD'])),
 	balance: Factory.each((i) => Math.random() * 10),
 	spendableBalance: Factory.each((i) => Math.random() * 10),
+	PotUser: Factory.each((i) => ({
+		id: i,
+		userId: '123',
+		potId: i,
+		index: i,
+	})),
 	PotUsers: Factory.each((i) => [
 		{
 			id: i,

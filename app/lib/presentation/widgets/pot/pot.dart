@@ -13,6 +13,7 @@ class PotPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CubitWrapper<PotCubit, PotCubitState, Pot>(
         entity: entity,
+        fetch: false,
         refreshOnFocus: (state) => true,
         refresh: (state) =>
             getIt<CurrentPotService>().pot?.id == state.entity?.id,

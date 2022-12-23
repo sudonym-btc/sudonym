@@ -35,7 +35,7 @@ class _ListWidgetState extends State<ListWidget>
   late ListCubit c;
   late final AnimationController _previousLoadingController =
       AnimationController(
-    duration: const Duration(milliseconds: 200),
+    duration: const Duration(milliseconds: 50),
     vsync: this,
   );
   late final Animation<double> _previousLoadingAnimation = CurvedAnimation(
@@ -43,7 +43,7 @@ class _ListWidgetState extends State<ListWidget>
     curve: Curves.slowMiddle,
   );
   late final AnimationController _nextLoadingController = AnimationController(
-    duration: const Duration(milliseconds: 200),
+    duration: const Duration(milliseconds: 50),
     vsync: this,
   );
   late final Animation<double> _nextLoadingAnimation = CurvedAnimation(
@@ -55,11 +55,12 @@ class _ListWidgetState extends State<ListWidget>
   void initState() {
     c = widget.list();
     controller.addListener(() {
-      if (controller.position.pixels == 0) {
+      if (controller.position.pixels == 0 && !controller.position.outOfRange) {
         loggy.v('Loading previous due to scroll');
         c.loadPrevious();
       }
-      if (controller.position.pixels >= controller.position.maxScrollExtent) {
+      if (controller.position.pixels >= controller.position.maxScrollExtent &&
+          !controller.position.outOfRange) {
         loggy.v('Loading next due to scroll');
         c.loadNext();
       }
@@ -97,48 +98,40 @@ class _ListWidgetState extends State<ListWidget>
             }
           },
           builder: (context, state) {
-            List<Widget> children = [];
-
-            children.add(SizeTransition(
-                sizeFactor: _previousLoadingAnimation, child: loadingCircle));
-
-            children
-                .addAll(state.data.map<Widget>((e) => Container()).toList());
-
-            children.add(SizeTransition(
-                sizeFactor: _nextLoadingAnimation, child: loadingCircle));
-
-            if (!state.loading) {
-              if (state.data.isEmpty && widget.emptyText != null) {
-                children.add(AnimatedContainer(
-                    duration: const Duration(milliseconds: 2000),
-                    child: Info(widget.emptyText!)));
-              }
-              if (widget.appendItem != null) {
-                children.add(widget.appendItem!);
-              }
-            }
-
-            return LiveList(
-              showItemInterval: const Duration(milliseconds: 50),
-              showItemDuration: const Duration(milliseconds: 100),
-              shrinkWrap: true,
-              controller: controller,
-              itemBuilder: (context, index, animation) {
-                if (index > 0 && index < state.data.length + 1) {
-                  return FadeTransition(
-                      opacity: animation,
-                      child: ScaleTransition(
-                          scale: Tween<double>(
-                            begin: 0,
-                            end: 1,
-                          ).animate(animation),
-                          child: widget.builder(state.data[index - 1])));
-                } else {
-                  return children[index];
-                }
-              },
-              itemCount: children.length,
+            return Column(
+              children: [
+                SizeTransition(
+                    sizeFactor: _previousLoadingAnimation,
+                    child: loadingCircle),
+                ...(!state.loading &&
+                        state.data.isEmpty &&
+                        widget.emptyText != null)
+                    ? [
+                        AnimatedContainer(
+                            duration: const Duration(milliseconds: 50),
+                            child: Info(widget.emptyText!))
+                      ]
+                    : [],
+                state.data.isNotEmpty
+                    ? Expanded(
+                        child: LiveList(
+                        showItemInterval: const Duration(milliseconds: 50),
+                        showItemDuration: const Duration(milliseconds: 50),
+                        shrinkWrap: true,
+                        controller: controller,
+                        itemBuilder: (context, index, animation) =>
+                            FadeTransition(
+                                opacity: animation,
+                                child: widget.builder(state.data[index])),
+                        itemCount: state.data.length,
+                      ))
+                    : Container(),
+                ...(!state.loading && widget.appendItem != null
+                    ? [widget.appendItem!]
+                    : []),
+                SizeTransition(
+                    sizeFactor: _nextLoadingAnimation, child: loadingCircle)
+              ],
             );
           },
         ));
