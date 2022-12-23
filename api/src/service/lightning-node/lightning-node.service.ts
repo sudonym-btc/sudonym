@@ -91,7 +91,17 @@ export class LightningNodeService {
 					firstChannelIn.source,
 					this.info.id
 				)}`,
-				// ...['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
+				this.connectedChannels
+					.filter(
+						(c) => !this.canRouteThrough(c, millisatoshis, false)
+					)
+					.map(
+						(c) =>
+							`${c.short_channel_id}/${this.getDirection(
+								c.id,
+								this.info.id
+							)}`
+					),
 			],
 		];
 		this.logger.log(a);
