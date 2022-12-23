@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { context } from 'helper/context-request';
+import { authUserIdGetter } from 'helper/context-request';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { PotUserService } from 'module/pot-user/pot-user.service';
 import { Sequelize } from 'sequelize';
@@ -37,8 +37,9 @@ export class PotService extends BaseService(Pot) {
 					{
 						required: true,
 						model: PotUser,
+						as: 'PotUser',
 						where: {
-							userId: userId || context.get('request')?.auth?.uid,
+							userId: userId || authUserIdGetter(),
 						},
 					},
 				],
