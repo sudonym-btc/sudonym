@@ -55,6 +55,7 @@ export class LightningNodeService {
 	}
 
 	canRouteThrough(c, millisatoshis, outgoing = true) {
+		console.log('can route through ? ', c, millisatoshis, outgoing);
 		if (c.state != 'CHANNELD_NORMAL') return false;
 		if (outgoing)
 			return (
@@ -71,7 +72,7 @@ export class LightningNodeService {
 		this.logger.log('last ctlv ' + cltv);
 		const channel = this.connectedChannels.find((c) =>
 			this.canRouteThrough(c, millisatoshis, true)
-		); // Try sending with first channel if none fit filter and fail organically
+		);
 		const firstChannelOut = channel.channels.find(
 			(c) => c.source == this.info.id
 		);
