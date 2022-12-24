@@ -57,20 +57,17 @@ export class LightningNodeService {
 	canRouteThrough(c, millisatoshis, outgoing = true) {
 		console.log('can route through ? ', c, millisatoshis, outgoing);
 		if (c.state != 'CHANNELD_NORMAL') return false;
-		if (outgoing)
-			return (
-				c.msatoshi_to_us - c.our_channel_reserve_satoshis * 1000 >
-				millisatoshis
-			);
-		return (
-			c.msatoshi_to_them - c.their_channel_reserve_satoshis * 1000 >
-			millisatoshis
-		);
+		if (outgoing) return c.spendable_msat > millisatoshis;
+		return c.receivable_msat > millisatoshis;
 	}
 
 	async circularRoute(millisatoshis, cltv = null) {
+		const filteredChannels = this.peers
+			.filter((p) => p.connected)
+			.map((p) => p.channels)
+			.flat();
 		this.logger.log('last ctlv ' + cltv);
-		const channel = this.connectedChannels.find((c) =>
+		const channel = filteredChannels.find((c) =>
 			this.canRouteThrough(c, millisatoshis, true)
 		);
 		const firstChannelOut = channel.channels.find(
@@ -92,7 +89,9 @@ export class LightningNodeService {
 					firstChannelIn.source,
 					this.info.id
 				)}`,
-				...this.connectedChannels
+				...this.peers
+					.map((p) => p.channels)
+					.flat()
 					.filter(
 						(c) => !this.canRouteThrough(c, millisatoshis, false)
 					)
