@@ -57,8 +57,8 @@ export class LightningNodeService {
 	canRouteThrough(c, millisatoshis, outgoing = true) {
 		console.log('can route through ? ', c, millisatoshis, outgoing);
 		if (c.state != 'CHANNELD_NORMAL') return false;
-		if (outgoing) return c.spendable_msat > millisatoshis;
-		return c.receivable_msat > millisatoshis;
+		if (outgoing) return c.spendable_msatoshi > millisatoshis;
+		return c.receivable_msatoshi > millisatoshis;
 	}
 
 	async circularRoute(millisatoshis, cltv = null) {
