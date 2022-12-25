@@ -55,7 +55,6 @@ export class LightningNodeService {
 	}
 
 	canRouteThrough(c, millisatoshis, outgoing = true) {
-		console.log('can route through ? ', c, millisatoshis, outgoing);
 		if (c.state != 'CHANNELD_NORMAL') return false;
 		if (outgoing) return c.spendable_msatoshi > millisatoshis;
 		return c.receivable_msatoshi > millisatoshis;
@@ -70,23 +69,29 @@ export class LightningNodeService {
 		const channel = filteredChannels.find((c) =>
 			this.canRouteThrough(c, millisatoshis, true)
 		);
-		const firstChannelOut = channel.channels.find(
+		const bothChannels = await this.getChannel(channel.short_channel_id);
+		const peer = this.peers.find((p) =>
+			p.channels.find(
+				(c) => c.short_channel_id == channel.short_channel_id
+			)
+		);
+		const firstChannelOut = bothChannels.find(
 			(c) => c.source == this.info.id
 		);
-		const firstChannelIn = channel.channels.find(
+		const firstChannelIn = bothChannels.find(
 			(c) => c.source != this.info.id
 		);
-		this.logger.log('selfpayment', firstChannelIn, firstChannelOut);
+		// this.logger.log('selfpayment', firstChannelIn, firstChannelOut);
 		const a: [string, number, number, number, string, any, any] = [
 			this.info.id,
 			millisatoshis,
 			20,
 			cltv, //cltv,
-			firstChannelOut.destination,
+			peer.id,
 			null,
 			[
-				`${firstChannelIn.short_channel_id}/${this.getDirection(
-					firstChannelIn.source,
+				`${channel.short_channel_id}/${this.getDirection(
+					peer.id,
 					this.info.id
 				)}`,
 				...this.peers
@@ -124,7 +129,7 @@ export class LightningNodeService {
 		);
 
 		const firstHop = await this.getRoute(
-			firstChannelOut.destination,
+			peer.id,
 			totalPlusFirstNodeFee,
 			0,
 			restHops[0].delay +
