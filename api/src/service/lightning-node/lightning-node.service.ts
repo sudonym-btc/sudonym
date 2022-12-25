@@ -61,23 +61,17 @@ export class LightningNodeService {
 	}
 
 	async circularRoute(millisatoshis, cltv = null) {
-		const filteredChannels = this.peers
+		const channel = this.peers
 			.filter((p) => p.connected)
 			.map((p) => p.channels)
-			.flat();
-		this.logger.log('last ctlv ' + cltv);
-		const channel = filteredChannels.find((c) =>
-			this.canRouteThrough(c, millisatoshis, true)
-		);
-		const bothChannels = await this.getChannel(channel.short_channel_id);
+			.flat()
+			.find((c) => this.canRouteThrough(c, millisatoshis, true));
 		const peer = this.peers.find((p) =>
 			p.channels.find(
 				(c) => c.short_channel_id == channel.short_channel_id
 			)
 		);
-		const firstChannelOut = bothChannels.find(
-			(c) => c.source == this.info.id
-		);
+		const bothChannels = await this.getChannel(channel.short_channel_id);
 		const firstChannelIn = bothChannels.find(
 			(c) => c.source != this.info.id
 		);
@@ -109,7 +103,7 @@ export class LightningNodeService {
 					),
 			],
 		];
-		this.logger.log(a);
+		this.logger.debug(a);
 
 		// Get route to current node from first peer which excludes the direct route
 		const restHops = await this.getRoute(...a);
@@ -312,7 +306,7 @@ export class LightningNodeService {
 					? Number(inv.millisatoshis || inv.satoshis * 1000)
 					: Math.round(amount),
 				null,
-				inv.tagsObject.min_final_cltv_expiry + 20
+				inv.tagsObject.min_final_cltv_expiry
 			);
 
 			const args = [
