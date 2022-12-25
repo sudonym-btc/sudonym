@@ -33,8 +33,7 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
         create: (_) => CurrencyInputCubit(CurrencyInputOptions(
             max: [CurrencyInputOutput(pot.spendableBalance, pot.currency)],
             min: [CurrencyInputOutput(r.minAmount, r.currency)],
-            initialValue: CurrencyInputOutput(r.amount, r.currency)))
-          ..enforceConstraints(r.minAmount),
+            initialValue: CurrencyInputOutput(r.amount, r.currency))),
         child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
             builder: (context, state) {
           return StatusPage(
@@ -62,17 +61,22 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
                           onPressed: () => Navigator.of(context).pop(),
                           // style: raisedButtonStyle,
                         )
-                      : Button(
-                          text: AppLocalizations.of(context)!.send,
-                          // icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                          //     size: iconSize),
-                          onPressed: state.maxLoading || state.minLoading
-                              ? null
-                              : () {
-                                  onDone(r);
-                                },
-                          style: raisedButtonStyle,
-                        )
+                      : (state.maxLoading || state.minLoading
+                          ? Button(
+                              icon: SizedBox(
+                                height: 12,
+                                width: 12,
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : Button(
+                              text: AppLocalizations.of(context)!.send,
+                              // icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                              //     size: iconSize),
+                              onPressed: () {
+                                onDone(r);
+                              },
+                            ))
                 ])
               ]));
         }));

@@ -11,6 +11,7 @@ export 'entity/receiver.cubit.dart';
 export 'entity/sender.cubit.dart';
 export 'entity/transaction.cubit.dart';
 export 'entity/user.cubit.dart';
+export 'incoming_transaction_handler.service.dart';
 export 'list/list.cubit.dart';
 export 'pages/pay_manager.dart';
 export 'pages/withdraw_manager.dart';

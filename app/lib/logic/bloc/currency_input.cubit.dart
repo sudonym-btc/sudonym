@@ -107,11 +107,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     int newCurr = i >= options.currencies.length ? 0 : i;
     safeEmit(state.copyWith(
         currCurrency: newCurr,
-        altCurrency: newCurr + 1 >= options.currencies.length ? 0 : newCurr + 1,
-        altVal: 0,
-        minLoading: true,
-        maxLoading: true,
-        altLoading: true));
+        altCurrency:
+            newCurr + 1 >= options.currencies.length ? 0 : newCurr + 1));
     createController();
     controller!.updateValue(newCurrValDisplay.toDouble());
     setValue(newCurrVal);
@@ -123,15 +120,12 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   }
 
   Future<num> enforceConstraints(num val) async {
-    safeEmit(state.copyWith(hasError: false));
-    safeEmit(state.copyWith(minLoading: true));
+    safeEmit(state.copyWith(hasError: false, minLoading: true));
     Map<String, dynamic>? error;
     double min = await getMinInCurrentCurrency();
-    // Disable decrement button when already at minimum
-    // controller!.updateValue(
-    //     getDisplayValue(getCurrentCurrency(), min));
-    // setValue(min); // Must set true value as dislay value is vague
+
     safeEmit(state.copyWith(
+        minLoading: false,
         negativeEnabled:
             numToCurrentPrecision(val) > numToCurrentPrecision(min)));
 
@@ -139,38 +133,30 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     if (val < min) {
       error = {'min': FormatCurrency().format(getCurrentCurrency(), min)};
     }
-    safeEmit(state.copyWith(minLoading: false));
 
     safeEmit(state.copyWith(maxLoading: true));
     double max = await getMaxInCurrentCurrency();
 
     if (min > max) {
-      safeEmit(state.copyWith(
-          hasError: true,
-          error: {'max': FormatCurrency().format(getCurrentCurrency(), max)}));
-      return val;
-    }
-
-    safeEmit(state.copyWith(
-        positiveEnabled:
-            numToCurrentPrecision(max) < numToCurrentPrecision(val)));
-
-    if (numToCurrentPrecision(max) <= numToCurrentPrecision(val)) {
-      controller!.updateValue(getDisplayValue(getCurrentCurrency(), max));
-      setValue(max); // Must set true value as dislay value is vague
-      safeEmit(state.copyWith(positiveEnabled: false));
+      error = {'max': FormatCurrency().format(getCurrentCurrency(), max)};
     } else {
-      safeEmit(state.copyWith(positiveEnabled: true));
+      bool positiveEnabled =
+          numToCurrentPrecision(val) < numToCurrentPrecision(max);
+      safeEmit(state.copyWith(positiveEnabled: positiveEnabled));
+
+      if (!positiveEnabled) {
+        controller!.updateValue(getDisplayValue(getCurrentCurrency(), max));
+        setValue(max); // Must set true value as dislay value is vague
+      }
     }
-    safeEmit(state.copyWith(maxLoading: false));
-    safeEmit(state.copyWith(hasError: error != null, error: error));
+    safeEmit(state.copyWith(
+        maxLoading: false, hasError: error != null, error: error));
     return val;
   }
 
   Future<num> resolveAlt(num val) async {
     // Loading the alt currency value
-    safeEmit(
-        state.copyWith(minLoading: true, maxLoading: true, altLoading: true));
+    safeEmit(state.copyWith(altLoading: true));
     _currencyRespository
         .getRate(
             fromCurrency: getCurrentCurrency(),

@@ -38,10 +38,11 @@
 			"server": "localhost",
 			"port": 3306,
 			"driver": "MySQL",
-			"name": "local",
+			"name": "production",
 			"database": "app",
-			"username": "root",
-			"connectionTimeout": 10
+			"username": "api",
+			"connectionTimeout": 10,
+			"password": ""
 		},
 		{
 			"mysqlOptions": {
@@ -51,9 +52,9 @@
 			"server": "localhost",
 			"port": 3306,
 			"driver": "MySQL",
-			"name": "production",
+			"name": "local",
 			"database": "app",
-			"username": "api",
+			"username": "root",
 			"connectionTimeout": 10,
 			"password": ""
 		}
