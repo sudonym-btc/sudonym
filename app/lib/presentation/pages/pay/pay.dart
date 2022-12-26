@@ -55,7 +55,7 @@ class _SendPageState extends State<SendPage> {
         child: SafeArea(
           child: Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.send),
+                title: Text(widget.pot.spendableBalance.toString()),
                 actions: [
                   IconButton(
                       onPressed: () {

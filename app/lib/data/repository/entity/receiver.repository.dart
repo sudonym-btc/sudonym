@@ -9,16 +9,6 @@ import 'package:sudonym.models/index.dart';
 class ReceiverRepositoryImpl extends ReceiverRepository {
   ReceiverRepositoryImpl(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
-
-  @override
-  Future<Receiver> getInvoice(potId, type, amount, currency) {
-    return dio.get('/receiver/invoice', queryParameters: {
-      'potId': potId.toString(),
-      'type': type.toString(),
-      'amount': amount.toString(),
-      'amountCurrency': currency.toString()
-    }).then((value) => Receiver.fromJson(value.data));
-  }
 }
 
 abstract class ReceiverRepository extends CrudRepository<Receiver>
@@ -26,8 +16,6 @@ abstract class ReceiverRepository extends CrudRepository<Receiver>
   ReceiverRepository(Config config, Dio dio, Websocket websocket)
       : super(config, dio, websocket);
   List<Receiver> receivers = [];
-
-  Future<Receiver> getInvoice(potId, type, amount, currency);
 }
 
 class ReceiverRepositoryProps {

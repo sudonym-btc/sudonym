@@ -99,6 +99,7 @@ class _ListWidgetState extends State<ListWidget>
           },
           builder: (context, state) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizeTransition(
                     sizeFactor: _previousLoadingAnimation,

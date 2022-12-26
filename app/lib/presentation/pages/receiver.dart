@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -15,13 +14,12 @@ class ReceiverPage extends StatefulWidget {
 }
 
 class ReceiverPageState extends State<ReceiverPage> {
-  Transaction? handle(Transaction t) {
+  CreatedOrUpdated<Transaction>? handle(CreatedOrUpdated<Transaction> t) {
     // Don't bubble this event to global transaction handler if already on this page
-    if (t.receiverId == widget.entity.id) {
-      FlutterRingtonePlayer.play(fromAsset: 'assets/audio/ping.mp3');
+    if (t.entity.receiverId == widget.entity.id) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-              builder: (context) => TransactionPage(entity: t),
+              builder: (context) => TransactionPage(entity: t.entity),
               fullscreenDialog: true),
           (route) => route.isFirst);
       return null;

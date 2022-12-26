@@ -26,7 +26,7 @@ export class Transaction extends BaseClass {
 		public status: boolean | null,
 		public errorMessage: string | null,
 		public currencyCode: string,
-		public createdAt: Date
+		public createdAt: Date | null
 	) {
 		super();
 	}
@@ -57,7 +57,7 @@ export class Transaction extends BaseClass {
 			json['status'],
 			json['errorMessage'],
 			json['currencyCode'],
-			json['createdAt']
+			json['createdAt'] != null ? new Date(json['createdAt']) : null
 		);
 	}
 

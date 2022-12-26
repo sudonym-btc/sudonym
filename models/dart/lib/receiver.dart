@@ -7,13 +7,13 @@ class Receiver extends BaseClass {
   String type;
   num amount;
   String amountCurrency;
-  String data;
+  dynamic /* String | null */ data;
   dynamic /* String | null */ lnurlId;
   dynamic /* String | null */ description;
   dynamic /* String | null */ comment;
   dynamic /* dynamic | null */ payerData;
   dynamic /* num | null */ received;
-  DateTime createdAt;
+  dynamic /* DateTime | null */ createdAt;
   Receiver(
       this.id,
       this.parentId,
@@ -45,7 +45,7 @@ class Receiver extends BaseClass {
         json["comment"],
         json["payerData"],
         json["received"],
-        DateTime.parse(json["createdAt"]));
+        json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null);
   }
 
   dynamic toJson() {

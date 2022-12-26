@@ -28,21 +28,22 @@ class TransactionHandlerState extends State<TransactionHandler>
     super.initState();
   }
 
-  Transaction ringtone(Transaction event) {
-    if (event.outgoing == true) {
+  CreatedOrUpdated<Transaction> ringtone(CreatedOrUpdated<Transaction> event) {
+    if ((event.entity.status &&
+        (event.changed.contains('status') || event.created))) {
       FlutterRingtonePlayer.play(fromAsset: 'assets/audio/ping.mp3');
     }
     return event;
   }
 
-  Transaction callback(Transaction event) {
-    loggy.i('Transaction callback ${event.id}');
+  CreatedOrUpdated<Transaction> callback(CreatedOrUpdated<Transaction> event) {
+    loggy.i('Transaction callback ${event.entity.id}');
 
     // When receiving a transaction popup the transaction details page
-    if (event.outgoing == false) {
+    if (event.entity.outgoing == false) {
       Navigator.of(context).push(
         MaterialPageRoute(
-            builder: (context) => TransactionPage(entity: event),
+            builder: (context) => TransactionPage(entity: event.entity),
             fullscreenDialog: true),
       );
     }

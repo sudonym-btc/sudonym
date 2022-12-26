@@ -22,19 +22,16 @@ class ReceiverCubit
         if (event.data['id'] == state.entity!.id ||
             event.data['parentId'] == state.entity!.id &&
                 state.entity!.type == 'bolt11') {
-          getInvoice(
-              state.entity!.potId, state.entity!.type, state.entity!.amount);
+          create(Receiver.fromJson({
+            'potId': state.entity!.potId,
+            'type': state.entity!.type,
+            'amount': state.entity!.amount,
+            'amountCurrency': state.entity!.amountCurrency
+          }));
         }
       }
     });
     super.listenChanges();
-  }
-
-  getInvoice(num potId, String type,
-      [num? amount, String? currency = 'BTC']) async {
-    emit(ReceiverCubitState(loading: true));
-    var data = await repository.getInvoice(potId, type, amount, currency);
-    set(data);
   }
 }
 

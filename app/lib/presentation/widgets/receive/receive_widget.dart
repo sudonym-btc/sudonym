@@ -64,8 +64,18 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             inputOptions.controller!.outputStream.stream
                 .debounceTime(const Duration(milliseconds: 500))
                 .listen((event) {
-              c.getInvoice(
-                  widget.pot.id, widget.type, event.amount, event.currency);
+              print({
+                'potId': widget.pot.id,
+                'amountCurrency': event.currency,
+                'amount': event.amount,
+                'type': widget.type,
+              });
+              c.create(Receiver.fromJson({
+                'potId': widget.pot.id,
+                'amountCurrency': event.currency,
+                'amount': event.amount,
+                'type': widget.type,
+              }));
             });
 
             return c;

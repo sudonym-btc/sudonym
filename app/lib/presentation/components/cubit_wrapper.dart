@@ -11,6 +11,7 @@ class CubitWrapper<
     T extends BaseClass> extends StatelessWidget {
   final T entity;
   final bool fetch;
+  final void Function(C cubit)? cubit;
   final bool Function(CS state)? refresh;
   final bool Function(CS state)? refreshOnFocus;
   final Widget Function(BuildContext context, CS state) builder;
@@ -19,6 +20,7 @@ class CubitWrapper<
   const CubitWrapper(
       {required this.entity,
       required this.builder,
+      this.cubit,
       this.listener,
       this.refresh,
       this.refreshOnFocus,
@@ -44,6 +46,9 @@ class CubitWrapper<
           }
           if (refreshOnFocus != null) {
             c.setFocusRefresher(refreshOnFocus!);
+          }
+          if (cubit != null) {
+            cubit!(c);
           }
           return c;
         },

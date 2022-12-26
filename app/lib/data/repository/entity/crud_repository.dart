@@ -36,11 +36,17 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
           // loggy.v(e.data);
 
           if (e.name.split('.')[1] == 'created') {
-            created.add(CreatedOrUpdated(converter(e.data.entity),
-                e.data.created, e.data.changed, e.data.params));
+            created.add(CreatedOrUpdated(
+                converter(e.data['entity']),
+                e.data['created'],
+                e.data['changed'].cast<String>(),
+                e.data['params']));
           } else if (e.name.split('.')[1] == 'updated') {
-            updated.add(CreatedOrUpdated(converter(e.data.entity),
-                e.data.created, e.data.changed, e.data.params));
+            updated.add(CreatedOrUpdated(
+                converter(e.data['entity']),
+                e.data['created'],
+                e.data['changed'].cast<String>(),
+                e.data['params']));
           } else if (e.name.split('.')[1] == 'deleted') {
             deleted.add(converter(e.data));
           } else {
@@ -72,9 +78,9 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
 
   Future<T> create(Map<String, dynamic> entity) async {
     return dio.post('/$endpoint', data: entity).then((value) {
-      var entity = converter(value.data.entity);
-      created.add(
-          CreatedOrUpdated(entity, value.data.created, value.data.changed, {}));
+      var entity = converter(value.data['entity']);
+      created.add(CreatedOrUpdated(entity, value.data['created'],
+          value.data['changed'].cast<String>(), {}));
       return entity;
     });
   }
@@ -83,9 +89,9 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
         .then((value) {
-      var entity = converter(value.data.entity);
-      updated.add(
-          CreatedOrUpdated(entity, value.data.created, value.data.changed, {}));
+      var entity = converter(value.data['entity']);
+      updated.add(CreatedOrUpdated(entity, value.data['created'],
+          value.data['changed'].cast<String>(), {}));
       return entity;
     });
   }

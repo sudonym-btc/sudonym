@@ -8,13 +8,13 @@ export class Receiver extends BaseClass {
 		public type: string,
 		public amount: number,
 		public amountCurrency: string,
-		public data: string,
+		public data: string | null,
 		public lnurlId: string | null,
 		public description: string | null,
 		public comment: string | null,
 		public payerData: any | null,
 		public received: number | null,
-		public createdAt: Date
+		public createdAt: Date | null
 	) {
 		super();
 	}
@@ -33,7 +33,7 @@ export class Receiver extends BaseClass {
 			json['comment'],
 			json['payerData'],
 			json['received'],
-			json['createdAt']
+			json['createdAt'] != null ? new Date(json['createdAt']) : null
 		);
 	}
 

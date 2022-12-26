@@ -25,7 +25,7 @@ class Transaction extends BaseClass {
   dynamic /* bool | null */ status;
   dynamic /* String | null */ errorMessage;
   String currencyCode;
-  DateTime createdAt;
+  dynamic /* DateTime | null */ createdAt;
   Transaction(
       this.id,
       this.onchainId,
@@ -79,7 +79,7 @@ class Transaction extends BaseClass {
         json["status"],
         json["errorMessage"],
         json["currencyCode"],
-        DateTime.parse(json["createdAt"]));
+        json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null);
   }
 
   dynamic toJson() {

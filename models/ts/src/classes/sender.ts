@@ -38,7 +38,7 @@ export class Sender extends BaseClass {
 			json['limitMin'],
 			json['limitMax'],
 			json['data'],
-			json['createdAt']
+			json['createdAt'] != null ? new Date(json['createdAt']) : null
 		);
 	}
 

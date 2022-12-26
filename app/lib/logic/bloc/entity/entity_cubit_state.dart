@@ -101,8 +101,8 @@ abstract class EntityCubit<
         state.entity != null &&
         shouldRefreshOnFocus != null &&
         shouldRefreshOnFocus!(state)) {
-      loggy.v('Changed app state registered in cubit state');
-      loggy.v('Reloading entity due to state change');
+      loggy.d('Changed app state registered in cubit state');
+      loggy.d('Reloading entity due to state change');
       fetch(state.entity.toJson()['id']);
     }
   }

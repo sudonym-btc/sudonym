@@ -32,8 +32,8 @@ class AuthCubit extends Cubit<AuthState> {
 
     userSub = _userRepository.updated.stream.listen((event) {
       if (state.user != null) {
-        if (event.id == state.user!.id) {
-          setUser(event, state.firebaseUser!);
+        if (event.entity.id == state.user!.id) {
+          setUser(event.entity, state.firebaseUser!);
         }
       }
     });

@@ -52,7 +52,7 @@ class Sender extends BaseClass {
         json["limitMin"],
         json["limitMax"],
         json["data"],
-        DateTime.parse(json["createdAt"]));
+        json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null);
   }
 
   dynamic toJson() {

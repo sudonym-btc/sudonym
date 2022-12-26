@@ -30,7 +30,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     }
     onCreated ??= _repository.created.stream.listen((event) {
       loggy.d(
-          "Created ${event.toJson()["id"].toString()} reloading ${_repository.endpoint}");
+          "Created ${event.entity.toJson()["id"].toString()} reloading ${_repository.endpoint}");
       order == 'DESC' ? loadPrevious() : loadNext();
     });
 

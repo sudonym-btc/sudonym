@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -14,6 +15,13 @@ class PotPage extends StatelessWidget {
     return CubitWrapper<PotCubit, PotCubitState, Pot>(
         entity: entity,
         fetch: false,
+        cubit: (cubit) {
+          getIt<CurrentPotService>().potChanged.stream.listen((event) {
+            if (event != null && event.id == entity.id) {
+              cubit.fetch(entity.id);
+            }
+          });
+        },
         refreshOnFocus: (state) => true,
         refresh: (state) =>
             getIt<CurrentPotService>().pot?.id == state.entity?.id,
@@ -44,10 +52,15 @@ class NarrowLayout extends StatelessWidget {
     return Column(children: [
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [PotHeader(entity: entity), SendReceive(entity: entity)],
+        children: [
+          PotHeader(entity: BlocProvider.of<PotCubit>(context).state.entity!),
+          SendReceive(entity: BlocProvider.of<PotCubit>(context).state.entity!)
+        ],
       ),
       const VertDivider(2),
-      Expanded(child: TransactionList(pot: entity))
+      Expanded(
+          child: TransactionList(
+              pot: BlocProvider.of<PotCubit>(context).state.entity!))
       //  SlidingUpPanel(
       //     body: Container(),
       //     minHeight: 150,

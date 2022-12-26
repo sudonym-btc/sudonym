@@ -10,7 +10,8 @@ import 'package:sudonym.models/index.dart';
 class TransactionHandlerService with ActionLogger {
   final TransactionRepository _transactionRepository =
       getIt<TransactionRepository>();
-  final CallbackHandler<Transaction> callbacks = CallbackHandler<Transaction>();
+  final CallbackHandler<CreatedOrUpdated<Transaction>> callbacks =
+      CallbackHandler<CreatedOrUpdated<Transaction>>();
 
   TransactionHandlerService() {
     _transactionRepository.created.stream.listen((event) {

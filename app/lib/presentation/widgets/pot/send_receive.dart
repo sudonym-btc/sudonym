@@ -17,7 +17,7 @@ class SendReceive extends StatelessWidget {
         providers: [BlocProvider(create: (_) => getIt<ReceiverCubit>())],
         child: BlocBuilder<ReceiverCubit, ReceiverCubitState>(
             builder: (BuildContext context, state) {
-          return LayoutBuilder(builder: (context, constraints) {
+          return LayoutBuilder(builder: (buildContext, constraints) {
             return Center(
                 child: FractionallySizedBox(
                     widthFactor: 0.7,
@@ -51,10 +51,13 @@ class SendReceive extends StatelessWidget {
                                   size: 14),
                               onPressed: () {
                                 Navigator.push(
-                                    context,
+                                    buildContext,
                                     MaterialPageRoute(
                                         builder: (context) => SendPage(
-                                              pot: entity,
+                                              pot: BlocProvider.of<PotCubit>(
+                                                      buildContext)
+                                                  .state
+                                                  .entity!,
                                             )));
                               },
                             )

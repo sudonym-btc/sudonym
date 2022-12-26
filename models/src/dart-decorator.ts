@@ -15,7 +15,7 @@ function searchDir(prefix, dir) {
 			str = str.replaceAll('Date ', 'DateTime ');
 			str = str.replaceAll('Promise', 'Future');
 			str = str.replaceAll(
-				'json["createdAt"]',
+				'new Date(json["createdAt"])',
 				'DateTime.parse(json["createdAt"])'
 			);
 			str = str.replaceAll('toJson():  {', 'toJson() {');

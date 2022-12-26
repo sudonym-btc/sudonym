@@ -131,17 +131,24 @@ export const BaseService = <TModel extends BaseModel>(
 			});
 		}
 
-		async triggerEventForUsers(userIds, event, entity) {
+		async triggerEventForUsers(userIds, event, data) {
 			// For each user fetch as correct scope
 			for (const user of userIds) {
 				await runAsUser({ id: user }, async () => {
-					const e = await this.findOne(entity.id);
+					const e = await this.findOne(data.id || data.entity.id);
+					const response =
+						data.entity != null
+							? {
+									...data,
+									entity: e,
+							  }
+							: e;
 					await this.eventsService.trigger(
 						new TriggeredEvent(
 							new Event(
 								null,
 								this.repo.name.toLowerCase() + '.' + event,
-								e
+								response
 							),
 							[user]
 						)
@@ -165,6 +172,7 @@ export const BaseService = <TModel extends BaseModel>(
 					const record = await this.repo
 						.scope(scopes as any)
 						.findByPk(id);
+
 					await this.beforeUpdate.execute({
 						params,
 						entity: record,
@@ -181,13 +189,13 @@ export const BaseService = <TModel extends BaseModel>(
 					const entity = await this.findOne(record.id);
 					if (changed) (entity as any)._changed = new Set(changed);
 					(entity as any)._previousDataValues = _previousDataValues;
-
-					await this.afterUpdate.execute({
+					const response: CreatedOrUpdated<TModel> = {
 						entity,
 						params,
-						changed: (entity as any)._changed,
+						changed: Array.from((entity as any)._changed),
 						created: false,
-					});
+					};
+					await this.afterUpdate.execute(response);
 
 					// Must wait for parent to commit, otherwise underlying records might not be udpated for other transactions
 					const getParent = (t: any): Transaction => {
@@ -202,17 +210,11 @@ export const BaseService = <TModel extends BaseModel>(
 							this.triggerEventForUsers(
 								await this.getUserIds(entity.id),
 								'updated',
-								entity
+								response
 							);
 						});
 					});
-
-					return {
-						entity,
-						params,
-						changed: (entity as any)._changed,
-						created: false,
-					};
+					return response;
 				}
 			);
 		}
@@ -226,12 +228,14 @@ export const BaseService = <TModel extends BaseModel>(
 					const entity = await this.findOne(newEntity.id);
 					entity.isNewRecord = true;
 
-					await this.afterCreate.execute({
+					const response = {
 						entity,
 						params,
 						changed: [],
 						created: entity.isNewRecord,
-					});
+					};
+
+					await this.afterCreate.execute(response);
 
 					t.afterCommit(async () => {
 						this.newTransaction(async () => {
@@ -239,17 +243,12 @@ export const BaseService = <TModel extends BaseModel>(
 							this.triggerEventForUsers(
 								await this.getUserIds(entity.id),
 								'created',
-								entity
+								response
 							);
 						});
 					});
 
-					return {
-						entity,
-						params,
-						changed: [],
-						created: entity.isNewRecord,
-					};
+					return response;
 				}
 			);
 		}
