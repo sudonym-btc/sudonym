@@ -64,7 +64,6 @@ class _LoggedInWidgetState extends State<_LoggedInWidget> {
                 ActionStream(context: context, link: state.address.toString()));
           }
         },
-        child: MessageHandler(
-            child: IncomingTransactionHandler(child: widget.child)));
+        child: MessageHandler(child: TransactionHandler(child: widget.child)));
   }
 }

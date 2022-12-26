@@ -33,7 +33,7 @@ scaffoldGroup('Security', (scaffold) => {
 		const newUser = {
 			id: 'abcdefg',
 		};
-		const user2 = await runAsUser(newUser, async () =>
+		const { entity: user2 } = await runAsUser(newUser, async () =>
 			createNewUser(newUser)
 		);
 
@@ -78,7 +78,7 @@ scaffoldGroup('Security', (scaffold) => {
 	});
 
 	it('should convert GBP transaction to BTC before sending', async () => {
-		const transaction = await runAsUser(
+		const { entity: transaction } = await runAsUser(
 			scaffold.entities.user[0],
 			async () => {
 				return scaffold.app.get(TransactionService).create({

@@ -31,7 +31,7 @@ abstract class MockCrudRepository<T extends BaseClass>
         ? (isNumType(sorted.last.runtimeType) ? sorted.last + 1 : 'random')
         : 1;
     availableData.add(newEntity);
-    created.add(newEntity);
+    created.add(CreatedOrUpdated(newEntity, true, [], {}));
     return newEntity;
   }
 

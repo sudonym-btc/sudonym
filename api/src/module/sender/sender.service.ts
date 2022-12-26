@@ -30,14 +30,15 @@ export class SenderService extends BaseService(Sender) {
 
 			switch (params.type) {
 				case 'lnurl': {
-					const tag = await this.lnUrlService.createWithdrawRequest({
-						minWithdrawable: params.limitMin
-							? params.limitMin * MSATOSHIS
-							: 0,
-						maxWithdrawable: params.limitMax
-							? params.limitMax * MSATOSHIS
-							: 99999999,
-					});
+					const { entity: tag } =
+						await this.lnUrlService.createWithdrawRequest({
+							minWithdrawable: params.limitMin
+								? params.limitMin * MSATOSHIS
+								: 0,
+							maxWithdrawable: params.limitMax
+								? params.limitMax * MSATOSHIS
+								: 99999999,
+						});
 					// todo: replace with max account balance
 					params.data = lnurl.encode(
 						this.config.selfUrl + '/lnurl/serve/' + tag.id

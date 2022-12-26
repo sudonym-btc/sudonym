@@ -152,23 +152,27 @@ scaffoldGroup('Payment', (scaffold) => {
 
 	describe('lnurl withdraw', () => {
 		it('should not allow more withdrawals than limitMax', async () => {
-			const sender = await scaffold.app.get(SenderService).create({
-				type: 'lnurl',
-				amountCurrency: 'BTC',
-				limitMax: 1,
-				potId: scaffold.entities.pot[0].id,
-			});
+			const { entity: sender } = await scaffold.app
+				.get(SenderService)
+				.create({
+					type: 'lnurl',
+					amountCurrency: 'BTC',
+					limitMax: 1,
+					potId: scaffold.entities.pot[0].id,
+				});
 			const data = await request(scaffold.app.getHttpServer()).get(
 				lnurl.decode(sender.data).split('/api.mock.sudonym.app').pop()
 			);
 
-			const receiver = await runAsUser(scaffold.entities.user[0], () =>
-				scaffold.app.get(ReceiverService).create({
-					potId: scaffold.entities.pot[0].id,
-					type: 'bolt11',
-					amount: 0.5,
-					amountCurrency: 'BTC',
-				})
+			const { entity: receiver } = await runAsUser(
+				scaffold.entities.user[0],
+				() =>
+					scaffold.app.get(ReceiverService).create({
+						potId: scaffold.entities.pot[0].id,
+						type: 'bolt11',
+						amount: 0.5,
+						amountCurrency: 'BTC',
+					})
 			);
 			const payment = await request(scaffold.app.getHttpServer()).get(
 				data.body.callback.split('/api.mock.sudonym.app').pop() +
@@ -191,13 +195,15 @@ scaffoldGroup('Payment', (scaffold) => {
 				).body.maxWithdrawable
 			).toBe(0.5 * MSATOSHIS);
 
-			const receiver2 = await runAsUser(scaffold.entities.user[0], () =>
-				scaffold.app.get(ReceiverService).create({
-					potId: scaffold.entities.pot[0].id,
-					type: 'bolt11',
-					amount: 0.6,
-					amountCurrency: 'BTC',
-				})
+			const { entity: receiver2 } = await runAsUser(
+				scaffold.entities.user[0],
+				() =>
+					scaffold.app.get(ReceiverService).create({
+						potId: scaffold.entities.pot[0].id,
+						type: 'bolt11',
+						amount: 0.6,
+						amountCurrency: 'BTC',
+					})
 			);
 			const payment2 = await request(scaffold.app.getHttpServer()).get(
 				data.body.callback.split('/api.mock.sudonym.app').pop() +

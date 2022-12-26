@@ -32,10 +32,12 @@ export class ContactService extends BaseService(Contact) {
 			params.ContactAddresses = entity.ContactAddresses =
 				await Promise.all(
 					params.ContactAddresses.map((a) =>
-						this.contactAddressService.createOrUpdate({
-							...a,
-							contactId: entity.id,
-						})
+						this.contactAddressService
+							.createOrUpdate({
+								...a,
+								contactId: entity.id,
+							})
+							.then((e) => e.entity)
 					)
 				);
 		};

@@ -171,19 +171,21 @@ export class ActionService {
 				outgoing: true,
 				potId: action.potId,
 			});
-			return this.transactionService.create({
-				originalAddress: action.originalAddress,
-				address: action.address,
-				type: getAddressType(action.originalAddress),
-				amount: action.amount,
-				currencyCode: action.currency,
-				description: action.comment,
-				outgoing: true,
-				potId: action.potId,
-			});
+			return (
+				await this.transactionService.create({
+					originalAddress: action.originalAddress,
+					address: action.address,
+					type: getAddressType(action.originalAddress),
+					amount: action.amount,
+					currencyCode: action.currency,
+					description: action.comment,
+					outgoing: true,
+					potId: action.potId,
+				})
+			).entity;
 		} else if (action instanceof Withdraw) {
 			this.logger.warn('Withdrawing', action);
-			const receiver = await this.receiverService.create({
+			const { entity: receiver } = await this.receiverService.create({
 				potId: action.potId,
 				amountCurrency: 'BTC',
 				amount: (

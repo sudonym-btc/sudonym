@@ -28,25 +28,29 @@ scaffoldGroup('Validation', (scaffold) => {
 		});
 	});
 	it('create or update unique keys', async () => {
-		const first = await scaffold.app.get(ContactService).createOrUpdate({
-			userId: scaffold.entities.user[0].id,
-			name: 'tester',
-			ContactAddresses: [
-				{
-					address: 'lnurl32423423',
-				},
-			],
-		} as any);
+		const { entity: first } = await scaffold.app
+			.get(ContactService)
+			.createOrUpdate({
+				userId: scaffold.entities.user[0].id,
+				name: 'tester',
+				ContactAddresses: [
+					{
+						address: 'lnurl32423423',
+					},
+				],
+			});
 
-		const second = await scaffold.app.get(ContactService).createOrUpdate({
-			name: 'tester',
-			userId: scaffold.entities.user[0].id,
-			ContactAddresses: [
-				{
-					address: 'lnurl32423423',
-				},
-			],
-		} as any);
+		const { entity: second } = await scaffold.app
+			.get(ContactService)
+			.createOrUpdate({
+				name: 'tester',
+				userId: scaffold.entities.user[0].id,
+				ContactAddresses: [
+					{
+						address: 'lnurl32423423',
+					},
+				],
+			});
 
 		expect(first.id).toBe(second.id);
 		expect(second.ContactAddresses.length).toBe(1);

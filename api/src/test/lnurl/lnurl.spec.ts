@@ -29,13 +29,15 @@ scaffoldGroup('LnUrl', (scaffold) => {
 	describe('serve', () => {
 		describe('Withdraw', () => {
 			it('should limit based on max payment', async () => {
-				const sender = await scaffold.app.get(SenderService).create({
-					potId: scaffold.entities.pot[0].id,
-					type: 'lnurl',
-					limitMax: 1,
-					limitMin: 0.2,
-					amountCurrency: 'BTC',
-				});
+				const { entity: sender } = await scaffold.app
+					.get(SenderService)
+					.create({
+						potId: scaffold.entities.pot[0].id,
+						type: 'lnurl',
+						limitMax: 1,
+						limitMin: 0.2,
+						amountCurrency: 'BTC',
+					});
 
 				const tag = (await scaffold.app
 					.get(LnUrlHandlerService)
@@ -48,7 +50,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 		});
 		describe('Pay', () => {
 			it('should serve info endpoint', async () => {
-				const receiver = await scaffold.app
+				const { entity: receiver } = await scaffold.app
 					.get(ReceiverService)
 					.create({
 						potId: scaffold.entities.pot[0].id,
@@ -63,7 +65,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 				expect(tag.minSendable).toBe(receiver.amount * MSATOSHIS);
 			});
 			it('should serve callback endpoint with correct bolt11', async () => {
-				const receiver = await scaffold.app
+				const { entity: receiver } = await scaffold.app
 					.get(ReceiverService)
 					.create({
 						potId: scaffold.entities.pot[0].id,

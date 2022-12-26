@@ -54,7 +54,7 @@ export class LnUrlHandlerService {
 					((metadata || []).find((i) => i[0] === 'text/long-desc') ||
 						[])[1];
 				// Create a new receiver, this time bolt11 not lnurl
-				const receiver = await this.receiveService.create({
+				const { entity: receiver } = await this.receiveService.create({
 					parentId: parentReceiver.id,
 					lnurlId: id,
 					potId: parentReceiver.potId,

@@ -61,9 +61,10 @@ export class ReceiverService extends BaseService(Receiver) {
 					).bolt12;
 					break;
 				case 'lnurl': {
-					const tag = await this.lnUrlService.createPayRequest(
-						Math.floor(amountInBTC * MSATOSHIS)
-					);
+					const { entity: tag } =
+						await this.lnUrlService.createPayRequest(
+							Math.floor(amountInBTC * MSATOSHIS)
+						);
 					params.data = lnurl.encode(
 						this.config.selfUrl + '/lnurl/serve/' + tag.id
 					);

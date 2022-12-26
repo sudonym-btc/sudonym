@@ -17,8 +17,8 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   Dio dio;
   Config config;
   Websocket websocket;
-  StreamController<T> updated = StreamController.broadcast();
-  StreamController<T> created = StreamController.broadcast();
+  StreamController<CreatedOrUpdated<T>> updated = StreamController.broadcast();
+  StreamController<CreatedOrUpdated<T>> created = StreamController.broadcast();
   StreamController<T> deleted = StreamController.broadcast();
   StreamController<dynamic> events = StreamController.broadcast();
   StreamSubscription? websocketSub;
@@ -36,9 +36,11 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
           // loggy.v(e.data);
 
           if (e.name.split('.')[1] == 'created') {
-            created.add(converter(e.data));
+            created.add(CreatedOrUpdated(converter(e.data.entity),
+                e.data.created, e.data.changed, e.data.params));
           } else if (e.name.split('.')[1] == 'updated') {
-            updated.add(converter(e.data));
+            updated.add(CreatedOrUpdated(converter(e.data.entity),
+                e.data.created, e.data.changed, e.data.params));
           } else if (e.name.split('.')[1] == 'deleted') {
             deleted.add(converter(e.data));
           } else {
@@ -69,22 +71,22 @@ abstract class CrudRepository<T extends BaseClass> with RepoLogger {
   }
 
   Future<T> create(Map<String, dynamic> entity) async {
-    return dio
-        .post('/$endpoint', data: entity)
-        .then((value) => converter(value.data))
-        .then((value) {
-      created.add(value);
-      return value;
+    return dio.post('/$endpoint', data: entity).then((value) {
+      var entity = converter(value.data.entity);
+      created.add(
+          CreatedOrUpdated(entity, value.data.created, value.data.changed, {}));
+      return entity;
     });
   }
 
   Future<T> update(Map<String, dynamic> entity) async {
     return dio
         .put('/$endpoint/${(entity as dynamic)["id"]}', data: entity)
-        .then((value) => converter(value.data))
         .then((value) {
-      updated.add(value);
-      return value;
+      var entity = converter(value.data.entity);
+      updated.add(
+          CreatedOrUpdated(entity, value.data.created, value.data.changed, {}));
+      return entity;
     });
   }
 

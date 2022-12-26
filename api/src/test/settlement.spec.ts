@@ -23,7 +23,7 @@ scaffoldGroup('Settlement', (scaffold) => {
 			settle: true,
 		});
 
-		const pot2 = await runAsUser(
+		const { entity: pot2 } = await runAsUser(
 			scaffold.entities.user[0],
 			async () =>
 				await scaffold.app.get(PotService).create({
@@ -31,12 +31,14 @@ scaffoldGroup('Settlement', (scaffold) => {
 					currency: 'USD',
 				})
 		);
-		const data = await scaffold.app.get(TransactionService).create({
-			...incomingTransaction(),
-			potId: pot2.id,
-			currencyCode: 'USD',
-			amount: 10,
-		});
+		const { entity: data } = await scaffold.app
+			.get(TransactionService)
+			.create({
+				...incomingTransaction(),
+				potId: pot2.id,
+				currencyCode: 'USD',
+				amount: 10,
+			});
 
 		await waitForExpect(() => {
 			const calls = (

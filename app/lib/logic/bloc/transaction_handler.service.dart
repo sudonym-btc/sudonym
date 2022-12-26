@@ -7,12 +7,12 @@ import 'package:sudonym.models/index.dart';
 
 @lazySingleton
 @injectable
-class IncomingTransactionHandlerService with ActionLogger {
+class TransactionHandlerService with ActionLogger {
   final TransactionRepository _transactionRepository =
       getIt<TransactionRepository>();
   final CallbackHandler<Transaction> callbacks = CallbackHandler<Transaction>();
 
-  IncomingTransactionHandlerService() {
+  TransactionHandlerService() {
     _transactionRepository.created.stream.listen((event) {
       callbacks.handle(event);
     });

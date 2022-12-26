@@ -44,7 +44,7 @@ export class LightningAddressController {
 		}
 
 		const pot = await this.potService.findForUser(user.id, null, potName);
-		const receiver = await this.receiverService.create({
+		const { entity: receiver } = await this.receiverService.create({
 			potId: pot.id,
 			type: 'lnurl',
 			amount: 1 / SATOSHIS,

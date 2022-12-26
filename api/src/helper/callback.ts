@@ -17,7 +17,7 @@ export class Callback<T> extends Subject<T> {
 			}
 		});
 	}
-	hook(cb: (x: T) => void) {
+	hook(cb: (x: T) => any) {
 		this.callbacks.push(cb);
 	}
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/logic/bloc/incoming_transaction_handler.service.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -32,13 +31,13 @@ class ReceiverPageState extends State<ReceiverPage> {
 
   @override
   void initState() {
-    getIt<IncomingTransactionHandlerService>().callbacks.add(handle);
+    getIt<TransactionHandlerService>().callbacks.add(handle);
     super.initState();
   }
 
   @override
   void dispose() {
-    getIt<IncomingTransactionHandlerService>().callbacks.remove(handle);
+    getIt<TransactionHandlerService>().callbacks.remove(handle);
     super.dispose();
   }
 

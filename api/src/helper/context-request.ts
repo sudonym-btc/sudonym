@@ -21,7 +21,10 @@ export const contextRequest =
 	};
 
 export const authUserIdGetter = () => context.get('request')?.auth?.uid;
-export const runAsUser = (user: Partial<User>, cb) => {
+export const runAsUser = <CB>(
+	user: Partial<User>,
+	cb: () => Promise<CB>
+): Promise<CB> => {
 	return context.runAndReturn(async () => {
 		const req = {
 			auth: {

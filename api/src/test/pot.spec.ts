@@ -9,7 +9,7 @@ scaffoldGroup('Pot', (scaffold) => {
 	it('should create pot', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			const pot = await scaffold.app.get(PotService).create({
+			const { entity: pot } = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
@@ -19,7 +19,7 @@ scaffoldGroup('Pot', (scaffold) => {
 	it('should delete pot', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			const pot = await scaffold.app.get(PotService).create({
+			const { entity: pot } = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
@@ -52,7 +52,7 @@ scaffoldGroup('Pot', (scaffold) => {
 			.get(CurrencyService)
 			.convert(scaffold.entities.pot[0].currency, 'USD', prevBalance);
 
-		const pot = await scaffold.app
+		const { entity: pot } = await scaffold.app
 			.get(PotService)
 			.update(scaffold.entities.pot[0].id, {
 				currency: 'USD',
@@ -84,7 +84,7 @@ scaffoldGroup('Pot', (scaffold) => {
 	it('should reorder up', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			const pot = await scaffold.app.get(PotService).create({
+			const { entity: pot } = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
@@ -97,7 +97,7 @@ scaffoldGroup('Pot', (scaffold) => {
 						.update(scaffold.entities.pot[0].PotUsers[0].id, {
 							index: 2,
 						})
-				).index
+				).entity.index
 			).toBe(2);
 			expect((await PotUser.findByPk(pot.PotUser.id)).index).toBe(1);
 		});
@@ -106,13 +106,13 @@ scaffoldGroup('Pot', (scaffold) => {
 	it('should reorder down', async () => {
 		// Create a second pot
 		await runAsUser(scaffold.entities.user[0], async () => {
-			const pot2 = await scaffold.app.get(PotService).create({
+			const { entity: pot2 } = await scaffold.app.get(PotService).create({
 				name: 'Test 2',
 				currency: 'BTC',
 			});
 			expect(pot2.PotUser.index).toBe(2);
 
-			const pot3 = await scaffold.app.get(PotService).create({
+			const { entity: pot3 } = await scaffold.app.get(PotService).create({
 				name: 'Test 3',
 				currency: 'BTC',
 			});
@@ -125,7 +125,7 @@ scaffoldGroup('Pot', (scaffold) => {
 						.update(pot3.PotUser.id, {
 							index: 2,
 						})
-				).index
+				).entity.index
 			).toBe(2);
 
 			expect(

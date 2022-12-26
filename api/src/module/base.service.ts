@@ -1,5 +1,5 @@
 import { Inject, NotFoundException } from '@nestjs/common';
-import { Event } from '@sudonym/models';
+import { CreatedOrUpdated, Event } from '@sudonym/models';
 import { sequelizeCls } from 'database/database.providers';
 import { runAsUser } from 'helper/context-request';
 import { FindOptions, Op, Transaction, UniqueConstraintError } from 'sequelize';
@@ -16,8 +16,11 @@ type ModelType<T> = Constructor<T> & typeof BaseModel;
 export interface TControllerAndService<TModel> {
 	onModuleInit(): any;
 	findOne(id): Promise<TModel>;
-	create(params: RecursivePartial<TModel>): Promise<TModel>;
-	update(id, params: RecursivePartial<TModel>): Promise<TModel>;
+	create(params: RecursivePartial<TModel>): Promise<CreatedOrUpdated<TModel>>;
+	update(
+		id,
+		params: RecursivePartial<TModel>
+	): Promise<CreatedOrUpdated<TModel>>;
 	delete(id): Promise<TModel>;
 	list(
 		param?: FindOptions,
@@ -40,13 +43,15 @@ export interface TBaseService<TModel> extends TControllerAndService<TModel> {
 	afterDelete: Callback<CreatedOrUpdated<TModel>>;
 	onAfterDeleted: Callback<TModel>;
 	getUserIds: (id: number | string, scope?: string) => Promise<string[]>;
-	createOrUpdate: (params) => Promise<TModel>;
+	createOrUpdate: (params) => Promise<CreatedOrUpdated<TModel>>;
 }
 
-export interface CreatedOrUpdated<TModel> {
-	entity: TModel;
-	params: RecursivePartial<TModel>;
-}
+// export interface CreatedOrUpdated<TModel> {
+// 	entity: TModel;
+// 	changed: string[];
+// 	created: boolean;
+// 	params: RecursivePartial<TModel>;
+// }
 
 export const BaseService = <TModel extends BaseModel>(
 	repository: ModelType<TModel>
@@ -145,7 +150,7 @@ export const BaseService = <TModel extends BaseModel>(
 			}
 		}
 
-		async update(id, params) {
+		async update(id, params): Promise<CreatedOrUpdated<TModel>> {
 			return await this.repo.sequelize.transaction(
 				{ transaction: sequelizeCls.get('transaction') },
 				async (t) => {
@@ -160,7 +165,12 @@ export const BaseService = <TModel extends BaseModel>(
 					const record = await this.repo
 						.scope(scopes as any)
 						.findByPk(id);
-					await this.beforeUpdate.execute({ params, entity: record });
+					await this.beforeUpdate.execute({
+						params,
+						entity: record,
+						changed: [],
+						created: false,
+					});
 
 					const _previousDataValues = Object.assign(
 						{},
@@ -172,7 +182,12 @@ export const BaseService = <TModel extends BaseModel>(
 					if (changed) (entity as any)._changed = new Set(changed);
 					(entity as any)._previousDataValues = _previousDataValues;
 
-					await this.afterUpdate.execute({ entity, params });
+					await this.afterUpdate.execute({
+						entity,
+						params,
+						changed: (entity as any)._changed,
+						created: false,
+					});
 
 					// Must wait for parent to commit, otherwise underlying records might not be udpated for other transactions
 					const getParent = (t: any): Transaction => {
@@ -192,12 +207,17 @@ export const BaseService = <TModel extends BaseModel>(
 						});
 					});
 
-					return entity;
+					return {
+						entity,
+						params,
+						changed: (entity as any)._changed,
+						created: false,
+					};
 				}
 			);
 		}
 
-		async create(params) {
+		async create(params): Promise<CreatedOrUpdated<TModel>> {
 			return await this.repo.sequelize.transaction(
 				{ transaction: sequelizeCls.get('transaction') },
 				async (t) => {
@@ -206,7 +226,12 @@ export const BaseService = <TModel extends BaseModel>(
 					const entity = await this.findOne(newEntity.id);
 					entity.isNewRecord = true;
 
-					await this.afterCreate.execute({ entity, params });
+					await this.afterCreate.execute({
+						entity,
+						params,
+						changed: [],
+						created: entity.isNewRecord,
+					});
 
 					t.afterCommit(async () => {
 						this.newTransaction(async () => {
@@ -219,7 +244,12 @@ export const BaseService = <TModel extends BaseModel>(
 						});
 					});
 
-					return entity;
+					return {
+						entity,
+						params,
+						changed: [],
+						created: entity.isNewRecord,
+					};
 				}
 			);
 		}
@@ -265,7 +295,12 @@ export const BaseService = <TModel extends BaseModel>(
 
 					await entity.destroy();
 
-					await this.afterDelete.execute({ entity, params: entity });
+					await this.afterDelete.execute({
+						entity,
+						params: entity,
+						changed: [],
+						created: false,
+					});
 
 					t.afterCommit(async () => {
 						this.newTransaction(async () => {

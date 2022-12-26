@@ -15,8 +15,8 @@ scaffoldGroup('User', (scaffold) => {
 					.get(JwtService)
 					.sign({ uid: 'longfbif' }),
 			});
-		expect(data.body.id).toBeTruthy();
-		expect(data.body.lightningAddress).toBeTruthy();
+		expect(data.body.entity.id).toBeTruthy();
+		expect(data.body.entity.lightningAddress).toBeTruthy();
 	});
 
 	it('should not create new user with wrong details', async () => {
@@ -31,8 +31,8 @@ scaffoldGroup('User', (scaffold) => {
 					.get(JwtService)
 					.sign({ uid: 'test' }),
 			});
-		expect(data.body.id).toBe('test');
-		expect(data.body.firebaseId).toBe('test');
+		expect(data.body.entity.id).toBe('test');
+		expect(data.body.entity.firebaseId).toBe('test');
 	});
 
 	it('should not allow duplicate lightningAddress', async () => {

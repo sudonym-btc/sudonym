@@ -52,13 +52,13 @@ import 'logic/bloc/entity/receiver.cubit.dart' as _i27;
 import 'logic/bloc/entity/sender.cubit.dart' as _i29;
 import 'logic/bloc/entity/transaction.cubit.dart' as _i31;
 import 'logic/bloc/entity/user.cubit.dart' as _i34;
-import 'logic/bloc/incoming_transaction_handler.service.dart' as _i16;
 import 'logic/bloc/pot_list_reorganizer.cubit.dart' as _i21;
 import 'logic/bloc/transaction-listener/clipboard_listener.dart' as _i9;
 import 'logic/bloc/transaction-listener/link_listener.dart' as _i17;
 import 'logic/bloc/transaction-listener/nfc_listener.dart' as _i19;
 import 'logic/bloc/transaction-listener/transaction_listener.cubit.dart'
     as _i32;
+import 'logic/bloc/transaction_handler.service.dart' as _i16;
 import 'logic/index.dart' as _i22;
 import 'logic/nfc.cubit.dart' as _i18;
 
@@ -92,8 +92,8 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
       () => _i12.CurrencyInputCubit(get<_i12.CurrencyInputOptions>()));
   gh.lazySingleton<_i13.CurrentPotService>(() => _i13.CurrentPotService());
   gh.lazySingleton<_i14.Dio>(() => registerModule.dio(get<_i15.Config>()));
-  gh.lazySingleton<_i16.IncomingTransactionHandlerService>(
-      () => _i16.IncomingTransactionHandlerService());
+  gh.lazySingleton<_i16.TransactionHandlerService>(
+      () => _i16.TransactionHandlerService());
   gh.singleton<_i17.LinkListener>(_i17.LinkListener());
   gh.factory<_i18.NFCCubit>(() => _i18.NFCCubit());
   gh.singleton<_i19.NFCListener>(_i19.NFCListener());
