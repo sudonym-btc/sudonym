@@ -12,6 +12,8 @@ import { UserDevice } from '../module/user-device/user-device.model';
 import { User } from '../module/user/user.model';
 
 import * as cls from 'cls-hooked';
+import { BillSplitParticipant } from 'module/bill-split-participant/bill-split-participant.model';
+import { BillSplit } from 'module/bill-split/bill-split.model';
 import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { Contact } from 'module/contact/contact.model';
@@ -49,6 +51,8 @@ export const databaseProviders = [
 					// logger.verbose(e);
 				},
 				models: [
+					BillSplit,
+					BillSplitParticipant,
 					Pot,
 					PotUser,
 					BoltCard,

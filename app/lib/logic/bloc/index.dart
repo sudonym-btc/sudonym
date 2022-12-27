@@ -3,6 +3,7 @@ export 'action_trigger.service.dart';
 export 'auth.cubit.dart';
 export 'currency_input.cubit.dart';
 export 'current_pot.service.dart';
+export 'entity/bill_split.cubit.dart';
 export 'entity/bolt_card.cubit.dart';
 export 'entity/contact.cubit.dart';
 export 'entity/entity_cubit_state.dart';

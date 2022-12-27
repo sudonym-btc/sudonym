@@ -4,6 +4,7 @@
 	"send": "Send",
 	"receive": "Receive",
 	"contacts": "Contacts",
+	"billSplit": "Split Bill",
 	"transactions": "Transactions",
 	"settings": "Settings",
 	"address": "Address",

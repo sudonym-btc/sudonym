@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from 'config/config.module';
+import { BillSplitModule } from 'module/bill-split/bill-split.module';
 import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 import { ContactModule } from 'module/contact/contact.module';
 import { PotUserModule } from 'module/pot-user/pot-user.module';
@@ -43,6 +44,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 		UserDeviceModule,
 		PotModule,
 		PotUserModule,
+		BillSplitModule,
 		ActionModule,
 		BalanceUpdaterModule,
 		FirebaseNotificationModule,
