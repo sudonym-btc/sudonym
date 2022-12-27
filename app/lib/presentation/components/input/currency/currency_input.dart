@@ -60,7 +60,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       .style!
                       .foregroundColor!
                       .resolve({}),
-                  icon: const Icon(Icons.remove),
+                  icon: const Icon(Icons.remove, size: iconSize * 1.5),
                 ));
             Ink positiveButton = Ink(
                 decoration: buttonDecoration(context, state.positiveEnabled),
@@ -74,7 +74,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                       .style!
                       .foregroundColor!
                       .resolve({}),
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(Icons.add, size: iconSize * 1.5),
                 ));
 
             Widget input = Column(
@@ -111,7 +111,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                                   .color!
                                   .withAlpha(70)),
                       suffixIcon: IconButton(
-                        iconSize: 24,
+                        iconSize: iconSize * 1.5,
                         onPressed: BlocProvider.of<CurrencyInputCubit>(context)
                             .toggleCurrency,
                         icon: Icon(

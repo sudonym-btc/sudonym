@@ -40,7 +40,7 @@ class _ListWidgetState extends State<ListWidget>
   );
   late final Animation<double> _previousLoadingAnimation = CurvedAnimation(
     parent: _previousLoadingController,
-    curve: Curves.slowMiddle,
+    curve: Curves.easeInOut,
   );
   late final AnimationController _nextLoadingController = AnimationController(
     duration: const Duration(milliseconds: 50),
@@ -48,11 +48,13 @@ class _ListWidgetState extends State<ListWidget>
   );
   late final Animation<double> _nextLoadingAnimation = CurvedAnimation(
     parent: _nextLoadingController,
-    curve: Curves.slowMiddle,
+    curve: Curves.easeInOut,
   );
 
   @override
   void initState() {
+    super.initState();
+
     c = widget.list();
     controller.addListener(() {
       if (controller.position.pixels == 0 && !controller.position.outOfRange) {
@@ -68,7 +70,6 @@ class _ListWidgetState extends State<ListWidget>
     loggy.v('Loading next due to init');
     c.loadNext();
     _nextLoadingController.forward();
-    super.initState();
   }
 
   @override
@@ -114,18 +115,21 @@ class _ListWidgetState extends State<ListWidget>
                       ]
                     : [],
                 state.data.isNotEmpty
-                    ? Expanded(
-                        child: LiveList(
-                        showItemInterval: const Duration(milliseconds: 50),
-                        showItemDuration: const Duration(milliseconds: 50),
-                        shrinkWrap: true,
-                        controller: controller,
-                        itemBuilder: (context, index, animation) =>
-                            FadeTransition(
-                                opacity: animation,
-                                child: widget.builder(state.data[index])),
-                        itemCount: state.data.length,
-                      ))
+                    ? AnimatedContainer(
+                        duration: Duration(milliseconds: 5000),
+                        child: Expanded(
+                            child: LiveList(
+                          showItemInterval: const Duration(milliseconds: 50),
+                          showItemDuration: const Duration(milliseconds: 50),
+                          shrinkWrap: true,
+                          controller: controller,
+                          itemBuilder: (context, index, animation) =>
+                              FadeTransition(
+                                  opacity: animation,
+                                  child: widget.builder(state.data[index])),
+                          itemCount: state.data.length,
+                        )),
+                      )
                     : Container(),
                 ...(!state.loading && widget.appendItem != null
                     ? [widget.appendItem!]

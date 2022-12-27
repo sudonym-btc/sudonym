@@ -84,10 +84,10 @@ class LightningSectionState extends State<LightningSection> {
   });
   @override
   void initState() {
+    super.initState();
     g.setErrors({
       'lightningAddress': {'required': true}
     });
-    super.initState();
   }
 
   @override
@@ -99,7 +99,7 @@ class LightningSectionState extends State<LightningSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Subheader(AppLocalizations.of(context)!.lightning),
+                Subheader(AppLocalizations.of(context)!.username),
                 IconButton(
                     iconSize:
                         Theme.of(context).textTheme.displayMedium!.fontSize,
@@ -115,7 +115,10 @@ class LightningSectionState extends State<LightningSection> {
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       });
                     },
-                    icon: const FaIcon(FontAwesomeIcons.copy))
+                    icon: const FaIcon(
+                      FontAwesomeIcons.copy,
+                      size: iconSize,
+                    ))
               ]),
           Info(AppLocalizations.of(context)!.lightningAddressDescription),
           const VertDivider(),
@@ -166,6 +169,8 @@ class AboutSectionState extends State<AboutSection> {
 
   @override
   initState() {
+    super.initState();
+
     PackageInfo.fromPlatform().then((packageInfo) {
       setState(() {
         appName = packageInfo.appName;
@@ -174,8 +179,6 @@ class AboutSectionState extends State<AboutSection> {
         buildNumber = packageInfo.buildNumber;
       });
     });
-
-    super.initState();
   }
 
   @override

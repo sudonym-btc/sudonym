@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudonym/injection.dart';
@@ -5,20 +7,28 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
-class PotPage extends StatelessWidget {
+class PotPage extends StatefulWidget {
   final Pot entity;
 
-  const PotPage({required this.entity, Key? key}) : super(key: key);
+  PotPage({required this.entity, Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => PotPageState();
+}
+
+class PotPageState extends State<PotPage> {
+  StreamSubscription? changedSub;
 
   @override
   Widget build(BuildContext context) {
     return CubitWrapper<PotCubit, PotCubitState, Pot>(
-        entity: entity,
+        entity: widget.entity,
         fetch: false,
         cubit: (cubit) {
-          getIt<CurrentPotService>().potChanged.stream.listen((event) {
-            if (event != null && event.id == entity.id) {
-              cubit.fetch(entity.id);
+          changedSub ??=
+              getIt<CurrentPotService>().potChanged.stream.listen((event) {
+            if (event != null && event.id == widget.entity.id) {
+              cubit.fetch(widget.entity.id);
             }
           });
         },
@@ -32,14 +42,20 @@ class PotPage extends StatelessWidget {
           return LayoutBuilder(builder: (context, constraints) {
             if (constraints.maxWidth > 500) {
               return WideLayout(
-                entity: entity,
+                entity: widget.entity,
               );
             }
             return NarrowLayout(
-              entity: entity,
+              entity: widget.entity,
             );
           });
         });
+  }
+
+  @override
+  void dispose() {
+    changedSub?.cancel();
+    super.dispose();
   }
 }
 

@@ -26,33 +26,20 @@ class StatusPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData currTheme = Theme.of(context);
-    ThemeData newTheme = currTheme.copyWith(
-        backgroundColor: color ?? currTheme.backgroundColor,
-        appBarTheme: color != null
-            ? currTheme.appBarTheme.copyWith(
-                foregroundColor: Colors.white,
-                toolbarTextStyle: const TextStyle(color: Colors.white),
-                titleTextStyle: const TextStyle(color: Colors.white),
-                iconTheme: const IconThemeData(color: Colors.white),
-                // actionsIconTheme: const IconThemeData(color: textColor),
-                backgroundColor: color,
-                elevation: 0)
-            : currTheme.appBarTheme,
-        scaffoldBackgroundColor: color ?? currTheme.scaffoldBackgroundColor,
-        textTheme: color != null
-            ? currTheme.textTheme.apply(
-                bodyColor: Colors.white.withAlpha(240),
-                displayColor: Colors.white.withAlpha(150),
-              )
-            : currTheme.textTheme,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(Colors.black),
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-        ))
-        // foregroundColor: MaterialStateProperty.all(textColor))),
-        );
+    ThemeData currTheme = Theme.of(context).copyWith();
+    ThemeData newTheme = (color != null ? darkTheme : Theme.of(context))
+        .copyWith(
+            backgroundColor: color ?? currTheme.backgroundColor,
+            appBarTheme: color != null
+                ? currTheme.appBarTheme.copyWith(backgroundColor: color)
+                : currTheme.appBarTheme,
+            elevatedButtonTheme: ElevatedButtonThemeData(
+                style: currTheme.elevatedButtonTheme.style!.copyWith(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.white.withAlpha(50)))),
+            scaffoldBackgroundColor: color ?? currTheme.scaffoldBackgroundColor,
+            progressIndicatorTheme:
+                ProgressIndicatorThemeData(color: Colors.white));
 
     List<Widget> children = [];
     if (title != null) {

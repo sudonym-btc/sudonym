@@ -20,7 +20,7 @@ ThemeData getTheme({bool light = true}) {
           toolbarTextStyle: TextStyle(color: textColor),
           titleTextStyle: TextStyle(
               color: textColor, fontSize: 30, fontWeight: FontWeight.w900),
-          iconTheme: IconThemeData(color: textColor),
+          iconTheme: IconThemeData(color: textColor, size: iconSize * 1.5),
           actionsIconTheme: IconThemeData(color: textColor),
           backgroundColor: backgroundColor,
           toolbarHeight: 60,
@@ -28,6 +28,15 @@ ThemeData getTheme({bool light = true}) {
       progressIndicatorTheme: const ProgressIndicatorThemeData(color: primary),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
+              minimumSize: const MaterialStatePropertyAll(Size(120, 44)),
+              textStyle: const MaterialStatePropertyAll(
+                  TextStyle(overflow: TextOverflow.fade)),
+              elevation: const MaterialStatePropertyAll(0),
+              padding: const MaterialStatePropertyAll(EdgeInsets.symmetric(
+                  horizontal: padding * 2, vertical: padding)),
+              shape: const MaterialStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(buttonRadius)),
+              )),
               foregroundColor: MaterialStateProperty.resolveWith<Color?>((s) {
                 if (s.contains(MaterialState.disabled)) {
                   return Colors.black;
@@ -72,31 +81,24 @@ ThemeData getTheme({bool light = true}) {
           .copyWith(
               bodySmall: TextStyle(
             fontFamily: 'Satoshi',
-            color: textColor.withAlpha(150),
+            color: textColor.withAlpha(100),
           )));
 }
 
 const padding = 12.0;
-const buttonRadius = 48 / 2;
+const buttonRadius = 44 / 2;
 
 //colors
 const primary = Colors.indigo;
-const successColor = Color.fromARGB(194, 20, 116, 46);
+var loadingColor = primary.shade800;
+var successColor = Colors.green.shade700;
 const errorColor = Color.fromARGB(194, 206, 0, 0);
 const greyTint = Color.fromARGB(100, 94, 94, 94);
 
-const iconSize = 12.0;
+const iconSize = 16.0;
 const animationDuration = Duration(milliseconds: 600);
 
-final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-    minimumSize: const Size(120, 44),
-    elevation: 0,
-    padding:
-        const EdgeInsets.symmetric(horizontal: padding * 2, vertical: padding),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(buttonRadius)),
-    ),
-    shadowColor: Colors.transparent);
+ThemeData darkTheme = getTheme(light: false);
 
 BoxDecoration buttonDecoration(BuildContext context, bool enabled) {
   List<MaterialState> states = [];

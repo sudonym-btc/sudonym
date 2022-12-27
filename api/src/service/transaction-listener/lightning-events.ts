@@ -112,6 +112,7 @@ export type WaitSendPayResponse = {
 	msatoshi_sent: number; // added synth (msat): The amount sent
 	groupid?: number; // (u64, optional): Grouping key to disambiguate multiple attempts to pay an invoice or the same payment_hash
 	amount_msat?: number; // (msat, optional): The amount delivered to destination (if known)
+	msatoshi?: number; // (msat, optional): The amount delivered to destination (if known) as number
 	destination?: string; // (pubkey, optional): the final destination of the payment if known
 	completed_at?: number; // (number, optional): the UNIX timestamp showing when this payment was completed
 	label?: string; // (string, optional): the label, if given to sendpay

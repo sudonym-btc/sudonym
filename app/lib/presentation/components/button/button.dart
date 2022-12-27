@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:sudonym/presentation/index.dart';
 
 @immutable
 class Button extends StatelessWidget {
   final String? text;
   final Widget? icon;
   final void Function()? onPressed;
-  final ButtonStyle? style;
+  final Color? backgroundColor;
+  final ElevatedButtonThemeData? style;
 
-  const Button({Key? key, this.text, this.icon, this.onPressed, this.style})
+  const Button(
+      {Key? key,
+      this.backgroundColor,
+      this.text,
+      this.icon,
+      this.onPressed,
+      this.style})
       : super(key: key);
 
   @override
@@ -18,12 +24,14 @@ class Button extends StatelessWidget {
         onPressed: onPressed,
         icon: icon!,
         label: Text(text ?? ''),
-        style: style ?? raisedButtonStyle,
       );
     }
     return ElevatedButton(
-      style: style ?? raisedButtonStyle,
       onPressed: onPressed,
+      style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+          backgroundColor: backgroundColor != null
+              ? MaterialStatePropertyAll(backgroundColor)
+              : Theme.of(context).elevatedButtonTheme.style!.backgroundColor),
       child: Text(text!),
     );
   }
@@ -35,11 +43,6 @@ class Button extends StatelessWidget {
           Function()? onPressed,
           Widget? icon}) =>
       Button(
-        style: raisedButtonStyle.copyWith(
-            foregroundColor:
-                MaterialStateColor.resolveWith((states) => foregroundColor),
-            backgroundColor:
-                MaterialStateColor.resolveWith((states) => backgroudColor)),
         onPressed: onPressed,
         text: text,
         icon: icon,
@@ -51,11 +54,13 @@ class Button extends StatelessWidget {
           Function()? onPressed,
           Widget? icon}) =>
       Button(
-        style: raisedButtonStyle.copyWith(
-            minimumSize: MaterialStateProperty.resolveWith(
-                (states) => const Size(48, 48)),
-            maximumSize: MaterialStateProperty.resolveWith(
-                (states) => const Size(48, 48))),
+        // style: raisedButtonStyle.copyWith(
+        //     textStyle: MaterialStatePropertyAll(
+        //         TextStyle(fontWeight: FontWeight.bold)),
+        //     minimumSize: MaterialStateProperty.resolveWith(
+        //         (states) => const Size(48, 48)),
+        //     maximumSize: MaterialStateProperty.resolveWith(
+        //         (states) => const Size(48, 48))),
         onPressed: onPressed,
         text: text,
         icon: icon,

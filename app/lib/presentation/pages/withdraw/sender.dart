@@ -1,7 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sudonym/logic/index.dart';
@@ -49,12 +48,12 @@ class SenderPage extends StatelessWidget {
           );
           var buttons = [
             Button(
-              icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
+              // icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
               onPressed: state.loading ? null : copy,
               text: (AppLocalizations.of(context)!.copy),
             ),
             Button(
-              icon: const FaIcon(FontAwesomeIcons.share, size: iconSize),
+              // icon: const FaIcon(FontAwesomeIcons.share, size: iconSize),
               onPressed: state.loading
                   ? null
                   : () {

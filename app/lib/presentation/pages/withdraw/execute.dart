@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Action, ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
@@ -19,7 +18,7 @@ class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
       color: Colors.red,
       title: AppLocalizations.of(context)!.failed,
       subtitleText: 'Could not create receiver for this withdrawal',
-      icon: FontAwesomeIcons.circleExclamation,
+      // icon: FontAwesomeIcons.circleExclamation,
       content: Text(err.toString()),
       actions: ButtonBar(
         children: [

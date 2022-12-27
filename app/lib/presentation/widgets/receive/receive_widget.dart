@@ -3,7 +3,6 @@ import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
@@ -114,13 +113,13 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
           }
           var buttons = [
             Button(
-              icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
-              onPressed: state.loading ? null : copy,
+              // icon: const FaIcon(FontAwesomeIcons.copy, size: iconSize),
+              onPressed: loading ? null : copy,
               text: (AppLocalizations.of(context)!.copy),
             ),
             Button(
-              icon: const FaIcon(FontAwesomeIcons.share, size: iconSize),
-              onPressed: state.loading
+              // icon: const FaIcon(FontAwesomeIcons.share, size: iconSize),
+              onPressed: loading
                   ? null
                   : () {
                       Share.share(state.entity!.data);

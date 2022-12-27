@@ -31,6 +31,8 @@ class _SendPageState extends State<SendPage> {
 
   @override
   void initState() {
+    super.initState();
+
     listCubit = ListCubit(getIt<ContactRepository>());
     form
         .control('address')
@@ -45,7 +47,6 @@ class _SendPageState extends State<SendPage> {
       listCubit.reset();
       listCubit.loadNext();
     });
-    super.initState();
   }
 
   @override
@@ -64,7 +65,7 @@ class _SendPageState extends State<SendPage> {
                             MaterialPageRoute(
                                 builder: (context) => QRPage(widget.pot)));
                       },
-                      icon: const FaIcon(FontAwesomeIcons.camera))
+                      icon: const FaIcon(Icons.camera_alt))
                 ],
               ),
               body: CustomPadding(
@@ -74,48 +75,48 @@ class _SendPageState extends State<SendPage> {
                     children: [
                       // const SizedBox(height: padding),
                       ReactiveForm(
-                        formGroup: form,
-                        child: Row(children: [
-                          Expanded(
-                              child: ReactiveTextField(
-                                  formControlName: 'address',
-                                  onEditingComplete: null,
-                                  autocorrect: false,
-                                  onSubmitted: form.valid
-                                      ? (control) =>
-                                          getIt<ActionTriggerService>().trigger(
-                                              ActionStream(
-                                                  context: context,
-                                                  link: form
-                                                      .control('address')
-                                                      .value,
-                                                  pot: widget.pot))
-                                      : null,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                      hintText: AppLocalizations.of(context)!
-                                          .addressInputHint,
-                                      labelText: AppLocalizations.of(context)!
-                                          .address))),
-                          const HoriDivider(),
-                          ReactiveFormConsumer(
-                            builder: (context, form, child) {
-                              return IconButton(
-                                icon: Icon(Icons.arrow_forward_ios),
-                                iconSize: 20,
-                                onPressed: form.valid
-                                    ? () => getIt<ActionTriggerService>()
-                                        .trigger(ActionStream(
-                                            context: context,
-                                            link: form.control('address').value,
-                                            pot: widget.pot))
-                                    : null,
-                                // text: 'OK',
-                              );
-                            },
-                          ),
-                        ]),
-                      ),
+                          formGroup: form,
+                          child: ReactiveTextField(
+                              formControlName: 'address',
+                              onEditingComplete: null,
+                              autocorrect: false,
+                              onSubmitted: form.valid
+                                  ? (control) => getIt<ActionTriggerService>()
+                                      .trigger(ActionStream(
+                                          context: context,
+                                          link: form.control('address').value,
+                                          pot: widget.pot))
+                                  : null,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                  suffixIcon: ReactiveFormConsumer(
+                                    builder: (context, form, child) {
+                                      return IconButton(
+                                        icon: const Icon(Icons.arrow_forward),
+                                        iconSize: Theme.of(context)
+                                            .textTheme
+                                            .displayMedium!
+                                            .fontSize,
+                                        color: Theme.of(context).primaryColor,
+                                        onPressed: form.valid
+                                            ? () =>
+                                                getIt<ActionTriggerService>()
+                                                    .trigger(ActionStream(
+                                                        context: context,
+                                                        link: form
+                                                            .control('address')
+                                                            .value,
+                                                        pot: widget.pot))
+                                            : null,
+                                        // text: 'OK',
+                                      );
+                                    },
+                                  ),
+                                  hintText: AppLocalizations.of(context)!
+                                      .addressInputHint,
+                                  labelText:
+                                      AppLocalizations.of(context)!.address))),
+
                       const VertDivider(2),
                       CheckClipboard(
                         pot: widget.pot,
@@ -136,7 +137,7 @@ class _SendPageState extends State<SendPage> {
                                       .textTheme
                                       .displayMedium!
                                       .fontSize,
-                                  icon: FaIcon(FontAwesomeIcons.plus),
+                                  icon: const FaIcon(FontAwesomeIcons.plus),
                                   // text: AppLocalizations.of(context)!.add,
                                   onPressed: () => Navigator.push(
                                       context,
@@ -177,7 +178,15 @@ class CreateRedeem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: Icon(Icons.redeem),
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            FaIcon(
+              FontAwesomeIcons.gift,
+              size: iconSize,
+            ),
+          ],
+        ),
         title: Text(
           AppLocalizations.of(context)!.createRedeem,
           overflow: TextOverflow.fade,
@@ -227,12 +236,13 @@ class CheckClipboardState extends State<CheckClipboard> {
 
   @override
   void initState() {
+    super.initState();
+
     if (getIt<ClipboardListener>().canReadClipboardUndetected()) {
       getIt<ClipboardListener>()
           .check()
           .then((value) => setState((() => address = value)));
     }
-    super.initState();
   }
 
   @override
@@ -240,7 +250,14 @@ class CheckClipboardState extends State<CheckClipboard> {
     if (getIt<ClipboardListener>().canReadClipboardUndetected()) {
       if (address != null) {
         return ListTile(
-            leading: Icon(Icons.paste),
+            leading: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  FaIcon(
+                    FontAwesomeIcons.paste,
+                    size: iconSize,
+                  )
+                ]),
             title: Text(
               '${AppLocalizations.of(context)!.paste} "$address"',
               overflow: TextOverflow.fade,
@@ -252,7 +269,13 @@ class CheckClipboardState extends State<CheckClipboard> {
       return Container();
     }
     return ListTile(
-      leading: const Icon(Icons.paste),
+      leading:
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
+        FaIcon(
+          FontAwesomeIcons.paste,
+          size: iconSize,
+        )
+      ]),
       title: Text(AppLocalizations.of(context)!.checkClipboard),
       onTap: () => getIt<ClipboardListener>().check().then((value) {
         setState(() {
@@ -264,6 +287,7 @@ class CheckClipboardState extends State<CheckClipboard> {
               ActionStream(context: context, link: value, pot: widget.pot));
         }
       }),
+      isThreeLine: false,
       subtitle: hasChecked && address == null
           ? Text(AppLocalizations.of(context)!.noAddressToPaste)
           : null,

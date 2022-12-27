@@ -29,7 +29,7 @@ class TransactionHandlerState extends State<TransactionHandler>
   }
 
   CreatedOrUpdated<Transaction> ringtone(CreatedOrUpdated<Transaction> event) {
-    if ((event.entity.status &&
+    if ((event.entity.status == true &&
         (event.changed.contains('status') || event.created))) {
       FlutterRingtonePlayer.play(fromAsset: 'assets/audio/ping.mp3');
     }

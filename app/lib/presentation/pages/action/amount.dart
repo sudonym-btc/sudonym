@@ -28,12 +28,13 @@ class _AmountPageState extends State<AmountPage> with AmountLogger, SafeState {
 
   @override
   void initState() {
+    super.initState();
+
     formGroup = FormGroup({
       'amount': FormControl<CurrencyInputOutput>(
         value: widget.options.initialValue,
       ),
     });
-    super.initState();
   }
 
   @override

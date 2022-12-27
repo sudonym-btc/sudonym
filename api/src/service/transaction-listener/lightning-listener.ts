@@ -157,7 +157,7 @@ export class LightningListener extends TransactionListener {
 					event: 'sendpay',
 					data: {
 						bolt11: invoice,
-						...response, //todo: may have to convert amount fields
+						...response,
 					} as unknown as WaitSendPayResponse,
 				});
 			}
@@ -254,20 +254,28 @@ export class LightningListener extends TransactionListener {
 						? true
 						: false;
 
+				const errorMessage = e.data.failcodename || e.data.failreason;
+				const totalAmount = e.data.msatoshi_sent
+					? e.data.msatoshi_sent / MSATOSHIS
+					: null;
+				const amount = e.data.msatoshi || e.data.amount_msat;
+				const fee =
+					totalAmount && amount ? totalAmount - totalAmount : null;
+
 				if (transactions.metadata.count) {
 					await this.transactionService.update(
 						transactions.data[0].id,
 						{
-							totalAmount: e.data.msatoshi_sent
-								? e.data.msatoshi_sent / MSATOSHIS
-								: null,
+							totalAmount:
+								totalAmount != null
+									? totalAmount / MSATOSHIS
+									: null,
+							// fee: fee != null ? fee / MSATOSHIS : null,
+							// feeCurrency: 'BTC',
 							status,
-							...(!status &&
-							(e.data.failcodename || e.data.failreason)
+							...(!status && errorMessage
 								? {
-										errorMessage:
-											e.data.failcodename ||
-											e.data.failreason,
+										errorMessage,
 								  }
 								: {}),
 						}

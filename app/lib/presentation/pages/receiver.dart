@@ -51,7 +51,7 @@ class ReceiverPageState extends State<ReceiverPage> {
                 subtitle: null,
                 content: const Center(
                     child: CircularProgressIndicator(color: Colors.white)),
-                color: Colors.indigo.shade800);
+                color: loadingColor);
           }
           // else if (state.entity!.received > 0) {
           //   return StatusPage(
@@ -67,7 +67,7 @@ class ReceiverPageState extends State<ReceiverPage> {
               title: AppLocalizations.of(context)!.receiving,
               subtitleText: AppLocalizations.of(context)!.waitingForPayment,
               content: loader,
-              color: Colors.indigo.shade800);
+              color: loadingColor);
         });
   }
 }

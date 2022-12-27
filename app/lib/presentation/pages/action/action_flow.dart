@@ -19,7 +19,7 @@ class TaskBuilder<T> extends StatelessWidget {
   _getLoader() {
     return (onLoading ??
         (BuildContext context, dynamic data) =>
-            StatusPage(color: Colors.indigo.shade800, content: loader));
+            StatusPage(color: loadingColor, content: loader));
   }
 
   _getSuccess() {

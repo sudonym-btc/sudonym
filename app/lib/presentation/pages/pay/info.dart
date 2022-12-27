@@ -48,35 +48,32 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
                 )
               ]),
               actions: Column(children: [
-                ...(state.error != null
-                    ? [
-                        CustomPadding(
-                            child: ErrorText(formatError(context, state.error)))
-                      ]
-                    : []),
+                if (state.error != null)
+                  CustomPadding(
+                      child: ErrorText(formatError(context, state.error))),
                 ButtonBar(children: [
-                  state.error != null
-                      ? Button(
-                          text: AppLocalizations.of(context)!.back,
-                          onPressed: () => Navigator.of(context).pop(),
-                          // style: raisedButtonStyle,
-                        )
-                      : (state.maxLoading || state.minLoading
-                          ? Button(
-                              icon: SizedBox(
-                                height: 12,
-                                width: 12,
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
-                          : Button(
-                              text: AppLocalizations.of(context)!.send,
-                              // icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                              //     size: iconSize),
-                              onPressed: () {
-                                onDone(r);
-                              },
-                            ))
+                  if (state.error != null)
+                    Button(
+                      text: AppLocalizations.of(context)!.back,
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  else if (state.maxLoading || state.minLoading)
+                    const Button(
+                      icon: SizedBox(
+                        height: iconSize,
+                        width: iconSize,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else
+                    Button(
+                      text: AppLocalizations.of(context)!.send,
+                      // icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                      //     size: iconSize),
+                      onPressed: () {
+                        onDone(r);
+                      },
+                    )
                 ])
               ]));
         }));
@@ -115,7 +112,7 @@ class PaymentInfoPreview extends StatelessWidget {
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
           TableRow(children: [
-            TableKey(child: Text(AppLocalizations.of(context)!.amount)),
+            TableKey(child: Subtitle(AppLocalizations.of(context)!.amount)),
             AmountText(
                 showLoader: false,
                 amount: entity.amount,
@@ -124,7 +121,7 @@ class PaymentInfoPreview extends StatelessWidget {
                 builder: (state) => Text(state))
           ]),
           TableRow(children: [
-            TableKey(child: Text(AppLocalizations.of(context)!.fee)),
+            TableKey(child: Subtitle(AppLocalizations.of(context)!.fee)),
             AmountText(
                 showLoader: false,
                 amount: entity.fee,
@@ -136,7 +133,7 @@ class PaymentInfoPreview extends StatelessWidget {
               ? [
                   TableRow(children: [
                     TableKey(
-                        child: Text(AppLocalizations.of(context)!.address)),
+                        child: Subtitle(AppLocalizations.of(context)!.address)),
                     Text(
                       entity.address ?? '',
                       style: const TextStyle(
@@ -147,7 +144,7 @@ class PaymentInfoPreview extends StatelessWidget {
                 ]
               : [],
           TableRow(children: [
-            TableKey(child: Text(AppLocalizations.of(context)!.to)),
+            TableKey(child: Subtitle(AppLocalizations.of(context)!.to)),
             Text(
               entity.originalAddress,
               style: const TextStyle(

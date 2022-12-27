@@ -46,7 +46,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     onUpdated ??= _repository.updated.stream.listen((event) async {
       safeEmit(state.copyWith(
           data: state.data
-              .map((e) => e.id == (event as dynamic).id ? event : e)
+              .map(
+                  (e) => e.id == event.entity.toJson()['id'] ? event.entity : e)
               .toList()));
     });
   }
@@ -62,7 +63,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     where = w;
   }
 
-  loadNext() async {
+  Future<ListCubitState> loadNext() async {
     if (!state.loading) {
       loggy.d('Loading next ${_repository.endpoint}');
 
@@ -88,9 +89,10 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
           loading: false,
           loadingNext: false));
     }
+    return state;
   }
 
-  loadPrevious() async {
+  Future<ListCubitState> loadPrevious() async {
     if (!state.loading) {
       loggy.d('Loading previous ${_repository.endpoint}');
 
@@ -117,6 +119,7 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
           loading: false,
           loadingPrevious: false));
     }
+    return state;
   }
 
   getLargestId() {

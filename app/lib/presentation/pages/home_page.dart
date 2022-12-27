@@ -58,7 +58,9 @@ class _HomePageState extends State<HomePage> {
                         : null);
               }
             });
-            return l..loadNext();
+            l.loadNext().then(
+                (value) => {getIt<CurrentPotService>().set(value.data[0])});
+            return l;
           })
         ],
         child: BlocBuilder<ListCubit<Pot>, ListCubitState<dynamic>>(
@@ -77,7 +79,8 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () {
                               Navigator.pushNamed(context, '/settings');
                             },
-                            icon: const FaIcon(FontAwesomeIcons.gear, size: 14),
+                            icon: const FaIcon(FontAwesomeIcons.gear,
+                                size: iconSize),
                           )
                         ]),
                         body: state.loading && state.data.isEmpty

@@ -17,5 +17,8 @@ class TransactionHandlerService with ActionLogger {
     _transactionRepository.created.stream.listen((event) {
       callbacks.handle(event);
     });
+    _transactionRepository.updated.stream.listen((event) {
+      callbacks.handle(event);
+    });
   }
 }

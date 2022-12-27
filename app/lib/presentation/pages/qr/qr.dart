@@ -25,6 +25,8 @@ class _QRPageState extends State<QRPage> {
 
   @override
   void initState() {
+    super.initState();
+
     controller.barcodes
         .map((event) => event.rawValue)
         .distinct()
@@ -32,7 +34,6 @@ class _QRPageState extends State<QRPage> {
       getIt<ActionTriggerService>().trigger(
           ActionStream(context: context, link: code!, pot: widget.pot));
     });
-    super.initState();
   }
 
   @override

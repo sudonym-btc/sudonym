@@ -67,10 +67,10 @@ class AmountTextState extends State<AmountText> with SafeState {
   Widget build(BuildContext context) {
     return loading && widget.showLoader
         ? const SizedBox(
-            height: 12,
+            height: 2,
             width: 12,
-            child: CircularProgressIndicator(
-              strokeWidth: 1,
+            child: LinearProgressIndicator(
+              minHeight: 1,
             ))
         : (widget.builder != null ? widget.builder!(val) : Text(val));
   }

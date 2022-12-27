@@ -7,6 +7,7 @@
 	"transactions": "Transaktionen",
 	"settings": "Einstellungen",
 	"address": "Adresse",
+	"username": "Benutzername",
 	"lightningAddress": "Lightning-Adresse",
 	"boltCards": "Karten",
 	"noBoltCardsFound": "Keine Karten",

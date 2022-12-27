@@ -20,10 +20,11 @@ class TransactionListState extends State<TransactionList>
   late ListCubit list;
   @override
   void initState() {
+    super.initState();
+
     list = ListCubit(getIt<TransactionRepository>(),
         where: {'potId': widget.pot.id});
     WidgetsBinding.instance.addObserver(this);
-    super.initState();
   }
 
   @override
@@ -36,6 +37,8 @@ class TransactionListState extends State<TransactionList>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     loggy.v('Changed app state registered in transaction list');
     if (state == AppLifecycleState.resumed) {
+      print(getIt<CurrentPotService>().pot?.id.toString());
+      print(widget.pot.id);
       if (getIt<CurrentPotService>().pot?.id == widget.pot.id) {
         list.loadPrevious();
       }

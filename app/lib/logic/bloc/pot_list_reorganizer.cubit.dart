@@ -18,14 +18,15 @@ class PotListReorganizerCubit extends Cubit<PotListState> {
   }
 
   canMoveLeft(Pot p) {
-    if (list.state.data.indexOf(p) > 0) {
+    if (list.state.data.indexWhere((pot) => pot.id == p.id) > 0) {
       return true;
     }
     return false;
   }
 
   canMoveRight(Pot p) {
-    if (list.state.data.indexOf(p) < list.state.data.length - 1) {
+    if (list.state.data.indexWhere((pot) => pot.id == p.id) <
+        list.state.data.length - 1) {
       return true;
     }
     return false;
@@ -37,36 +38,32 @@ class PotListReorganizerCubit extends Cubit<PotListState> {
   }
 
   onMoveLeft(Pot p) async {
-    Map<String, dynamic> d = {
-      ...p.PotUsers[0].toJson(),
-      'index': list.state.data.indexOf(p)
-    };
+    int currIndex = list.state.data.indexWhere((pot) => pot.id == p.id);
+
+    Map<String, dynamic> d = {...p.PotUser.toJson(), 'index': currIndex};
     await getIt<PotUserRepository>().update(d);
     controller.previousPage(
         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     list.setData([
-      ...list.state.data.sublist(0, list.state.data.indexOf(p) - 1),
+      ...list.state.data.sublist(0, currIndex - 1),
       p,
-      list.state.data[list.state.data.indexOf(p) - 1],
-      ...list.state.data
-          .sublist(list.state.data.indexOf(p) + 1, list.state.data.length),
+      list.state.data[currIndex - 1],
+      ...list.state.data.sublist(currIndex + 1, list.state.data.length),
     ]);
   }
 
   onMoveRight(Pot p) async {
-    Map<String, dynamic> d = {
-      ...p.PotUsers[0].toJson(),
-      'index': list.state.data.indexOf(p) + 2
-    };
+    int currIndex = list.state.data.indexWhere((pot) => pot.id == p.id);
+    Map<String, dynamic> d = {...p.PotUser.toJson(), 'index': currIndex + 2};
     getIt<PotUserRepository>().update(d);
     controller.nextPage(
         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+
     list.setData([
-      ...list.state.data.sublist(0, list.state.data.indexOf(p)),
-      list.state.data[list.state.data.indexOf(p) + 1],
+      ...list.state.data.sublist(0, currIndex),
+      list.state.data[currIndex + 1],
       p,
-      ...list.state.data
-          .sublist(list.state.data.indexOf(p) + 1, list.state.data.length),
+      ...list.state.data.sublist(currIndex + 2, list.state.data.length),
     ]);
   }
 }

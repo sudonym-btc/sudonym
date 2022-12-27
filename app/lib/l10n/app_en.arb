@@ -7,6 +7,7 @@
 	"transactions": "Transactions",
 	"settings": "Settings",
 	"address": "Address",
+	"username": "Username",
 	"lightningAddress": "Lightning address",
 	"boltCards": "Cards",
 	"noBoltCardsFound": "No cards",

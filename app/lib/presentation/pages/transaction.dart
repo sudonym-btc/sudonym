@@ -7,8 +7,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:timeago_flutter/timeago_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Widget loader =
-    const Center(child: CircularProgressIndicator(color: Colors.white));
+Widget loader = const Center(child: CircularProgressIndicator());
 
 class TransactionPage extends StatelessWidget {
   final Transaction? entity;
@@ -28,7 +27,7 @@ class TransactionPage extends StatelessWidget {
                 title: null,
                 subtitle: null,
                 content: loader,
-                color: Colors.indigo.shade800);
+                color: loadingColor);
           } else if (state.entity!.outgoing) {
             if (state.entity!.status == true) {
               return _OutgoingComplete(transaction: state.entity!);
@@ -73,7 +72,7 @@ class _OutgoingPending extends _TransactionStatusPage {
             builder: (val) => Subtitle(AppLocalizations.of(context)!
                 .paymentIsCurrentlyInTransit(val))),
         content: loader,
-        color: Colors.indigo.shade800);
+        color: loadingColor);
   }
 }
 
@@ -95,6 +94,11 @@ class _OutgoingFailed extends _TransactionStatusPage {
                 .outgoingPaymentError(
                     val, replaceLongAddress(transaction.originalAddress)))),
         content: Text(transaction.errorMessage ?? ''),
+        actions: ButtonBar(children: [
+          Button(
+              onPressed: () => Navigator.of(context).pop(),
+              text: AppLocalizations.of(context)!.ok)
+        ]),
         color: Theme.of(context).errorColor);
   }
 }
@@ -133,7 +137,8 @@ class _OutgoingComplete extends _TransactionStatusPage {
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
                 TableRow(children: [
-                  TableKey(child: Text(AppLocalizations.of(context)!.amount)),
+                  TableKey(
+                      child: Subtitle(AppLocalizations.of(context)!.amount)),
                   AmountText(
                     showLoader: false,
                     amount: transaction.amount,
@@ -147,8 +152,8 @@ class _OutgoingComplete extends _TransactionStatusPage {
                     ? [
                         TableRow(children: [
                           TableKey(
-                              child:
-                                  Text(AppLocalizations.of(context)!.address)),
+                              child: Subtitle(
+                                  AppLocalizations.of(context)!.address)),
                           Text(
                             transaction.originalAddress,
                             style: const TextStyle(
@@ -163,14 +168,14 @@ class _OutgoingComplete extends _TransactionStatusPage {
                     ? [
                         TableRow(children: [
                           TableKey(
-                              child: Text(
+                              child: Subtitle(
                                   AppLocalizations.of(context)!.description)),
                           Text(transaction.description ?? '')
                         ])
                       ]
                     : []),
                 TableRow(children: [
-                  TableKey(child: Text(AppLocalizations.of(context)!.time)),
+                  TableKey(child: Subtitle(AppLocalizations.of(context)!.time)),
                   Timeago(
                     builder: ((context, value) => Text(timeago.format(
                         transaction.createdAt,
@@ -180,7 +185,12 @@ class _OutgoingComplete extends _TransactionStatusPage {
                 ]),
               ]),
         ]),
-        color: Colors.green);
+        actions: ButtonBar(children: [
+          Button(
+              onPressed: () => Navigator.of(context).pop(),
+              text: AppLocalizations.of(context)!.ok)
+        ]),
+        color: successColor);
   }
 }
 
@@ -203,34 +213,31 @@ class _IncomingPending extends _TransactionStatusPage {
         content: loader,
         actions: Column(
           children: [
-            ...(transaction.type == 'onchain'
-                ? [
-                    ButtonBar(children: [
-                      Button(
-                        onPressed: () async {
-                          String url =
-                              'https://mempool.space/tx/${transaction.txid}';
-                          if (!await launchUrl(Uri.parse(url))) {
-                            throw 'Could not launch $url';
-                          }
-                        },
-                        text: AppLocalizations.of(context)!.trackInMempool,
-                      )
-                    ]),
-                    const VertDivider()
-                  ]
-                : []),
-            // ButtonBar(children: [
-            //   Button(
-            //     onPressed: () {
-            //       Navigator.of(context).pop();
-            //     },
-            //     text: AppLocalizations.of(context)!.ok,
-            //   )
-            // ])
+            if (transaction.type == 'onchain') ...[
+              ButtonBar(children: [
+                Button(
+                  onPressed: () async {
+                    String url = 'https://mempool.space/tx/${transaction.txid}';
+                    if (!await launchUrl(Uri.parse(url))) {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                  text: AppLocalizations.of(context)!.trackInMempool,
+                ),
+              ]),
+              const VertDivider()
+            ],
+            ButtonBar(children: [
+              Button(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                text: AppLocalizations.of(context)!.ok,
+              )
+            ])
           ],
         ),
-        color: Colors.indigo.shade800);
+        color: loadingColor);
   }
 }
 
@@ -258,7 +265,7 @@ class _IncomingComplete extends _TransactionStatusPage {
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
             TableRow(children: [
-              TableKey(child: Text(AppLocalizations.of(context)!.amount)),
+              TableKey(child: Subtitle(AppLocalizations.of(context)!.amount)),
               AmountText(
                 showLoader: false,
                 amount: transaction.amount,
@@ -272,7 +279,8 @@ class _IncomingComplete extends _TransactionStatusPage {
                 ? [
                     TableRow(children: [
                       TableKey(
-                          child: Text(AppLocalizations.of(context)!.address)),
+                          child:
+                              Subtitle(AppLocalizations.of(context)!.address)),
                       Text(
                         transaction.originalAddress ?? '',
                         style: const TextStyle(
@@ -287,14 +295,14 @@ class _IncomingComplete extends _TransactionStatusPage {
                 ? [
                     TableRow(children: [
                       TableKey(
-                          child:
-                              Text(AppLocalizations.of(context)!.description)),
+                          child: Subtitle(
+                              AppLocalizations.of(context)!.description)),
                       Text(transaction.description ?? '')
                     ])
                   ]
                 : []),
             TableRow(children: [
-              TableKey(child: Text(AppLocalizations.of(context)!.time)),
+              TableKey(child: Subtitle(AppLocalizations.of(context)!.time)),
               Timeago(
                 builder: ((context, value) => Text(timeago.format(
                     transaction.createdAt,
@@ -304,26 +312,12 @@ class _IncomingComplete extends _TransactionStatusPage {
             ]),
           ],
         ),
-        // actions: ButtonBar(
-        //   children: [
-        //     Button(
-        //       style: raisedButtonStyle.copyWith(
-        //           backgroundColor: MaterialStatePropertyAll(
-        //               Color.fromARGB(20, 255, 255, 255)),
-        //           foregroundColor: MaterialStatePropertyAll(
-        //               Color.fromARGB(200, 255, 255, 255)),
-        //           side: MaterialStatePropertyAll(BorderSide.merge(
-        //               BorderSide(color: Colors.white.withAlpha(100), width: 1),
-        //               BorderSide(
-        //                   color: Colors.white.withAlpha(100), width: 1)))),
-        //       onPressed: () {
-        //         Navigator.of(context).pop();
-        //       },
-        //       text: AppLocalizations.of(context)!.ok,
-        //     )
-        //   ],
-        // ),
-        color: Colors.green);
+        actions: ButtonBar(children: [
+          Button(
+              onPressed: () => Navigator.of(context).pop(),
+              text: AppLocalizations.of(context)!.ok)
+        ]),
+        color: successColor);
   }
 }
 
@@ -333,13 +327,11 @@ class TableKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-        opacity: 0.8,
-        child: Padding(
-          padding: EdgeInsets.only(
-              right: padding, bottom: padding / 4, top: padding / 4),
-          child: child,
-        ));
+    return Padding(
+      padding: EdgeInsets.only(
+          right: padding * 2, bottom: padding / 4, top: padding / 4),
+      child: child,
+    );
   }
 }
 
