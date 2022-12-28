@@ -1,10 +1,11 @@
+import 'dart:convert' show utf8;
 import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sudonym.models/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
+import 'package:sudonym.models/index.dart';
 
 @Injectable(as: CurrencyRepository, env: [Env.mock])
 class MockCurrencyRepository implements CurrencyRepository {
@@ -19,7 +20,11 @@ class MockCurrencyRepository implements CurrencyRepository {
       required String toCurrency,
       num amount = 1,
       DateTime? time}) async {
-    CurrencyResponse c = CurrencyResponse(Random().nextDouble() * amount);
+    if (fromCurrency == toCurrency) return CurrencyResponse(amount);
+    CurrencyResponse c = CurrencyResponse(Random(utf8
+            .encode(fromCurrency + toCurrency)
+            .reduce((value, element) => value + element)).nextDouble() *
+        amount);
     return c;
   }
 }

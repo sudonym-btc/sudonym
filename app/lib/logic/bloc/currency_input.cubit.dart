@@ -19,6 +19,8 @@ class CurrencyInputController {
   late CurrencyInputOutput value;
   StreamController<CurrencyInputOutput> outputStream =
       StreamController.broadcast();
+  StreamController<CurrencyInputOutput> inputStream =
+      StreamController.broadcast();
 
   CurrencyInputController() {
     outputStream.stream.listen((event) {
@@ -30,6 +32,8 @@ class CurrencyInputController {
 class CurrencyInputOptions {
   CurrencyInputController? controller;
   List<String> currencies;
+  bool showAltCurrency;
+  bool canSwitchCurrency;
   String? initialCurrency;
   String? outputCurrency;
   Duration? debounceOutput;
@@ -42,6 +46,8 @@ class CurrencyInputOptions {
       required this.initialValue,
       this.min,
       this.max,
+      this.canSwitchCurrency = true,
+      this.showAltCurrency = true,
       this.debounceOutput,
       this.currencies = defaultCurrencies,
       this.initialCurrency}) {
@@ -65,13 +71,15 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   num clickValueBase = 1;
 
   CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
-    options.controller!.outputStream.stream
-        .map((event) => event.amount)
-        .asyncMap(resolveAlt)
+    options.controller!.inputStream.stream
         .distinct()
+        .asyncMap(resolveAlt)
         .debounceTime(options.debounceOutput!)
         .asyncMap(enforceConstraints)
-        .listen((event) {});
+        .listen((event) {
+      print('outputinng');
+      options.controller!.outputStream.add(event);
+    });
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
     _currencyRespository
         .getRate(
@@ -119,7 +127,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     setCurrentCurrency(state.currCurrency + 1);
   }
 
-  Future<num> enforceConstraints(num val) async {
+  Future<CurrencyInputOutput> enforceConstraints(
+      CurrencyInputOutput val) async {
     safeEmit(state.copyWith(hasError: false, minLoading: true));
     Map<String, dynamic>? error;
     double min = await getMinInCurrentCurrency();
@@ -127,10 +136,10 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     safeEmit(state.copyWith(
         minLoading: false,
         negativeEnabled:
-            numToCurrentPrecision(val) > numToCurrentPrecision(min)));
+            numToCurrentPrecision(val.amount) > numToCurrentPrecision(min)));
 
     // Return error when below minimum
-    if (val < min) {
+    if (val.amount < min) {
       error = {'min': FormatCurrency().format(getCurrentCurrency(), min)};
     }
 
@@ -141,7 +150,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
       error = {'max': FormatCurrency().format(getCurrentCurrency(), max)};
     } else {
       bool positiveEnabled =
-          numToCurrentPrecision(val) < numToCurrentPrecision(max);
+          numToCurrentPrecision(val.amount) < numToCurrentPrecision(max);
       safeEmit(state.copyWith(positiveEnabled: positiveEnabled));
 
       if (!positiveEnabled) {
@@ -154,14 +163,14 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     return val;
   }
 
-  Future<num> resolveAlt(num val) async {
+  Future<CurrencyInputOutput> resolveAlt(CurrencyInputOutput val) async {
     // Loading the alt currency value
     safeEmit(state.copyWith(altLoading: true));
     _currencyRespository
         .getRate(
             fromCurrency: getCurrentCurrency(),
             toCurrency: getAltCurrency(),
-            amount: val)
+            amount: val.amount)
         .then((value) {
       safeEmit(state.copyWith(altVal: value.amount, altLoading: false));
     });
@@ -169,7 +178,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   }
 
   setValue(num val) {
-    options.controller!.outputStream
+    options.controller!.inputStream
         .add(CurrencyInputOutput(val, getCurrentCurrency()));
     safeEmit(state.copyWith(currVal: val.toDouble()));
   }

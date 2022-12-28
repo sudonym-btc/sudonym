@@ -41,11 +41,11 @@ export class BillSplit extends BaseClass {
 
 export function calcBillSplit(
 	billSplit: BillSplit,
-	participant: BillSplitParticipant | null,
+	participant: BillSplitParticipant | null = null,
 	changedParticipants: BillSplitParticipant[] = []
 ) {
 	// Just recalc if participant not set
-	if (!participant || participant == null) {
+	if (participant == null) {
 		const amountLeft = billSplit.amount;
 
 		const amountPerUnchanged =
@@ -62,7 +62,7 @@ export function calcBillSplit(
 	);
 
 	// If participant was not found, return
-	if (!contributor) {
+	if (contributor == null) {
 		return;
 	}
 
@@ -71,27 +71,26 @@ export function calcBillSplit(
 
 	// Update changed participants
 	changedParticipants.push(participant);
-	changedParticipants = changedParticipants.reduce((acc, curr) => {
-		if (acc.map((i) => i.id).includes(curr.id)) return acc;
-		acc.push(curr);
-		return acc;
-	}, []);
+	const updatedChangedParticipants: BillSplitParticipant[] = [];
 
+	for (const u of changedParticipants) {
+		if (updatedChangedParticipants.map((i) => i.id).includes(u.id))
+			continue;
+		updatedChangedParticipants.push(u);
+	}
+	changedParticipants = updatedChangedParticipants;
+
+	let totalSet: number = 0;
 	// Get the total amount where the amount has been manually set
-	const totalSet = changedParticipants
-		.map((i) => i.amount)
-		.reduce((acc, curr) => acc + curr, 0);
+	changedParticipants.forEach((curr) => (totalSet += curr.amount));
 	const amountLeft = billSplit.amount - totalSet;
 
 	const unchangedParticipants = billSplit.BillSplitParticipants.filter(
 		(i) => !changedParticipants.map((u) => u.id).includes(i.id)
 	);
 
-	console.log(amountLeft);
-	console.log(unchangedParticipants);
-
 	// Update unchanged to divide the rest, or set the first participant to pay rest if all already changed
-	if (!unchangedParticipants.length) {
+	if (unchangedParticipants.length == 0) {
 		billSplit.BillSplitParticipants[0].amount = amountLeft;
 	} else {
 		const amountPerUnchanged = amountLeft / unchangedParticipants.length;

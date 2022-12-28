@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym.models/bill-split.dart';
 import 'package:sudonym.models/index.dart';
 
 @LazySingleton(as: BillSplitRepository, env: [Env.mock])

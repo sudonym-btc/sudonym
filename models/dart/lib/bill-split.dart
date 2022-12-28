@@ -37,11 +37,11 @@ class BillSplit extends BaseClass {
   }
 }
 
-calcBillSplit(
-    BillSplit billSplit, dynamic /* BillSplitParticipant | null */ participant,
-    [List<BillSplitParticipant> changedParticipants = const []]) {
+calcBillSplit(BillSplit billSplit,
+    [dynamic /* BillSplitParticipant | null */ participant = null,
+    List<BillSplitParticipant> changedParticipants = const []]) {
   // Just recalc if participant not set
-  if (!participant || participant == null) {
+  if (participant == null) {
     final amountLeft = billSplit.amount;
     final amountPerUnchanged =
         amountLeft / billSplit.BillSplitParticipants.length;
@@ -51,31 +51,29 @@ calcBillSplit(
   }
   // Find the participant in the billSplit object
   final contributor = billSplit.BillSplitParticipants
-      .find((contributor) => identical(contributor.id, participant.id));
+      .firstWhere((contributor) => identical(contributor.id, participant.id));
   // If participant was not found, return
-  if (!contributor) {
+  if (contributor == null) {
     return;
   }
   // Update participant's amount and set the amountChanged flag
   contributor.amount = participant.amount;
   // Update changed participants
   changedParticipants.add(participant);
-  changedParticipants = changedParticipants.reduce((acc, curr) {
-    if (acc.map((i) => i.id).includes(curr.id)) return acc;
-    acc.add(curr);
-    return acc;
-  }, []);
+  final List<BillSplitParticipant> updatedChangedParticipants = [];
+  for (final u in changedParticipants) {
+    if (updatedChangedParticipants.map((i) => i.id).contains(u.id)) continue;
+    updatedChangedParticipants.add(u);
+  }
+  changedParticipants = updatedChangedParticipants;
+  num totalSet = 0;
   // Get the total amount where the amount has been manually set
-  final totalSet = changedParticipants
-      .map((i) => i.amount)
-      .reduce((acc, curr) => acc + curr, 0);
+  changedParticipants.forEach((curr) => (totalSet += curr.amount));
   final amountLeft = billSplit.amount - totalSet;
   final unchangedParticipants = billSplit.BillSplitParticipants
-      .filter((i) => !changedParticipants.map((u) => u.id).includes(i.id));
-  console.log(amountLeft);
-  console.log(unchangedParticipants);
+      .where((i) => !changedParticipants.map((u) => u.id).contains(i.id));
   // Update unchanged to divide the rest, or set the first participant to pay rest if all already changed
-  if (!unchangedParticipants.length) {
+  if (unchangedParticipants.length == 0) {
     billSplit.BillSplitParticipants[0].amount = amountLeft;
   } else {
     final amountPerUnchanged = amountLeft / unchangedParticipants.length;

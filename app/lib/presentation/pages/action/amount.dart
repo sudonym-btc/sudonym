@@ -44,12 +44,6 @@ class _AmountPageState extends State<AmountPage> with AmountLogger, SafeState {
 
   @override
   Widget build(BuildContext context) {
-    CurrencyInput currencyInput = CurrencyInput(
-      form: formGroup,
-      options: widget.options,
-      large: false,
-    );
-
     return Container(
       color: Theme.of(context).backgroundColor,
       child: SafeArea(
@@ -68,15 +62,21 @@ class _AmountPageState extends State<AmountPage> with AmountLogger, SafeState {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Expanded(child: Center(child: currencyInput)),
+                            Expanded(
+                                child: Center(
+                                    child: CurrencyInput(
+                              form: formGroup,
+                              options: widget.options,
+                              large: false,
+                            ))),
                             ButtonBar(children: [
                               Button(
                                 text: widget.text ??
                                     AppLocalizations.of(context)!.confirm,
                                 icon: loading
-                                    ? SizedBox(
-                                        height: 16,
-                                        width: 16,
+                                    ? const SizedBox(
+                                        height: iconSize,
+                                        width: iconSize,
                                         child: CircularProgressIndicator())
                                     : null,
                                 onPressed: formGroup.valid && !loading
