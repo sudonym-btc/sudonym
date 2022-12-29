@@ -1,5 +1,9 @@
 import * as Models from '@sudonym/models';
 import { BillSplit } from 'module/bill-split/bill-split.model';
+import { PotUser } from 'module/pot-user/pot-user.model';
+import { Pot } from 'module/pot/pot.model';
+import { Receiver } from 'module/receiver/receiver.model';
+import { Transaction } from 'module/transaction/transaction.model';
 import {
 	AllowNull,
 	AutoIncrement,
@@ -48,6 +52,38 @@ export class BillSplitParticipant
 	@Default(false)
 	@Column
 	paid: boolean;
+
+	static accessors = {
+		canFind: (id) =>
+			PotUser.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				include: [
+					{
+						model: Pot,
+						as: 'Pot',
+						required: true,
+						include: [
+							{
+								model: Transaction,
+								as: 'Transactions',
+								required: true,
+								include: [
+									{
+										model: Receiver,
+										as: 'Receiver',
+										required: true,
+										where: {
+											billSplitParticipantId: id,
+										},
+									},
+								],
+							},
+						],
+					},
+				],
+			}),
+	};
 
 	static scopes = {};
 }

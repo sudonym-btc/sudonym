@@ -13,6 +13,13 @@ export class BillSplitService extends BaseService(BillSplit) {
 	private readonly transactionService: TransactionService;
 
 	onModuleInit() {
+		this.beforeCreate.hook((params) => {
+			if (params.transactionId) {
+				params.BillSplitParticipants[0].amountPaid =
+					params.BillSplitParticipants[0].amount;
+				params.BillSplitParticipants[0].paid = true;
+			}
+		});
 		this.afterCreate.hook(async ({ entity, params }) => {
 			if (entity.transactionId) {
 				await this.transactionService.update(entity.transactionId, {

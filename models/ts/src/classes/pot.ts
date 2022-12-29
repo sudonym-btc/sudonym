@@ -4,8 +4,8 @@ import * as PotUserModel from './pot-user';
 export class Pot extends BaseClass {
 	constructor(
 		public id: number | null,
-		public name: string = '',
-		public currency: string = 'BTC',
+		public name: string | null = '',
+		public currency: string | null = 'BTC',
 		public balance: number | null = 0,
 		public spendableBalance: number | null = 0,
 		public PotUser: PotUserModel.PotUser | any,

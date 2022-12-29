@@ -9,6 +9,7 @@ import { BalanceModule } from 'service/exchange/balance.module';
 import { ExchangeSettlerModule } from 'service/exchange/exchange-settler.module';
 import { ExchangeModule } from 'service/exchange/exchange.module';
 import { FirebaseNotificationModule } from 'service/firebase-notification/firebase-notification.module';
+import { TransactionBillSplitLinkerModule } from 'service/transaction-bill-split-linker/transaction-bill-split-linker.module';
 import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -33,6 +34,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 		BalanceModule,
 		ExchangeModule,
 		ExchangeSettlerModule,
+		TransactionBillSplitLinkerModule,
 		TransactionContactLinkerModule,
 		DatabaseModule,
 		CurrencyModule,

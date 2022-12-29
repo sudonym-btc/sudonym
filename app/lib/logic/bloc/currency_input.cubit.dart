@@ -33,6 +33,7 @@ class CurrencyInputOptions {
   CurrencyInputController? controller;
   List<String> currencies;
   bool showAltCurrency;
+  bool enabled;
   bool canSwitchCurrency;
   String? initialCurrency;
   String? outputCurrency;
@@ -46,6 +47,7 @@ class CurrencyInputOptions {
       required this.initialValue,
       this.min,
       this.max,
+      this.enabled = true,
       this.canSwitchCurrency = true,
       this.showAltCurrency = true,
       this.debounceOutput,
@@ -70,7 +72,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
 
   num clickValueBase = 1;
 
-  CurrencyInputCubit(this.options) : super(const CurrencyInputCubitState()) {
+  CurrencyInputCubit(this.options)
+      : super(CurrencyInputCubitState(options: options)) {
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
 
     options.controller!.inputStream.stream
@@ -177,8 +180,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     safeEmit(state.copyWith(
         maxLoading: false,
         minLoading: false,
-        positiveEnabled: positiveEnabled,
-        negativeEnabled: negativeEnabled,
+        positiveEnabled: state.options.enabled && positiveEnabled,
+        negativeEnabled: state.options.enabled && negativeEnabled,
         currVal: response.amount,
         hasError: error != null,
         error: error));
@@ -297,6 +300,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
 }
 
 class CurrencyInputCubitState extends Equatable {
+  final CurrencyInputOptions options;
   final List<String> currencies;
   final bool positiveEnabled;
   final bool negativeEnabled;
@@ -310,6 +314,7 @@ class CurrencyInputCubitState extends Equatable {
   final Map<String, dynamic>? error;
 
   const CurrencyInputCubitState({
+    required this.options,
     this.currencies = defaultCurrencies,
     this.positiveEnabled = false,
     this.negativeEnabled = false,
@@ -324,7 +329,8 @@ class CurrencyInputCubitState extends Equatable {
   });
 
   CurrencyInputCubitState copyWith(
-          {List<String>? currencies,
+          {CurrencyInputOptions? options,
+          List<String>? currencies,
           bool? positiveEnabled,
           bool? negativeEnabled,
           bool? maxLoading,
@@ -337,6 +343,7 @@ class CurrencyInputCubitState extends Equatable {
           bool? hasError,
           Map<String, dynamic>? error}) =>
       CurrencyInputCubitState(
+          options: options ?? this.options,
           currencies: currencies ?? this.currencies,
           positiveEnabled: positiveEnabled ?? this.positiveEnabled,
           negativeEnabled: negativeEnabled ?? this.negativeEnabled,
@@ -351,6 +358,7 @@ class CurrencyInputCubitState extends Equatable {
 
   @override
   List<Object?> get props => [
+        options,
         positiveEnabled,
         negativeEnabled,
         maxLoading,

@@ -10,6 +10,8 @@ class ReceiverCubit
     extends EntityCubit<ReceiverRepository, ReceiverCubitState, Receiver> {
   StreamSubscription? receiveSubscription;
 
+  StreamController onReceived = StreamController.broadcast();
+
   ReceiverCubit()
       : super(
             initialState: ReceiverCubitState(),
@@ -20,18 +22,26 @@ class ReceiverCubit
     receiveSubscription ??= repository.events.stream.listen((dynamic event) {
       if (state.entity != null && event.name == 'receiver.received') {
         if (event.data['id'] == state.entity!.id ||
-            event.data['parentId'] == state.entity!.id &&
-                state.entity!.type == 'bolt11') {
-          create(Receiver.fromJson({
-            'potId': state.entity!.potId,
-            'type': state.entity!.type,
-            'amount': state.entity!.amount,
-            'amountCurrency': state.entity!.amountCurrency
-          }));
+            event.data['parentId'] == state.entity!.id) {
+          onReceived.add(Receiver.fromJson(event.data));
+          if (state.entity!.type == 'bolt11') {
+            create(Receiver.fromJson({
+              'potId': state.entity!.potId,
+              'type': state.entity!.type,
+              'amount': state.entity!.amount,
+              'amountCurrency': state.entity!.amountCurrency
+            }));
+          }
         }
       }
     });
     super.listenChanges();
+  }
+
+  @override
+  Future<void> close() {
+    onReceived.close();
+    return super.close();
   }
 }
 

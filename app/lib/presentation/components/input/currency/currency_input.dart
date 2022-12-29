@@ -99,6 +99,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextField(
+                enabled: state.options.enabled,
                 textAlignVertical: TextAlignVertical.center,
                 textAlign: large ? TextAlign.center : TextAlign.start,
                 style: Theme.of(context).textTheme.displayLarge!.copyWith(

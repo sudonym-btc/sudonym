@@ -216,6 +216,10 @@ export class Transaction extends BaseModel implements Models.Transaction {
 						},
 					],
 				},
+				{
+					model: Receiver,
+					as: 'Receiver',
+				},
 			],
 		}),
 	};

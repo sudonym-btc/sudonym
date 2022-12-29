@@ -4,6 +4,7 @@ import { BillSplitParticipant } from './bill-split-participant';
 export class BillSplit extends BaseClass {
 	constructor(
 		public id: number | null,
+		public potId: number | null,
 		public transactionId: number | null,
 		public currency: string = 'BTC',
 		public amount: number | null = 0,
@@ -15,6 +16,7 @@ export class BillSplit extends BaseClass {
 	static fromJson(json: Object): BillSplit {
 		return new BillSplit(
 			json['id'],
+			json['potId'],
 			json['transactionId'],
 			json['currency'],
 			json['amount'],
@@ -29,6 +31,7 @@ export class BillSplit extends BaseClass {
 	toJson(): any {
 		return {
 			id: this.id,
+			potId: this.potId,
 			transactionId: this.transactionId,
 			currency: this.currency,
 			amount: this.amount,

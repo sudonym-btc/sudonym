@@ -28,6 +28,7 @@ scaffoldGroup('Bill Split', (scaffold) => {
 			const t = await successfulPayment();
 			const billSplit = await scaffold.app.get(BillSplitService).create({
 				transactionId: t.entity.id,
+				potId: scaffold.entities.pot[0].id,
 				BillSplitParticipants: [
 					{
 						amount: 2,
@@ -42,8 +43,36 @@ scaffoldGroup('Bill Split', (scaffold) => {
 				amount: 6,
 				currency: 'USD',
 			});
-			console.log(billSplit);
 			expect(billSplit.entity.BillSplitParticipants.length).toEqual(3);
+		});
+	});
+
+	it('should create bill split and mark first as paid if transaction already paid', async () => {
+		// Create a second pot
+		await runAsUser(scaffold.entities.user[0], async () => {
+			const t = await successfulPayment();
+			const billSplit = await scaffold.app.get(BillSplitService).create({
+				transactionId: t.entity.id,
+				potId: scaffold.entities.pot[0].id,
+
+				BillSplitParticipants: [
+					{
+						amount: 2,
+					},
+					{
+						amount: 2,
+					},
+					{
+						amount: 2,
+					},
+				],
+				amount: 6,
+				currency: 'USD',
+			});
+			expect(billSplit.entity.BillSplitParticipants[0].paid).toBe(true);
+			expect(billSplit.entity.BillSplitParticipants[0].amountPaid).toBe(
+				2
+			);
 		});
 	});
 

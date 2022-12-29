@@ -4,6 +4,7 @@ class Receiver extends BaseClass {
   dynamic /* num | null */ id;
   dynamic /* num | null */ parentId;
   num potId;
+  dynamic /* num | null */ billSplitParticipantId;
   String type;
   num amount;
   String amountCurrency;
@@ -18,6 +19,7 @@ class Receiver extends BaseClass {
       this.id,
       this.parentId,
       this.potId,
+      this.billSplitParticipantId,
       this.type,
       this.amount,
       this.amountCurrency,
@@ -36,6 +38,7 @@ class Receiver extends BaseClass {
         json["id"],
         json["parentId"],
         json["potId"],
+        json["billSplitParticipantId"],
         json["type"],
         json["amount"],
         json["amountCurrency"],
@@ -53,6 +56,7 @@ class Receiver extends BaseClass {
       "id": this.id,
       "parentId": this.parentId,
       "potId": this.potId,
+      "billSplitParticipantId": this.billSplitParticipantId,
       "type": this.type,
       "amount": this.amount,
       "amountCurrency": this.amountCurrency,

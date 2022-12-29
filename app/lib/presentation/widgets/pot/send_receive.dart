@@ -35,7 +35,7 @@ class SendReceive extends StatelessWidget {
                               //     size: 14),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/receive',
-                                    arguments: ReceivePageArgs(entity));
+                                    arguments: ReceiveOptions(pot: entity));
                               },
                             ),
                             Button(

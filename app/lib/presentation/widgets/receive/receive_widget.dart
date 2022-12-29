@@ -11,10 +11,28 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
+const defaultPaymentTypes = ['lnurl', 'onchain', 'bolt11'];
+
+class ReceiveOptions {
+  List<String> types;
+  Pot? pot;
+  BillSplit? billSplit;
+  BillSplitParticipant? participant;
+
+  Function(Receiver t, BuildContext context)? onReceive;
+
+  ReceiveOptions(
+      {this.types = defaultPaymentTypes,
+      this.pot,
+      this.billSplit,
+      this.participant,
+      this.onReceive});
+}
+
 class ReceiveWidget extends StatefulWidget {
-  final Pot pot;
+  final ReceiveOptions opts;
   final String type;
-  const ReceiveWidget({required this.pot, required this.type, Key? key})
+  const ReceiveWidget({required this.opts, required this.type, Key? key})
       : super(key: key);
 
   @override
@@ -38,13 +56,18 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
 
   @override
   void initState() {
-    inputOptions = CurrencyInputOptions(
-        initialValue: CurrencyInputOutput(0, widget.pot.currency),
-        currencies: [widget.pot.currency, 'USD', 'BTC']);
-
-    getIt<ActionTriggerService>().callbacks.add(cb);
-
     super.initState();
+
+    if (widget.opts.billSplit != null) {
+      inputOptions = CurrencyInputOptions(
+          initialValue: CurrencyInputOutput(0, widget.opts.billSplit!.currency),
+          currencies: [widget.opts.billSplit!.currency, 'USD', 'BTC']);
+    } else if (widget.opts.pot != null) {
+      inputOptions = CurrencyInputOptions(
+          initialValue: CurrencyInputOutput(0, widget.opts.pot!.currency),
+          currencies: [widget.opts.pot!.currency, 'USD', 'BTC']);
+    }
+    getIt<ActionTriggerService>().callbacks.add(cb);
   }
 
   @override
@@ -60,22 +83,37 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
           BlocProvider(create: (_) {
             ReceiverCubit c = getIt<ReceiverCubit>();
 
-            inputOptions.controller!.outputStream.stream
-                .debounceTime(const Duration(milliseconds: 500))
-                .listen((event) {
-              print({
-                'potId': widget.pot.id,
-                'amountCurrency': event.currency,
-                'amount': event.amount,
-                'type': widget.type,
-              });
+            c.onReceived.stream.listen((event) {
+              print(event);
+              print('header');
+              if (widget.opts.onReceive != null) {
+                widget.opts.onReceive!(event, context);
+              }
+            });
+
+            // If splitting bill, create a single receiver
+            if (widget.opts.billSplit != null) {
               c.create(Receiver.fromJson({
-                'potId': widget.pot.id,
-                'amountCurrency': event.currency,
-                'amount': event.amount,
+                'potId': widget.opts.billSplit!.potId,
+                'billSplitParticipantId': widget.opts.participant!.id,
+                'amountCurrency': widget.opts.billSplit!.currency,
+                'amount': widget.opts.participant!.amount,
                 'type': widget.type,
               }));
-            });
+
+              // If receiving in general, create new receiver every time amount changes
+            } else {
+              inputOptions.controller!.outputStream.stream
+                  .debounceTime(const Duration(milliseconds: 500))
+                  .listen((event) {
+                c.create(Receiver.fromJson({
+                  'potId': widget.opts.pot?.id ?? widget.opts.billSplit?.potId,
+                  'amountCurrency': event.currency,
+                  'amount': event.amount,
+                  'type': widget.type,
+                }));
+              });
+            }
 
             return c;
           })
@@ -168,8 +206,9 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                 ],
               )),
               const VertDivider(),
-              CustomPadding(
-                  child: CurrencyInput(options: inputOptions, large: false)),
+              if (widget.opts.billSplit == null)
+                CustomPadding(
+                    child: CurrencyInput(options: inputOptions, large: false)),
               CustomPadding(child: ButtonBar(children: buttons))
             ],
           ));

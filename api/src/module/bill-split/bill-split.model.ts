@@ -1,6 +1,8 @@
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
 import { BillSplitParticipant } from 'module/bill-split-participant/bill-split-participant.model';
+import { PotUser } from 'module/pot-user/pot-user.model';
+import { Pot } from 'module/pot/pot.model';
 import { Transaction } from 'module/transaction/transaction.model';
 import {
 	AllowNull,
@@ -33,6 +35,14 @@ export class BillSplit extends BaseModel implements Models.BillSplit {
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
+	@AllowNull(false)
+	@ForeignKey(() => Pot)
+	@Column
+	potId: number;
+
+	@BelongsTo(() => Pot)
+	Pot: Pot;
+
 	@ForeignKey(() => Transaction)
 	transactionId: number;
 
@@ -42,7 +52,30 @@ export class BillSplit extends BaseModel implements Models.BillSplit {
 	@HasMany(() => BillSplitParticipant)
 	BillSplitParticipants: BillSplitParticipant[];
 
-	static accessors = {};
+	static accessors = {
+		canFind: (id) =>
+			PotUser.findAll({
+				attributes: [['userId', 'id']],
+				raw: true,
+				include: [
+					{
+						model: Pot,
+						as: 'Pot',
+						required: true,
+						include: [
+							{
+								model: BillSplit,
+								as: 'BillSplit',
+								required: true,
+								where: {
+									id: id,
+								},
+							},
+						],
+					},
+				],
+			}),
+	};
 
 	static scopes = {
 		find: () => ({

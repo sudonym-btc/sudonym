@@ -2,6 +2,7 @@ export 'auth.repository.dart';
 export 'currency.repository.dart';
 export 'entity/action.repository.dart';
 export 'entity/bill_split.respository.dart';
+export 'entity/bill_split_participant.respository.dart';
 export 'entity/bolt_card.repository.dart';
 export 'entity/contact.repository.dart';
 export 'entity/crud_repository.dart';

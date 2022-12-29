@@ -399,8 +399,12 @@ class _SplitBillSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Button(
-        icon: const Icon(Icons.add),
-        text: AppLocalizations.of(context)!.billSplit,
+        icon: entity.billSplitId != null
+            ? const Icon(Icons.arrow_right)
+            : const Icon(Icons.add),
+        text: entity.billSplitId != null
+            ? AppLocalizations.of(context)!.viewBillSplit
+            : AppLocalizations.of(context)!.billSplit,
         onPressed: () async {
           var amount = await getIt<CurrencyRepository>().getRate(
               fromCurrency: entity.currencyCode,
@@ -418,6 +422,7 @@ class _SplitBillSection extends StatelessWidget {
                               'currency': entity.Pot.currency
                             })
                           : BillSplit.fromJson({
+                              'potId': entity.potId,
                               'BillSplitParticipants': [
                                 {'amount': 0},
                                 {'amount': 0}

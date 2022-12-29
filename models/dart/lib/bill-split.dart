@@ -3,11 +3,12 @@ import "bill-split-participant.dart" show BillSplitParticipant;
 
 class BillSplit extends BaseClass {
   dynamic /* num | null */ id;
+  dynamic /* num | null */ potId;
   dynamic /* num | null */ transactionId;
   String currency;
   dynamic /* num | null */ amount;
   dynamic /* List < BillSplitParticipant > | dynamic */ BillSplitParticipants;
-  BillSplit(this.id, this.transactionId,
+  BillSplit(this.id, this.potId, this.transactionId,
       [this.currency = "BTC", this.amount = 0, this.BillSplitParticipants])
       : super() {
     /* super call moved to initializer */;
@@ -15,6 +16,7 @@ class BillSplit extends BaseClass {
   static BillSplit fromJson(Map<String, dynamic> json) {
     return new BillSplit(
         json["id"],
+        json["potId"],
         json["transactionId"],
         json["currency"],
         json["amount"],
@@ -28,6 +30,7 @@ class BillSplit extends BaseClass {
   dynamic toJson() {
     return {
       "id": this.id,
+      "potId": this.potId,
       "transactionId": this.transactionId,
       "currency": this.currency,
       "amount": this.amount,

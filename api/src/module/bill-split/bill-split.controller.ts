@@ -15,6 +15,9 @@ import { BillSplitService } from './bill-split.service';
 
 class CreateBillSplit {
 	@IsNumber()
+	potId: number;
+
+	@IsNumber()
 	transactionId: number;
 
 	@IsNumber()
