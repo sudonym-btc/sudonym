@@ -38,45 +38,39 @@ class BillSplit extends BaseClass {
 }
 
 calcBillSplit(BillSplit billSplit,
-    [dynamic /* BillSplitParticipant | null */ participant = null,
-    List<BillSplitParticipant> changedParticipants = const []]) {
-  // Just recalc if participant not set
-  if (participant == null) {
-    final amountLeft = billSplit.amount;
-    final amountPerUnchanged =
-        amountLeft / billSplit.BillSplitParticipants.length;
-    billSplit.BillSplitParticipants
-        .forEach((i) => (i.amount = amountPerUnchanged));
-    return;
+    [dynamic /* num | null */ index = null,
+    dynamic /* num | null */ amount = null,
+    List<num> changedParticipants = const []]) {
+  if (index == 0 ||
+      billSplit.BillSplitParticipants.length - changedParticipants.length ==
+          0) {
+    throw "Cannot edit your amount directly";
   }
-  // Find the participant in the billSplit object
-  final contributor = billSplit.BillSplitParticipants
-      .firstWhere((contributor) => identical(contributor.id, participant.id));
-  // If participant was not found, return
-  if (contributor == null) {
-    return;
+  if (index != null) {
+    if (!changedParticipants.contains(index) &&
+        amount != billSplit.BillSplitParticipants[index].amount) {
+      changedParticipants.add(index);
+    }
+    billSplit.BillSplitParticipants[index].amount = amount;
   }
-  // Update participant's amount and set the amountChanged flag
-  contributor.amount = participant.amount;
-  // Update changed participants
-  changedParticipants.add(participant);
-  final List<BillSplitParticipant> updatedChangedParticipants = [];
-  for (final u in changedParticipants) {
-    if (updatedChangedParticipants.map((i) => i.id).contains(u.id)) continue;
-    updatedChangedParticipants.add(u);
+  // Calculate the amount left to pay after all pre-set contributors have been added.
+  final amountLeft = calcAmountLeft(billSplit, changedParticipants);
+  final amountLeftPerUnchanged = amountLeft /
+      (billSplit.BillSplitParticipants.length - changedParticipants.length);
+  // Split the remaining amount between the unset participants
+  for (var i = 0; i < billSplit.BillSplitParticipants.length; i++) {
+    if (!changedParticipants.contains(i)) {
+      billSplit.BillSplitParticipants[i].amount = amountLeftPerUnchanged;
+    }
   }
-  changedParticipants = updatedChangedParticipants;
-  num totalSet = 0;
-  // Get the total amount where the amount has been manually set
-  changedParticipants.forEach((curr) => (totalSet += curr.amount));
-  final amountLeft = billSplit.amount - totalSet;
-  final unchangedParticipants = billSplit.BillSplitParticipants
-      .where((i) => !changedParticipants.map((u) => u.id).contains(i.id));
-  // Update unchanged to divide the rest, or set the first participant to pay rest if all already changed
-  if (unchangedParticipants.length == 0) {
-    billSplit.BillSplitParticipants[0].amount = amountLeft;
-  } else {
-    final amountPerUnchanged = amountLeft / unchangedParticipants.length;
-    unchangedParticipants.forEach((i) => (i.amount = amountPerUnchanged));
+}
+
+calcAmountLeft(billSplit, changed) {
+  num presetAmounts = 0;
+  for (var i = 0; i < billSplit.BillSplitParticipants.length; i++) {
+    if (changed.contains(i)) {
+      presetAmounts = presetAmounts + billSplit.BillSplitParticipants[i].amount;
+    }
   }
+  return billSplit.amount - presetAmounts;
 }

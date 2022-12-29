@@ -411,15 +411,21 @@ class _SplitBillSection extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => EditBillSplit(
-                          entity: BillSplit.fromJson({
-                        'BillSplitParticipants': [
-                          {'amount': 0},
-                          {'amount': 0}
-                        ],
-                        'transactionId': entity.transactionId,
-                        'amount': amount.amount,
-                        'currency': entity.Pot.currency
-                      }))));
+                      entity: entity.billSplitId != null
+                          ? BillSplit.fromJson({
+                              'id': entity.billSplitId,
+                              'amount': amount.amount,
+                              'currency': entity.Pot.currency
+                            })
+                          : BillSplit.fromJson({
+                              'BillSplitParticipants': [
+                                {'amount': 0},
+                                {'amount': 0}
+                              ],
+                              'transactionId': entity.id,
+                              'amount': amount.amount,
+                              'currency': entity.Pot.currency
+                            }))));
         });
   }
 }

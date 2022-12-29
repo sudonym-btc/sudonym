@@ -28,69 +28,134 @@ scaffoldGroup('Bill Split', (scaffold) => {
 			const t = await successfulPayment();
 			const billSplit = await scaffold.app.get(BillSplitService).create({
 				transactionId: t.entity.id,
-				BillSplitParticipants: [{}],
+				BillSplitParticipants: [
+					{
+						amount: 2,
+					},
+					{
+						amount: 2,
+					},
+					{
+						amount: 2,
+					},
+				],
+				amount: 6,
+				currency: 'USD',
 			});
 			console.log(billSplit);
-			expect(billSplit.entity.BillSplitParticipants.length).toEqual(5);
+			expect(billSplit.entity.BillSplitParticipants.length).toEqual(3);
 		});
 	});
 
-	it('should adjust bill split payment amounts correctly', async () => {
+	it('should not be able to edit own amount', async () => {
 		const participants: RecursivePartial<BillSplitParticipant>[] = [
 			{
 				id: 1,
-				amount: 2,
+				amount: 5,
 			},
 			{
 				id: 2,
-				amount: 2,
+				amount: 5,
+			},
+		];
+		const billSplit: RecursivePartial<BillSplit> = {
+			id: 1,
+			transactionId: 123,
+			currency: 'GBP',
+			amount: 10,
+			BillSplitParticipants: participants,
+		};
+
+		expect(() => calcBillSplit(billSplit as any, 0, 4, [])).toThrowError();
+	});
+
+	it('should adjust bill split payment amounts correctly for paid tx', async () => {
+		const participants: RecursivePartial<BillSplitParticipant>[] = [
+			{
+				id: 1,
+				amount: 0,
+			},
+			{
+				id: 2,
+				amount: 0,
 			},
 			{
 				id: 3,
-				amount: 2,
+				amount: 0,
+			},
+		];
+		const billSplit: RecursivePartial<BillSplit> = {
+			id: 1,
+			transactionId: 123,
+			currency: 'GBP',
+			amount: 6,
+			BillSplitParticipants: participants,
+		};
+		calcBillSplit(billSplit as any);
+
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[2].amount).toBe(2);
+
+		calcBillSplit(billSplit as any, 1, 4, []);
+
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(1);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(4);
+		expect(billSplit.BillSplitParticipants[2].amount).toBe(1);
+
+		billSplit.BillSplitParticipants.pop();
+
+		calcBillSplit(billSplit as any, null, null, [1]);
+
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(4);
+	});
+
+	it('should adjust bill split payment amounts correctly for unpaid tx', async () => {
+		const participants: RecursivePartial<BillSplitParticipant>[] = [
+			{
+				id: 1,
+				amount: 0,
 			},
 			{
-				id: 4,
-				amount: 2,
+				id: 2,
+				amount: 0,
 			},
 			{
-				id: 5,
-				amount: 2,
+				id: 3,
+				amount: 0,
 			},
 		];
 		const billSplit: RecursivePartial<BillSplit> = {
 			id: 1,
 			transactionId: null,
 			currency: 'GBP',
-			amount: 10,
+			amount: 6,
 			BillSplitParticipants: participants,
 		};
 
-		calcBillSplit(
-			billSplit as any,
-			{
-				id: 1,
-				amount: 4,
-			} as any,
-			[]
-		);
+		// Calculate inital spread equally
+		calcBillSplit(billSplit as any);
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[2].amount).toBe(2);
 
-		console.log(billSplit.BillSplitParticipants);
+		// Change one of the amounts
+		calcBillSplit(billSplit as any, 1, 4, []);
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(1);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(4);
+		expect(billSplit.BillSplitParticipants[2].amount).toBe(1);
 
-		expect(billSplit.BillSplitParticipants[0].amount).toBe(4);
-		expect(billSplit.BillSplitParticipants[1].amount).toBe(1.5);
-		expect(billSplit.BillSplitParticipants[2].amount).toBe(1.5);
-		expect(billSplit.BillSplitParticipants[3].amount).toBe(1.5);
-		expect(billSplit.BillSplitParticipants[4].amount).toBe(1.5);
+		// Change another amount and expect first changed amount to stay the same
+		calcBillSplit(billSplit as any, 2, 0, [1]);
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(4);
+		expect(billSplit.BillSplitParticipants[2].amount).toBe(0);
 
-		billSplit.BillSplitParticipants.shift();
-		console.log(billSplit);
+		billSplit.BillSplitParticipants.pop();
 
-		calcBillSplit(billSplit as any, null, []);
-		console.log(billSplit);
-		expect(billSplit.BillSplitParticipants[0].amount).toBe(2.5);
-		expect(billSplit.BillSplitParticipants[1].amount).toBe(2.5);
-		expect(billSplit.BillSplitParticipants[2].amount).toBe(2.5);
-		expect(billSplit.BillSplitParticipants[3].amount).toBe(2.5);
+		calcBillSplit(billSplit as any, null, null, [1]);
+		expect(billSplit.BillSplitParticipants[0].amount).toBe(2);
+		expect(billSplit.BillSplitParticipants[1].amount).toBe(4);
 	});
 });

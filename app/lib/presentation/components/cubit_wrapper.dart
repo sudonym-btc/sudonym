@@ -42,7 +42,7 @@ class CubitWrapper<
             c.set(entity);
           }
           if (refresh != null) {
-            c.setRefresher(const Duration(seconds: 10), refresh!);
+            c.setRefresher(const Duration(seconds: 100), refresh!);
           }
           if (refreshOnFocus != null) {
             c.setFocusRefresher(refreshOnFocus!);

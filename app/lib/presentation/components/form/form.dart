@@ -16,13 +16,15 @@ class CustomForm<
   final T entity;
   final FormGroup Function() formGroup;
   final dynamic Function(BuildContext context, dynamic state) builder;
-  final Function? onSave;
+  final Function(Map<String, dynamic> formData)? beforeSave;
+  final Future<dynamic> Function(dynamic entity)? onSave;
   final bool hideSubmit;
 
   const CustomForm(
       {required this.entity,
       required this.formGroup,
       required this.builder,
+      this.beforeSave,
       this.onSave,
       this.hideSubmit = false,
       Key? key})
@@ -51,13 +53,15 @@ class _CustomFormState<
     });
     // Validate returns true if the form is valid, or false otherwise.
     try {
-      final formData = form.value;
+      final formData = widget.beforeSave != null
+          ? widget.beforeSave!(form.value)
+          : form.value;
       Map<String, dynamic> d = {...widget.entity.toJson(), ...formData};
-      await BlocProvider.of<C>(context)
+      T t = await BlocProvider.of<C>(context)
           .createOrUpdate(BlocProvider.of<C>(context).repository.converter(d));
       formGroup.markAsPristine();
       if (widget.onSave != null) {
-        widget.onSave!();
+        widget.onSave!(t);
       }
     } catch (e) {
       if (e is DioError && e.response?.statusCode == 400) {

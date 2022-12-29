@@ -8,7 +8,6 @@ import {
 	BelongsTo,
 	Column,
 	DataType,
-	Default,
 	ForeignKey,
 	HasMany,
 	PrimaryKey,
@@ -26,18 +25,13 @@ export class BillSplit extends BaseModel implements Models.BillSplit {
 	@Column
 	id: number;
 
+	@AllowNull(false)
 	@Column
 	currency: CurrencyCode;
 
 	@AllowNull(false)
-	@Default(0)
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
-
-	@AllowNull(false)
-	@Default(0)
-	@Column(DataType.DOUBLE(21, 11))
-	spendableBalance: number;
 
 	@ForeignKey(() => Transaction)
 	transactionId: number;

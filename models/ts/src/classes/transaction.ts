@@ -1,5 +1,6 @@
 import { BaseClass } from './base-class';
-import * as Model from './contact-address';
+import * as BillSplitModel from './bill-split';
+import * as ContactModel from './contact-address';
 import * as PotModel from './pot';
 
 export class Transaction extends BaseClass {
@@ -16,7 +17,9 @@ export class Transaction extends BaseClass {
 		public outgoing: boolean,
 		public type: string | null,
 		public contactAddressId: number | null,
-		public ContactAddress: Model.ContactAddress | null,
+		public ContactAddress: ContactModel.ContactAddress | null,
+		public billSplitId: number | null,
+		public BillSplit: BillSplitModel.BillSplit | null,
 		public originalAddress: string | null,
 		public address: string | null,
 		public description: string | null,
@@ -46,7 +49,11 @@ export class Transaction extends BaseClass {
 			json['type'],
 			json['contactAddressId'],
 			json['ContactAddress'] != null
-				? Model.ContactAddress.fromJson(json['ContactAddress'])
+				? ContactModel.ContactAddress.fromJson(json['ContactAddress'])
+				: null,
+			json['billSplitId'],
+			json['BillSplit'] != null
+				? BillSplitModel.BillSplit.fromJson(json['BillSplit'])
 				: null,
 			json['originalAddress'],
 			json['address'],
@@ -76,6 +83,8 @@ export class Transaction extends BaseClass {
 			type: this.type,
 			contactAddressId: this.contactAddressId,
 			ContactAddress: this.ContactAddress,
+			billSplitId: this.billSplitId,
+			BillSplit: this.BillSplit,
 			originalAddress: this.originalAddress,
 			address: this.address,
 			description: this.description,

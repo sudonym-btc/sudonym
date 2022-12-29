@@ -70,17 +70,18 @@ abstract class EntityCubit<
 
   create(EntityType params) async {
     safeEmit(stateClass(entity: null, loading: true));
-    set(await repository.create(params.toJson()));
+    return set(await repository.create(params.toJson()));
   }
 
   update(EntityType params) async {
     safeEmit(stateClass(entity: null, loading: true));
-    set(await repository.update(params.toJson()));
+    return set(await repository.update(params.toJson()));
   }
 
-  set(EntityType entity) {
+  EntityType set(EntityType entity) {
     safeEmit(stateClass(entity: entity, loading: false)) &&
         (listenChanges() ?? true);
+    return entity;
   }
 
   setRefresher(Duration d, bool Function(StateType) refresh) {

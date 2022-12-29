@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -22,15 +24,22 @@ class EditBillSplit extends StatelessWidget {
                 ),
                 body: CustomPadding(
                     multiplier: 2,
-                    child: EditBillSplitForm(
-                        onSave: () => Navigator.pop(context),
-                        entity: entity)))));
+                    child: entity?.id == null
+                        ? EditBillSplitForm(
+                            onSave: (b) async => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditBillSplit(
+                                          entity: b,
+                                        ))),
+                            entity: entity)
+                        : Text('New bill split')))));
   }
 }
 
 class EditBillSplitForm extends StatefulWidget {
   final BillSplit? entity;
-  final Function? onSave;
+  final Future<dynamic> Function(dynamic b)? onSave;
 
   const EditBillSplitForm({required this.entity, this.onSave, Key? key})
       : super(key: key);
@@ -46,10 +55,14 @@ class EditBillSplitFormState extends State<EditBillSplitForm> {
 
   FormArray get participantList =>
       f.control('BillSplitParticipants') as FormArray;
+  List<CurrencyInputCubit> participantCubits = [];
+  List<int> changed = [];
+  bool listeningForChanges = true;
 
   @override
   void initState() {
     super.initState();
+    calcBillSplit(widget.entity!, null, null, changed);
 
     f = FormGroup({
       'amount': FormControl<num>(
@@ -57,46 +70,23 @@ class EditBillSplitFormState extends State<EditBillSplitForm> {
       'currency': FormControl<String>(
           value: widget.entity?.currency ?? 'BTC',
           validators: [Validators.required]),
-      'BillSplitParticipants': FormArray(
-          (widget.entity!.BillSplitParticipants
-              .map<AbstractControl<dynamic>>((e) => FormGroup({
-                    'amount': FormControl<CurrencyInputOutput>(
-                        value: CurrencyInputOutput(
-                            e.amount, widget.entity!.currency),
-                        validators: [])
-                  }))).toList(),
-          validators: [Validators.minLength(2)])
+      'BillSplitParticipants':
+          FormArray([], validators: [Validators.minLength(2)])
     });
 
-    recalc();
-
-    participantList.controls.forEach((element) {
-      element.findControl('amount')!.valueChanges.listen((event) {
-        int i = participantList.controls.indexOf(element);
-        widget.entity!.BillSplitParticipants[i].amount = event.amount;
-        recalc(widget.entity!.BillSplitParticipants[i],
-            [widget.entity!.BillSplitParticipants[i]]);
-        print(event);
-      });
+    widget.entity!.BillSplitParticipants.forEach((el) {
+      addParticipant(el);
     });
-
-    // participantList.valueChanges.listen((event) {
-    //   print(event);
-    // });
   }
 
-  recalc([BillSplitParticipant? update, List<BillSplitParticipant>? changed]) {
-    if (widget.entity!.id == null) {
-      calcBillSplit(widget.entity!, update, changed ?? []);
-      // widget.entity!.BillSplitParticipants.asMap().forEach((index, value) {
-      //   participantList
-      //       .controls[widget.entity!.BillSplitParticipants.indexOf(value)]
-      //       .findControl('amount')!
-      //       .updateValue(
-      //           CurrencyInputOutput(value.amount, widget.entity!.currency));
-      // });
-      setState(() {});
-    }
+  setInputs() async {
+    widget.entity!.BillSplitParticipants.asMap().forEach((index, value) {
+      listeningForChanges = false;
+      participantCubits[index]
+          .setValue(CurrencyInputOutput(value.amount, widget.entity!.currency));
+      Future.delayed(
+          const Duration(milliseconds: 10), () => listeningForChanges = true);
+    });
   }
 
   @override
@@ -104,6 +94,16 @@ class EditBillSplitFormState extends State<EditBillSplitForm> {
     return CustomForm<BillSplitCubit, BillSplitCubitState, BillSplit>(
         entity: widget.entity ??
             BillSplit.fromJson({'amount': 0, 'currency': 'BTC'}),
+        beforeSave: (Map<String, dynamic> formData) {
+          return Map<String, dynamic>.from({
+            ...formData,
+            'BillSplitParticipants': formData['BillSplitParticipants']
+                .map<Map<String, dynamic>>((i) {
+              return Map<String, dynamic>.from(
+                  {...i, 'amount': i['amount'].amount});
+            }).toList()
+          });
+        },
         onSave: widget.onSave,
         formGroup: () => f,
         builder: (BuildContext context, state) => Column(
@@ -118,7 +118,8 @@ class EditBillSplitFormState extends State<EditBillSplitForm> {
                               .toList(),
                         )),
                 const VertDivider(),
-                Button.flat(onPressed: addParticipant, text: 'Add Person')
+                Button.flat(
+                    onPressed: (() => addParticipant(null)), text: 'Add Person')
               ],
             ));
   }
@@ -136,30 +137,91 @@ class EditBillSplitFormState extends State<EditBillSplitForm> {
               const VertDivider(),
               CurrencyInput(
                 form: participantForm,
-                onChanged: ((p0) {
-                  print(p0);
-                }),
-                options: CurrencyInputOptions(
-                    showAltCurrency: false,
-                    canSwitchCurrency: false,
-                    max: [
-                      CurrencyInputOutput(
-                          widget.entity!.amount, widget.entity!.currency)
-                    ],
-                    initialValue: participantForm.control('amount').value),
+                cubit: participantCubits[
+                    participantList.controls.indexOf(participantForm)],
                 large: false,
               ),
               VertDivider(2)
             ]));
   }
 
-  addParticipant() {
-    participantList.add(FormGroup({
+  addParticipant(BillSplitParticipant? part) {
+    if (part == null) {
+      widget.entity!.BillSplitParticipants
+          .add(BillSplitParticipant(null, null));
+    }
+    participantCubits.add(CurrencyInputCubit(CurrencyInputOptions(
+        showAltCurrency: false,
+        canSwitchCurrency: false,
+        max: [
+          CurrencyInputOutput(widget.entity!.amount, widget.entity!.currency)
+        ],
+        initialValue:
+            CurrencyInputOutput(part?.amount ?? 0, widget.entity!.currency))));
+    FormGroup f = FormGroup({
       'amount': FormControl<CurrencyInputOutput>(
-          value: CurrencyInputOutput(0, widget.entity!.currency),
+          value:
+              CurrencyInputOutput(part?.amount ?? 0, widget.entity!.currency),
           validators: [Validators.required]),
-    }));
-    recalc();
+    });
+    participantList.add(f);
+    if (participantList.controls.indexOf(f) > 0) {
+      f.findControl('amount')!.valueChanges.listen((event) {
+        int i = participantList.controls.indexOf(f);
+        print(i.toString() +
+            ' changed and was listening: ' +
+            listeningForChanges.toString());
+        if (!changed.contains(i) && listeningForChanges) {
+          changed.add(i);
+          // print(changed);
+          // print(listeningForChanges);
+        }
+        if (listeningForChanges)
+          calcBillSplit(widget.entity!, i, event.amount, changed);
+        print(widget.entity!.toJson());
+
+        removeMax();
+        setInputs();
+        setMax();
+      });
+    }
+
+    calcBillSplit(widget.entity!, null, null, changed);
+    setMax();
     setState(() {});
+  }
+
+  setMax() {
+    participantCubits.asMap().forEach((key, value) {
+      // print('Index-----');
+      // print(key);
+      // print('Current val');
+      // print(widget.entity!.BillSplitParticipants[key].amount);
+      // print('Amount unassigned');
+      // print(calcAmountLeft(widget.entity, changed));
+      // print('Setting max for ' +
+      //     key.toString() +
+      //     ' to ' +
+      //     (widget.entity!.BillSplitParticipants[key].amount +
+      //             calcAmountLeft(widget.entity, changed))
+      //         .toString());
+      participantCubits[key].options.max = [
+        CurrencyInputOutput(
+            max(
+                widget.entity!.BillSplitParticipants[key].amount +
+                    calcAmountLeft(widget.entity, changed),
+                0),
+            widget.entity!.currency)
+      ];
+      participantCubits[key].enforceConstraints(CurrencyInputOutput(
+          widget.entity!.BillSplitParticipants[key].amount,
+          widget.entity!.currency));
+    });
+  }
+
+  removeMax() {
+    participantCubits.asMap().forEach((key, value) {
+      participantCubits[key].options.max = [];
+    });
   }
 }

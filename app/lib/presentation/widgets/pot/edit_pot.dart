@@ -37,14 +37,14 @@ class EditPot extends StatelessWidget {
                 body: CustomPadding(
                     multiplier: 2,
                     child: EditPotForm(
-                        onSave: () => Navigator.pop(context),
+                        onSave: (p) async => Navigator.pop(context),
                         entity: entity)))));
   }
 }
 
 class EditPotForm extends StatefulWidget {
   final Pot? entity;
-  final Function? onSave;
+  final Future<dynamic> Function(dynamic p)? onSave;
 
   const EditPotForm({required this.entity, this.onSave, Key? key})
       : super(key: key);

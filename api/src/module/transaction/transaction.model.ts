@@ -85,6 +85,14 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	contactAddressId: number;
 
+	// @BelongsTo(() => BillSplit)
+	// BillSplit: BillSplit;
+
+	@ForeignKey(() => BillSplit)
+	@AllowNull(true)
+	@Column
+	billSplitId: number;
+
 	@BelongsTo(() => User)
 	User: User;
 

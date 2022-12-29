@@ -29,6 +29,7 @@ export class BillSplitParticipant
 	@BelongsTo(() => BillSplit)
 	BillSplit: BillSplit;
 
+	@AllowNull(false)
 	@ForeignKey(() => BillSplit)
 	@Column
 	billSplitId: number;

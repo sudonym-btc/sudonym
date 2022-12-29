@@ -9,21 +9,23 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
 class CurrencyInput extends FormField<CurrencyInputOutput> {
-  final CurrencyInputOptions options;
+  final CurrencyInputOptions? options;
+  final CurrencyInputCubit? cubit;
   final FormGroup? form;
   final void Function(CurrencyInputOutput)? onChanged;
   final bool large;
 
   CurrencyInput({
-    required this.options,
+    this.options,
     this.large = false,
+    this.cubit,
     this.form,
     this.onChanged,
     super.key,
   }) : super(
-            builder: (FormFieldState<CurrencyInputOutput> state) =>
-                (state as _CurrencyInputState)
-                    .constructWidget(state.context, form, options, large));
+            builder: (FormFieldState<CurrencyInputOutput> state) => (state
+                    as _CurrencyInputState)
+                .constructWidget(state.context, form, cubit, options, large));
 
   @override
   FormFieldState<CurrencyInputOutput> createState() => _CurrencyInputState();
@@ -32,7 +34,9 @@ class CurrencyInput extends FormField<CurrencyInputOutput> {
 class CurrencyInputOutput extends Equatable {
   num amount;
   String currency;
-  CurrencyInputOutput(this.amount, this.currency);
+  CurrencyInputOutput(this.amount, this.currency) {
+    amount = num.parse(amount.toStringAsFixed(8));
+  }
 
   @override
   List<Object?> get props => [amount, currency];
@@ -40,16 +44,13 @@ class CurrencyInputOutput extends Equatable {
 
 class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
   Widget constructWidget(BuildContext context, FormGroup? form,
-      CurrencyInputOptions options, bool large) {
+      CurrencyInputCubit? cubit, CurrencyInputOptions? options, bool large) {
     return BlocProvider(create: (_) {
-      CurrencyInputCubit c = CurrencyInputCubit(options);
+      CurrencyInputCubit c = cubit ?? CurrencyInputCubit(options!);
       if (form != null) {
-        form.control('amount').valueChanges.listen((event) {
-          c.controller!.updateValue(event!.amount);
-          c.setValue(event!.amount);
-        });
         c.options.controller!.outputStream.stream.listen((event) {
           form.control('amount').updateValue(event);
+          form.control('amount').markAsDirty();
         });
       }
 
@@ -108,15 +109,19 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   errorText: formatError(context, state.error),
-                  helperText: options.showAltCurrency
+                  helperText: BlocProvider.of<CurrencyInputCubit>(context)
+                          .options
+                          .showAltCurrency
                       ? (state.altLoading
                           ? '...'
                           : FormatCurrency().format(
-                              options.currencies[state.altCurrency],
+                              BlocProvider.of<CurrencyInputCubit>(context)
+                                  .options
+                                  .currencies[state.altCurrency],
                               state.altVal))
                       : '',
                   prefixText:
-                      '${getCurrencySymbol(options.currencies[state.currCurrency])}  ',
+                      '${getCurrencySymbol(BlocProvider.of<CurrencyInputCubit>(context).options.currencies[state.currCurrency])}  ',
                   prefixStyle: Theme.of(context)
                       .textTheme
                       .displayLarge!
@@ -126,7 +131,9 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                               .displayLarge!
                               .color!
                               .withAlpha(70)),
-                  suffixIcon: options.canSwitchCurrency
+                  suffixIcon: BlocProvider.of<CurrencyInputCubit>(context)
+                          .options
+                          .canSwitchCurrency
                       ? IconButton(
                           iconSize: iconSize * 1.5,
                           onPressed:
