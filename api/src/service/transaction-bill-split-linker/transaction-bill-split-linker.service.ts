@@ -16,7 +16,7 @@ export class TransactionBillSplitLinkerService {
 	onModuleInit() {
 		this.transactionService.afterCreate.hook(async ({ entity }) => {
 			if (entity.status == true && entity.outgoing == false) {
-				if (entity.Receiver.billSplitParticipantId) {
+				if (entity.Receiver && entity.Receiver.billSplitParticipantId) {
 					const p = await this.billSplitParticipantService.findOne(
 						entity.Receiver.billSplitParticipantId
 					);

@@ -65,7 +65,7 @@ export class BillSplit extends BaseModel implements Models.BillSplit {
 						include: [
 							{
 								model: BillSplit,
-								as: 'BillSplit',
+								as: 'BillSplits',
 								required: true,
 								where: {
 									id: id,

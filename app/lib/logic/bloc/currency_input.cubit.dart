@@ -158,6 +158,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
         numToCurrentPrecision(val.amount) > numToCurrentPrecision(min);
     // Return error when below minimum
     if (val.amount < min) {
+      print(val.amount);
+      print(min);
       error = {'min': FormatCurrency().format(getCurrentCurrency(), min)};
     }
 

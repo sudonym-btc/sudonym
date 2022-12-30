@@ -1,6 +1,7 @@
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
 import { authUserIdGetter, context } from 'helper/context-request';
+import { BillSplit } from 'module/bill-split/bill-split.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
 import { Transaction } from 'module/transaction/transaction.model';
@@ -85,6 +86,9 @@ export class Pot extends BaseModel implements Models.Pot {
 
 	@HasMany(() => PotUser)
 	PotUsers: PotUser[];
+
+	@HasMany(() => BillSplit)
+	BillSplits: BillSplit[];
 
 	@HasMany(() => Transaction)
 	Transactions: Transaction[];

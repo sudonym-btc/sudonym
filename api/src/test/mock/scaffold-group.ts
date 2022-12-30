@@ -39,13 +39,17 @@ export const scaffoldGroup = (
 		};
 
 		beforeEach(async () => {
+			console.log('before');
 			scaffold.app = await createMockApp();
+			console.log('after');
 			scaffold.entities = await createMockEntities(scaffold.app);
 		}, 10000);
 
 		afterEach(async () => {
+			console.log('here');
 			await wipeDB();
 			await closeApp();
+			console.log('atyer');
 		}, 10000);
 
 		callback(scaffold);

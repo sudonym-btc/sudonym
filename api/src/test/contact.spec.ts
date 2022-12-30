@@ -32,6 +32,7 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
 		expect(transaction.contactAddressId).toBe(
 			contact.ContactAddresses[0].id
 		);
+		console.log('done');
 	});
 
 	it('should assign transaction contact address id on contact create', async () => {

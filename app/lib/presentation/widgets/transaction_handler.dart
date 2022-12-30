@@ -37,6 +37,7 @@ class TransactionHandlerState extends State<TransactionHandler>
   }
 
   CreatedOrUpdated<Transaction> callback(CreatedOrUpdated<Transaction> event) {
+    print(event);
     loggy.i('Transaction callback ${event.entity.id}');
 
     // When receiving a transaction popup the transaction details page
