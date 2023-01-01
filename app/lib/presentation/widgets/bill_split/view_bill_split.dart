@@ -55,6 +55,7 @@ class BillSplitParticipantListItem extends StatelessWidget {
     return CubitWrapper<BillSplitParticipantCubit,
             BillSplitParticipantCubitState, BillSplitParticipant>(
         entity: entity,
+        refreshOnFocus: (state) => true,
         builder: ((context, state) {
           if (state.loading) return Container();
           return ListTile(

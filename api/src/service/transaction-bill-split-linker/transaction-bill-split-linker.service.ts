@@ -40,7 +40,8 @@ export class TransactionBillSplitLinkerService {
 								roundToDisplay(
 									amountPaid,
 									billSplit.currency
-								) >= p.amount,
+								) >=
+								roundToDisplay(p.amount, billSplit.currency),
 						}
 					);
 				}
