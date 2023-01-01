@@ -1,5 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { calcAmountLeft } from '@sudonym/models';
 import { BillSplitParticipantService } from 'module/bill-split-participant/bill-split-participant.service';
+import { roundToDisplay } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { BaseService } from '../base.service';
 import { BillSplit } from './bill-split.model';
@@ -14,6 +16,18 @@ export class BillSplitService extends BaseService(BillSplit) {
 
 	onModuleInit() {
 		this.beforeCreate.hook((params) => {
+			// Check that the participant amounts make up the complete amount
+			if (
+				roundToDisplay(
+					calcAmountLeft(params, [
+						...Array(params.BillSplitParticipants.length).keys(),
+					]),
+					params.currency
+				)
+			) {
+				throw new HttpException('Bill split wrong amounts', 400);
+			}
+			// Fulfill the first contribution if the user has already paid the bill
 			if (params.transactionId) {
 				params.BillSplitParticipants[0].amountPaid =
 					params.BillSplitParticipants[0].amount;

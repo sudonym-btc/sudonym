@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import * as Models from '@sudonym/models';
 import { CurrencyCode } from '@sudonym/models';
 import { BillSplitParticipant } from 'module/bill-split-participant/bill-split-participant.model';
@@ -14,6 +15,7 @@ import {
 	HasMany,
 	PrimaryKey,
 	Table,
+	Validate,
 } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 
@@ -32,6 +34,12 @@ export class BillSplit extends BaseModel implements Models.BillSplit {
 	currency: CurrencyCode;
 
 	@AllowNull(false)
+	@Validate({
+		greaterThanZero(val) {
+			if (val <= 0)
+				throw new HttpException('Must be greater than zero', 400);
+		},
+	})
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 

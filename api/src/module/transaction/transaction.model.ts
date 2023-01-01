@@ -224,3 +224,8 @@ export class Transaction extends BaseModel implements Models.Transaction {
 		}),
 	};
 }
+
+export const roundToDisplay = (amount: number, currency: string) =>
+	currency == 'BTC'
+		? parseFloat(amount.toFixed(8))
+		: parseFloat(amount.toFixed(2));

@@ -76,6 +76,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
 
   setInputs() async {
     widget.entity!.BillSplitParticipants.asMap().forEach((index, value) {
+      if (participantCubits.length <= index) return;
       listeningForChanges = false;
       participantCubits[index]
           .setValue(CurrencyInputOutput(value.amount, widget.entity!.currency));
@@ -150,9 +151,8 @@ class _EditBillSplitState extends State<_EditBillSplit> {
         formGroup: participantForm,
         child: ListTile(
           contentPadding: EdgeInsets.only(bottom: padding * 2),
-          title: Text(participantList.controls.indexOf(participantForm) == 0
-              ? 'You'
-              : 'Person ${participantList.controls.indexOf(participantForm) + 1}'),
+          title: Text(getParticipantName(
+              participantList.controls.indexOf(participantForm), context)),
           subtitle: CurrencyInput(
             form: participantForm,
             cubit: participantCubits[
@@ -186,17 +186,12 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     if (participantList.controls.indexOf(f) > 0) {
       f.findControl('amount')!.valueChanges.listen((event) {
         int i = participantList.controls.indexOf(f);
-        print(i.toString() +
-            ' changed and was listening: ' +
-            listeningForChanges.toString());
         if (!changed.contains(i) && listeningForChanges) {
           changed.add(i);
-          // print(changed);
-          // print(listeningForChanges);
         }
-        if (listeningForChanges)
+        if (listeningForChanges) {
           calcBillSplit(widget.entity!, i, event.amount, changed);
-        print(widget.entity!.toJson());
+        }
 
         removeMax();
         setInputs();
@@ -205,24 +200,18 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     }
 
     calcBillSplit(widget.entity!, null, null, changed);
+    setInputs();
     setMax();
     setState(() {});
   }
 
   setMax() {
     participantCubits.asMap().forEach((key, value) {
-      // print('Index-----');
-      // print(key);
-      // print('Current val');
-      // print(widget.entity!.BillSplitParticipants[key].amount);
-      // print('Amount unassigned');
-      // print(calcAmountLeft(widget.entity, changed));
-      // print('Setting max for ' +
-      //     key.toString() +
-      //     ' to ' +
-      //     (widget.entity!.BillSplitParticipants[key].amount +
-      //             calcAmountLeft(widget.entity, changed))
-      //         .toString());
+      if (key > 0) {
+        participantCubits[key].options.min = [
+          CurrencyInputOutput(0.00000001, 'BTC')
+        ];
+      }
       participantCubits[key].options.max = [
         CurrencyInputOutput(
             max(
@@ -233,9 +222,11 @@ class _EditBillSplitState extends State<_EditBillSplit> {
                 0),
             widget.entity!.currency)
       ];
-      participantCubits[key].enforceConstraints(CurrencyInputOutput(
-          widget.entity!.BillSplitParticipants[key].amount,
-          widget.entity!.currency));
+      if (widget.entity!.BillSplitParticipants.length > key) {
+        participantCubits[key].enforceConstraints(CurrencyInputOutput(
+            widget.entity!.BillSplitParticipants[key].amount,
+            widget.entity!.currency));
+      }
     });
   }
 
@@ -244,4 +235,10 @@ class _EditBillSplitState extends State<_EditBillSplit> {
       participantCubits[key].options.max = [];
     });
   }
+}
+
+String getParticipantName(int index, BuildContext context) {
+  return index == 0
+      ? AppLocalizations.of(context)!.you
+      : '${AppLocalizations.of(context)!.person} $index';
 }

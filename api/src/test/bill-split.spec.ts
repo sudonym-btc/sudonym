@@ -5,7 +5,9 @@ import {
 } from '@sudonym/models';
 import { RecursivePartial } from '@sudonym/models/src/recursive-partial';
 import { runAsUser } from 'helper/context-request';
+import { BillSplitParticipantService } from 'module/bill-split-participant/bill-split-participant.service';
 import { BillSplitService } from 'module/bill-split/bill-split.service';
+import { ReceiverService } from 'module/receiver/receiver.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { scaffoldGroup } from './mock/scaffold-group';
 
@@ -96,6 +98,102 @@ scaffoldGroup('Bill Split', (scaffold) => {
 		};
 
 		expect(() => calcBillSplit(billSplit as any, 0, 4, [])).toThrowError();
+	});
+
+	it('should mark participant as paid for amounts nearing full amount', async () => {
+		const participants: RecursivePartial<BillSplitParticipant>[] = [
+			{
+				id: 1,
+				amount: 1,
+			},
+			{
+				id: 2,
+				amount: 1,
+			},
+		];
+		const { entity: billSplit } = await scaffold.app
+			.get(BillSplitService)
+			.create({
+				currency: 'GBP',
+				amount: 2,
+				potId: scaffold.entities.pot[0].id,
+				BillSplitParticipants: participants,
+			});
+
+		const { entity: receiver } = await scaffold.app
+			.get(ReceiverService)
+			.create({
+				potId: scaffold.entities.pot[0].id,
+				billSplitParticipantId: billSplit.BillSplitParticipants[1].id,
+				type: 'lnurl',
+				amount: 1,
+				amountCurrency: 'BTC',
+			});
+
+		const { entity: transaction } = await scaffold.app
+			.get(TransactionService)
+			.create({
+				type: 'lnurl',
+				address: 'lnurl123',
+				outgoing: false,
+				receiverId: receiver.id,
+				potId: scaffold.entities.pot[0].id,
+				amount: 0.9998,
+				currencyCode: 'GBP',
+				status: true,
+			});
+
+		const billSplitParticipant = await scaffold.app
+			.get(BillSplitParticipantService)
+			.findOne(billSplit.BillSplitParticipants[1].id);
+
+		expect(billSplitParticipant.amount).toBe(1);
+		expect(billSplitParticipant.amountPaid).toBe(transaction.amount);
+		expect(billSplitParticipant.paid).toBe(true);
+	});
+
+	it('should not allow incorrect bill split amounts', async () => {
+		const participants: RecursivePartial<BillSplitParticipant>[] = [
+			{
+				id: 1,
+				amount: 1,
+			},
+			{
+				id: 2,
+				amount: 2,
+			},
+		];
+
+		expect(
+			scaffold.app.get(BillSplitService).create({
+				currency: 'GBP',
+				amount: 2,
+				potId: scaffold.entities.pot[0].id,
+				BillSplitParticipants: participants,
+			})
+		).rejects.toThrowError();
+	});
+
+	it('should not allow zero amounts', async () => {
+		const participants: RecursivePartial<BillSplitParticipant>[] = [
+			{
+				id: 1,
+				amount: 0,
+			},
+			{
+				id: 2,
+				amount: 2,
+			},
+		];
+
+		expect(
+			scaffold.app.get(BillSplitService).create({
+				currency: 'GBP',
+				amount: 2,
+				potId: scaffold.entities.pot[0].id,
+				BillSplitParticipants: participants,
+			})
+		).rejects.toThrowError();
 	});
 
 	it('should adjust bill split payment amounts correctly for paid tx', async () => {

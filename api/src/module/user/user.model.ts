@@ -6,7 +6,7 @@ import {
 	HasMany,
 	PrimaryKey,
 	Table,
-	Validate
+	Validate,
 } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 import { Sender } from '../sender/sender.model';

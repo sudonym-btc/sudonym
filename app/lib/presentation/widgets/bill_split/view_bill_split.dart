@@ -16,7 +16,7 @@ class ViewBillSplit extends StatelessWidget {
         entity: entity,
         builder: (context, state) {
           return state.loading || state.entity == null
-              ? Container()
+              ? const Center(child: CircularProgressIndicator())
               : Column(
                   children: [
                     ...state.entity!.BillSplitParticipants.asMap().entries.map(
@@ -60,7 +60,7 @@ class BillSplitParticipantListItem extends StatelessWidget {
           return ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(child: Text(index.toString())),
-              title: Text(index > 0 ? 'Person $index' : 'You'),
+              title: Text(getParticipantName(index, context)),
               subtitle: AmountText(
                 amount: state.entity!.amount,
                 fromCurrency: billSplit.currency,
@@ -70,7 +70,7 @@ class BillSplitParticipantListItem extends StatelessWidget {
                     fromCurrency: billSplit.currency,
                     toCurrency: billSplit.currency,
                     builder: (val) => Info(
-                        '${AppLocalizations.of(context)!.owed}: $owedVal / ${AppLocalizations.of(context)!.paid}: $val')),
+                        '$owedVal ${AppLocalizations.of(context)!.owed.toLowerCase()} / $val ${AppLocalizations.of(context)!.paid.toLowerCase()}')),
               ),
               trailing: (index > 0 && !state.entity!.paid)
                   ? IconButton(
@@ -82,7 +82,6 @@ class BillSplitParticipantListItem extends StatelessWidget {
                                     pot: Pot.fromJson({'id': billSplit.potId}),
                                     onReceive:
                                         (Receiver t, BuildContext context) {
-                                      print('RECEIVED');
                                       Navigator.of(context).pop();
                                     },
                                     billSplit: billSplit,

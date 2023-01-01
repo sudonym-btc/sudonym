@@ -156,10 +156,10 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
 
     negativeEnabled =
         numToCurrentPrecision(val.amount) > numToCurrentPrecision(min);
-    // Return error when below minimum
-    if (val.amount < min) {
-      print(val.amount);
-      print(min);
+
+    // Return error when below minimum, round to 8 decimal places to avoid small deviations
+    if (num.parse(val.amount.toStringAsFixed(8)) <
+        num.parse(min.toStringAsFixed(8))) {
       error = {'min': FormatCurrency().format(getCurrentCurrency(), min)};
     }
 

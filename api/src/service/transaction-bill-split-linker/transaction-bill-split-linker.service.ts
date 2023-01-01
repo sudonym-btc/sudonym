@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { BillSplitParticipantService } from 'module/bill-split-participant/bill-split-participant.service';
 import { BillSplitService } from 'module/bill-split/bill-split.service';
 import { CurrencyService } from 'module/currency/currency.service';
+import { roundToDisplay } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
 
 @Injectable()
@@ -35,7 +36,11 @@ export class TransactionBillSplitLinkerService {
 						entity.Receiver.billSplitParticipantId,
 						{
 							amountPaid,
-							paid: amountPaid >= p.amount,
+							paid:
+								roundToDisplay(
+									amountPaid,
+									billSplit.currency
+								) >= p.amount,
 						}
 					);
 				}

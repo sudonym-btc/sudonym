@@ -1,5 +1,7 @@
 export 'amount_text.dart';
 export 'auth/auth_gate.dart';
+export 'bill_split/edit_bill_split.dart';
+export 'bill_split/view_bill_split.dart';
 export 'bolt_card/bolt_card_list.dart';
 export 'bolt_card/bolt_card_list_item.dart';
 export 'contacts/contact_list.dart';

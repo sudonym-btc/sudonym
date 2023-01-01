@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
@@ -31,8 +32,8 @@ class SendReceive extends StatelessWidget {
                           children: [
                             Button(
                               text: AppLocalizations.of(context)!.receive,
-                              // icon: const FaIcon(FontAwesomeIcons.inbox,
-                              //     size: 14),
+                              icon: const FaIcon(FontAwesomeIcons.inbox,
+                                  size: iconSize),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/receive',
                                     arguments: ReceiveOptions(pot: entity));
@@ -40,8 +41,8 @@ class SendReceive extends StatelessWidget {
                             ),
                             Button(
                               text: AppLocalizations.of(context)!.send,
-                              // icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                              //     size: 14),
+                              icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                                  size: iconSize),
                               onPressed: () {
                                 Navigator.push(
                                     buildContext,

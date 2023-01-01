@@ -66,6 +66,9 @@ class App extends StatelessWidget {
       theme: getTheme(),
       darkTheme: getTheme(light: false),
       home: const AuthGate(child: HomePage()),
+      builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+          child: child!),
       // builder: (BuildContext context, Widget? widget) {
       //   ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
       //     return StatusPage(
