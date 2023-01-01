@@ -66,7 +66,7 @@ class BillSplitParticipantListItem extends StatelessWidget {
                 fromCurrency: billSplit.currency,
                 toCurrency: billSplit.currency,
                 builder: (owedVal) => AmountText(
-                    amount: state.entity!.amount,
+                    amount: state.entity!.amountPaid,
                     fromCurrency: billSplit.currency,
                     toCurrency: billSplit.currency,
                     builder: (val) => Info(

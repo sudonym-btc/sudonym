@@ -4,6 +4,7 @@ import "types/index.dart" show MSATOSHIS, SATOSHIS;
 
 class Withdraw extends ActionTypeWithAmount {
   dynamic /* num | null */ potId;
+  dynamic /* num | null */ billSplitParticipantId;
   String originalAddress;
   dynamic /* String | null */ currency;
   dynamic /* num | null */ amount;
@@ -16,8 +17,15 @@ class Withdraw extends ActionTypeWithAmount {
   dynamic /* bool | null */ isBolt12;
   dynamic /* bool | null */ isOnChain;
   dynamic /* String | null */ comment;
-  Withdraw(this.potId, this.originalAddress, this.currency, this.amount,
-      this.minAmount, this.maxAmount, this.remoteResponse,
+  Withdraw(
+      this.potId,
+      this.billSplitParticipantId,
+      this.originalAddress,
+      this.currency,
+      this.amount,
+      this.minAmount,
+      this.maxAmount,
+      this.remoteResponse,
       [this.isLnUrl = false,
       this.isLnAddress = false,
       this.isBolt11 = false,
@@ -43,6 +51,7 @@ class Withdraw extends ActionTypeWithAmount {
     final a = ActionRemoteResponse.fromJson(json["remoteResponse"]);
     final w = new Withdraw(
         json["potId"],
+        json["billSplitParticipantId"],
         json["originalAddress"],
         json["currency"] != null ? json["currency"] : "BTC",
         json["amount"],
@@ -71,6 +80,7 @@ class Withdraw extends ActionTypeWithAmount {
     return {
       "type": this.type,
       "potId": this.potId,
+      "billSplitParticipantId": this.billSplitParticipantId,
       "originalAddress": this.originalAddress,
       "currency": this.currency,
       "amount": this.amount,

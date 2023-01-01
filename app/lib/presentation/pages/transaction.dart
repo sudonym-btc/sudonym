@@ -119,6 +119,10 @@ class _OutgoingComplete extends _TransactionStatusPage {
 
   @override
   Widget build(BuildContext context) {
+    bool shouldDisplayContact = transaction.contactAddressId != null ||
+        ['lightningaddress'].contains(transaction.type);
+    bool shouldDisplaySplitBill = transaction.outgoing;
+
     return StatusPage(
         title: AppLocalizations.of(context)!.paymentSent,
         subtitle: AmountText(
@@ -131,9 +135,12 @@ class _OutgoingComplete extends _TransactionStatusPage {
                 AppLocalizations.of(context)!.paymentOutgoingSuccess(val))),
         content:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            _ContactSection(transaction),
-            _SplitBillSection(transaction)
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (shouldDisplayContact) ...[
+              _ContactSection(transaction),
+              VertDivider()
+            ],
+            if (shouldDisplaySplitBill) _SplitBillSection(transaction)
           ]),
           VertDivider(2),
           Table(
@@ -368,26 +375,33 @@ class _ContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      if (entity.ContactAddress?.contactId != null)
-        ContactListItem(
-            actions: false,
-            fetch: true,
-            contact: Contact.fromJson({'id': entity.ContactAddress.contactId}))
-      else if (['lightningaddress'].contains(entity.type))
-        Button(
-            icon: const Icon(Icons.add),
-            text: AppLocalizations.of(context)!.createContact,
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditContactPage(
-                            entity: Contact.fromJson({
-                          'ContactAddresses': [
-                            {'address': entity.originalAddress}
-                          ]
-                        })))))
-    ]);
+    if (entity.ContactAddress?.contactId != null) {
+      return Button(
+          icon: const Icon(Icons.person),
+          text: entity.ContactAddress.address,
+          onPressed: () {});
+
+      //               Column(children: [
+      // ContactListItem(
+      //     actions: false,
+      //     fetch: true,
+      //     contact: Contact.fromJson({'id': entity.ContactAddress.contactId}))
+      // ]);
+    } else if (['lightningaddress'].contains(entity.type)) {
+      return Button(
+          icon: const Icon(Icons.add),
+          text: AppLocalizations.of(context)!.createContact,
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EditContactPage(
+                          entity: Contact.fromJson({
+                        'ContactAddresses': [
+                          {'address': entity.originalAddress}
+                        ]
+                      })))));
+    }
+    return Container();
   }
 }
 

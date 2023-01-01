@@ -9,14 +9,23 @@ module.exports = {
 		//
 
 		return queryInterface
-			.addColumn('Transactions', 'billSplitId', {
-				type: DataTypes.INTEGER,
-				allowNull: true,
-				references: {
-					model: 'BillSplits', // name of Target model
-					key: 'id', // key in Target model that we're referencing
-				},
-			})
+			.removeColumn('Transactions', 'billSplitId')
+			.then(() =>
+				queryInterface.addColumn('Transactions', 'billSplitId', {
+					type: DataTypes.INTEGER,
+					allowNull: true,
+					references: {
+						model: 'BillSplits', // name of Target model
+						key: 'id', // key in Target model that we're referencing
+					},
+				})
+			)
+			.then(() =>
+				queryInterface.removeColumn(
+					'Receivers',
+					'billSplitParticipantId'
+				)
+			)
 			.then(() =>
 				queryInterface.addColumn(
 					'Receivers',

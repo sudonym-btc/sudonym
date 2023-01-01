@@ -42,14 +42,19 @@ class ReceiveWidget extends StatefulWidget {
 class ReceiveWidgetState extends State<ReceiveWidget> {
   late CurrencyInputOptions inputOptions;
 
-// add the amount of the current widget to the withdraw actions triggered while on this page
+  // Add the amount of the current widget to the withdraw actions triggered while on this page
   ActionParseResponse cb(ActionParseResponse a) {
     if (a.withdraw != null) {
-      CurrencyInputOutput lastEvent = inputOptions.controller!.value;
+      CurrencyInputOutput lastEvent = widget.opts.billSplit != null
+          ? CurrencyInputOutput(
+              widget.opts.participant!.amount, widget.opts.billSplit!.currency)
+          : inputOptions.controller!.value;
       a.withdraw.currency = lastEvent.currency;
       a.withdraw.amount = lastEvent.amount;
       a.withdraw.minAmount = lastEvent.amount;
       a.withdraw.maxAmount = lastEvent.amount;
+
+      a.withdraw.billSplitParticipantId = widget.opts.participant?.id;
     }
     return a;
   }
@@ -84,8 +89,6 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             ReceiverCubit c = getIt<ReceiverCubit>();
 
             c.onReceived.stream.listen((event) {
-              print(event);
-              print('header');
               if (widget.opts.onReceive != null) {
                 widget.opts.onReceive!(event, context);
               }

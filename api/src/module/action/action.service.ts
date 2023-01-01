@@ -187,6 +187,7 @@ export class ActionService {
 			this.logger.warn('Withdrawing', action);
 			const { entity: receiver } = await this.receiverService.create({
 				potId: action.potId,
+				billSplitParticipantId: action.billSplitParticipantId,
 				amountCurrency: 'BTC',
 				amount: (
 					await this.currencyService.convert(

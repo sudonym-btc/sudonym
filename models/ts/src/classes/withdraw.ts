@@ -5,6 +5,7 @@ import { MSATOSHIS, SATOSHIS } from './types/index';
 export class Withdraw extends ActionTypeWithAmount {
 	constructor(
 		public potId: number | null,
+		public billSplitParticipantId: number | null,
 		public originalAddress: string,
 		public currency: string | null,
 		public amount: number | null,
@@ -38,6 +39,7 @@ export class Withdraw extends ActionTypeWithAmount {
 		const a = ActionRemoteResponse.fromJson(json['remoteResponse']);
 		const w = new Withdraw(
 			json['potId'],
+			json['billSplitParticipantId'],
 			json['originalAddress'],
 			json['currency'] != null ? json['currency'] : 'BTC',
 			json['amount'],
@@ -72,6 +74,7 @@ export class Withdraw extends ActionTypeWithAmount {
 		return {
 			type: this.type,
 			potId: this.potId,
+			billSplitParticipantId: this.billSplitParticipantId,
 			originalAddress: this.originalAddress,
 			currency: this.currency,
 			amount: this.amount,
