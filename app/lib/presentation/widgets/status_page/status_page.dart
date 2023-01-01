@@ -31,7 +31,7 @@ class StatusPage extends StatelessWidget {
         .copyWith(
             backgroundColor: color ?? currTheme.backgroundColor,
             appBarTheme: color != null
-                ? currTheme.appBarTheme.copyWith(backgroundColor: color)
+                ? darkTheme.appBarTheme.copyWith(backgroundColor: color)
                 : currTheme.appBarTheme,
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: currTheme.elevatedButtonTheme.style!.copyWith(

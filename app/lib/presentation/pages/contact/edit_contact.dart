@@ -25,7 +25,7 @@ class EditContactPage extends StatelessWidget {
           body: CustomPadding(
             multiplier: 2,
             child: EditContactForm(
-                onSave: () => Navigator.pop(context), entity: entity),
+                onSave: (c) async => Navigator.pop(context), entity: entity),
           ),
         )));
   }
@@ -33,7 +33,7 @@ class EditContactPage extends StatelessWidget {
 
 class EditContactForm extends StatefulWidget {
   final Contact? entity;
-  final Function? onSave;
+  final Future<dynamic> Function(dynamic c)? onSave;
 
   const EditContactForm({required this.entity, this.onSave, Key? key})
       : super(key: key);

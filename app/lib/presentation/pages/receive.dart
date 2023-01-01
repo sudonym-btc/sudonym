@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym.models/index.dart';
-
-class ReceivePageArgs {
-  Pot pot;
-
-  ReceivePageArgs(this.pot);
-}
 
 class ReceivePage extends StatelessWidget {
-  const ReceivePage({Key? key}) : super(key: key);
+  final ReceiveOptions? args;
+  const ReceivePage({Key? key, this.args}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final ReceivePageArgs data =
-        ModalRoute.of(context)!.settings.arguments as ReceivePageArgs;
+    final ReceiveOptions data =
+        args ?? ModalRoute.of(context)!.settings.arguments as ReceiveOptions;
+
+    List<Widget> children = [
+      if (data.types.contains('lnurl')) ReceiveLnUrl(opts: data),
+      if (data.types.contains('onchain')) ReceiveOnchain(opts: data),
+      if (data.types.contains('bolt11')) ReceiveBolt11(opts: data),
+      // ReceiveBolt12(potId: data.potId),
+    ];
 
     return Container(
         color: Theme.of(context).backgroundColor,
         child: SafeArea(
             child: DefaultTabController(
-                length: 3,
+                length: children.length,
                 child: Scaffold(
                   appBar: AppBar(
                     title: Text(AppLocalizations.of(context)!.receive),
@@ -44,12 +45,7 @@ class ReceivePage extends StatelessWidget {
                     // ),
                   ),
                   body: TabBarView(
-                    children: [
-                      ReceiveLnUrl(pot: data.pot),
-                      ReceiveOnchain(pot: data.pot),
-                      ReceiveBolt11(pot: data.pot),
-                      // ReceiveBolt12(potId: data.potId),
-                    ],
+                    children: children,
                   ),
                 ))));
   }

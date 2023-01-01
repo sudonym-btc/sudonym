@@ -33,10 +33,8 @@ class EditBoltCard extends StatelessWidget {
 
 class EditBoltCardForm extends StatefulWidget {
   final BoltCard? entity;
-  final Function? onSave;
 
-  const EditBoltCardForm({required this.entity, this.onSave, Key? key})
-      : super(key: key);
+  const EditBoltCardForm({required this.entity, Key? key}) : super(key: key);
 
   @override
   EditBoltCardFormState createState() {
@@ -49,7 +47,6 @@ class EditBoltCardFormState extends State<EditBoltCardForm> {
   Widget build(BuildContext context) {
     return CustomForm<BoltCardCubit, BoltCardCubitState, BoltCard>(
         entity: widget.entity ?? BoltCard.fromJson({'name': ''}),
-        onSave: widget.onSave,
         formGroup: () => FormGroup({
               'name': FormControl<String>(
                   value: widget.entity!.name, validators: [Validators.required])

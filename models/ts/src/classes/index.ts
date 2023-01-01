@@ -3,6 +3,8 @@ export * from './action-parse-response';
 export * from './action-remote-response';
 export * from './action-type';
 export * from './base-class';
+export * from './bill-split';
+export * from './bill-split-participant';
 export * from './bolt-card';
 export * from './bolt11';
 export * from './contact';

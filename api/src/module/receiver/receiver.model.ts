@@ -5,6 +5,7 @@ import {
 	CurrencyCodes,
 	TAddressType,
 } from '@sudonym/models';
+import { BillSplitParticipant } from 'module/bill-split-participant/bill-split-participant.model';
 import { LnUrl } from 'module/lightning/lnurl/lnurl.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
 import { Pot } from 'module/pot/pot.model';
@@ -48,6 +49,14 @@ export class Receiver extends BaseModel implements Models.Receiver {
 	@ForeignKey(() => Pot)
 	@Column
 	potId: number;
+
+	@BelongsTo(() => BillSplitParticipant)
+	BillSplitParticipant: BillSplitParticipant;
+
+	@AllowNull(true)
+	@ForeignKey(() => BillSplitParticipant)
+	@Column
+	billSplitParticipantId: number;
 
 	@ForeignKey(() => LnUrl)
 	@Column

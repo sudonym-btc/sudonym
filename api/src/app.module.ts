@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from 'config/config.module';
+import { BillSplitModule } from 'module/bill-split/bill-split.module';
 import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 import { ContactModule } from 'module/contact/contact.module';
 import { PotUserModule } from 'module/pot-user/pot-user.module';
@@ -8,6 +9,7 @@ import { BalanceModule } from 'service/exchange/balance.module';
 import { ExchangeSettlerModule } from 'service/exchange/exchange-settler.module';
 import { ExchangeModule } from 'service/exchange/exchange.module';
 import { FirebaseNotificationModule } from 'service/firebase-notification/firebase-notification.module';
+import { TransactionBillSplitLinkerModule } from 'service/transaction-bill-split-linker/transaction-bill-split-linker.module';
 import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -32,6 +34,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 		BalanceModule,
 		ExchangeModule,
 		ExchangeSettlerModule,
+		TransactionBillSplitLinkerModule,
 		TransactionContactLinkerModule,
 		DatabaseModule,
 		CurrencyModule,
@@ -43,6 +46,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 		UserDeviceModule,
 		PotModule,
 		PotUserModule,
+		BillSplitModule,
 		ActionModule,
 		BalanceUpdaterModule,
 		FirebaseNotificationModule,

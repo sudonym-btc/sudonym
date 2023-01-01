@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sudonym/data/index.dart';
+import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym/presentation/widgets/bill_split/edit_bill_split.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timeago_flutter/timeago_flutter.dart';
@@ -128,7 +131,11 @@ class _OutgoingComplete extends _TransactionStatusPage {
                 AppLocalizations.of(context)!.paymentOutgoingSuccess(val))),
         content:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _ContactSection(transaction),
+          Row(children: [
+            _ContactSection(transaction),
+            _SplitBillSection(transaction)
+          ]),
+          VertDivider(2),
           Table(
               columnWidths: const {
                 0: IntrinsicColumnWidth(),
@@ -361,31 +368,69 @@ class _ContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (entity.ContactAddress?.contactId != null) {
-      return Column(children: [
+    return Column(children: [
+      if (entity.ContactAddress?.contactId != null)
         ContactListItem(
             actions: false,
             fetch: true,
-            contact: Contact.fromJson({'id': entity.ContactAddress.contactId})),
-        const VertDivider(2),
-      ]);
-    }
-    return ['lightningaddress'].contains(entity.type)
-        ? Column(children: [
-            Button(
-                icon: const Icon(Icons.add),
-                text: AppLocalizations.of(context)!.createContact,
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditContactPage(
-                                entity: Contact.fromJson({
-                              'ContactAddresses': [
-                                {'address': entity.originalAddress}
-                              ]
-                            }))))),
-            const VertDivider(2),
-          ])
-        : Container();
+            contact: Contact.fromJson({'id': entity.ContactAddress.contactId}))
+      else if (['lightningaddress'].contains(entity.type))
+        Button(
+            icon: const Icon(Icons.add),
+            text: AppLocalizations.of(context)!.createContact,
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditContactPage(
+                            entity: Contact.fromJson({
+                          'ContactAddresses': [
+                            {'address': entity.originalAddress}
+                          ]
+                        })))))
+    ]);
+  }
+}
+
+class _SplitBillSection extends StatelessWidget {
+  final Transaction entity;
+
+  const _SplitBillSection(this.entity);
+
+  @override
+  Widget build(BuildContext context) {
+    return Button(
+        icon: entity.billSplitId != null
+            ? const Icon(Icons.arrow_right)
+            : const Icon(Icons.add),
+        text: entity.billSplitId != null
+            ? AppLocalizations.of(context)!.viewBillSplit
+            : AppLocalizations.of(context)!.billSplit,
+        onPressed: () async {
+          var amount = await getIt<CurrencyRepository>().getRate(
+              fromCurrency: entity.currencyCode,
+              toCurrency: entity.Pot.currency,
+              amount: entity.amount);
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EditBillSplit(
+                      entity: entity.billSplitId != null
+                          ? BillSplit.fromJson({
+                              'id': entity.billSplitId,
+                              'amount': amount.amount,
+                              'currency': entity.Pot.currency
+                            })
+                          : BillSplit.fromJson({
+                              'potId': entity.potId,
+                              'BillSplitParticipants': [
+                                {'amount': 0},
+                                {'amount': 0}
+                              ],
+                              'transactionId': entity.id,
+                              'amount': amount.amount,
+                              'currency': entity.Pot.currency
+                            }))));
+        });
   }
 }

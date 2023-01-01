@@ -1,6 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import * as Models from '@sudonym/models';
 import { authUserIdGetter } from 'helper/context-request';
+import { BillSplit } from 'module/bill-split/bill-split.model';
 import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { Contact } from 'module/contact/contact.model';
@@ -20,6 +21,7 @@ import {
 	DataType,
 	Default,
 	ForeignKey,
+	HasOne,
 	PrimaryKey,
 	Table,
 } from 'sequelize-typescript';
@@ -83,6 +85,14 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column
 	contactAddressId: number;
 
+	// @BelongsTo(() => BillSplit)
+	// BillSplit: BillSplit;
+
+	@ForeignKey(() => BillSplit)
+	@AllowNull(true)
+	@Column
+	billSplitId: number;
+
 	@BelongsTo(() => User)
 	User: User;
 
@@ -90,6 +100,9 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@AllowNull(true)
 	@Column
 	userId: string;
+
+	@HasOne(() => BillSplit)
+	BillSplit: BillSplit;
 
 	@BelongsTo(() => Pot)
 	Pot: Pot;
@@ -203,7 +216,16 @@ export class Transaction extends BaseModel implements Models.Transaction {
 						},
 					],
 				},
+				{
+					model: Receiver,
+					as: 'Receiver',
+				},
 			],
 		}),
 	};
 }
+
+export const roundToDisplay = (amount: number, currency: string) =>
+	currency == 'BTC'
+		? parseFloat(amount.toFixed(8))
+		: parseFloat(amount.toFixed(2));

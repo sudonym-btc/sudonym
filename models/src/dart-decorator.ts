@@ -18,6 +18,9 @@ function searchDir(prefix, dir) {
 				'new Date(json["createdAt"])',
 				'DateTime.parse(json["createdAt"])'
 			);
+			str = str.replaceAll('.includes(', '.contains(');
+			str = str.replaceAll('.find(', '.firstWhere(');
+			str = str.replaceAll('.filter(', '.where(');
 			str = str.replaceAll('toJson():  {', 'toJson() {');
 
 			fs.writeFileSync(filePath, str);

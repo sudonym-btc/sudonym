@@ -58,6 +58,8 @@ export class LnUrlHandlerService {
 					parentId: parentReceiver.id,
 					lnurlId: id,
 					potId: parentReceiver.potId,
+					billSplitParticipantId:
+						parentReceiver.billSplitParticipantId,
 					type: 'bolt11',
 					amount: query.amount / MSATOSHIS,
 					amountCurrency: 'BTC',

@@ -48,16 +48,17 @@ abstract class EntityCubit<
 
   fetch(dynamic id) async {
     safeEmit(stateClass(entity: state.entity, loading: true));
-    EntityType? updated;
+    List<EntityType> updated = [];
     StreamSubscription fetchSub = repository.updated.stream.listen((event) {
-      if ((event.entity as dynamic).id == (state.entity as dynamic).id) {
-        updated = event.entity;
-      }
+      updated.add(event.entity);
     });
     set(await repository.fetch(id));
     fetchSub.cancel();
-    if (updated != null) {
-      set(updated!);
+    updated = updated
+        .where((element) => (element as dynamic).id == state.entity.id)
+        .toList();
+    if (updated.isNotEmpty) {
+      set(updated.last);
     }
   }
 
@@ -70,17 +71,18 @@ abstract class EntityCubit<
 
   create(EntityType params) async {
     safeEmit(stateClass(entity: null, loading: true));
-    set(await repository.create(params.toJson()));
+    return set(await repository.create(params.toJson()));
   }
 
   update(EntityType params) async {
     safeEmit(stateClass(entity: null, loading: true));
-    set(await repository.update(params.toJson()));
+    return set(await repository.update(params.toJson()));
   }
 
-  set(EntityType entity) {
+  EntityType set(EntityType entity) {
     safeEmit(stateClass(entity: entity, loading: false)) &&
         (listenChanges() ?? true);
+    return entity;
   }
 
   setRefresher(Duration d, bool Function(StateType) refresh) {

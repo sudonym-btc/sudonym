@@ -26,12 +26,16 @@ export const scaffoldGroup = (
 		};
 
 		const wipeDB = async () => {
+			// Todo: Allow hooks to complete
+			await new Promise((r) => setTimeout(r, 500));
 			await scaffold.app.get('SEQUELIZE').transaction(async (t) => {
 				const options = { raw: true, transaction: t };
 				await scaffold.app
 					.get('SEQUELIZE')
 					.query('SET FOREIGN_KEY_CHECKS = 0', options);
-				await scaffold.app.get('SEQUELIZE').truncate({ cascade: true });
+				await scaffold.app
+					.get('SEQUELIZE')
+					.truncate({ cascade: true, ...options });
 				await scaffold.app
 					.get('SEQUELIZE')
 					.query('SET FOREIGN_KEY_CHECKS = 1', options);

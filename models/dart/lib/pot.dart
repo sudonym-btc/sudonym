@@ -4,8 +4,8 @@ import "pot-user.dart" as PotUserModel;
 //todo: add polyfill for toList function needed in dart to js too
 class Pot extends BaseClass {
   dynamic /* num | null */ id;
-  String name;
-  String currency;
+  dynamic /* String | null */ name;
+  dynamic /* String | null */ currency;
   dynamic /* num | null */ balance;
   dynamic /* num | null */ spendableBalance;
   dynamic /* PotUserModel . PotUser | dynamic */ PotUser;

@@ -3,6 +3,8 @@ export "action-parse-response.dart";
 export "action-remote-response.dart";
 export "action-type.dart";
 export "base-class.dart";
+export "bill-split.dart";
+export "bill-split-participant.dart";
 export "bolt-card.dart";
 export "bolt11.dart";
 export "contact.dart";
