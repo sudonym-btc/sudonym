@@ -32,6 +32,7 @@ const { Op } = require('sequelize');
 
 @Table({
 	scopes: Transaction.scopes,
+	paranoid: true,
 })
 export class Transaction extends BaseModel implements Models.Transaction {
 	@AutoIncrement

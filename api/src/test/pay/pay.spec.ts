@@ -146,6 +146,67 @@ scaffoldGroup('Payment', (scaffold) => {
 			]);
 		});
 
+		it('should fail and add balance to a deleted pot', async () => {
+			const e = {
+				type: 'lightning',
+				name: 'LightningError',
+				message: 'Payment failure reason unknown',
+				code: 209,
+				fullType: 'lightning',
+			};
+			scaffold.app.get(LightningNodeService).waitSendPay = jest.fn(
+				async (hash, timeout, part) => {
+					await new Promise((resolve) => setTimeout(resolve, 100));
+					throw new LightningError(e, e.message, 500, e);
+				}
+			);
+
+			const { entity: transaction } = await successfulPayment();
+
+			await runAsUser(scaffold.entities.user[0], () =>
+				scaffold.app.get(PotService).create({
+					name: 'test2',
+				})
+			);
+
+			await scaffold.app
+				.get(PotService)
+				.delete(scaffold.entities.pot[0].id);
+			// Should re-add balance on failure
+			await Promise.all([
+				waitForExpect(() =>
+					expect(
+						(scaffold.app.get(LightningNodeService) as any)
+							.waitSendPay.mock.calls.length
+					).toBe(1)
+				),
+				firstValueFrom(
+					scaffold.app.get(PotService).onAfterUpdated
+				).then((x) =>
+					expect(x).toMatchObject({
+						spendableBalance:
+							scaffold.entities.pot[0].spendableBalance,
+						balance: scaffold.entities.pot[0].balance,
+					})
+				),
+				firstValueFrom(
+					scaffold.app
+						.get(TransactionService)
+						.onAfterUpdated.pipe(
+							filter(
+								(x) =>
+									x.status == false && x.id == transaction.id
+							)
+						)
+				).then((x) =>
+					expect(x).toMatchObject({
+						status: false,
+						errorMessage: e.message,
+					})
+				),
+			]);
+		});
+
 		it('should not get info or pay an expired invoice', async () => {
 			// const payreq: PaymentRequest = {};
 		});

@@ -75,7 +75,7 @@ export class LightningListener extends TransactionListener {
 			);
 			this.logger.verbose('Sendpays', sendpays);
 			if (!sendpays.length) {
-				this.lightningEvents.onEvent.next({
+				return this.lightningEvents.onEvent.next({
 					event: 'sendpay',
 					data: {
 						bolt11: invoice,

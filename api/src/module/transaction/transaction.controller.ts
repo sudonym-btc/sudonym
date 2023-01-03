@@ -39,6 +39,9 @@ export class TransactionController extends BaseController({
 	create: {
 		auth: true,
 		input: CreateTransaction,
+		validator: {
+			whitelist: true,
+		},
 	},
 	update: false,
 }) {}

@@ -74,13 +74,16 @@ export const BaseService = <TModel extends BaseModel>(
 		async findOne(id: string | number | FindOptions) {
 			const obj = (
 				await this.list(
-					typeof id == 'object'
-						? id
-						: {
-								where: {
-									id: id as any,
-								},
-						  },
+					{
+						paranoid: false,
+						...(typeof id == 'object'
+							? id
+							: {
+									where: {
+										id: id as any,
+									},
+							  }),
+					},
 					{
 						scopes: [
 							repository.scopes.findOne
@@ -171,7 +174,7 @@ export const BaseService = <TModel extends BaseModel>(
 					].filter((i) => !!i);
 					const record = await this.repo
 						.scope(scopes as any)
-						.findByPk(id);
+						.findByPk(id, { paranoid: false });
 
 					await this.beforeUpdate.execute({
 						params,
