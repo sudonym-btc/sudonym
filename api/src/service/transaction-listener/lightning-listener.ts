@@ -115,14 +115,24 @@ export class LightningListener extends TransactionListener {
 					this.logger.error('Wait send pay error', e, e?.error);
 
 					if (e.error) {
+						// Old failed payments don't have the data key, as reason for failure not stored
+
 						if (e.error?.data) {
 							this.lightningEvents.onEvent.next({
 								event: 'sendpay',
-								data: e.error.data,
+								data: {
+									...e.error.data,
+									bolt11: invoice,
+								},
 							});
 							if (e.error.data.status == 'pending') {
 								waitSendPay();
 							}
+						} else {
+							this.lightningEvents.onEvent.next({
+								event: 'sendpay',
+								data: { ...e.error, bolt11: invoice },
+							});
 						}
 					}
 				});
@@ -254,7 +264,10 @@ export class LightningListener extends TransactionListener {
 						? true
 						: false;
 
-				const errorMessage = e.data.failcodename || e.data.failreason;
+				const errorMessage =
+					e.data.failcodename ||
+					e.data.failreason ||
+					(e.data as any).message;
 				const totalAmount = e.data.msatoshi_sent
 					? e.data.msatoshi_sent / MSATOSHIS
 					: null;

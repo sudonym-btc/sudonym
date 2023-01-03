@@ -330,10 +330,10 @@ export class LightningNodeService {
 			!hasAmount ? Math.round(amount) : null,
 			null, //[label]
 			null, //[riskfactor]
-			null, // [maxfeepercent],
+			10, // [maxfeepercent],
 			10, // [retry_for],
 			null, // [maxdelay]
-			null, //[exemptfee]
+			5000 * 1000, //[exemptfee]
 			null, //[localinvreqid]
 			['758820x1587x1/0', '758820x1587x1/1'], //[exclude] tippin.me
 			null, //[maxfee]

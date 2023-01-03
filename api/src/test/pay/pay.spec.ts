@@ -5,8 +5,11 @@ import { PotService } from 'module/pot/pot.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { SenderService } from 'module/sender/sender.service';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { firstValueFrom } from 'rxjs';
-import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
+import { filter, firstValueFrom } from 'rxjs';
+import {
+	LightningError,
+	LightningNodeService,
+} from 'service/lightning-node/lightning-node.service';
 import * as request from 'supertest';
 import waitForExpect from 'wait-for-expect';
 import { scaffoldGroup } from '../mock/scaffold-group';
@@ -86,6 +89,58 @@ scaffoldGroup('Payment', (scaffold) => {
 						spendableBalance:
 							scaffold.entities.pot[0].spendableBalance,
 						balance: scaffold.entities.pot[0].balance,
+					})
+				),
+			]);
+		});
+
+		it('should fail when waitsendpay returns forgotten error type', async () => {
+			const e = {
+				type: 'lightning',
+				name: 'LightningError',
+				message: 'Payment failure reason unknown',
+				code: 209,
+				fullType: 'lightning',
+			};
+			scaffold.app.get(LightningNodeService).waitSendPay = jest.fn(
+				async (hash, timeout, part) => {
+					await new Promise((resolve) => setTimeout(resolve, 100));
+					throw new LightningError(e, e.message, 500, e);
+				}
+			);
+
+			const { entity: transaction } = await successfulPayment();
+
+			// Should re-add balance on failure
+			await Promise.all([
+				waitForExpect(() =>
+					expect(
+						(scaffold.app.get(LightningNodeService) as any)
+							.waitSendPay.mock.calls.length
+					).toBe(1)
+				),
+				firstValueFrom(
+					scaffold.app.get(PotService).onAfterUpdated
+				).then((x) =>
+					expect(x).toMatchObject({
+						spendableBalance:
+							scaffold.entities.pot[0].spendableBalance,
+						balance: scaffold.entities.pot[0].balance,
+					})
+				),
+				firstValueFrom(
+					scaffold.app
+						.get(TransactionService)
+						.onAfterUpdated.pipe(
+							filter(
+								(x) =>
+									x.status == false && x.id == transaction.id
+							)
+						)
+				).then((x) =>
+					expect(x).toMatchObject({
+						status: false,
+						errorMessage: e.message,
 					})
 				),
 			]);
