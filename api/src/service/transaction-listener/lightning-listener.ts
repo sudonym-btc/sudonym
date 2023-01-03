@@ -64,17 +64,9 @@ export class LightningListener extends TransactionListener {
 
 		const waitSendPay = async (partId) => {
 			this.logger.debug('Waiting for sendpay', payment_hash, partId);
-			console.log(
-				this.lightningNodeService.waitSendPay(
-					payment_hash,
-					null,
-					partId
-				)
-			);
 			this.lightningNodeService
 				.waitSendPay(payment_hash, null, partId)
-				.then(() => this.waitForPayment(payment_hash))
-				.catch(() => this.waitForPayment(payment_hash));
+				.finally(() => this.waitForPayment(payment_hash));
 		};
 
 		if (pay.status == 'pending') {
