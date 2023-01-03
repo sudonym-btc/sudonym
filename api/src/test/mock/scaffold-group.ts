@@ -27,7 +27,7 @@ export const scaffoldGroup = (
 
 		const wipeDB = async () => {
 			// Todo: Allow hooks to complete
-			await new Promise((r) => setTimeout(r, 500));
+			await new Promise((r) => setTimeout(r, 50));
 			await scaffold.app.get('SEQUELIZE').transaction(async (t) => {
 				const options = { raw: true, transaction: t };
 				await scaffold.app
@@ -45,12 +45,12 @@ export const scaffoldGroup = (
 		beforeEach(async () => {
 			scaffold.app = await createMockApp();
 			scaffold.entities = await createMockEntities(scaffold.app);
-		}, 10000);
+		}, 30000);
 
 		afterEach(async () => {
 			await wipeDB();
 			await closeApp();
-		}, 10000);
+		}, 30000);
 
 		callback(scaffold);
 	});

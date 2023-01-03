@@ -57,8 +57,8 @@ scaffoldGroup('Access Scopes', (scaffold) => {
 	// 		})
 	// 		.send({
 	// 			outgoing: true,
-	// 			address: 'lnbc1asdfghj',
-	// 			originalAddress: 'lnbc1asdfghj',
+	// 			address: exampleInvoice,
+	// 			originalAddress: exampleInvoice,
 	// 			potId: newPot.id,
 	// 			amount: 1,
 	// 			currencyCode: 'BTC',

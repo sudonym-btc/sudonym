@@ -8,11 +8,7 @@ import {
 	LightningError,
 	LightningNodeService,
 } from '../lightning-node/lightning-node.service';
-import {
-	LightningEvents,
-	SendPayResponse,
-	WaitSendPayResponse,
-} from './lightning-events';
+import { LightningEvents, WaitSendPayResponse } from './lightning-events';
 import { TransactionListener } from './transaction-listener.interface';
 
 @Injectable()
@@ -62,83 +58,54 @@ export class LightningListener extends TransactionListener {
 		});
 	}
 
-	async waitForPayment(payment_hash, invoice, partId) {
-		if (payment_hash == null) {
-			payment_hash = bolt11
-				.decode(invoice)
-				.tags.find((t) => t.tagName == 'payment_hash').data;
-		}
-		if (!partId && payment_hash) {
+	async waitForPayment(payment_hash) {
+		const pay = (await this.lightningNodeService.listPays(payment_hash))[0];
+		this.logger.debug('Waiting for payment', pay);
+
+		const waitSendPay = async (partId) => {
+			this.logger.debug('Waiting for sendpay', payment_hash, partId);
+			console.log(
+				this.lightningNodeService.waitSendPay(
+					payment_hash,
+					null,
+					partId
+				)
+			);
+			this.lightningNodeService
+				.waitSendPay(payment_hash, null, partId)
+				.then(() => this.waitForPayment(payment_hash))
+				.catch(() => this.waitForPayment(payment_hash));
+		};
+
+		if (pay.status == 'pending') {
 			const sendpays = await this.lightningNodeService.listSendPays(
 				null,
 				payment_hash
 			);
-			this.logger.verbose('Sendpays', sendpays);
-			if (!sendpays.length) {
-				return this.lightningEvents.onEvent.next({
-					event: 'sendpay',
-					data: {
-						bolt11: invoice,
-						payment_hash,
-						status: 'failed',
-					} as WaitSendPayResponse,
-				});
+
+			const sendingPays = sendpays.filter((s) => s.status === 'pending');
+
+			for (const sendpay of sendingPays) {
+				waitSendPay(sendpay.partId);
 			}
-			partId = sendpays[0].partid;
+
+			if (!sendingPays.length) {
+				this.logger.debug(
+					'no inflight sendpays, so waiting for 2 seconds before recalling'
+				);
+				setTimeout(() => {
+					this.waitForPayment(payment_hash);
+				}, 2000);
+			}
+		} else {
+			this.lightningEvents.onEvent.next({
+				event: 'sendpay',
+				data: {
+					payment_hash,
+					...pay,
+				} as WaitSendPayResponse,
+			});
 		}
-		this.logger.verbose('PartId', partId);
-
-		const waitSendPay = async () => {
-			this.logger.debug(
-				'Waiting for payment',
-				invoice,
-				payment_hash,
-				partId
-			);
-			this.lightningNodeService
-				.waitSendPay(payment_hash, null, partId)
-				.then((e) => {
-					if (e) {
-						this.lightningEvents.onEvent.next({
-							event: 'sendpay',
-							data: {
-								...e,
-								bolt11: invoice,
-							},
-						});
-					}
-					if (e.status == 'pending') {
-						waitSendPay();
-					}
-				})
-				.catch((e) => {
-					this.logger.error('Wait send pay error', e, e?.error);
-
-					if (e.error) {
-						// Old failed payments don't have the data key, as reason for failure not stored
-
-						if (e.error?.data) {
-							this.lightningEvents.onEvent.next({
-								event: 'sendpay',
-								data: {
-									...e.error.data,
-									bolt11: invoice,
-								},
-							});
-							if (e.error.data.status == 'pending') {
-								waitSendPay();
-							}
-						} else {
-							this.lightningEvents.onEvent.next({
-								event: 'sendpay',
-								data: { ...e.error, bolt11: invoice },
-							});
-						}
-					}
-				});
-		};
-
-		waitSendPay();
 	}
 
 	async triggerPayment(entity: Transaction, invoice) {
@@ -153,28 +120,15 @@ export class LightningListener extends TransactionListener {
 					entity.createdAt
 				)
 			).amount;
-			this.logger.log('Converted');
-			this.logger.log(btcAmount);
 			this.logger.debug('Amount', btcAmount, btcAmount * MSATOSHIS);
 			const response = await this.lightningNodeService.pay(
 				invoice,
-				Math.round(btcAmount * MSATOSHIS)
+				Math.ceil(btcAmount * MSATOSHIS)
 			);
 			this.logger.debug('Lightning pay', response);
-
-			if (response.status) {
-				this.lightningEvents.onEvent.next({
-					event: 'sendpay',
-					data: {
-						bolt11: invoice,
-						...response,
-					} as unknown as WaitSendPayResponse,
-				});
-			}
 			this.waitForPayment(
-				response.payment_hash,
-				invoice,
-				(response as SendPayResponse).partid
+				response.payment_hash ||
+					bolt11.decode(invoice).tagsObject.payment_hash
 			);
 		} catch (e) {
 			this.logger.error('Pay error', e);
@@ -210,7 +164,7 @@ export class LightningListener extends TransactionListener {
 			})
 			.then((data) => {
 				for (const transaction of data.data) {
-					this.waitForPayment(null, transaction.txid, null);
+					this.waitForPayment(transaction.txid);
 				}
 			});
 		this.transactionService.onAfterCreated.listen(async (entity) => {
@@ -241,7 +195,7 @@ export class LightningListener extends TransactionListener {
 						break;
 				}
 				await this.transactionService.update(entity.id, {
-					txid: invoice,
+					txid: bolt11.decode(invoice).tagsObject.payment_hash,
 				});
 
 				this.triggerPayment(entity, invoice);
@@ -252,7 +206,7 @@ export class LightningListener extends TransactionListener {
 			if (e.event == 'sendpay') {
 				const transactions = await this.transactionService.list({
 					where: {
-						txid: e.data.bolt11,
+						txid: e.data.payment_hash,
 						outgoing: true,
 					},
 				});

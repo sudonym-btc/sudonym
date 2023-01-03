@@ -352,6 +352,9 @@ export class LightningNodeService {
 	async listSendPays(bolt11, payment_hash) {
 		return (await this.rpc('listsendpays', [null, payment_hash])).payments;
 	}
+	async listPays(payment_hash) {
+		return (await this.rpc('listpays', [null, payment_hash])).pays;
+	}
 
 	async createOffer(amount, description = null) {
 		return this.makeRequest({

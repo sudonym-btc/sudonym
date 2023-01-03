@@ -5,6 +5,32 @@ import { LightningNodeService } from 'service/lightning-node/lightning-node.serv
 export class MockLightningNodeService extends LightningNodeService {
 	pays = [];
 
+	mockPay = (data) =>
+		jest.fn(async (invoice) => {
+			const pay = {
+				payment_preimage: 'mock',
+				payment_hash: bolt11.decode(invoice).tagsObject.payment_hash,
+				created_at: Date.now().valueOf() / 1000,
+				parts: 1,
+				partid: 1,
+				amount_msat: bolt11.decode(invoice).millisatoshis,
+				amount_sent_msat: bolt11.decode(invoice).millisatoshis,
+				status: 'complete',
+				destination: 'randomnode',
+				...data,
+			};
+			this.pays.push(pay);
+			return pay;
+			// payment_preimage (secret): the proof of payment: SHA256 of this payment_hash (always 64 characters)
+			// payment_hash (hash): the hash of the payment_preimage which will prove payment (always 64 characters)
+			// created_at (number): the UNIX timestamp showing when this payment was initiated
+			// parts (u32): how many attempts this took
+			// amount_msat (msat): Amount the recipient received
+			// amount_sent_msat (msat): Total amount we sent (including fees)
+			// status (string): status of payment (one of “complete”, “pending”, “failed”)
+			// destination (pubkey, optional): the final destination of the payment
+		}) as any;
+
 	findCircular(): Promise<any> {
 		throw new Error('Method not implemented.');
 	}
@@ -51,31 +77,12 @@ export class MockLightningNodeService extends LightningNodeService {
 		throw new Error('Method not implemented.');
 	}
 
-	pay = jest.fn(async (invoice) => {
-		const pay = {
-			payment_preimage: 'mock',
-			payment_hash: '543543543543543543534534543543',
-			created_at: Date.now().valueOf() / 1000,
-			parts: 1,
-			partid: 1,
-			amount_msat: 123,
-			amount_sent_msat: '123',
-			status: 'pending',
-			destination: 'randomnode',
-		};
-		this.pays.push(pay);
-		return pay;
-		// payment_preimage (secret): the proof of payment: SHA256 of this payment_hash (always 64 characters)
-		// payment_hash (hash): the hash of the payment_preimage which will prove payment (always 64 characters)
-		// created_at (number): the UNIX timestamp showing when this payment was initiated
-		// parts (u32): how many attempts this took
-		// amount_msat (msat): Amount the recipient received
-		// amount_sent_msat (msat): Total amount we sent (including fees)
-		// status (string): status of payment (one of “complete”, “pending”, “failed”)
-		// destination (pubkey, optional): the final destination of the payment
-	}) as any;
+	pay = this.mockPay({});
 
 	async listSendPays(bolt11, hash) {
+		return this.pays.filter((i) => i.payment_hash == hash);
+	}
+	async listPays(hash) {
 		return this.pays.filter((i) => i.payment_hash == hash);
 	}
 

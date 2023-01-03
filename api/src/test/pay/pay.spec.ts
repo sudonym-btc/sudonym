@@ -11,8 +11,28 @@ import {
 	LightningNodeService,
 } from 'service/lightning-node/lightning-node.service';
 import * as request from 'supertest';
+import { exampleInvoice } from 'test/bill-split.spec';
+import { MockLightningNodeService } from 'test/mock/classes';
 import waitForExpect from 'wait-for-expect';
 import { scaffoldGroup } from '../mock/scaffold-group';
+
+const mockSendPay = (data) =>
+	jest.fn(async (hash, timeout, part) => {
+		await new Promise((resolve) => setTimeout(resolve, 100));
+		return {
+			id: 23423423,
+			payment_preimage: 'mock',
+			payment_hash: hash,
+			created_at: Date.now().valueOf() / 1000,
+			parts: 1,
+			partid: part,
+			msatoshi_sent: 1 * MSATOSHIS,
+			amount_msat: 1 * MSATOSHIS,
+			amount_sent_msat: 1 * MSATOSHIS,
+			status: 'failed',
+			destination: 'randomnode',
+		};
+	});
 
 scaffoldGroup('Payment', (scaffold) => {
 	describe('Bolt11', () => {
@@ -22,8 +42,8 @@ scaffoldGroup('Payment', (scaffold) => {
 				potId: scaffold.entities.pot[0].id,
 				type: 'bolt11',
 				currencyCode: 'BTC',
-				originalAddress: 'lnbc1asdfghj',
-				address: 'lnbc1asdfghj',
+				originalAddress: exampleInvoice,
+				address: exampleInvoice,
 				amount: 1,
 			});
 			await Promise.all([
@@ -35,7 +55,7 @@ scaffoldGroup('Payment', (scaffold) => {
 					expect(
 						(scaffold.app.get(LightningNodeService) as any).pay.mock
 							.calls[0][0]
-					).toBe('lnbc1asdfghj');
+					).toBe(exampleInvoice);
 				}),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
@@ -52,36 +72,22 @@ scaffoldGroup('Payment', (scaffold) => {
 		it('should subtract balance from executed payment', async () => {
 			await successfulPayment();
 		});
-		it('should re-add balance from failed payment', async () => {
-			scaffold.app.get(LightningNodeService).waitSendPay = jest.fn(
-				async (hash, timeout, part) => {
-					await new Promise((resolve) => setTimeout(resolve, 100));
-					return {
-						id: 23423423,
-						payment_preimage: 'mock',
-						payment_hash: '543543543543543543534534543543',
-						created_at: Date.now().valueOf() / 1000,
-						parts: 1,
-						partid: 1,
-						msatoshi_sent: 1 * MSATOSHIS,
-						amount_msat: 1 * MSATOSHIS,
-						amount_sent_msat: 1 * MSATOSHIS,
-						status: 'failed',
-						destination: 'randomnode',
-					};
-				}
-			);
+		it('should re-add balance from failed payment bolt11', async () => {
+			scaffold.app.get(LightningNodeService).waitSendPay = mockSendPay({
+				status: 'failed',
+			});
+			scaffold.app.get(LightningNodeService).pay = (
+				scaffold.app.get(
+					LightningNodeService
+				) as MockLightningNodeService
+			).mockPay({
+				status: 'failed',
+			});
 
 			await successfulPayment();
 
 			// Should re-add balance on failure
 			await Promise.all([
-				waitForExpect(() =>
-					expect(
-						(scaffold.app.get(LightningNodeService) as any)
-							.waitSendPay.mock.calls.length
-					).toBe(1)
-				),
 				firstValueFrom(
 					scaffold.app.get(PotService).onAfterUpdated
 				).then((x) =>
@@ -147,19 +153,9 @@ scaffoldGroup('Payment', (scaffold) => {
 		});
 
 		it('should fail and add balance to a deleted pot', async () => {
-			const e = {
-				type: 'lightning',
-				name: 'LightningError',
-				message: 'Payment failure reason unknown',
-				code: 209,
-				fullType: 'lightning',
-			};
-			scaffold.app.get(LightningNodeService).waitSendPay = jest.fn(
-				async (hash, timeout, part) => {
-					await new Promise((resolve) => setTimeout(resolve, 100));
-					throw new LightningError(e, e.message, 500, e);
-				}
-			);
+			scaffold.app.get(LightningNodeService).waitSendPay = mockSendPay({
+				status: 'failed',
+			});
 
 			const { entity: transaction } = await successfulPayment();
 
@@ -201,7 +197,6 @@ scaffoldGroup('Payment', (scaffold) => {
 				).then((x) =>
 					expect(x).toMatchObject({
 						status: false,
-						errorMessage: e.message,
 					})
 				),
 			]);

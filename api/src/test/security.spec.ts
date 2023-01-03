@@ -9,6 +9,7 @@ import { UserService } from 'module/user/user.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import * as request from 'supertest';
 import waitForExpect from 'wait-for-expect';
+import { exampleInvoice } from './bill-split.spec';
 import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Security', (scaffold) => {
@@ -23,7 +24,7 @@ scaffoldGroup('Security', (scaffold) => {
 		potId: scaffold.entities.pot[0].id,
 		type: 'lnurl',
 		originalAddress: 'lnurl23423',
-		address: '32423432',
+		address: exampleInvoice,
 		currencyCode: 'BTC',
 		amount: 0.001,
 		outgoing: true,

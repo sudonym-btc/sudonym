@@ -1,4 +1,5 @@
 import { TransactionService } from 'module/transaction/transaction.service';
+import { exampleInvoice } from './bill-split.spec';
 import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('CRUD', (scaffold) => {
@@ -11,7 +12,7 @@ scaffoldGroup('CRUD', (scaffold) => {
 				type: 'bolt11',
 				currencyCode: 'BTC',
 				originalAddress: 'lnurl123',
-				address: 'lnurl123',
+				address: exampleInvoice,
 				amount: 1,
 			});
 

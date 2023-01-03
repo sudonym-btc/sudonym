@@ -11,6 +11,8 @@ import { ReceiverService } from 'module/receiver/receiver.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { scaffoldGroup } from './mock/scaffold-group';
 
+export const exampleInvoice =
+	'lnbc600490n1p3mg70hpp5q8q6h0hlslt5xayrvsk9m52s74jmahwtkjvx0axkvfqxvmayr7psdqu2askcmr9wssx7e3q2dshgmmndp5scqzpgxqyz5vqsp5grmuecsf0kge9hq9cf3echf8h8p8ywmkx3400qrflqj3cya8pnms9qyyssqllczu45wwhjg9ze8c6ur7fkkr3k52vhuz3waa29px48wchsfmr2httuel3dc4ha2ekg40ne53c3u9m9364xauuwqx09zxus0upfetkcpgwthfk';
 scaffoldGroup('Bill Split', (scaffold) => {
 	const successfulPayment = async () => {
 		const t = scaffold.app.get(TransactionService).create({
@@ -18,8 +20,8 @@ scaffoldGroup('Bill Split', (scaffold) => {
 			potId: scaffold.entities.pot[0].id,
 			type: 'bolt11',
 			currencyCode: 'BTC',
-			originalAddress: 'lnbc1asdfghj',
-			address: 'lnbc1asdfghj',
+			originalAddress: exampleInvoice,
+			address: exampleInvoice,
 			amount: 1,
 		});
 		return await t;

@@ -9,8 +9,8 @@ scaffoldGroup('CLS transactions', (scaffold) => {
 		// 	potId: scaffold.entities.pot[0].id,
 		// 	type: 'bolt11',
 		// 	currencyCode: 'BTC',
-		// 	originalAddress: 'lnbc1asdfghj',
-		// 	address: 'lnbc1asdfghj',
+		// 	originalAddress: exampleInvoice,
+		// 	address: exampleInvoice,
 		// 	status: true,
 		// 	amount: 10000,
 		// });

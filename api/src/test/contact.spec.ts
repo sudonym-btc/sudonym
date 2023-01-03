@@ -3,6 +3,7 @@ import { runAsUser } from 'helper/context-request';
 import { ContactService } from 'module/contact/contact.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import * as request from 'supertest';
+import { exampleInvoice } from './bill-split.spec';
 import { scaffoldGroup } from './mock/scaffold-group';
 
 scaffoldGroup('Payment Contacts', (scaffold) => {
@@ -26,7 +27,7 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
 				type: 'bolt11',
 				currencyCode: 'BTC',
 				originalAddress: 'lnurl123',
-				address: 'lnurl123',
+				address: exampleInvoice,
 				amount: 1,
 			});
 		expect(transaction.contactAddressId).toBe(
@@ -43,7 +44,7 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
 				type: 'bolt11',
 				currencyCode: 'BTC',
 				originalAddress: 'lnurl123',
-				address: 'lnurl123',
+				address: exampleInvoice,
 				amount: 1,
 			});
 		const { entity: contact } = await scaffold.app
