@@ -229,8 +229,8 @@ export class LnUrlHandlerService {
 				  ) * 1000
 				: 1000;
 			(tag.params as WithdrawRequest).defaultDescription =
-				'Withdrawning from sudonym';
-			// (tag.params as WithdrawRequest).payLink = :todo generate payRequest URL;
+				'Withdrawing from sudonym';
+			// (tag.params as WithdrawRequest).payLink = // todo generate payRequest URL;
 		}
 		return tag.params;
 	}

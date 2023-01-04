@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MSATOSHIS } from '@sudonym/models';
 import { Config } from 'config/config';
 import * as lnurl from 'lnurl';
 import { TransactionService } from 'module/transaction/transaction.service';
@@ -17,27 +16,12 @@ export class SenderService extends BaseService(Sender) {
 
 	onModuleInit() {
 		this.beforeCreate.hook(async (params) => {
-			const amountInBTC = (
-				await this.currencyService.convert(
-					params.amountCurrency || 'BTC',
-					'BTC',
-					params.amount
-				)
-			).amount;
-			const mSatoshiAmount = Math.round(amountInBTC * MSATOSHIS);
-
-			params.amount = Number(amountInBTC);
-
 			switch (params.type) {
 				case 'lnurl': {
 					const { entity: tag } =
 						await this.lnUrlService.createWithdrawRequest({
-							minWithdrawable: params.limitMin
-								? params.limitMin * MSATOSHIS
-								: 0,
-							maxWithdrawable: params.limitMax
-								? params.limitMax * MSATOSHIS
-								: 99999999,
+							minWithdrawable: 0,
+							maxWithdrawable: 0,
 						});
 					// todo: replace with max account balance
 					params.data = lnurl.encode(

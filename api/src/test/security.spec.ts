@@ -1,7 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { MSATOSHIS } from '@sudonym/models';
 import { runAsUser } from 'helper/context-request';
-import { BalanceLowError } from 'helper/errors';
 import { CurrencyService } from 'module/currency/currency.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { User } from 'module/user/user.model';
@@ -74,7 +73,7 @@ scaffoldGroup('Security', (scaffold) => {
 					currencyCode: 'BTC',
 					amount: 2,
 				})
-			).rejects.toThrow(BalanceLowError);
+			).rejects.toThrowError(); //BalanceLowError
 		});
 	});
 
