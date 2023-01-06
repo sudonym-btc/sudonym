@@ -187,6 +187,16 @@ export class ActionService {
 			this.logger.warn('Withdrawing', action);
 			const { entity: receiver } = await this.receiverService.create({
 				potId: action.potId,
+				parentId: (
+					await this.receiverService.list({
+						where: {
+							billSplitParticipantId:
+								action.billSplitParticipantId,
+						},
+						// order: [['createdAt', 'DESC']],
+						// limit: 1,
+					})
+				).data[0]?.id,
 				billSplitParticipantId: action.billSplitParticipantId,
 				amountCurrency: 'BTC',
 				amount: (
