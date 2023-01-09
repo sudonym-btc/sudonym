@@ -1,14 +1,18 @@
 import { ConsoleLogger, LogLevel } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
+import { ProfilingIntegration } from '@sentry/profiling-node';
+import { Integrations } from '@sentry/tracing';
 import { getConfig } from 'config/config';
 Sentry.init({
 	dsn: 'REDACTED_SENTRY_DSN',
 	environment: getConfig().env,
+	integrations: [new Integrations.Express(), new ProfilingIntegration()],
 
 	// Set tracesSampleRate to 1.0 to capture 100%
 	// of transactions for performance monitoring.
 	// We recommend adjusting this value in production
 	tracesSampleRate: 1.0,
+	profilesSampleRate: 1.0,
 });
 
 export class SentryLogger extends ConsoleLogger {
