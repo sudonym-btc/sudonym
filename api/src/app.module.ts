@@ -1,4 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import * as Sentry from '@sentry/node';
+import { ProfilingIntegration } from '@sentry/profiling-node';
+import { Integrations } from '@sentry/tracing';
+import { getConfig } from 'config/config';
 import { ConfigModule } from 'config/config.module';
 import { BillSplitModule } from 'module/bill-split/bill-split.module';
 import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
@@ -9,6 +13,7 @@ import { BalanceModule } from 'service/exchange/balance.module';
 import { ExchangeSettlerModule } from 'service/exchange/exchange-settler.module';
 import { ExchangeModule } from 'service/exchange/exchange.module';
 import { FirebaseNotificationModule } from 'service/firebase-notification/firebase-notification.module';
+import { SentryModule } from 'service/sentry/sentry.module';
 import { TransactionBillSplitLinkerModule } from 'service/transaction-bill-split-linker/transaction-bill-split-linker.module';
 import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
 import { AppController } from './app.controller';
@@ -29,6 +34,19 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 
 @Module({
 	imports: [
+		SentryModule.forRoot({
+			dsn: 'REDACTED_SENTRY_DSN',
+			environment: getConfig().env,
+			integrations: [
+				new Integrations.Express(),
+				new ProfilingIntegration(),
+			],
+			// Set tracesSampleRate to 1.0 to capture 100%
+			// of transactions for performance monitoring.
+			// We recommend adjusting this value in production
+			tracesSampleRate: 1.0,
+			profilesSampleRate: 1.0,
+		}),
 		ConfigModule,
 		TransactionListenerModule,
 		BalanceModule,
@@ -58,4 +76,11 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 	controllers: [AppController],
 	providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+	configure(consumer: MiddlewareConsumer): void {
+		consumer.apply(Sentry.Handlers.requestHandler()).forRoutes({
+			path: '*',
+			method: RequestMethod.ALL,
+		});
+	}
+}

@@ -3,9 +3,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { applyGlobals } from 'app.globals';
 import { AppModule } from './app.module';
 import { downloadFiles } from './helper/config-loader';
-import { SentryLogger } from './helper/sentry';
+import { SentryLogger } from './service/sentry/sentry.logger';
 
 async function bootstrap() {
+	// eslint-disable-next-line no-console
 	console.log('Booting app');
 	await downloadFiles();
 	const app = await NestFactory.create(AppModule, {
