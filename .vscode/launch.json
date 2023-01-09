@@ -61,7 +61,8 @@
 		},
 		{
 			"name": "flutter (release mode)",
-			"cwd": "flutter",
+			"cwd": "app",
+			"program": "lib/main_production.dart",
 			"request": "launch",
 			"type": "dart",
 			"flutterMode": "release"

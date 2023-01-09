@@ -7,35 +7,25 @@ import 'package:sudonym.models/index.dart';
 
 class ReceiverPage extends StatefulWidget {
   final Receiver entity;
-  const ReceiverPage({required this.entity, Key? key}) : super(key: key);
+  final CreatedOrUpdated<Transaction>? Function(CreatedOrUpdated<Transaction> t)
+      handle;
+  const ReceiverPage({required this.entity, required this.handle, Key? key})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ReceiverPageState();
 }
 
 class ReceiverPageState extends State<ReceiverPage> {
-  CreatedOrUpdated<Transaction>? handle(CreatedOrUpdated<Transaction> t) {
-    // Don't bubble this event to global transaction handler if already on this page
-    if (t.entity.receiverId == widget.entity.id) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (context) => TransactionPage(entity: t.entity),
-              fullscreenDialog: true),
-          (route) => route.isFirst);
-      return null;
-    }
-    return t;
-  }
-
   @override
   void initState() {
-    getIt<TransactionHandlerService>().callbacks.add(handle);
+    getIt<TransactionHandlerService>().callbacks.add(widget.handle);
     super.initState();
   }
 
   @override
   void dispose() {
-    getIt<TransactionHandlerService>().callbacks.remove(handle);
+    getIt<TransactionHandlerService>().callbacks.remove(widget.handle);
     super.dispose();
   }
 

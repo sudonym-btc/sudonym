@@ -40,7 +40,8 @@ abstract class EntityCubit<
     // Subscribe if not currently listening
     if (!shouldListen) return;
     updater ??= repository.updated.stream.listen((event) {
-      if ((event.entity as dynamic).id == (state.entity as dynamic).id) {
+      if (state.entity != null &&
+          (event.entity as dynamic).id == (state.entity as dynamic).id) {
         set(event.entity);
       }
     });

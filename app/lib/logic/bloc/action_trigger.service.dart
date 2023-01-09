@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:injectable/injectable.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
@@ -50,6 +51,7 @@ extension SwitchMapExtension<T> on Stream<T> {
 class ActionStream {
   BuildContext context;
   String link;
+  Route? route;
   Pot? pot;
   ActionStream({required this.context, required this.link, this.pot});
 }
@@ -64,13 +66,16 @@ class ActionTriggerService with ActionLogger {
 
   ActionTriggerService() {
     actionStreamCallbacks.add((p0) {
-      p0.pot ??= getIt<CurrentPotService>().pot;
+      Pot? pot = getIt<CurrentPotService>().pot;
+      p0.pot ??= pot;
       return p0;
     });
   }
 
   trigger(ActionStream action) {
     final triggerStream = PublishSubject<ActionStream>();
+
+    action.route = NavigationHistoryObserver().top;
 
     loggy.d('Triggering action ${action.link}');
     if (!isValidAddress(action.link)) {
@@ -79,6 +84,21 @@ class ActionTriggerService with ActionLogger {
     }
     triggerStream
         .asyncMap(actionStreamCallbacks.handle)
+
+        // When no current pot is selected, load list and choose first
+        .asyncMap((event) async {
+          if (event.pot == null) {
+            ListCubit l = ListCubit<Pot>(getIt<PotRepository>(),
+                column: '\$PotUser.index\$',
+                order: 'ASC',
+                limit: 1,
+                getId: (Pot element) => element.PotUser.index);
+
+            event.pot = (await l.loadNext()).data[0];
+          }
+          return event;
+        })
+        .where((event) => event.pot != null)
         .switchMapCallback(
             (value, void Function(ActionParseResponse x) next, err) =>
                 Navigator.push(
@@ -91,14 +111,15 @@ class ActionTriggerService with ActionLogger {
             ? handlePayment(action)(value.payment)
             : handleWithdraw(action)(value.withdraw))
         .handleError(
-      (err) {
-        loggy.e(err);
-        throw err;
-      },
-      // test: (error) => error instanceof DioErr,
-    ).listen((event) {
-      loggy.d('Payment flow completed');
-    });
+          (err) {
+            loggy.e(err);
+            throw err;
+          },
+          // test: (error) => error instanceof DioErr,
+        )
+        .listen((event) {
+          loggy.d('Payment flow completed');
+        });
 
     triggerStream.add(action);
   }
@@ -207,12 +228,25 @@ class ActionTriggerService with ActionLogger {
                     pageBuilder: (context, animation1, animation2) =>
                         WithdrawExecutePage(
                             action: value, onDone: next, onError: err))))
-        .doOnData((value) => Navigator.pushAndRemoveUntil(
+        .doOnData((value) => Navigator.pushReplacement(
             actionStream.context,
             MaterialPageRoute(
-                builder: (context) => ReceiverPage(entity: value)),
-            (route) => route.isFirst));
-    ;
+                builder: (context) => ReceiverPage(
+                    entity: value,
+                    handle: (CreatedOrUpdated<Transaction> t) {
+                      // Don't bubble this event to global transaction handler if already on this page
+                      if (t.entity.receiverId == value.id) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TransactionPage(entity: t.entity),
+                                fullscreenDialog: true), (route) {
+                          return route == actionStream.route;
+                        });
+                        return null;
+                      }
+                      return t;
+                    }))));
   }
 
 //   handleUnknown(BuildContext context) {

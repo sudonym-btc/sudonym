@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/firebase_options.dart';
@@ -62,6 +63,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorObservers: [NavigationHistoryObserver()],
       title: 'Sudonym',
       theme: getTheme(),
       darkTheme: getTheme(light: false),

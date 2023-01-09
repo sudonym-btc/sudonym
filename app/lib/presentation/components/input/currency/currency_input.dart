@@ -64,34 +64,36 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
             form.control('amount').removeError('amount');
           }
         }
-        Ink negativeButton = Ink(
-            decoration: buttonDecoration(context, state.negativeEnabled),
-            child: IconButton(
-              onPressed: state.negativeEnabled
-                  ? () => BlocProvider.of<CurrencyInputCubit>(context)
-                      .decrementValue()
-                  : null,
-              color: Theme.of(context)
-                  .elevatedButtonTheme
-                  .style!
-                  .foregroundColor!
-                  .resolve({}),
-              icon: const Icon(Icons.remove, size: iconSize * 1.5),
-            ));
-        Ink positiveButton = Ink(
-            decoration: buttonDecoration(context, state.positiveEnabled),
-            child: IconButton(
-              onPressed: state.positiveEnabled
-                  ? () => BlocProvider.of<CurrencyInputCubit>(context)
-                      .incrementValue()
-                  : null,
-              color: Theme.of(context)
-                  .elevatedButtonTheme
-                  .style!
-                  .foregroundColor!
-                  .resolve({}),
-              icon: const Icon(Icons.add, size: iconSize * 1.5),
-            ));
+        Material negativeButton = Material(
+            child: Ink(
+                decoration: buttonDecoration(context, state.negativeEnabled),
+                child: IconButton(
+                  onPressed: state.negativeEnabled
+                      ? () => BlocProvider.of<CurrencyInputCubit>(context)
+                          .decrementValue()
+                      : null,
+                  color: Theme.of(context)
+                      .elevatedButtonTheme
+                      .style!
+                      .foregroundColor!
+                      .resolve({}),
+                  icon: const Icon(Icons.remove, size: iconSize * 1.5),
+                )));
+        Material positiveButton = Material(
+            child: Ink(
+                decoration: buttonDecoration(context, state.positiveEnabled),
+                child: IconButton(
+                  onPressed: state.positiveEnabled
+                      ? () => BlocProvider.of<CurrencyInputCubit>(context)
+                          .incrementValue()
+                      : null,
+                  color: Theme.of(context)
+                      .elevatedButtonTheme
+                      .style!
+                      .foregroundColor!
+                      .resolve({}),
+                  icon: const Icon(Icons.add, size: iconSize * 1.5),
+                )));
 
         Widget input = Column(
             crossAxisAlignment:

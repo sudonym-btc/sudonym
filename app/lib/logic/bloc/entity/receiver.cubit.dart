@@ -23,7 +23,8 @@ class ReceiverCubit
       if (state.entity != null && event.name == 'receiver.received') {
         if (event.data['id'] == state.entity!.id ||
             event.data['parentId'] == state.entity!.id) {
-          onReceived.add(Receiver.fromJson(event.data));
+          onReceived.sink.add(Receiver.fromJson(event.data));
+
           if (state.entity!.type == 'bolt11') {
             create(Receiver.fromJson({
               'potId': state.entity!.potId,
@@ -40,6 +41,7 @@ class ReceiverCubit
 
   @override
   Future<void> close() {
+    print('closing receiver cubit');
     onReceived.close();
     return super.close();
   }

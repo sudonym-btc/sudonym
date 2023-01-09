@@ -77,6 +77,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
 
   @override
   void dispose() {
+    print('disposing widget');
     getIt<ActionTriggerService>().callbacks.remove(cb);
     super.dispose();
   }
@@ -89,6 +90,7 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             ReceiverCubit c = getIt<ReceiverCubit>();
 
             c.onReceived.stream.listen((event) {
+              print('HAHAHAHA');
               if (widget.opts.onReceive != null) {
                 widget.opts.onReceive!(event, context);
               }

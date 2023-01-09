@@ -89,9 +89,9 @@ class BillSplitParticipantListItem extends StatelessWidget {
                                     participant: state.entity)),
                             fullscreenDialog: true));
                       },
-                      icon: FaIcon(FontAwesomeIcons.qrcode))
+                      icon: const FaIcon(FontAwesomeIcons.qrcode))
                   : IconButton(
-                      icon: FaIcon(Icons.check),
+                      icon: const FaIcon(Icons.check),
                       onPressed: (() {}),
                     ));
         }));

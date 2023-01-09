@@ -81,7 +81,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
       participantCubits[index]
           .setValue(CurrencyInputOutput(value.amount, widget.entity!.currency));
       Future.delayed(
-          const Duration(milliseconds: 10), () => listeningForChanges = true);
+          const Duration(milliseconds: 500), () => listeningForChanges = true);
     });
   }
 
@@ -198,7 +198,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
         setMax();
       });
     }
-
+    print(changed);
     calcBillSplit(widget.entity!, null, null, changed);
     setInputs();
     setMax();
