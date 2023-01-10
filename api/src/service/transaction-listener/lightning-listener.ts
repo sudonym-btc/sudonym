@@ -4,10 +4,7 @@ import * as bolt11 from 'bolt11';
 import { CurrencyService } from 'module/currency/currency.service';
 import { Transaction } from 'module/transaction/transaction.model';
 import { Op } from 'sequelize';
-import {
-	LightningError,
-	LightningNodeService,
-} from '../lightning-node/lightning-node.service';
+import { LightningNodeService } from '../lightning-node/lightning-node.service';
 import { LightningEvents, WaitSendPayResponse } from './lightning-events';
 import { TransactionListener } from './transaction-listener.interface';
 
@@ -62,10 +59,10 @@ export class LightningListener extends TransactionListener {
 		const pay = (await this.lightningNodeService.listPays(payment_hash))[0];
 		this.logger.debug('Waiting for payment', pay);
 
-		const waitSendPay = async (partId) => {
-			this.logger.debug('Waiting for sendpay', payment_hash, partId);
+		const waitSendPay = async (partid) => {
+			this.logger.debug('Waiting for sendpay', payment_hash, partid);
 			this.lightningNodeService
-				.waitSendPay(payment_hash, null, partId)
+				.waitSendPay(payment_hash, null, partid)
 				.finally(() => this.waitForPayment(payment_hash));
 		};
 
@@ -78,13 +75,14 @@ export class LightningListener extends TransactionListener {
 			const sendingPays = sendpays.filter((s) => s.status === 'pending');
 
 			for (const sendpay of sendingPays) {
-				waitSendPay(sendpay.partId);
+				waitSendPay(sendpay.partid);
 			}
 
 			if (!sendingPays.length) {
 				this.logger.debug(
 					'no inflight sendpays, so waiting for 2 seconds before recalling'
 				);
+				// Wait for payment
 				setTimeout(() => {
 					this.waitForPayment(payment_hash);
 				}, 2000);
@@ -113,29 +111,29 @@ export class LightningListener extends TransactionListener {
 				)
 			).amount;
 			this.logger.debug('Amount', btcAmount, btcAmount * MSATOSHIS);
-			const response = await this.lightningNodeService.pay(
-				invoice,
-				Math.ceil(btcAmount * MSATOSHIS)
-			);
+			const response = await this.lightningNodeService
+				.pay(invoice, Math.ceil(btcAmount * MSATOSHIS))
+				.finally(() => {
+					this.waitForPayment(
+						response.payment_hash ||
+							bolt11.decode(invoice).tagsObject.payment_hash
+					);
+				});
 			this.logger.debug('Lightning pay', response);
-			this.waitForPayment(
-				response.payment_hash ||
-					bolt11.decode(invoice).tagsObject.payment_hash
-			);
 		} catch (e) {
 			this.logger.error('Pay error', e);
-			if (e instanceof LightningError) {
-				this.logger.warn('Pay error', e);
-				const data = e.error?.data || e.error;
-				this.lightningEvents.onEvent.next({
-					event: 'sendpay',
-					data: {
-						bolt11: invoice,
-						...data,
-						...(data.attempts?.length ? data.attempts[0] : {}),
-					},
-				});
-			}
+			// if (e instanceof LightningError) {
+			// 	this.logger.warn('Pay error', e);
+			// 	const data = e.error?.data || e.error;
+			// 	this.lightningEvents.onEvent.next({
+			// 		event: 'sendpay',
+			// 		data: {
+			// 			bolt11: invoice,
+			// 			...data,
+			// 			...(data.attempts?.length ? data.attempts[0] : {}),
+			// 		},
+			// 	});
+			// }
 		}
 	}
 
