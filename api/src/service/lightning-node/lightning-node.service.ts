@@ -331,7 +331,7 @@ export class LightningNodeService {
 			null, //[label]
 			null, //[riskfactor]
 			10, // [maxfeepercent],
-			60, // [retry_for],
+			160, // [retry_for],
 			null, // [maxdelay]
 			5000 * 1000, //[exemptfee]
 			null, //[localinvreqid]
