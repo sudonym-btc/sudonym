@@ -56,8 +56,9 @@ export class LightningListener extends TransactionListener {
 	}
 
 	async waitForPayment(payment_hash) {
+		this.logger.debug('Waiting for payment hash', payment_hash);
 		const pay = (await this.lightningNodeService.listPays(payment_hash))[0];
-		this.logger.debug('Waiting for payment', pay);
+		this.logger.debug('Pay', pay);
 
 		const waitSendPay = async (partid) => {
 			this.logger.debug('Waiting for sendpay', payment_hash, partid);
@@ -115,8 +116,7 @@ export class LightningListener extends TransactionListener {
 				.pay(invoice, Math.ceil(btcAmount * MSATOSHIS))
 				.finally(() => {
 					this.waitForPayment(
-						response.payment_hash ||
-							bolt11.decode(invoice).tagsObject.payment_hash
+						bolt11.decode(invoice).tagsObject.payment_hash
 					);
 				});
 			this.logger.debug('Lightning pay', response);
