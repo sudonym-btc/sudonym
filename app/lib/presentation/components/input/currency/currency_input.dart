@@ -32,6 +32,7 @@ class CurrencyInput extends FormField<CurrencyInputOutput> {
 }
 
 class CurrencyInputOutput extends Equatable {
+  String? id;
   num amount;
   String currency;
   CurrencyInputOutput(this.amount, this.currency) {

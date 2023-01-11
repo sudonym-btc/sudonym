@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/presentation/widgets/bill_split/view_bill_split.dart';
 import 'package:sudonym.models/index.dart';
 
 class EditBillSplit extends StatelessWidget {
@@ -45,19 +47,41 @@ class _EditBillSplit extends StatefulWidget {
   }
 }
 
+class BillSplitParticipantController {
+  FormGroup control;
+  StreamController<dynamic> onInput = StreamController.broadcast();
+  CurrencyInputCubit cubit;
+  bool changed = false;
+  bool listening = true;
+  BillSplitParticipantController(this.control, this.cubit, this.changed) {
+    (control.findControl('amount')!.valueChanges
+            as Stream<CurrencyInputOutput?>)
+        .listen((CurrencyInputOutput? event) {
+      if (listening) {
+        onInput.add(this);
+      }
+    });
+  }
+
+  listen(bool enabled) {
+    listening = enabled;
+  }
+}
+
 class _EditBillSplitState extends State<_EditBillSplit> {
   late FormGroup f;
-
-  FormArray get participantList =>
-      f.control('BillSplitParticipants') as FormArray;
-  List<CurrencyInputCubit> participantCubits = [];
-  List<int> changed = [];
-  bool listeningForChanges = true;
+  List<BillSplitParticipantController> controllers = [];
+  get changed => controllers
+      .where((element) => element.changed)
+      .map((e) => controllers.indexOf(e))
+      .toList();
+  StreamController<BillSplitParticipantController> onUpdated =
+      StreamController.broadcast();
 
   @override
   void initState() {
     super.initState();
-    calcBillSplit(widget.entity!, null, null, changed);
+    calcBillSplit(widget.entity!);
 
     f = FormGroup({
       'amount': FormControl<num>(
@@ -72,17 +96,49 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     widget.entity!.BillSplitParticipants.forEach((el) {
       addParticipant(el);
     });
+
+    onUpdated.stream.asyncMap((event) async {
+      stopListening();
+      event.changed = true;
+
+      removeMax();
+      await setInputs(controllers.indexOf(event));
+      startListening();
+    }).listen(null);
   }
 
-  setInputs() async {
-    widget.entity!.BillSplitParticipants.asMap().forEach((index, value) {
-      if (participantCubits.length <= index) return;
-      listeningForChanges = false;
-      participantCubits[index]
-          .setValue(CurrencyInputOutput(value.amount, widget.entity!.currency));
-      Future.delayed(
-          const Duration(milliseconds: 500), () => listeningForChanges = true);
+  stopListening([int? ignore]) {
+    // Pause subscriptions for updates
+    controllers.asMap().forEach((key, element) {
+      if (key != ignore) {
+        element.listen(false);
+        if (key != ignore) element.cubit.setEnabled(false);
+      }
     });
+  }
+
+  startListening([int? only]) {
+    controllers.asMap().forEach((key, element) {
+      if (only != null && key != only) return;
+      element.listen(true);
+      if (key != 0) element.cubit.setEnabled(true);
+    });
+  }
+
+  setInputs([int? ignore]) async {
+    removeMax();
+    List<Future> updates = [];
+    controllers.asMap().forEach((key, value) {
+      if (key == ignore) return;
+      updates.add(value.cubit
+          .setValue(CurrencyInputOutput(
+              widget.entity!.BillSplitParticipants[key].amount,
+              widget.entity!.currency))
+          .then((val) {}));
+    });
+    await Future.wait(updates);
+    await Future.delayed(new Duration(milliseconds: 10));
+    setMax();
   }
 
   @override
@@ -135,9 +191,8 @@ class _EditBillSplitState extends State<_EditBillSplit> {
                                     builder: (context, formArray, child) =>
                                         Expanded(
                                             child: ListView(
-                                          children: participantList.controls
-                                              .map((control) =>
-                                                  control as FormGroup)
+                                          children: controllers
+                                              .map((e) => e.control)
                                               .map(_buildParticipant)
                                               .toList(),
                                         ))),
@@ -149,73 +204,124 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   Widget _buildParticipant(FormGroup participantForm) {
     return ReactiveForm(
         formGroup: participantForm,
-        child: ListTile(
-          contentPadding: EdgeInsets.only(bottom: padding * 2),
-          title: Text(getParticipantName(
-              participantList.controls.indexOf(participantForm), context)),
-          subtitle: CurrencyInput(
-            form: participantForm,
-            cubit: participantCubits[
-                participantList.controls.indexOf(participantForm)],
-            large: false,
-          ),
-        ));
+        child: Slidable(
+            // Specify a key if the Slidable is dismissible.
+            key: const ValueKey(0),
+
+            // The start action pane is the one at the left or the top side.
+            startActionPane: controllers.indexWhere(
+                        (element) => element.control == participantForm) >
+                    1
+                ? ActionPane(
+                    // A motion is a widget used to control how the pane animates.
+                    motion: const ScrollMotion(),
+
+                    // A pane can dismiss the Slidable.
+                    // dismissible: DismissiblePane(onDismissed: () {}),
+
+                    // All actions are defined in the children parameter.
+                    children: [
+                      // A SlidableAction can have an icon and/or a label.
+                      SlidableAction(
+                        onPressed: (BuildContext context) async {
+                          removeParticipant(controllers.indexWhere(
+                              (element) => element.control == participantForm));
+                        },
+                        backgroundColor: Theme.of(context).errorColor,
+                        foregroundColor: Colors.white,
+                        icon: Icons.arrow_left,
+                        label: 'Remove',
+                      ),
+                    ],
+                  )
+                : null,
+
+            // The child of the Slidable is what the user sees when the
+            // component is not dragged.
+            child: ListTile(
+              contentPadding: EdgeInsets.only(bottom: padding * 2),
+              title: Text(getParticipantName(
+                  controllers.indexWhere(
+                      (element) => element.control == participantForm),
+                  context)),
+              subtitle: CurrencyInput(
+                form: participantForm,
+                cubit: controllers
+                    .where((element) => element.control == participantForm)
+                    .first
+                    .cubit,
+                large: false,
+              ),
+            )));
   }
 
-  addParticipant(BillSplitParticipant? part) {
+  removeParticipant(int index) {
+    controllers.removeAt(index);
+    widget.entity!.BillSplitParticipants.removeAt(index);
+    setState(() {});
+    calcBillSplit(widget.entity!, null, null, changed);
+    setInputs();
+  }
+
+  addParticipant(BillSplitParticipant? part) async {
+    BillSplitParticipant recalculatedPart;
+
     if (part == null) {
       widget.entity!.BillSplitParticipants
           .add(BillSplitParticipant(null, null));
+      recalculatedPart = widget.entity!.BillSplitParticipants.last;
+    } else {
+      recalculatedPart = part;
     }
-    participantCubits.add(CurrencyInputCubit(CurrencyInputOptions(
-        enabled: participantCubits.isNotEmpty,
-        showAltCurrency: true,
+    calcBillSplit(widget.entity!, null, null, changed);
+
+    FormGroup f = FormGroup({
+      'amount': FormControl<CurrencyInputOutput>(
+          value: CurrencyInputOutput(
+              recalculatedPart.amount ?? 0, widget.entity!.currency),
+          validators: [Validators.required]),
+    });
+
+    CurrencyInputCubit c = CurrencyInputCubit(CurrencyInputOptions(
+        enabled: controllers.isNotEmpty,
+        showAltCurrency: true, //widget.entity!.currency == 'BTC',
         canSwitchCurrency: false,
         max: [
           CurrencyInputOutput(widget.entity!.amount, widget.entity!.currency)
         ],
-        initialValue:
-            CurrencyInputOutput(part?.amount ?? 0, widget.entity!.currency))));
-    FormGroup f = FormGroup({
-      'amount': FormControl<CurrencyInputOutput>(
-          value:
-              CurrencyInputOutput(part?.amount ?? 0, widget.entity!.currency),
-          validators: [Validators.required]),
-    });
-    participantList.add(f);
-    if (participantList.controls.indexOf(f) > 0) {
-      f.findControl('amount')!.valueChanges.listen((event) {
-        int i = participantList.controls.indexOf(f);
-        if (!changed.contains(i) && listeningForChanges) {
-          changed.add(i);
-        }
-        if (listeningForChanges) {
-          calcBillSplit(widget.entity!, i, event.amount, changed);
-        }
+        initialValue: CurrencyInputOutput(
+            recalculatedPart.amount ?? 0, widget.entity!.currency)));
+    BillSplitParticipantController controller =
+        BillSplitParticipantController(f, c, false);
+    controllers.add(controller);
 
-        removeMax();
-        setInputs();
-        setMax();
-      });
-    }
-    print(changed);
-    calcBillSplit(widget.entity!, null, null, changed);
-    setInputs();
-    setMax();
+    controller.onInput.stream.listen((data) async {
+      print('Input' +
+          controllers.indexOf(controller).toString() +
+          ' triggerd with status listening' +
+          controller.listening.toString());
+      calcBillSplit(widget.entity!, controllers.indexOf(controller),
+          controller.cubit.controller!.numberValue, changed);
+      onUpdated.add(controller);
+    });
     setState(() {});
+
+    stopListening();
+    await setInputs();
+    startListening();
   }
 
   setMax() {
-    participantCubits.asMap().forEach((key, value) {
+    controllers.asMap().forEach((key, value) {
       if (key > 0) {
-        participantCubits[key].options.min = [
+        controllers[key].cubit.options.min = [
           CurrencyInputOutput(0.00000001, 'BTC')
         ];
       }
-      participantCubits[key].options.max = [
+      controllers[key].cubit.options.max = [
         CurrencyInputOutput(
             max(
-                (changed.contains(key)
+                (value.changed
                         ? widget.entity!.BillSplitParticipants[key].amount
                         : 0) +
                     calcAmountLeft(widget.entity, changed),
@@ -223,7 +329,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
             widget.entity!.currency)
       ];
       if (widget.entity!.BillSplitParticipants.length > key) {
-        participantCubits[key].enforceConstraints(CurrencyInputOutput(
+        value.cubit.enforceConstraints(CurrencyInputOutput(
             widget.entity!.BillSplitParticipants[key].amount,
             widget.entity!.currency));
       }
@@ -231,9 +337,9 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   }
 
   removeMax() {
-    participantCubits.asMap().forEach((key, value) {
-      participantCubits[key].options.max = [];
-    });
+    for (var value in controllers) {
+      value.cubit.options.max = [];
+    }
   }
 }
 

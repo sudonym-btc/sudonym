@@ -90,7 +90,6 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
             ReceiverCubit c = getIt<ReceiverCubit>();
 
             c.onReceived.stream.listen((event) {
-              print('HAHAHAHA');
               if (widget.opts.onReceive != null) {
                 widget.opts.onReceive!(event, context);
               }
