@@ -16,6 +16,7 @@ class CustomForm<
   final T entity;
   final FormGroup Function() formGroup;
   final dynamic Function(BuildContext context, dynamic state) builder;
+  final dynamic Function(BuildContext context, Widget child)? actionBuilder;
   final Function(Map<String, dynamic> formData)? beforeSave;
   final Future<dynamic> Function(dynamic entity)? onSave;
   final bool hideSubmit;
@@ -24,6 +25,7 @@ class CustomForm<
       {required this.entity,
       required this.formGroup,
       required this.builder,
+      this.actionBuilder,
       this.beforeSave,
       this.onSave,
       this.hideSubmit = false,
@@ -88,6 +90,24 @@ class _CustomFormState<
 
   @override
   Widget build(BuildContext context) {
+    Widget submitButton = ReactiveFormConsumer(
+      builder: (context, form, child) {
+        return form.dirty || !widget.hideSubmit
+            ? Button(
+                onPressed: form.valid && form.dirty && !loading
+                    ? () => submit(context, form)
+                    : null,
+                icon: loading
+                    ? SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator())
+                    : null,
+                text: loading ? null : AppLocalizations.of(context)!.submit,
+              )
+            : Container();
+      },
+    );
     return CubitWrapper<C, CS, T>(
         entity: widget.entity as T,
         fetch: false,
@@ -100,26 +120,9 @@ class _CustomFormState<
                   children: [
                     widget.builder(context, state),
                     const VertDivider(),
-                    ReactiveFormConsumer(
-                      builder: (context, form, child) {
-                        return form.dirty || !widget.hideSubmit
-                            ? Button(
-                                onPressed: form.valid && form.dirty && !loading
-                                    ? () => submit(context, form)
-                                    : null,
-                                icon: loading
-                                    ? SizedBox(
-                                        height: 16,
-                                        width: 16,
-                                        child: CircularProgressIndicator())
-                                    : null,
-                                text: loading
-                                    ? null
-                                    : AppLocalizations.of(context)!.submit,
-                              )
-                            : Container();
-                      },
-                    ),
+                    (widget.actionBuilder ??
+                        (BuildContext context, Widget child) =>
+                            child)(context, submitButton)
                   ]));
         });
   }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -51,9 +50,11 @@ class BillSplitParticipantController {
   FormGroup control;
   StreamController<dynamic> onInput = StreamController.broadcast();
   CurrencyInputCubit cubit;
+  UniqueKey key;
   bool changed = false;
   bool listening = true;
-  BillSplitParticipantController(this.control, this.cubit, this.changed) {
+  BillSplitParticipantController(
+      this.control, this.cubit, this.key, this.changed) {
     (control.findControl('amount')!.valueChanges
             as Stream<CurrencyInputOutput?>)
         .listen((CurrencyInputOutput? event) {
@@ -97,12 +98,15 @@ class _EditBillSplitState extends State<_EditBillSplit> {
       addParticipant(el);
     });
 
-    onUpdated.stream.asyncMap((event) async {
-      stopListening();
-      event.changed = true;
+    onUpdated.stream.asyncMap((controller) async {
+      calcBillSplit(widget.entity!, controllers.indexOf(controller),
+          controller.cubit.controller!.numberValue, changed);
 
+      controller.changed = true;
+
+      stopListening();
       removeMax();
-      await setInputs(controllers.indexOf(event));
+      await setInputs(controllers.indexOf(controller));
       startListening();
     }).listen(null);
   }
@@ -130,11 +134,9 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     List<Future> updates = [];
     controllers.asMap().forEach((key, value) {
       if (key == ignore) return;
-      updates.add(value.cubit
-          .setValue(CurrencyInputOutput(
-              widget.entity!.BillSplitParticipants[key].amount,
-              widget.entity!.currency))
-          .then((val) {}));
+      updates.add(value.cubit.setValue(CurrencyInputOutput(
+          widget.entity!.BillSplitParticipants[key].amount,
+          widget.entity!.currency)));
     });
     await Future.wait(updates);
     await Future.delayed(new Duration(milliseconds: 10));
@@ -157,61 +159,58 @@ class _EditBillSplitState extends State<_EditBillSplit> {
                         icon: Icon(Icons.person_add))
                   ],
                 ),
-                body: CustomPadding(
-                    multiplier: 2,
-                    child: CustomForm<BillSplitCubit, BillSplitCubitState,
-                            BillSplit>(
-                        entity: widget.entity ??
-                            BillSplit.fromJson(
-                                {'amount': 0, 'currency': 'BTC'}),
-                        beforeSave: (Map<String, dynamic> formData) {
-                          return Map<String, dynamic>.from({
-                            ...formData,
-                            'BillSplitParticipants':
-                                formData['BillSplitParticipants']
-                                    .map<Map<String, dynamic>>((i) {
-                              return Map<String, dynamic>.from(
-                                  {...i, 'amount': i['amount'].amount});
-                            }).toList()
-                          });
-                        },
-                        onSave: (b) async => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditBillSplit(
-                                      entity: b,
+                body: CustomForm<BillSplitCubit, BillSplitCubitState,
+                        BillSplit>(
+                    entity: widget.entity ??
+                        BillSplit.fromJson({'amount': 0, 'currency': 'BTC'}),
+                    beforeSave: (Map<String, dynamic> formData) {
+                      return Map<String, dynamic>.from({
+                        ...formData,
+                        'BillSplitParticipants':
+                            formData['BillSplitParticipants']
+                                .map<Map<String, dynamic>>((i) {
+                          return Map<String, dynamic>.from(
+                              {...i, 'amount': i['amount'].amount});
+                        }).toList()
+                      });
+                    },
+                    onSave: (b) async => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditBillSplit(
+                                  entity: b,
+                                ))),
+                    formGroup: () => f,
+                    actionBuilder: (BuildContext context, Widget child) =>
+                        CustomPadding(multiplier: 2, child: child),
+                    builder: (BuildContext context, state) => Expanded(
+                            child: Column(
+                          children: [
+                            ReactiveFormArray(
+                                formArrayName: 'BillSplitParticipants',
+                                builder: (context, formArray, child) =>
+                                    Expanded(
+                                        child: ListView(
+                                      children: controllers
+                                          .map(_buildParticipant)
+                                          .toList(),
                                     ))),
-                        formGroup: () => f,
-                        builder: (BuildContext context, state) => Expanded(
-                                child: Column(
-                              children: [
-                                const VertDivider(),
-                                ReactiveFormArray(
-                                    formArrayName: 'BillSplitParticipants',
-                                    builder: (context, formArray, child) =>
-                                        Expanded(
-                                            child: ListView(
-                                          children: controllers
-                                              .map((e) => e.control)
-                                              .map(_buildParticipant)
-                                              .toList(),
-                                        ))),
-                                const VertDivider(),
-                              ],
-                            )))))));
+                          ],
+                        ))))));
   }
 
-  Widget _buildParticipant(FormGroup participantForm) {
+  Widget _buildParticipant(BillSplitParticipantController controller) {
     return ReactiveForm(
-        formGroup: participantForm,
+        key: controller.key, // assign the key
+
+        formGroup: controller.control,
         child: Slidable(
             // Specify a key if the Slidable is dismissible.
             key: const ValueKey(0),
 
             // The start action pane is the one at the left or the top side.
-            startActionPane: controllers.indexWhere(
-                        (element) => element.control == participantForm) >
-                    1
+            startActionPane: controllers.indexOf(controller) > 0 &&
+                    widget.entity!.BillSplitParticipants.length > 2
                 ? ActionPane(
                     // A motion is a widget used to control how the pane animates.
                     motion: const ScrollMotion(),
@@ -224,43 +223,38 @@ class _EditBillSplitState extends State<_EditBillSplit> {
                       // A SlidableAction can have an icon and/or a label.
                       SlidableAction(
                         onPressed: (BuildContext context) async {
-                          removeParticipant(controllers.indexWhere(
-                              (element) => element.control == participantForm));
+                          removeParticipant(controllers.indexOf(controller));
                         },
                         backgroundColor: Theme.of(context).errorColor,
                         foregroundColor: Colors.white,
                         icon: Icons.arrow_left,
-                        label: 'Remove',
+                        label: 'Remove ' +
+                            controllers.indexOf(controller).toString(),
                       ),
                     ],
                   )
                 : null,
-
-            // The child of the Slidable is what the user sees when the
-            // component is not dragged.
             child: ListTile(
-              contentPadding: EdgeInsets.only(bottom: padding * 2),
-              title: Text(getParticipantName(
-                  controllers.indexWhere(
-                      (element) => element.control == participantForm),
-                  context)),
+              contentPadding: EdgeInsets.fromLTRB(
+                  padding * 2, padding, padding * 2, padding),
+              title: Text(
+                  getParticipantName(controllers.indexOf(controller), context)),
               subtitle: CurrencyInput(
-                form: participantForm,
-                cubit: controllers
-                    .where((element) => element.control == participantForm)
-                    .first
-                    .cubit,
+                form: controller.control,
+                cubit: controller.cubit,
                 large: false,
               ),
             )));
   }
 
-  removeParticipant(int index) {
+  removeParticipant(int index) async {
     controllers.removeAt(index);
     widget.entity!.BillSplitParticipants.removeAt(index);
     setState(() {});
     calcBillSplit(widget.entity!, null, null, changed);
-    setInputs();
+    stopListening();
+    await setInputs();
+    startListening();
   }
 
   addParticipant(BillSplitParticipant? part) async {
@@ -284,7 +278,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
 
     CurrencyInputCubit c = CurrencyInputCubit(CurrencyInputOptions(
         enabled: controllers.isNotEmpty,
-        showAltCurrency: true, //widget.entity!.currency == 'BTC',
+        showAltCurrency: widget.entity!.currency == 'BTC',
         canSwitchCurrency: false,
         max: [
           CurrencyInputOutput(widget.entity!.amount, widget.entity!.currency)
@@ -292,16 +286,10 @@ class _EditBillSplitState extends State<_EditBillSplit> {
         initialValue: CurrencyInputOutput(
             recalculatedPart.amount ?? 0, widget.entity!.currency)));
     BillSplitParticipantController controller =
-        BillSplitParticipantController(f, c, false);
+        BillSplitParticipantController(f, c, UniqueKey(), false);
     controllers.add(controller);
 
     controller.onInput.stream.listen((data) async {
-      print('Input' +
-          controllers.indexOf(controller).toString() +
-          ' triggerd with status listening' +
-          controller.listening.toString());
-      calcBillSplit(widget.entity!, controllers.indexOf(controller),
-          controller.cubit.controller!.numberValue, changed);
       onUpdated.add(controller);
     });
     setState(() {});
@@ -311,14 +299,12 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     startListening();
   }
 
-  setMax() {
-    controllers.asMap().forEach((key, value) {
+  setMax() async {
+    controllers.asMap().forEach((key, value) async {
       if (key > 0) {
-        controllers[key].cubit.options.min = [
-          CurrencyInputOutput(0.00000001, 'BTC')
-        ];
+        value.cubit.options.min = [CurrencyInputOutput(0.00000001, 'BTC')];
       }
-      controllers[key].cubit.options.max = [
+      value.cubit.options.max = [
         CurrencyInputOutput(
             max(
                 (value.changed
@@ -328,11 +314,13 @@ class _EditBillSplitState extends State<_EditBillSplit> {
                 0),
             widget.entity!.currency)
       ];
-      if (widget.entity!.BillSplitParticipants.length > key) {
-        value.cubit.enforceConstraints(CurrencyInputOutput(
-            widget.entity!.BillSplitParticipants[key].amount,
-            widget.entity!.currency));
-      }
+
+      setState(
+        () {},
+      );
+      value.cubit
+          .enforceConstraints(value.cubit.options.controller!.value)
+          .listen((event) {});
     });
   }
 

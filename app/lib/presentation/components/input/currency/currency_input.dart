@@ -23,9 +23,24 @@ class CurrencyInput extends FormField<CurrencyInputOutput> {
     this.onChanged,
     super.key,
   }) : super(
-            builder: (FormFieldState<CurrencyInputOutput> state) => (state
-                    as _CurrencyInputState)
-                .constructWidget(state.context, form, cubit, options, large));
+            builder: (FormFieldState<CurrencyInputOutput> state) =>
+                BlocProvider(
+                    // dispose: false,
+                    create: (_) {
+                      CurrencyInputCubit c =
+                          cubit ?? CurrencyInputCubit(options!);
+                      if (form != null) {
+                        c.options.controller!.outputStream.stream
+                            .listen((event) {
+                          form.control('amount').updateValue(event);
+                          form.control('amount').markAsDirty();
+                        });
+                      }
+
+                      return c;
+                    },
+                    child: (state as _CurrencyInputState).constructWidget(
+                        state.context, form, cubit, options, large)));
 
   @override
   FormFieldState<CurrencyInputOutput> createState() => _CurrencyInputState();
@@ -46,17 +61,7 @@ class CurrencyInputOutput extends Equatable {
 class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
   Widget constructWidget(BuildContext context, FormGroup? form,
       CurrencyInputCubit? cubit, CurrencyInputOptions? options, bool large) {
-    return BlocProvider(create: (_) {
-      CurrencyInputCubit c = cubit ?? CurrencyInputCubit(options!);
-      if (form != null) {
-        c.options.controller!.outputStream.stream.listen((event) {
-          form.control('amount').updateValue(event);
-          form.control('amount').markAsDirty();
-        });
-      }
-
-      return c;
-    }, child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
+    return BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
       builder: (context, state) {
         if (form != null) {
           if (state.error != null) {
@@ -188,7 +193,7 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
           ])
         ]);
       },
-    ));
+    );
   }
 }
 

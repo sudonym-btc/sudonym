@@ -71,11 +71,13 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   final CurrencyRepository _currencyRespository = getIt<CurrencyRepository>();
   final CurrencyInputOptions options;
   MoneyMaskedTextController? controller;
+  late num id;
 
   num clickValueBase = 1;
 
   CurrencyInputCubit(this.options)
       : super(CurrencyInputCubitState(options: options)) {
+    id = new DateTime.now().millisecondsSinceEpoch;
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
 
     CurrencyInputOutput? previousInput;
@@ -184,23 +186,23 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
         num.parse(min.toStringAsFixed(8))) {
       error = {'min': FormatCurrency().format(getCurrentCurrency(), min)};
     }
-
     double max = await getMaxInCurrentCurrency();
 
     if (min > max) {
       error = {'max': FormatCurrency().format(getCurrentCurrency(), max)};
-    } else {
-      positiveEnabled =
-          numToCurrentPrecision(val.amount) < numToCurrentPrecision(max);
-      // print(numToCurrentPrecision(val.amount));
-      // print(numToCurrentPrecision(max));
-      if (!positiveEnabled) {
-        // print('Quietly updating right here to ' + max.toString());
-        quietInputUpdate(CurrencyInputOutput(max,
-            getCurrentCurrency())); // Must set true value as dislay value is vague
-        response = CurrencyInputOutput(max, getCurrentCurrency());
-      }
     }
+
+    positiveEnabled =
+        numToCurrentPrecision(val.amount) < numToCurrentPrecision(max);
+    // print(numToCurrentPrecision(val.amount));
+    // print(numToCurrentPrecision(max));
+    if (!positiveEnabled) {
+      // print('Quietly updating right here to ' + max.toString());
+      quietInputUpdate(CurrencyInputOutput(max,
+          getCurrentCurrency())); // Must set true value as dislay value is vague
+      response = CurrencyInputOutput(max, getCurrentCurrency());
+    }
+
     safeEmit(state.copyWith(
         maxLoading: false,
         minLoading: false,
