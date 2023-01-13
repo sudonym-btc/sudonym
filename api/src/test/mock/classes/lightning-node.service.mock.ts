@@ -1,10 +1,35 @@
+import { MSATOSHIS } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { randomBytes } from 'crypto';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
-
 export class MockLightningNodeService extends LightningNodeService {
 	pays = [];
 
+	mockListPays = (data, wait = 1) =>
+		jest.fn(async (hash) => {
+			await new Promise((resolve) => setTimeout(resolve, wait));
+			return this.baseListPays(hash).then((i) =>
+				i.map((i) => ({ ...i, ...data }))
+			);
+		});
+	mockSendPay = (data, wait = 1) =>
+		jest.fn(async (hash, timeout, part) => {
+			await new Promise((resolve) => setTimeout(resolve, wait));
+			return {
+				id: 23423423,
+				payment_preimage: 'mock',
+				payment_hash: hash,
+				created_at: Date.now().valueOf() / 1000,
+				parts: 1,
+				partid: part,
+				msatoshi_sent: 1 * MSATOSHIS,
+				amount_msat: 1 * MSATOSHIS,
+				amount_sent_msat: 1 * MSATOSHIS,
+				status: 'failed',
+				destination: 'randomnode',
+				...data,
+			};
+		});
 	mockPay = (data) =>
 		jest.fn(async (invoice) => {
 			const pay = {
@@ -82,8 +107,11 @@ export class MockLightningNodeService extends LightningNodeService {
 	async listSendPays(bolt11, hash) {
 		return this.pays.filter((i) => i.payment_hash == hash);
 	}
-	async listPays(hash) {
+	async baseListPays(hash) {
 		return this.pays.filter((i) => i.payment_hash == hash);
+	}
+	async listPays(hash) {
+		return this.baseListPays(hash);
 	}
 
 	async listFunds(): Promise<number> {

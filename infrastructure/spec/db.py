@@ -1,5 +1,6 @@
 from kubernetes_cluster import cluster
 
+
 def db(config, cluster_types):
 
     kube_type_name = cluster(config)["kube_type_name"]
@@ -12,6 +13,10 @@ def db(config, cluster_types):
             "type": "gcp-types/sqladmin-v1beta4:instances",
             "properties": {
                 "region": "us-central1",
+                "gceZone": config["zone"],
+                "ipConfigIpConfigurationuration": {
+                  "privateNetwork": "/projects/" + config["project"] + "/global/networks/default"
+                },
                 "settings": {
                   "tier": config["db"]["tier"],
                     "backupConfiguration": {

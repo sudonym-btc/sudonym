@@ -99,21 +99,34 @@ export const BaseService = <TModel extends BaseModel>(
 			return obj;
 		}
 
-		async list(params: FindOptions, options: ListOptions = { scopes: [] }) {
+		async list(
+			params: FindOptions,
+			options: ListOptions = { scopes: [], count: true }
+		) {
 			params = parseParams(params);
 			const scopes = [
 				...(options.scopes || []),
 				this.repo.scopes.find ? this.repo.scopes.find() : null,
 			].filter((i) => !!i);
 
-			const data = await this.repo
-				.scope(scopes as any)
-				.findAndCountAll(params);
+			if (options.count) {
+				const data = await this.repo
+					.scope(scopes)
+					.findAndCountAll(params);
+
+				return {
+					data: data.rows,
+					metadata: {
+						count: data.count,
+					},
+				};
+			}
+			const data = await this.repo.scope(scopes).findAll(params);
 
 			return {
-				data: data.rows,
+				data,
 				metadata: {
-					count: data.count,
+					count: null,
 				},
 			};
 		}
@@ -332,6 +345,7 @@ export const BaseService = <TModel extends BaseModel>(
 
 class ListOptions {
 	scopes;
+	count?: boolean;
 }
 
 const parseParams = (params) => {

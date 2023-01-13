@@ -1,12 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SATOSHIS } from '@sudonym/models';
+import { chunks } from 'helper/array';
 import { CurrencyService } from 'module/currency/currency.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { Op } from 'sequelize';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
 import { BitcoinEvents, BitcoinTransaction } from './bitcoin-events';
 import { TransactionListener } from './transaction-listener.interface';
-
 @Injectable()
 export class BitcoinListener extends TransactionListener {
 	private readonly logger = new Logger(this.constructor.name);
@@ -23,21 +23,45 @@ export class BitcoinListener extends TransactionListener {
 			)
 			.flat();
 
-		const receivers = await this.receiveService.list({
-			where: {
-				[Op.or]: addresses.reduce(
-					(acc, curr) => [
-						...acc,
+		this.logger.debug('Finding ' + addresses.length + ' addresses');
+
+		const addressChunks = [...chunks(addresses, 200)];
+
+		const receivers = (
+			await Promise.all(
+				addressChunks.map((addressChunk) =>
+					this.receiveService.list(
 						{
-							data: {
-								[Op.like]: curr + '%',
+							attributes: ['id', 'potId', 'data'],
+							where: {
+								[Op.or]: addressChunk.reduce(
+									(acc, curr) => [
+										...acc,
+										{
+											data: {
+												[Op.like]: curr + '%',
+											},
+										},
+									],
+									[]
+								),
 							},
 						},
-					],
-					[]
-				),
-			},
-		});
+						{
+							count: false,
+						}
+					)
+				)
+			)
+		).reduce(
+			(acc, curr) => ({
+				data: [...acc.data, ...curr.data],
+			}),
+			{
+				data: [],
+			}
+		);
+
 		for (const receiver of receivers.data) {
 			const getMatchedOuts = (tx) =>
 				tx.outs.filter((out) => receiver.data.includes(out.address));

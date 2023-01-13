@@ -139,7 +139,7 @@ def api(config, cluster_types):
                                     } if config["env"] == "development" else {}))
                                 ] + ([{
                                     "name": "cloud-sql-proxy",
-                                    "image": "gcr.io/cloudsql-docker/gce-proxy:1.32.0", # make sure the use the latest version
+                                    "image": "gcr.io/cloudsql-docker/gce-proxy:1.33.1", # make sure the use the latest version
                                     "command": [ "/cloud_sql_proxy", "-log_debug_stdout", "-instances=" + config["project"] + ":us-central1:production-db=tcp:3306" ],
                                     "securityContext": {
                                         "runAsNonRoot": True
