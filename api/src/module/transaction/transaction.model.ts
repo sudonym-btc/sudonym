@@ -60,6 +60,9 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@Column(DataTypes.TEXT('medium'))
 	description: string;
 
+	@Column(DataTypes.TEXT('medium'))
+	comment: string;
+
 	@Column(DataType.STRING(1024))
 	address: string;
 

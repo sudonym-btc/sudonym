@@ -82,7 +82,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
 
     CurrencyInputOutput? previousInput;
 
-    options.controller!.maskedInputStream.stream.distinct().listen((event) {
+    options.controller!.maskedInputStream.stream.listen((event) {
       options.controller!.inputStream.add(event);
     });
 
@@ -100,14 +100,13 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     options.controller!.inputStream.stream
         .doOnData((event) {
           if (previousInput == event) {
-            options.controller!.processingStream.add(event);
+            options.controller!.processingStream.add(previousInput!);
           }
           previousInput = event;
         })
-        .distinct()
-        .doOnData(quietInputUpdate)
         // .debounceTime(options.debounceOutput!)
         .switchMap(enforceConstraints)
+        .doOnData(quietInputUpdate)
         .listen((event) {
           options.controller!.outputStream.add(event);
           options.controller!.processingStream.add(event);

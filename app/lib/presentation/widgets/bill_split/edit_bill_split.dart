@@ -103,11 +103,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
           controller.cubit.controller!.numberValue, changed);
 
       controller.changed = true;
-
-      stopListening();
-      removeMax();
       await setInputs(controllers.indexOf(controller));
-      startListening();
     }).listen(null);
   }
 
@@ -130,6 +126,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   }
 
   setInputs([int? ignore]) async {
+    stopListening();
     removeMax();
     List<Future> updates = [];
     controllers.asMap().forEach((key, value) {
@@ -141,6 +138,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     await Future.wait(updates);
     await Future.delayed(new Duration(milliseconds: 10));
     setMax();
+    startListening();
   }
 
   @override
@@ -228,8 +226,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
                         backgroundColor: Theme.of(context).errorColor,
                         foregroundColor: Colors.white,
                         icon: Icons.arrow_left,
-                        label: 'Remove ' +
-                            controllers.indexOf(controller).toString(),
+                        label: AppLocalizations.of(context)!.remove,
                       ),
                     ],
                   )
@@ -248,13 +245,13 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   }
 
   removeParticipant(int index) async {
+    (f.control('BillSplitParticipants') as FormArray)
+        .remove(controllers[index].control);
     controllers.removeAt(index);
     widget.entity!.BillSplitParticipants.removeAt(index);
     setState(() {});
     calcBillSplit(widget.entity!, null, null, changed);
-    stopListening();
     await setInputs();
-    startListening();
   }
 
   addParticipant(BillSplitParticipant? part) async {
@@ -269,7 +266,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     }
     calcBillSplit(widget.entity!, null, null, changed);
 
-    FormGroup f = FormGroup({
+    FormGroup billSplitFormGroup = FormGroup({
       'amount': FormControl<CurrencyInputOutput>(
           value: CurrencyInputOutput(
               recalculatedPart.amount ?? 0, widget.entity!.currency),
@@ -285,18 +282,17 @@ class _EditBillSplitState extends State<_EditBillSplit> {
         ],
         initialValue: CurrencyInputOutput(
             recalculatedPart.amount ?? 0, widget.entity!.currency)));
-    BillSplitParticipantController controller =
-        BillSplitParticipantController(f, c, UniqueKey(), false);
+    BillSplitParticipantController controller = BillSplitParticipantController(
+        billSplitFormGroup, c, UniqueKey(), false);
     controllers.add(controller);
+    (f.control('BillSplitParticipants') as FormArray).add(billSplitFormGroup);
 
     controller.onInput.stream.listen((data) async {
       onUpdated.add(controller);
     });
     setState(() {});
 
-    stopListening();
     await setInputs();
-    startListening();
   }
 
   setMax() async {

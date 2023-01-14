@@ -72,12 +72,12 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
           initialValue: CurrencyInputOutput(0, widget.opts.pot!.currency),
           currencies: [widget.opts.pot!.currency, 'USD', 'BTC']);
     }
+    inputOptions.showAltCurrency = false;
     getIt<ActionTriggerService>().callbacks.add(cb);
   }
 
   @override
   void dispose() {
-    print('disposing widget');
     getIt<ActionTriggerService>().callbacks.remove(cb);
     super.dispose();
   }

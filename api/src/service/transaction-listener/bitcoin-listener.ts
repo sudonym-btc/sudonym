@@ -23,7 +23,7 @@ export class BitcoinListener extends TransactionListener {
 			)
 			.flat();
 
-		this.logger.debug('Finding ' + addresses.length + ' addresses');
+		this.logger.verbose('Finding ' + addresses.length + ' addresses');
 
 		const addressChunks = [...chunks(addresses, 200)];
 
@@ -75,7 +75,7 @@ export class BitcoinListener extends TransactionListener {
 				).metadata.count
 			) {
 				// Already registered this transaction
-				this.logger.warn(
+				this.logger.log(
 					'Already have txid ' +
 						matchedTx.getId() +
 						' registered as transaction'

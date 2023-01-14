@@ -1,5 +1,5 @@
 import { runAsUser } from 'helper/context-request';
-import { AddressParser } from 'module/action/address-parser/address-parser';
+import { AddressParser } from 'module/action/address-parser.service';
 import { ContactService } from 'module/contact/contact.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import * as request from 'supertest';

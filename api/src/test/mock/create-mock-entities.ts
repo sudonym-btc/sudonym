@@ -3,7 +3,9 @@ import { Test } from '@nestjs/testing';
 import { applyGlobals } from 'app.globals';
 import { Config } from 'config/config';
 import { ActionService } from 'module/action/action.service';
-import { AddressParser } from 'module/action/address-parser/address-parser';
+import { AddressParser } from 'module/action/address-parser.service';
+import { LightningOperationsService } from 'module/action/lightning-operations.service';
+import { LnurlOperationsService } from 'module/action/lnurl-operations.service';
 import { AuthService } from 'module/auth/auth.service';
 import { Pot } from 'module/pot/pot.model';
 import { Receiver } from 'module/receiver/receiver.model';
@@ -22,13 +24,14 @@ import {
 	MockFirebaseNotificationService,
 	MockLightningEvents,
 	MockLightningNodeService,
+	MockLightningOperationsService,
+	MockLnurlOperationsService,
 } from './classes';
 import { MockAuthService } from './classes/auth.service.mock';
 import { MockExchangeSettlerService } from './classes/exchange-settler.service.mock';
 import { MockExchangeService } from './classes/exchange.service.mock';
 import { createPots } from './pot';
 import { createUsers } from './user';
-const bodyParser = require('body-parser');
 
 export type mockScaffold = {
 	app: INestApplication;
@@ -53,6 +56,10 @@ export const createMockApp = async () => {
 		.useClass(MockLightningEvents)
 		.overrideProvider(AddressParser)
 		.useClass(MockAddressParser)
+		.overrideProvider(LightningOperationsService)
+		.useClass(MockLightningOperationsService)
+		.overrideProvider(LnurlOperationsService)
+		.useClass(MockLnurlOperationsService)
 		.overrideProvider(ActionService)
 		.useClass(MockActionService)
 		.overrideProvider(FIREBASE_ADMIN)

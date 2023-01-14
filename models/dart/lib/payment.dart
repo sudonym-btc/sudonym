@@ -19,6 +19,8 @@ class Payment extends ActionTypeWithAmount {
   dynamic /* bool | null */ isBolt12;
   dynamic /* bool | null */ isOnChain;
   dynamic /* String | null */ comment;
+  dynamic /* String | null */ description;
+  dynamic /* num | null */ commentAllowed;
   Payment(
       this.potId,
       this.originalAddress,
@@ -35,7 +37,9 @@ class Payment extends ActionTypeWithAmount {
       this.isBolt11 = false,
       this.isBolt12 = false,
       this.isOnChain = false,
-      this.comment = ""])
+      this.comment = "",
+      this.description = "",
+      this.commentAllowed])
       : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
             isOnChain, comment, minAmount, maxAmount, amount, currency) {
     /* super call moved to initializer */;
@@ -58,7 +62,9 @@ class Payment extends ActionTypeWithAmount {
         json["isBolt11"],
         json["isBolt12"],
         json["isOnChain"],
-        json["comment"]);
+        json["comment"],
+        json["description"],
+        json["commentAllowed"]);
     if (p.isBolt11) {
       final sats = p.remoteResponse.data["satoshis"] != null
           ? p.remoteResponse.data["satoshis"]
@@ -98,7 +104,9 @@ class Payment extends ActionTypeWithAmount {
       "remoteResponse": !identical(this.remoteResponse, null)
           ? this.remoteResponse.toJson()
           : null,
-      "comment": this.comment
+      "comment": this.comment,
+      "description": this.description,
+      "commentAllowed": this.commentAllowed
     };
   }
 }

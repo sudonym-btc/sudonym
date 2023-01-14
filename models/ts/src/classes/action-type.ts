@@ -24,7 +24,7 @@ export class ActionTypeWithAmount extends ActionType {
 		public minAmount: number | null,
 		public maxAmount: number | null,
 		public amount: number | null,
-		public currency: string | null
+		public currency: string | null = 'BTC'
 	) {
 		super(
 			'pay',

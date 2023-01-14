@@ -17,9 +17,10 @@ export class ActionController {
 	@Get('parse')
 	async parse(@Query('address') address, @Response() res) {
 		try {
-			return res.json(await this.actionService.parse(address));
+			return res.json(
+				await this.actionService.parse(Action.from({ address }))
+			);
 		} catch (e) {
-			console.error(e);
 			if (e instanceof ActionParseResponse) {
 				res.status(503);
 				return res.json(e);
@@ -30,8 +31,8 @@ export class ActionController {
 	}
 
 	@Post('info')
-	async getPaymentInfo(@Body('action') action: any) {
-		return this.actionService.getInfo(Action.from(action));
+	async getInfo(@Body('action') action: any) {
+		return this.actionService.info(Action.from(action));
 	}
 
 	@Post('')

@@ -19,7 +19,9 @@ export class Payment extends ActionTypeWithAmount {
 		public isBolt11: boolean | null = false,
 		public isBolt12: boolean | null = false,
 		public isOnChain: boolean | null = false,
-		public comment: string | null = ''
+		public comment: string | null = '',
+		public description: string | null = '',
+		public commentAllowed: number | null
 	) {
 		super(
 			'pay',
@@ -56,7 +58,9 @@ export class Payment extends ActionTypeWithAmount {
 			json['isBolt11'],
 			json['isBolt12'],
 			json['isOnChain'],
-			json['comment']
+			json['comment'],
+			json['description'],
+			json['commentAllowed']
 		);
 
 		if (p.isBolt11) {
@@ -101,6 +105,8 @@ export class Payment extends ActionTypeWithAmount {
 					? this.remoteResponse.toJson()
 					: null,
 			comment: this.comment,
+			description: this.description,
+			commentAllowed: this.commentAllowed,
 		};
 	}
 }

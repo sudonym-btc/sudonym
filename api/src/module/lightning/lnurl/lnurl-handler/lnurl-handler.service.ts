@@ -6,7 +6,7 @@ import {
 	WithdrawRequest,
 } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
-import { getAddressType } from 'module/action/action.service';
+import { AddressParser } from 'module/action/address-parser.service';
 import { CurrencyService } from 'module/currency/currency.service';
 import { Pot } from 'module/pot/pot.model';
 import { PotService } from 'module/pot/pot.service';
@@ -24,6 +24,7 @@ export class LnUrlHandlerService {
 	@Inject(PotService) potService: PotService;
 	@Inject(SenderService) senderService: SenderService;
 	@Inject(TransactionService) transactionService: TransactionService;
+	@Inject(AddressParser) addressParser: AddressParser;
 	private readonly logger = new Logger(this.constructor.name);
 
 	// Function that is called when someone else triggers OUR callbacks.
@@ -122,7 +123,7 @@ export class LnUrlHandlerService {
 						address: query.pr,
 						originalAddress: query.pr,
 						txid: query.pr,
-						type: getAddressType(query.pr),
+						type: this.addressParser.getAddressType(query.pr)[0],
 						amount: parseInt(parsed.millisatoshis) / MSATOSHIS,
 						currencyCode: 'BTC',
 					});

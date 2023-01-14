@@ -103,7 +103,10 @@ getTitle(BuildContext context, Transaction entity) {
 }
 
 getDescription(BuildContext context, Transaction entity) {
-  return entity.description != null && entity.description != ''
-      ? entity.description
-      : AppLocalizations.of(context)!.noDescription;
+  if (entity.description != null && entity.description != '') {
+    return entity.description;
+  } else if (entity.comment != null && entity.comment != '') {
+    return entity.comment;
+  }
+  return AppLocalizations.of(context)!.noDescription;
 }

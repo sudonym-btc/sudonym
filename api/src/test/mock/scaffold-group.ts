@@ -44,17 +44,8 @@ export const scaffoldGroup = (
 		};
 
 		beforeEach(async () => {
-			// const start = new Date();
 			scaffold.app = await createMockApp();
-			// const appstart = new Date();
 			scaffold.entities = await createMockEntities(scaffold.app);
-			// const entities = new Date();
-			// console.log(
-			// 	'App: ',
-			// 	appstart.valueOf() - start.valueOf(),
-			// 	'Entities: ',
-			// 	entities.valueOf() - appstart.valueOf()
-			// );
 		}, 30000);
 
 		afterEach(async () => {
