@@ -9,9 +9,9 @@ export class Callback<T> extends Subject<T> {
 		this.next(data);
 	}
 	listen(cb: (x: T) => void) {
-		this.hook((x) => {
+		this.hook(async (x) => {
 			try {
-				cb(x);
+				await cb(x);
 			} catch (e) {
 				console.error(e);
 			}

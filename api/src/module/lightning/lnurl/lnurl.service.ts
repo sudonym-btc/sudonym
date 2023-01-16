@@ -26,16 +26,7 @@ export class LnUrlService extends BaseService(LnUrl) {
 				domain: this.config.selfUrl,
 				minSendable: Math.max(mSatoshiAmount, 1000),
 				maxSendable: 0.01 * MSATOSHIS,
-				metadata: JSON.stringify([
-					[
-						'text/plain', // mandatory,
-						'sudonym payment', // short description displayed when paying and in transaction log
-					],
-					// [
-					// 	'text/long-desc', // optional
-					// 	'Long description sudo', // longer description of the payment, MAY contain newlines
-					// ],
-				]),
+				metadata: JSON.stringify([]),
 			},
 		});
 

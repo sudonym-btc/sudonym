@@ -6,6 +6,9 @@ export class BalanceLowError extends AppError {
 }
 
 export class LNURLProtocolError extends AppError {
+	// constructor(message) {
+	// 	super(this.constructor.name, message);
+	// }
 	name: 'LNURL_ERROR';
 	data;
 }

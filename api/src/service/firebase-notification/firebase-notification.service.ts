@@ -25,7 +25,9 @@ export class FirebaseNotificationService {
 		merge(
 			this.transactionService.onAfterCreated,
 			this.transactionService.onAfterUpdated
-		).subscribe(this.triggerNotification.bind(this));
+		).subscribe((e) =>
+			this.triggerNotification(e).catch((e) => this.logger.error(e))
+		);
 	}
 
 	async triggerNotification(entity: Transaction) {

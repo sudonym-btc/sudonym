@@ -6,7 +6,7 @@ import {
 import { LnurlOperationsService } from 'module/action/lnurl-operations.service';
 
 export class MockLnurlOperationsService extends LnurlOperationsService {
-	fetchRemoteLnUrl = async (invoice: string) => {
+	mockFetchRemoteLnUrl = async (invoice: string) => {
 		const parsedUrl = this.parseLnUrlString(invoice);
 		if (parsedUrl.includes('lnurlw')) {
 			return ActionRemoteResponse.fromJson({

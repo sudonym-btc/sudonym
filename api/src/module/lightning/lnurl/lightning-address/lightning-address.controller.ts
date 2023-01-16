@@ -1,7 +1,7 @@
 import { Controller, Get, HttpException, Inject, Param } from '@nestjs/common';
 import { User } from 'module/user/user.model';
 
-import { SATOSHIS } from '@sudonym/models';
+import { PaymentRequest, SATOSHIS } from '@sudonym/models';
 import { PotService } from 'module/pot/pot.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { LnUrlHandlerService } from '../lnurl-handler/lnurl-handler.service';
@@ -15,7 +15,9 @@ export class LightningAddressController {
 	@Inject(ReceiverService) receiverService: ReceiverService;
 
 	@Get('.well-known/lnurlp/:user')
-	async lightningAddress(@Param('user') lightningAddress) {
+	async lightningAddress(
+		@Param('user') lightningAddress
+	): Promise<PaymentRequest> {
 		let indexOfLastStop = lightningAddress.lastIndexOf(':');
 		indexOfLastStop =
 			indexOfLastStop >= 0 ? indexOfLastStop : lightningAddress.length;
@@ -50,6 +52,8 @@ export class LightningAddressController {
 			amount: 1 / SATOSHIS,
 		});
 
-		return await this.lnUrlHandlerService.serve(receiver.lnurlId);
+		return await this.lnUrlHandlerService.serve<PaymentRequest>(
+			receiver.lnurlId
+		);
 	}
 }

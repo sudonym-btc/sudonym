@@ -82,9 +82,9 @@ scaffoldGroup('Validation', (scaffold) => {
 
 		for (const section of Object.keys(addresses)) {
 			for (const addr of addresses[section]) {
-				expect(scaffold.app.get(AddressParser).getType(addr)[0]).toBe(
-					section
-				);
+				expect(
+					scaffold.app.get(AddressParser).getAddressType(addr)[0]
+				).toBe(section);
 			}
 		}
 	});

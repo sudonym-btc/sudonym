@@ -4,9 +4,15 @@ import {
 	ActionRemoteResponse,
 	MSATOSHIS,
 	Payment,
+	PaymentRequest,
+	PaymentRequestCallback,
+	PaymentRequestCallbackArgs,
+	WithdrawRequest,
+	WithdrawRequestCallbackArgs,
 } from '@sudonym/models';
 import axios from 'axios';
 import { bech32 } from 'bech32';
+import { LNURLProtocolError } from 'helper/errors';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { AddressParser } from './address-parser.service';
 import { fetchHttpOpts } from './http-agent';
@@ -17,20 +23,22 @@ export class LnurlOperationsService {
 	@Inject(AddressParser) private addressParser: AddressParser;
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 
-	async parse(action: Action) {
-		const [type, trimmedAddress] = this.addressParser.getAddressType(
-			action.originalAddress
-		);
+	async parse(addr: string) {
+		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
 		const remoteResponse =
 			type == 'lnurl'
-				? await this.fetchRemoteLnUrl(trimmedAddress)
-				: await this.fetchRemoteLightningAddress(trimmedAddress);
+				? await this.fetchRemoteLnUrl<PaymentRequest | WithdrawRequest>(
+						trimmedAddress
+				  )
+				: await this.fetchRemoteLightningAddress<
+						PaymentRequest | WithdrawRequest
+				  >(trimmedAddress);
 		return Action.from({
 			originalAddress: trimmedAddress,
 			type: remoteResponse.data.tag
 				? remoteResponse.data.tag.replace('Request', '')
 				: '',
-			remoteResponse,
+			remoteResponses: [remoteResponse],
 			isLnUrl: true,
 			isLnAddress: type == 'lightningaddress',
 		});
@@ -38,27 +46,32 @@ export class LnurlOperationsService {
 
 	async getInfo(action: Action) {
 		if (action instanceof Payment) {
-			const remoteResponse = await this.fetchRemoteLnUrl(
-				action.remoteResponse.data as any,
-				{
-					amount: await this.addressParser.getMSatAmount(action),
-					comment: action.comment,
-					payerData: {
-						name: 'Sudonym wallet', // free form string
-						// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
-						// "auth": {
-						//   "key": string, // hex(<linkingKey>)
-						//   "k1": string, // same as received from service on section 1
-						//   "sig": string, // following LUD-04: hex(sign(hexToBytes(<k1>), <linkingPrivKey>))
-						// },
-						// "email": string,
-						// "identifier": string,
-					},
-				}
-			);
+			const remoteResponse =
+				await this.fetchRemoteLnUrl<PaymentRequestCallback>(
+					(
+						action.remoteResponses.at(
+							-1
+						) as ActionRemoteResponse<PaymentRequest>
+					).data.callback,
+					{
+						amount: await this.addressParser.getMSatAmount(action),
+						comment: action.comment,
+						payerData: {
+							name: 'Sudonym wallet', // free form string
+							// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
+							// "auth": {
+							//   "key": string, // hex(<linkingKey>)
+							//   "k1": string, // same as received from service on section 1
+							//   "sig": string, // following LUD-04: hex(sign(hexToBytes(<k1>), <linkingPrivKey>))
+							// },
+							// "email": string,
+							// "identifier": string,
+						},
+					}
+				);
 			return Action.from({
 				...action,
-				remoteResponse,
+				remoteResponses: [...action.remoteResponses, remoteResponse],
 				fee:
 					(await this.lightningNodeService.getFeesInvoice(
 						remoteResponse.data.pr,
@@ -76,46 +89,66 @@ export class LnurlOperationsService {
 		return action;
 	}
 
-	fetchRemoteLnUrl = async (
+	fetchRemoteLnUrl = async <
+		T = PaymentRequest | WithdrawRequest | PaymentRequestCallback
+	>(
 		address: string,
-		params = null
-	): Promise<ActionRemoteResponse<any>> => {
+		params: PaymentRequestCallbackArgs | WithdrawRequestCallbackArgs = null
+	): Promise<ActionRemoteResponse<T>> => {
 		const url = this.parseLnUrlString(address);
 
 		const u = new URL(url);
 		for (const key in params) {
 			u.searchParams.append(key, params[key]);
 		}
-		this.logger.debug('Getting callback ', u.toString());
 
-		this.logger.debug('Fetching LnUrl from ' + url);
-		const data = await axios(u.toString(), fetchHttpOpts)
-			.then(async (r) => {
-				this.logger.debug('Fetched lnurl', r.data);
+		this.logger.debug('Fetching LnUrl from ' + u.toString());
 
-				return {
-					success: r.status
-						? r.status.toString().startsWith('2')
-						: true, // todo: Why returning true here
-					data: r.data,
-				};
-			})
-			.catch((e) => {
-				this.logger.error(e);
-				return {
-					success: false,
-					message: e,
-				};
-			});
-		return ActionRemoteResponse.fromJson(data);
+		return ActionRemoteResponse.fromJson(
+			await axios
+				.get(u.toString(), fetchHttpOpts)
+				.then((r) => {
+					this.logger.log('Fetched lnurl', r.data);
+					if (r.data.status == 'ERROR') {
+						throw ActionRemoteResponse.fromJson({
+							success: false,
+							data: new LNURLProtocolError(r.data.reason),
+						});
+					}
+					if (!r.status.toString().startsWith('2')) {
+						throw ActionRemoteResponse.fromJson({
+							success: false,
+							data: r,
+						});
+					}
+					return {
+						success: true,
+						data: r.data,
+					};
+				})
+				.catch((e) => {
+					if (e.data?.status === 'ERROR') {
+						throw ActionRemoteResponse.fromJson({
+							success: false,
+							data: new LNURLProtocolError(e.data.reason),
+						});
+					}
+					throw ActionRemoteResponse.fromJson({
+						success: false,
+						message: e.toString(),
+					});
+				})
+		) as ActionRemoteResponse<T>;
 	};
 
-	fetchRemoteLightningAddress = async (internetIdentifier: string) => {
+	fetchRemoteLightningAddress = async <T>(
+		internetIdentifier: string
+	): Promise<ActionRemoteResponse<T>> => {
 		const addressArr = internetIdentifier.split('@');
 
 		// Must only have 2 fields (username and domain name)
 		if (addressArr.length !== 2) {
-			return {
+			throw {
 				success: false,
 				message: 'Invalid internet identifier format.',
 			};
@@ -125,7 +158,7 @@ export class LnurlOperationsService {
 
 		// Must only have 2 fields (username and domain name)
 		if (!addressArr[1].includes('.')) {
-			return {
+			throw {
 				success: false,
 				message: 'Invalid internet identifier format.',
 			};
@@ -135,24 +168,23 @@ export class LnurlOperationsService {
 		this.logger.debug('Fetching lnurl address', url);
 		return this.fetchRemoteLnUrl(url)
 			.then((d) => {
-				if (d.success == false) {
-					throw d;
-				}
-				return {
+				return ActionRemoteResponse.fromJson({
 					...d,
 					data: {
 						...d.data,
 						domain,
 						username,
 					},
-				};
+				});
 			})
-			.catch((d) => {
-				return {
-					...d,
+			.catch((e) => {
+				if (e.data instanceof LNURLProtocolError) throw e;
+				throw ActionRemoteResponse.fromJson({
+					...e,
+					status: false,
 					message:
 						'This identifier does not support Lightning Address yet.',
-				};
+				});
 			});
 	};
 
@@ -162,7 +194,7 @@ export class LnurlOperationsService {
 				.replace('lnurlw://', 'https://')
 				.replace('lnurlp://', 'https://');
 
-			if (!str.includes('https://')) {
+			if (!str.includes('https://') && !str.includes('http://')) {
 				str = 'https://' + str;
 			}
 			return str;

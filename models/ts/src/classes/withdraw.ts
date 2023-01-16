@@ -11,7 +11,7 @@ export class Withdraw extends ActionTypeWithAmount {
 		public amount: number | null,
 		public minAmount: number | null,
 		public maxAmount: number | null,
-		public remoteResponse: ActionRemoteResponse<any>, // can't add withdrawrequest type here
+		public remoteResponses: ActionRemoteResponse<any>[] | null, // can't add withdrawrequest type here
 		public isLnUrl: boolean | null = false,
 		public isLnAddress: boolean | null = false,
 		public isBolt11: boolean | null = false,
@@ -36,7 +36,13 @@ export class Withdraw extends ActionTypeWithAmount {
 	}
 
 	static fromJson(json: Object): Withdraw {
-		const a = ActionRemoteResponse.fromJson(json['remoteResponse']);
+		const a =
+			json['remoteResponses'] != null
+				? json['remoteResponses'].map((e) =>
+						ActionRemoteResponse.fromJson(e)
+				  )
+				: null;
+
 		const w = new Withdraw(
 			json['potId'],
 			json['billSplitParticipantId'],
@@ -45,12 +51,12 @@ export class Withdraw extends ActionTypeWithAmount {
 			json['amount'],
 			json['minAmount'] != null
 				? json['minAmount']
-				: a.success
+				: a != null && a.success
 				? a.data['minWithdrawable'] / MSATOSHIS
 				: null,
 			json['maxAmount'] != null
 				? json['maxAmount']
-				: a.success
+				: a != null && a.success
 				? a.data['maxWithdrawable'] / MSATOSHIS
 				: null,
 			a,
@@ -80,9 +86,9 @@ export class Withdraw extends ActionTypeWithAmount {
 			amount: this.amount,
 			minAmount: this.minAmount,
 			maxAmount: this.maxAmount,
-			remoteResponse:
-				this.remoteResponse !== null
-					? this.remoteResponse.toJson()
+			remoteResponses:
+				this.remoteResponses !== null
+					? this.remoteResponses.map((e) => e.toJson())
 					: null,
 			comment: this.comment,
 		};

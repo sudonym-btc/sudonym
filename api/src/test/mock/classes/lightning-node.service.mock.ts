@@ -2,6 +2,25 @@ import { MSATOSHIS } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { randomBytes } from 'crypto';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
+
+export const bolt11Encode = (amount) => {
+	return bolt11.sign(
+		bolt11.encode(
+			{
+				complete: true,
+				millisatoshis: amount,
+				tags: [
+					{
+						tagName: 'payment_hash',
+						data: 'qwertyuiop',
+					},
+				],
+			},
+			true
+		),
+		randomBytes(32)
+	);
+};
 export class MockLightningNodeService extends LightningNodeService {
 	pays = [];
 
@@ -95,10 +114,10 @@ export class MockLightningNodeService extends LightningNodeService {
 			bolt11: bolt11.sign(obj, randomBytes(32)).paymentRequest,
 		};
 	}
-	getFees(pubkey: any, amount?: number): Promise<number> {
-		throw new Error('Method not implemented.');
+	async getFees(pubkey: any, amount?: number): Promise<number> {
+		return 1000;
 	}
-	getRoute(pubkey: any, amount?: number): Promise<any> {
+	async getRoute(pubkey: any, amount?: number): Promise<any> {
 		throw new Error('Method not implemented.');
 	}
 
@@ -133,10 +152,10 @@ export class MockLightningNodeService extends LightningNodeService {
 		async (method: any, params: any) => 'Method not implemente'
 	) as any;
 
-	decodeInvoice(invoice: any): Promise<any> {
-		throw new Error('Method not implemented.');
+	async decodeInvoice(invoice: any): Promise<any> {
+		return bolt11.decode(invoice);
 	}
-	makeRequest(options: any): Promise<any> {
+	async makeRequest(options: any): Promise<any> {
 		throw new Error('Method not implemented.');
 	}
 }

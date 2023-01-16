@@ -1,9 +1,13 @@
 import { HttpException, Inject, Logger } from '@nestjs/common';
 import {
+	LnurlStatusResponse,
 	MSATOSHIS,
 	PaymentRequest,
+	PaymentRequestCallback,
+	PaymentRequestCallbackArgs,
 	SATOSHIS,
 	WithdrawRequest,
+	WithdrawRequestCallbackArgs,
 } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { AddressParser } from 'module/action/address-parser.service';
@@ -28,13 +32,18 @@ export class LnUrlHandlerService {
 	private readonly logger = new Logger(this.constructor.name);
 
 	// Function that is called when someone else triggers OUR callbacks.
-	async handle(id, query) {
+	async handle<T = PaymentRequestCallback | LnurlStatusResponse>(
+		id: string,
+		query: PaymentRequestCallbackArgs | WithdrawRequestCallbackArgs
+	): Promise<T> {
 		this.logger.log('Handling lnurl', id, query);
 		const tag = await this.serve(id);
 		switch (tag.tag) {
 			case 'payRequest': {
-				const payerData = query.payerdata
-					? decodeURIComponent(query.payerdata)
+				const queryPayerData = (query as any).payerdata;
+				query = query as PaymentRequestCallbackArgs;
+				const payerData = queryPayerData
+					? decodeURIComponent(queryPayerData)
 					: '';
 				const metadata =
 					typeof (tag as PaymentRequest).metadata == 'string'
@@ -76,23 +85,12 @@ export class LnUrlHandlerService {
 					description,
 				});
 				return {
-					// disposable: false,
 					pr: receiver.data,
 					routes: [],
-					// successAction: [
-					// {
-					// 	"tag": "message",
-					// 	"message": "Thank you for using bike-over-ln co! Your rental bike is unlocked now" // Up to 144 characters
-					//   }
-					//   {
-					// 	 "tag": "url",
-					// 	 "description": "Thank you for your purchase. Here is your order details", // Up to 144 characters
-					// 	 "url": "https://www.ln-service.com/order/<orderId>" // url domain must be the same as `callback` domain at step 3
-					//   }
-					// ]
-				};
+				} as PaymentRequestCallback as T;
 			}
 			case 'withdrawRequest': {
+				query = query as WithdrawRequestCallbackArgs;
 				const sender = await this.senderService.findOne({
 					where: {
 						lnurlId: id,
@@ -107,9 +105,13 @@ export class LnUrlHandlerService {
 					)
 				).amount;
 
-				this.logger.debug(sender.toJSON(), amountLeft);
 				const parsed = bolt11.decode(query.pr);
-				this.logger.debug('withdrawing to ', sender.toJSON());
+				this.logger.debug(
+					'Withdrawing from ',
+					sender.toJSON(),
+					amountLeft * MSATOSHIS,
+					parseInt(parsed.millisatoshis)
+				);
 				if (amountLeft * MSATOSHIS >= parseInt(parsed.millisatoshis)) {
 					const pot = await this.potService.findForUser(
 						sender.userId,
@@ -128,24 +130,24 @@ export class LnUrlHandlerService {
 						currencyCode: 'BTC',
 					});
 
-					return { status: 'OK' };
+					return { status: 'OK' } as LnurlStatusResponse as T;
 				}
 				return {
 					status: 'ERROR',
 					reason:
 						'Amount could not be withdrawn: ' +
-						amountLeft * MSATOSHIS +
+						Math.floor(amountLeft * MSATOSHIS) +
 						' msats available, but ' +
 						parseInt(parsed.millisatoshis) +
 						' requested',
-				};
+				} as LnurlStatusResponse as T;
 			}
 		}
 
 		throw new HttpException('Unhandleable lnurl request', 400);
 	}
 
-	async serve(id: string): Promise<WithdrawRequest | PaymentRequest> {
+	async serve<T = WithdrawRequest | PaymentRequest>(id: string): Promise<T> {
 		const [tag, receiver, sender] = await Promise.all([
 			this.lnUrlService.findOne(id),
 			Receiver.findOne({
@@ -233,7 +235,7 @@ export class LnUrlHandlerService {
 				'Withdrawing from sudonym';
 			// (tag.params as WithdrawRequest).payLink = // todo generate payRequest URL;
 		}
-		return tag.params;
+		return tag.params as T;
 	}
 
 	addOrUpdateTag(metadata, tag, data) {

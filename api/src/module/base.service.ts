@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, Logger, NotFoundException } from '@nestjs/common';
 import { CreatedOrUpdated, Event } from '@sudonym/models';
 import { sequelizeCls } from 'database/database.providers';
 import { runAsUser } from 'helper/context-request';
@@ -68,6 +68,7 @@ export const BaseService = <TModel extends BaseModel>(
 		onAfterDeleted = new Callback<TModel>();
 		@Inject(repository) repo: typeof repository;
 		@Inject(EventsService) eventsService: EventsService;
+		private readonly logger = new Logger(this.constructor.name);
 
 		async onModuleInit() {}
 
@@ -222,12 +223,19 @@ export const BaseService = <TModel extends BaseModel>(
 					};
 					getParent(t).afterCommit(async () => {
 						this.newTransaction(async () => {
-							this.onAfterUpdated.execute(entity);
-							this.triggerEventForUsers(
-								await this.getUserIds(entity.id),
-								'updated',
-								response
-							);
+							try {
+								await this.onAfterUpdated
+									.execute(entity)
+									.finally(async () => {
+										await this.triggerEventForUsers(
+											await this.getUserIds(entity.id),
+											'updated',
+											response
+										);
+									});
+							} catch (e) {
+								this.logger.error(e);
+							}
 						});
 					});
 					return response;
@@ -255,12 +263,19 @@ export const BaseService = <TModel extends BaseModel>(
 
 					t.afterCommit(async () => {
 						this.newTransaction(async () => {
-							this.onAfterCreated.execute(entity);
-							this.triggerEventForUsers(
-								await this.getUserIds(entity.id),
-								'created',
-								response
-							);
+							try {
+								await this.onAfterCreated
+									.execute(entity)
+									.finally(async () => {
+										await this.triggerEventForUsers(
+											await this.getUserIds(entity.id),
+											'created',
+											response
+										);
+									});
+							} catch (e) {
+								this.logger.error(e);
+							}
 						});
 					});
 

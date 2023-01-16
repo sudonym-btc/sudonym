@@ -10,7 +10,7 @@ class Withdraw extends ActionTypeWithAmount {
   dynamic /* num | null */ amount;
   dynamic /* num | null */ minAmount;
   dynamic /* num | null */ maxAmount;
-  ActionRemoteResponse<dynamic> remoteResponse;
+  dynamic /* List < ActionRemoteResponse< dynamic > > | null */ remoteResponses;
   dynamic /* bool | null */ isLnUrl;
   dynamic /* bool | null */ isLnAddress;
   dynamic /* bool | null */ isBolt11;
@@ -25,7 +25,7 @@ class Withdraw extends ActionTypeWithAmount {
       this.amount,
       this.minAmount,
       this.maxAmount,
-      this.remoteResponse,
+      this.remoteResponses,
       [this.isLnUrl = false,
       this.isLnAddress = false,
       this.isBolt11 = false,
@@ -48,7 +48,9 @@ class Withdraw extends ActionTypeWithAmount {
     /* super call moved to initializer */;
   }
   static Withdraw fromJson(Map<String, dynamic> json) {
-    final a = ActionRemoteResponse.fromJson(json["remoteResponse"]);
+    final a = json["remoteResponses"] != null
+        ? json["remoteResponses"].map((e) => ActionRemoteResponse.fromJson(e))
+        : null;
     final w = new Withdraw(
         json["potId"],
         json["billSplitParticipantId"],
@@ -57,10 +59,14 @@ class Withdraw extends ActionTypeWithAmount {
         json["amount"],
         json["minAmount"] != null
             ? json["minAmount"]
-            : a.success ? a.data["minWithdrawable"] / MSATOSHIS : null,
+            : a != null && a.success
+                ? a.data["minWithdrawable"] / MSATOSHIS
+                : null,
         json["maxAmount"] != null
             ? json["maxAmount"]
-            : a.success ? a.data["maxWithdrawable"] / MSATOSHIS : null,
+            : a != null && a.success
+                ? a.data["maxWithdrawable"] / MSATOSHIS
+                : null,
         a,
         json["isLnUrl"],
         json["isLnAddress"],
@@ -86,8 +92,8 @@ class Withdraw extends ActionTypeWithAmount {
       "amount": this.amount,
       "minAmount": this.minAmount,
       "maxAmount": this.maxAmount,
-      "remoteResponse": !identical(this.remoteResponse, null)
-          ? this.remoteResponse.toJson()
+      "remoteResponses": !identical(this.remoteResponses, null)
+          ? this.remoteResponses.map((e) => e.toJson())
           : null,
       "comment": this.comment
     };

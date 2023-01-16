@@ -2,8 +2,9 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
 	Action,
 	ActionRemoteResponse,
-	ActionTypeWithAmount,
 	MSATOSHIS,
+	Payment,
+	Withdraw,
 } from '@sudonym/models';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { AddressParser } from './address-parser.service';
@@ -14,19 +15,22 @@ export class LightningOperationsService {
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(AddressParser) private addressParser: AddressParser;
 
-	async parse(action: Action) {
+	async parse(addr: string) {
 		return Action.from({
 			type: 'pay',
 			isBolt11: true,
-			remoteResponse: await this.fetchBolt11(action.originalAddress),
+			remoteResponses: [await this.fetchBolt11(addr)],
 		});
 	}
 
-	async getInfo(action: ActionTypeWithAmount) {
+	async getInfo(action: Payment | Withdraw) {
 		return Action.from({
 			type: 'pay',
 			isBolt11: true,
-			remoteResponse: await this.fetchBolt11(action.originalAddress),
+			remoteResponses: [
+				...action.remoteResponses,
+				await this.fetchBolt11(action.originalAddress),
+			],
 			fee: action.amount
 				? (await this.lightningNodeService.getFeesInvoice(
 						action.originalAddress,

@@ -17,9 +17,7 @@ export class ActionController {
 	@Get('parse')
 	async parse(@Query('address') address, @Response() res) {
 		try {
-			return res.json(
-				await this.actionService.parse(Action.from({ address }))
-			);
+			return res.json(await this.actionService.parse(address));
 		} catch (e) {
 			if (e instanceof ActionParseResponse) {
 				res.status(503);

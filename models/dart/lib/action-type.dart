@@ -39,7 +39,7 @@ class ActionTypeWithAmount extends ActionType {
       this.minAmount,
       this.maxAmount,
       this.amount,
-      this.currency])
+      this.currency = "BTC"])
       : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
             isOnChain, comment) {
     /* super call moved to initializer */;

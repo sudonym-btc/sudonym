@@ -9,13 +9,10 @@ export class OnchainOperationsService {
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(AddressParser) private addressParser: AddressParser;
 
-	async parse(action: Action) {
+	async parse(addr: string) {
 		const fees = await this.lightningNodeService.onChainFees();
-		const [type, trimmedAddress] = this.addressParser.getAddressType(
-			action.originalAddress
-		);
+		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
 		return Action.from({
-			...action,
 			originalAddress: trimmedAddress,
 			fee: fees.opening / SATOSHIS,
 			feeCurrency: 'BTC',
@@ -33,10 +30,12 @@ export class OnchainOperationsService {
 			minAmount: query.amount ? Number(query.amount) : null,
 			amount: query.amount ? Number(query.amount) : null,
 			currency: 'BTC',
-			remoteResponse: ActionParseResponse.from({
-				success: true,
-				data: {},
-			}),
+			remoteResponses: [
+				ActionParseResponse.from({
+					success: true,
+					data: {},
+				}),
+			],
 			isOnChain: true,
 		});
 	}

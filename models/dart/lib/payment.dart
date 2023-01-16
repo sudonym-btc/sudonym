@@ -12,7 +12,7 @@ class Payment extends ActionTypeWithAmount {
   dynamic /* num | null */ maxAmount;
   dynamic /* num | null */ fee;
   dynamic /* String | null */ feeCurrency;
-  ActionRemoteResponse<dynamic> remoteResponse;
+  dynamic /* List < ActionRemoteResponse< dynamic > > | null */ remoteResponses;
   dynamic /* bool | null */ isLnUrl;
   dynamic /* bool | null */ isLnAddress;
   dynamic /* bool | null */ isBolt11;
@@ -21,18 +21,11 @@ class Payment extends ActionTypeWithAmount {
   dynamic /* String | null */ comment;
   dynamic /* String | null */ description;
   dynamic /* num | null */ commentAllowed;
-  Payment(
-      this.potId,
-      this.originalAddress,
-      this.address,
-      this.currency,
-      this.amount,
-      this.minAmount,
-      this.maxAmount,
-      this.fee,
-      this.feeCurrency,
-      this.remoteResponse,
-      [this.isLnUrl = false,
+  Payment(this.potId, this.originalAddress, this.address, this.currency,
+      this.amount, this.minAmount, this.maxAmount, this.fee,
+      [this.feeCurrency = "BTC",
+      this.remoteResponses,
+      this.isLnUrl = false,
       this.isLnAddress = false,
       this.isBolt11 = false,
       this.isBolt12 = false,
@@ -45,7 +38,9 @@ class Payment extends ActionTypeWithAmount {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {
-    final a = ActionRemoteResponse.fromJson(json["remoteResponse"]);
+    final a = json["remoteResponses"] != null
+        ? json["remoteResponses"].map((e) => ActionRemoteResponse.fromJson(e))
+        : null;
     final p = new Payment(
         json["potId"],
         json["originalAddress"],
@@ -65,26 +60,29 @@ class Payment extends ActionTypeWithAmount {
         json["comment"],
         json["description"],
         json["commentAllowed"]);
-    if (p.isBolt11) {
-      final sats = p.remoteResponse.data["satoshis"] != null
-          ? p.remoteResponse.data["satoshis"]
-          : p.remoteResponse.data["millisatoshis"] != null
-              ? p.remoteResponse.data["millisatoshis"] / 1000
-              : null;
-      if (sats != null) {
-        p.minAmount = sats / SATOSHIS;
-        p.maxAmount = sats / SATOSHIS;
+    final remoteResponse = p.remoteResponses[p.remoteResponses.length - 1];
+    if (remoteResponse != null) {
+      if (p.isBolt11) {
+        final sats = remoteResponse.data["satoshis"] != null
+            ? remoteResponse.data["satoshis"]
+            : remoteResponse.data["millisatoshis"] != null
+                ? remoteResponse.data["millisatoshis"] / 1000
+                : null;
+        if (sats != null) {
+          p.minAmount = sats / SATOSHIS;
+          p.maxAmount = sats / SATOSHIS;
+        }
+      } else if (p.isLnUrl) {
+        if (remoteResponse.success) {
+          p.minAmount = remoteResponse.data["minSendable"] / MSATOSHIS;
+          p.maxAmount = remoteResponse.data["maxSendable"] / MSATOSHIS;
+        }
       }
-    } else if (p.isLnUrl) {
-      if (p.remoteResponse.success) {
-        p.minAmount = a.data["minSendable"] / MSATOSHIS;
-        p.maxAmount = a.data["maxSendable"] / MSATOSHIS;
+      // Minimum value of 1 satoshi to send
+      p.minAmount = p.minAmount > 1 / SATOSHIS ? p.minAmount : 1 / SATOSHIS;
+      if (p.amount == null && p.minAmount == p.maxAmount) {
+        p.amount = p.minAmount;
       }
-    }
-    // Minimum value of 1 satoshi to send
-    p.minAmount = p.minAmount > 1 / SATOSHIS ? p.minAmount : 1 / SATOSHIS;
-    if (p.amount == null && p.minAmount == p.maxAmount) {
-      p.amount = p.minAmount;
     }
     return p;
   }
@@ -101,8 +99,8 @@ class Payment extends ActionTypeWithAmount {
       "maxAmount": this.maxAmount,
       "fee": this.fee,
       "feeCurrency": this.feeCurrency,
-      "remoteResponse": !identical(this.remoteResponse, null)
-          ? this.remoteResponse.toJson()
+      "remoteResponses": !identical(this.remoteResponses, null)
+          ? this.remoteResponses.map((e) => e.toJson())
           : null,
       "comment": this.comment,
       "description": this.description,

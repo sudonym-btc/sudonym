@@ -3,8 +3,11 @@ import {
 	Action,
 	ActionParseResponse,
 	Payment,
+	PaymentRequestCallback,
 	Withdraw,
 } from '@sudonym/models';
+import * as bolt11 from 'bolt11';
+import { LNURLProtocolError } from 'helper/errors';
 import { Receiver } from 'module/receiver/receiver.model';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
@@ -31,29 +34,27 @@ export class ActionService {
 	@Inject(ReceiverService) receiverService: ReceiverService;
 	private readonly logger = new Logger(this.constructor.name);
 
-	async parse(action): Promise<ActionParseResponse> {
-		const [type, trimmedAddress] = this.addressParser.getAddressType(
-			action.originalAddress
-		);
+	async parse(addr: string): Promise<ActionParseResponse> {
+		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
 		this.logger.debug('Parsing', trimmedAddress, type);
 		let returnedAction: Payment | Withdraw;
 		switch (type) {
 			case 'lnurl':
 			case 'lightningaddress': {
 				returnedAction = await this.lnurlOperationsService.parse(
-					action
+					trimmedAddress
 				);
 				break;
 			}
 			case 'onchain': {
 				returnedAction = await this.onchainOperationsService.parse(
-					action
+					trimmedAddress
 				);
 				break;
 			}
 			case 'bolt11': {
 				returnedAction = await this.lightningOperationsService.parse(
-					action
+					trimmedAddress
 				);
 				break;
 			}
@@ -62,18 +63,13 @@ export class ActionService {
 			}
 		}
 		const a = ActionParseResponse.from(returnedAction);
-		if (
-			returnedAction.remoteResponse &&
-			(returnedAction.remoteResponse.success == false ||
-				returnedAction.remoteResponse.data?.status?.toLowerCase() ==
-					'error')
-		) {
+		if (returnedAction.remoteResponses[0]?.success == false) {
 			throw a;
 		}
 		return a;
 	}
 
-	async info(action): Promise<Action> {
+	async info<T = Payment | Withdraw>(action): Promise<T> {
 		const [type, trimmedAddress] = this.addressParser.getAddressType(
 			action.originalAddress
 		);
@@ -81,13 +77,13 @@ export class ActionService {
 		switch (type) {
 			case 'lnurl':
 			case 'lightningaddress': {
-				return this.lnurlOperationsService.getInfo(action);
+				return this.lnurlOperationsService.getInfo(action) as T;
 			}
 			case 'onchain': {
-				return this.onchainOperationsService.getInfo(action);
+				return this.onchainOperationsService.getInfo(action) as T;
 			}
 			case 'bolt11': {
-				return this.lightningOperationsService.getInfo(action);
+				return this.lightningOperationsService.getInfo(action) as T;
 			}
 			default: {
 				throw new HttpException('Invalid address', 400);
@@ -95,10 +91,32 @@ export class ActionService {
 		}
 	}
 
-	async execute(action: Action): Promise<Transaction | Receiver> {
+	async execute<T = Transaction | Receiver>(action: Action): Promise<T> {
 		if (action instanceof Payment) {
 			const refreshedAction = (await this.info(action)) as Payment; // Refetch info to get the newest information and make sure receiving end gets input comment information
 
+			const btcAmountWanted = await this.addressParser.getMSatAmount(
+				action
+			);
+			// Throw error if amounts not the same
+			if (
+				btcAmountWanted /
+					Math.abs(
+						parseInt(
+							bolt11.decode(
+								(
+									refreshedAction.remoteResponses.at(-1)
+										.data as PaymentRequestCallback
+								).pr
+							).millisatoshis
+						) - btcAmountWanted
+					) <
+				100
+			) {
+				throw new LNURLProtocolError(
+					'Returned an invoice of a higher amount than requested'
+				);
+			}
 			this.logger.log({
 				originalAddress: refreshedAction.originalAddress,
 				address: refreshedAction.address,
@@ -126,7 +144,7 @@ export class ActionService {
 					outgoing: true,
 					potId: refreshedAction.potId,
 				})
-			).entity;
+			).entity as T;
 		} else if (action instanceof Withdraw) {
 			this.logger.debug('Withdrawing', action);
 			const { entity: receiver } = await this.receiverService.create({
@@ -156,15 +174,17 @@ export class ActionService {
 				).amount,
 				type: 'bolt11',
 			});
-			const response = this.lnurlOperationsService.fetchRemoteLnUrl(
-				action.remoteResponse.data.callback,
+
+			// Trigger remote action, fail if responds with error
+			await this.lnurlOperationsService.fetchRemoteLnUrl(
+				action.remoteResponses.at(-1).data.callback,
 				{
-					k1: action.remoteResponse.data.k1,
+					k1: action.remoteResponses.at(-1).data.k1,
 					pr: receiver.data,
 				}
 			);
 
-			return receiver;
+			return receiver as T;
 		}
 	}
 }
