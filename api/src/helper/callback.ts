@@ -1,7 +1,10 @@
+import { Logger } from '@nestjs/common';
 import { Subject } from 'rxjs';
 
 export class Callback<T> extends Subject<T> {
 	callbacks = [];
+	private readonly logger = new Logger(this.constructor.name);
+
 	async execute(data: T) {
 		for (const cb of this.callbacks) {
 			await cb(data);
@@ -13,7 +16,7 @@ export class Callback<T> extends Subject<T> {
 			try {
 				await cb(x);
 			} catch (e) {
-				console.error(e);
+				this.logger.error(e);
 			}
 		});
 	}

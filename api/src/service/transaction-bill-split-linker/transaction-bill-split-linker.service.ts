@@ -16,35 +16,34 @@ export class TransactionBillSplitLinkerService {
 
 	onModuleInit() {
 		this.transactionService.afterCreate.hook(async ({ entity }) => {
-			if (entity.status == true && entity.outgoing == false) {
-				if (entity.Receiver && entity.Receiver.billSplitParticipantId) {
-					const p = await this.billSplitParticipantService.findOne(
-						entity.Receiver.billSplitParticipantId
-					);
-					const billSplit = await this.billSplitService.findOne(
-						p.billSplitId
-					);
-					const amountPaid = (p.amountPaid += (
-						await this.currencyService.convert(
-							entity.currencyCode,
-							billSplit.currency,
-							entity.amount
-						)
-					).amount);
+			if (
+				entity.status == true &&
+				entity.outgoing == false &&
+				entity.Receiver?.billSplitParticipantId
+			) {
+				const p = await this.billSplitParticipantService.findOne(
+					entity.Receiver.billSplitParticipantId
+				);
+				const billSplit = await this.billSplitService.findOne(
+					p.billSplitId
+				);
+				const amountPaid = (p.amountPaid += (
+					await this.currencyService.convert(
+						entity.currencyCode,
+						billSplit.currency,
+						entity.amount
+					)
+				).amount);
 
-					await this.billSplitParticipantService.update(
-						entity.Receiver.billSplitParticipantId,
-						{
-							amountPaid,
-							paid:
-								roundToDisplay(
-									amountPaid,
-									billSplit.currency
-								) >=
-								roundToDisplay(p.amount, billSplit.currency),
-						}
-					);
-				}
+				await this.billSplitParticipantService.update(
+					entity.Receiver.billSplitParticipantId,
+					{
+						amountPaid,
+						paid:
+							roundToDisplay(amountPaid, billSplit.currency) >=
+							roundToDisplay(p.amount, billSplit.currency),
+					}
+				);
 			}
 		});
 	}

@@ -1,22 +1,31 @@
+import { scaffoldTest } from 'test/mock/scaffold-test';
 import { scaffoldGroup } from '../mock/scaffold-group';
 
 scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 	describe('Invoice', () => {
 		const endpoint = '/payment/payInvoice';
 
-		it(endpoint + ' (POST) should fail without login', () => {
-			// return request(scaffold.app.getHttpServer())
-			// 	.post(endpoint)
-			// 	.expect(401);
-		});
+		scaffoldTest(
+			scaffold,
+			endpoint + ' (POST) should fail without login',
+			() => {
+				// return request(scaffold.app.getHttpServer())
+				// 	.post(endpoint)
+				// 	.expect(401);
+			}
+		);
 
-		it(endpoint + ' (POST) should fail with no balance', () => {
-			// return request(scaffold.app.getHttpServer())
-			// 	.post(endpoint)
-			// 	.expect(401);
-		});
+		scaffoldTest(
+			scaffold,
+			endpoint + ' (POST) should fail with no balance',
+			() => {
+				// return request(scaffold.app.getHttpServer())
+				// 	.post(endpoint)
+				// 	.expect(401);
+			}
+		);
 
-		it(endpoint + ' (POST) should succeed', () => {
+		scaffoldTest(scaffold, endpoint + ' (POST) should succeed', () => {
 			// return request(scaffold.app.getHttpServer())
 			// 	.post(endpoint)
 			// 	.send({
@@ -28,17 +37,17 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 
 	describe('Invoice Info', () => {
 		// const endpoint = '/payment/getInfo';
-		// it(endpoint + ' (GET) should fail without login', () => {
+		// scaffoldTest(scaffold,endpoint + ' (GET) should fail without login', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.expect(401);
 		// });
-		// it(endpoint + ' (GET) should fail without login', () => {
+		// scaffoldTest(scaffold,endpoint + ' (GET) should fail without login', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.expect(401);
 		// });
-		// it(endpoint + ' (GET) should succeed for bolt11', () => {
+		// scaffoldTest(scaffold,endpoint + ' (GET) should succeed for bolt11', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.send({
@@ -46,7 +55,7 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 		// 		})
 		// 		.expect(200);
 		// });
-		// it(endpoint + ' (GET) should succeed for bolt12', () => {
+		// scaffoldTest(scaffold,endpoint + ' (GET) should succeed for bolt12', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.send({
@@ -54,7 +63,7 @@ scaffoldGroup('PaymentController (e2e)', (scaffold) => {
 		// 		})
 		// 		.expect(200);
 		// });
-		// it(endpoint + ' (GET) should succeed for lnurl', () => {
+		// scaffoldTest(scaffold,endpoint + ' (GET) should succeed for lnurl', () => {
 		// 	return request(scaffold.app.getHttpServer())
 		// 		.get(endpoint)
 		// 		.send({

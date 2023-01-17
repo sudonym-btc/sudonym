@@ -1,73 +1,86 @@
 import { JwtService } from '@nestjs/jwt';
+import { MSATOSHIS } from '@sudonym/models';
 import { runAsUser } from 'helper/context-request';
 import { ContactService } from 'module/contact/contact.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import * as request from 'supertest';
-import { exampleInvoice } from './bill-split.spec';
+import { bolt11Encode } from './mock/classes';
 import { scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldTest } from './mock/scaffold-test';
 
 scaffoldGroup('Payment Contacts', (scaffold) => {
-	it('should allocate contactAddress id to transaction if recognized', async () => {
-		const { entity: contact } = await scaffold.app
-			.get(ContactService)
-			.create({
-				userId: scaffold.entities.user[0].id,
-				name: 'testing',
-				ContactAddresses: [
-					{
-						address: 'lnurl123',
-					},
-				],
-			});
-		const { entity: transaction } = await scaffold.app
-			.get(TransactionService)
-			.create({
-				outgoing: true,
-				potId: scaffold.entities.pot[0].id,
-				type: 'bolt11',
-				currencyCode: 'BTC',
-				originalAddress: 'lnurl123',
-				address: exampleInvoice,
-				amount: 1,
-			});
-		expect(transaction.contactAddressId).toBe(
-			contact.ContactAddresses[0].id
-		);
-	});
+	scaffoldTest(
+		scaffold,
+		'should allocate contactAddress id to transaction if recognized',
+		async (entities) => {
+			const { entity: contact } = await scaffold.app
+				.get(ContactService)
+				.create({
+					userId: entities.user[0].id,
+					name: 'testing',
+					ContactAddresses: [
+						{
+							address:
+								'lnurl123' +
+								Math.random().toString().replace('.', ''),
+						},
+					],
+				});
+			const { entity: transaction } = await scaffold.app
+				.get(TransactionService)
+				.create({
+					outgoing: true,
+					potId: entities.pot[0].id,
+					type: 'bolt11',
+					currencyCode: 'BTC',
+					originalAddress: contact.ContactAddresses[0].address,
+					address: bolt11Encode(1 * MSATOSHIS).paymentRequest,
+					amount: 1,
+				});
+			expect(transaction.contactAddressId).toBe(
+				contact.ContactAddresses[0].id
+			);
+		}
+	);
 
-	it('should assign transaction contact address id on contact create', async () => {
-		const { entity: transaction } = await scaffold.app
-			.get(TransactionService)
-			.create({
-				outgoing: true,
-				potId: scaffold.entities.pot[0].id,
-				type: 'bolt11',
-				currencyCode: 'BTC',
-				originalAddress: 'lnurl123',
-				address: exampleInvoice,
-				amount: 1,
-			});
-		const { entity: contact } = await scaffold.app
-			.get(ContactService)
-			.create({
-				userId: scaffold.entities.user[0].id,
-				name: 'testing',
-				ContactAddresses: [
-					{
-						address: 'lnurl123',
-					},
-				],
-			});
+	scaffoldTest(
+		scaffold,
+		'should assign transaction contact address id on contact create',
+		async (entities) => {
+			const addr = bolt11Encode(1 * MSATOSHIS).paymentRequest;
+			const { entity: transaction } = await scaffold.app
+				.get(TransactionService)
+				.create({
+					outgoing: true,
+					potId: entities.pot[0].id,
+					type: 'bolt11',
+					currencyCode: 'BTC',
+					originalAddress: addr,
+					address: addr,
+					amount: 1,
+				});
+			const { entity: contact } = await scaffold.app
+				.get(ContactService)
+				.create({
+					userId: entities.user[0].id,
+					name: 'testing',
+					ContactAddresses: [
+						{
+							address: transaction.originalAddress,
+						},
+					],
+				});
 
-		const tx = await scaffold.app
-			.get(TransactionService)
-			.findOne(transaction.id);
+			const tx = await scaffold.app
+				.get(TransactionService)
+				.findOne(transaction.id);
 
-		expect(tx.contactAddressId).toBe(contact.ContactAddresses[0].id);
-	});
+			expect(tx.contactAddressId).toBe(contact.ContactAddresses[0].id);
+		}
+	);
 
-	it('should search contacts', async () => {
-		await runAsUser(scaffold.entities.user[0], async () => {
+	scaffoldTest(scaffold, 'should search contacts', async (entities) => {
+		await runAsUser(entities.user[0], async () => {
 			await scaffold.app.get(ContactService).create({
 				name: 'john',
 				ContactAddresses: [
@@ -82,7 +95,7 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
 			.set({
 				'x-access-token': scaffold.app
 					.get(JwtService)
-					.sign({ uid: scaffold.entities.user[0].firebaseId }),
+					.sign({ uid: entities.user[0].firebaseId }),
 			});
 
 		expect(contacts.body.data.length).toBe(0);
@@ -94,7 +107,7 @@ scaffoldGroup('Payment Contacts', (scaffold) => {
 			.set({
 				'x-access-token': scaffold.app
 					.get(JwtService)
-					.sign({ uid: scaffold.entities.user[0].firebaseId }),
+					.sign({ uid: entities.user[0].firebaseId }),
 			});
 
 		expect(contacts.body.data.length).toBe(1);

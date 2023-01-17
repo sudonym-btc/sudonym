@@ -4,8 +4,6 @@ import { Exchange } from 'service/exchange/exchange';
 import { ExchangeService } from 'service/exchange/exchange.service';
 
 class MockCcxtExchange extends ccxt['coinbasepro'] {
-	trade = jest.fn(super.trade);
-
 	balances = {
 		info: {
 			free: 1,
@@ -64,7 +62,7 @@ class MockCcxtExchange extends ccxt['coinbasepro'] {
 		params?: Params
 	): Promise<Order> {
 		return {
-			id: '123',
+			id: '123' + Math.random().toString().replace('.', ''),
 		} as Order;
 	}
 
@@ -133,15 +131,11 @@ class MockCcxtExchange extends ccxt['coinbasepro'] {
 	}
 }
 
-export class MockExchange extends Exchange {
-	trade = jest.fn(super.trade);
-}
+export class MockExchange extends Exchange {}
 export class MockExchangeService extends ExchangeService {
 	exchanges: MockExchange[] = [
 		new MockExchange(new MockCcxtExchange({ id: 'coinbasepro' })),
 		new MockExchange(new MockCcxtExchange({ id: 'binance' })),
 	];
 	async onModuleInit(): Promise<void> {}
-
-	buy = jest.fn(super.buy);
 }

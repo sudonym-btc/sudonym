@@ -41,7 +41,7 @@ export class Pot extends BaseModel implements Models.Pot {
 							model: PotUser,
 							as: 'PotUser',
 							where: {
-								userId: authUserIdGetter(),
+								userId: authUserIdGetter() || val.userId,
 							},
 							required: true,
 						},
@@ -105,14 +105,14 @@ export class Pot extends BaseModel implements Models.Pot {
 	static async potUserCreator(entity) {
 		const prev = await PotUser.findOne({
 			where: {
-				userId: context.get('request')?.auth.uid,
+				userId: authUserIdGetter(),
 			},
 			order: [['index', 'DESC']],
 		});
 		await PotUser.create({
 			potId: entity.id,
 			index: prev ? prev.index + 1 : 1,
-			userId: context.get('request')?.auth.uid,
+			userId: authUserIdGetter(),
 		});
 	}
 

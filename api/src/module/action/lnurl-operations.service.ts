@@ -50,7 +50,7 @@ export class LnurlOperationsService {
 				await this.fetchRemoteLnUrl<PaymentRequestCallback>(
 					(
 						action.remoteResponses.at(
-							-1
+							0
 						) as ActionRemoteResponse<PaymentRequest>
 					).data.callback,
 					{
@@ -104,41 +104,40 @@ export class LnurlOperationsService {
 
 		this.logger.debug('Fetching LnUrl from ' + u.toString());
 
-		return ActionRemoteResponse.fromJson(
-			await axios
-				.get(u.toString(), fetchHttpOpts)
-				.then((r) => {
-					this.logger.log('Fetched lnurl', r.data);
-					if (r.data.status == 'ERROR') {
-						throw ActionRemoteResponse.fromJson({
-							success: false,
-							data: new LNURLProtocolError(r.data.reason),
-						});
-					}
-					if (!r.status.toString().startsWith('2')) {
-						throw ActionRemoteResponse.fromJson({
-							success: false,
-							data: r,
-						});
-					}
-					return {
-						success: true,
-						data: r.data,
-					};
-				})
-				.catch((e) => {
-					if (e.data?.status === 'ERROR') {
-						throw ActionRemoteResponse.fromJson({
-							success: false,
-							data: new LNURLProtocolError(e.data.reason),
-						});
-					}
+		return await axios
+			.get(u.toString(), fetchHttpOpts)
+			.then((r) => {
+				this.logger.log('Fetched lnurl', r.data);
+				if (r.data.status == 'ERROR') {
 					throw ActionRemoteResponse.fromJson({
 						success: false,
-						message: e.toString(),
+						data: new LNURLProtocolError(r.data.reason),
 					});
-				})
-		) as ActionRemoteResponse<T>;
+				}
+				if (!r.status.toString().startsWith('2')) {
+					throw ActionRemoteResponse.fromJson({
+						success: false,
+						data: r,
+					});
+				}
+				return ActionRemoteResponse.fromJson({
+					success: true,
+					data: r.data,
+				});
+			})
+			.catch((e) => {
+				if (e instanceof ActionRemoteResponse) throw e;
+				if (e.data?.status === 'ERROR') {
+					throw ActionRemoteResponse.fromJson({
+						success: false,
+						data: new LNURLProtocolError(e.data.reason),
+					});
+				}
+				throw ActionRemoteResponse.fromJson({
+					success: false,
+					message: e.toString(),
+				});
+			});
 	};
 
 	fetchRemoteLightningAddress = async <T>(
@@ -178,6 +177,7 @@ export class LnurlOperationsService {
 				});
 			})
 			.catch((e) => {
+				if (e instanceof ActionRemoteResponse) throw e;
 				if (e.data instanceof LNURLProtocolError) throw e;
 				throw ActionRemoteResponse.fromJson({
 					...e,

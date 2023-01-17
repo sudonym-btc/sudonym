@@ -1,18 +1,21 @@
+import { MSATOSHIS } from '@sudonym/models';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { exampleInvoice } from './bill-split.spec';
+import { bolt11Encode } from './mock/classes';
 import { scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldTest } from './mock/scaffold-test';
 
 scaffoldGroup('CRUD', (scaffold) => {
-	it('should include scope single', async () => {
+	scaffoldTest(scaffold, 'should include scope single', async (entities) => {
 		const { entity: transaction } = await scaffold.app
 			.get(TransactionService)
 			.create({
 				outgoing: true,
-				potId: scaffold.entities.pot[0].id,
+				potId: entities.pot[0].id,
 				type: 'bolt11',
 				currencyCode: 'BTC',
-				originalAddress: 'lnurl123',
-				address: exampleInvoice,
+				originalAddress:
+					'lnurl123' + Math.random().toString().replace('.', ''),
+				address: bolt11Encode(1 * MSATOSHIS).paymentRequest,
 				amount: 1,
 			});
 

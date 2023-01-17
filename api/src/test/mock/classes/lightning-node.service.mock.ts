@@ -12,7 +12,7 @@ export const bolt11Encode = (amount) => {
 				tags: [
 					{
 						tagName: 'payment_hash',
-						data: 'qwertyuiop',
+						data: randomBytes(64).toString('hex'),
 					},
 				],
 			},
@@ -24,14 +24,14 @@ export const bolt11Encode = (amount) => {
 export class MockLightningNodeService extends LightningNodeService {
 	pays = [];
 
-	mockListPays = (data, wait = 1) =>
+	mockListPays = (data, wait = 10) =>
 		jest.fn(async (hash) => {
 			await new Promise((resolve) => setTimeout(resolve, wait));
-			return this.baseListPays(hash).then((i) =>
-				i.map((i) => ({ ...i, ...data }))
-			);
+			return this.pays
+				.filter((i) => i.payment_hash == hash)
+				.map((i) => ({ ...i, ...data }));
 		});
-	mockSendPay = (data, wait = 1) =>
+	mockSendPay = (data, wait = 10) =>
 		jest.fn(async (hash, timeout, part) => {
 			await new Promise((resolve) => setTimeout(resolve, wait));
 			return {
@@ -49,31 +49,31 @@ export class MockLightningNodeService extends LightningNodeService {
 				...data,
 			};
 		});
-	mockPay = (data) =>
-		jest.fn(async (invoice) => {
-			const pay = {
-				payment_preimage: 'mock',
-				payment_hash: bolt11.decode(invoice).tagsObject.payment_hash,
-				created_at: Date.now().valueOf() / 1000,
-				parts: 1,
-				partid: 1,
-				amount_msat: bolt11.decode(invoice).millisatoshis,
-				amount_sent_msat: bolt11.decode(invoice).millisatoshis,
-				status: 'complete',
-				destination: 'randomnode',
-				...data,
-			};
-			this.pays.push(pay);
-			return pay;
-			// payment_preimage (secret): the proof of payment: SHA256 of this payment_hash (always 64 characters)
-			// payment_hash (hash): the hash of the payment_preimage which will prove payment (always 64 characters)
-			// created_at (number): the UNIX timestamp showing when this payment was initiated
-			// parts (u32): how many attempts this took
-			// amount_msat (msat): Amount the recipient received
-			// amount_sent_msat (msat): Total amount we sent (including fees)
-			// status (string): status of payment (one of “complete”, “pending”, “failed”)
-			// destination (pubkey, optional): the final destination of the payment
-		}) as any;
+	mockPay = (data) => async (invoice) => {
+		await new Promise((r) => setTimeout(r, 100));
+		const pay = {
+			payment_preimage: 'mock',
+			payment_hash: bolt11.decode(invoice).tagsObject.payment_hash,
+			created_at: Date.now().valueOf() / 1000,
+			parts: 1,
+			partid: 1,
+			amount_msat: bolt11.decode(invoice).millisatoshis,
+			amount_sent_msat: bolt11.decode(invoice).millisatoshis,
+			status: 'complete',
+			destination: 'randomnode',
+			...data,
+		};
+		this.pays.push(pay);
+		return pay;
+		// payment_preimage (secret): the proof of payment: SHA256 of this payment_hash (always 64 characters)
+		// payment_hash (hash): the hash of the payment_preimage which will prove payment (always 64 characters)
+		// created_at (number): the UNIX timestamp showing when this payment was initiated
+		// parts (u32): how many attempts this took
+		// amount_msat (msat): Amount the recipient received
+		// amount_sent_msat (msat): Total amount we sent (including fees)
+		// status (string): status of payment (one of “complete”, “pending”, “failed”)
+		// destination (pubkey, optional): the final destination of the payment
+	};
 
 	findCircular(): Promise<any> {
 		throw new Error('Method not implemented.');
@@ -124,13 +124,14 @@ export class MockLightningNodeService extends LightningNodeService {
 	pay = this.mockPay({});
 
 	async listSendPays(bolt11, hash) {
+		return this.pays.filter((i) => i.payment_hash == hash); // Don't call other function as might be micked
+	}
+
+	async listPays(hash) {
 		return this.pays.filter((i) => i.payment_hash == hash);
 	}
 	async baseListPays(hash) {
 		return this.pays.filter((i) => i.payment_hash == hash);
-	}
-	async listPays(hash) {
-		return this.baseListPays(hash);
 	}
 
 	async listFunds(): Promise<number> {
@@ -146,11 +147,9 @@ export class MockLightningNodeService extends LightningNodeService {
 	generateOnChainAddress(): Promise<any> {
 		throw new Error('Method not implemented.');
 	}
-	withdrawOnChain = jest.fn(async (invoice) => {}) as any;
+	withdrawOnChain = (async (invoice) => {}) as any;
 
-	rpc = jest.fn(
-		async (method: any, params: any) => 'Method not implemente'
-	) as any;
+	rpc = async (method: any, params: any) => 'Method not implemente';
 
 	async decodeInvoice(invoice: any): Promise<any> {
 		return bolt11.decode(invoice);

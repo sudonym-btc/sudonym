@@ -1,7 +1,7 @@
-import { PotUser } from 'module/pot-user/pot-user.model';
-import { Pot } from 'module/pot/pot.model';
-export const createPots = async () => {
-	const pots = await Pot.bulkCreate([
+import { User } from 'module/user/user.model';
+import { Sequelize } from 'sequelize-typescript';
+export const createPots = async (db: Sequelize, users: User[]) => {
+	const pots = await db.model('Pot').bulkCreate([
 		{
 			name: 'test',
 			currency: 'BTC',
@@ -11,11 +11,11 @@ export const createPots = async () => {
 	]);
 
 	for (const pot of pots) {
-		pot.PotUsers = [
-			await PotUser.create({
+		(pot as any).PotUsers = [
+			await db.model('PotUser').create({
 				potId: pot.id,
 				index: 1,
-				userId: '123',
+				userId: users[0].id,
 			}),
 		];
 	}

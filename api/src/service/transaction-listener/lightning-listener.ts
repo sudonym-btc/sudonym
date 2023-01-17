@@ -56,46 +56,55 @@ export class LightningListener extends TransactionListener {
 	}
 
 	async waitForPayment(payment_hash) {
-		this.logger.debug('Waiting for payment hash', payment_hash);
-		const pay = (await this.lightningNodeService.listPays(payment_hash))[0];
-		this.logger.debug('Pay', pay);
+		try {
+			this.logger.debug('Waiting for payment hash', payment_hash);
+			const pay = (
+				await this.lightningNodeService.listPays(payment_hash)
+			)[0];
+			this.logger.debug('Pay', pay, this.lightningNodeService.listPays);
 
-		const waitSendPay = async (partid) => {
-			this.logger.debug('Waiting for sendpay', payment_hash, partid);
-			this.lightningNodeService
-				.waitSendPay(payment_hash, null, partid)
-				.finally(() => this.waitForPayment(payment_hash));
-		};
+			const waitSendPay = async (partid) => {
+				this.logger.debug('Waiting for sendpay', payment_hash, partid);
+				this.lightningNodeService
+					.waitSendPay(payment_hash, null, partid)
+					.catch((e) => this.logger.error(e))
+					.finally(() => this.waitForPayment(payment_hash));
+			};
 
-		if (pay.status == 'pending') {
-			const sendpays = await this.lightningNodeService.listSendPays(
-				null,
-				payment_hash
-			);
-
-			const sendingPays = sendpays.filter((s) => s.status === 'pending');
-
-			for (const sendpay of sendingPays) {
-				waitSendPay(sendpay.partid);
-			}
-
-			if (!sendingPays.length) {
-				this.logger.debug(
-					'no inflight sendpays, so waiting for 2 seconds before recalling'
+			if (pay.status == 'pending') {
+				const sendpays = await this.lightningNodeService.listSendPays(
+					null,
+					payment_hash
 				);
-				// Wait for payment
-				setTimeout(() => {
-					this.waitForPayment(payment_hash);
-				}, 2000);
+
+				const sendingPays = sendpays.filter(
+					(s) => s.status === 'pending'
+				);
+
+				for (const sendpay of sendingPays) {
+					waitSendPay(sendpay.partid);
+				}
+
+				if (!sendingPays.length) {
+					this.logger.debug(
+						'no inflight sendpays, so waiting for 2 seconds before recalling'
+					);
+					// Wait for payment
+					setTimeout(() => {
+						this.waitForPayment(payment_hash);
+					}, 2000);
+				}
+			} else {
+				this.lightningEvents.onEvent.next({
+					event: 'sendpay',
+					data: {
+						payment_hash,
+						...pay,
+					} as WaitSendPayResponse,
+				});
 			}
-		} else {
-			this.lightningEvents.onEvent.next({
-				event: 'sendpay',
-				data: {
-					payment_hash,
-					...pay,
-				} as WaitSendPayResponse,
-			});
+		} catch (e) {
+			this.logger.error(e);
 		}
 	}
 
@@ -112,28 +121,19 @@ export class LightningListener extends TransactionListener {
 				)
 			).amount;
 			this.logger.debug('Amount', btcAmount, btcAmount * MSATOSHIS);
-			const response = await this.lightningNodeService
-				.pay(invoice, Math.ceil(btcAmount * MSATOSHIS))
-				.finally(() => {
-					this.waitForPayment(
-						bolt11.decode(invoice).tagsObject.payment_hash
-					);
-				});
-			this.logger.debug('Lightning pay', response);
+
+			const response = this.lightningNodeService.pay(
+				invoice,
+				Math.ceil(btcAmount * MSATOSHIS)
+			);
+			response.finally(() => {
+				this.waitForPayment(
+					bolt11.decode(invoice).tagsObject.payment_hash
+				);
+			});
+			await response;
 		} catch (e) {
 			this.logger.error('Pay error', e);
-			// if (e instanceof LightningError) {
-			// 	this.logger.warn('Pay error', e);
-			// 	const data = e.error?.data || e.error;
-			// 	this.lightningEvents.onEvent.next({
-			// 		event: 'sendpay',
-			// 		data: {
-			// 			bolt11: invoice,
-			// 			...data,
-			// 			...(data.attempts?.length ? data.attempts[0] : {}),
-			// 		},
-			// 	});
-			// }
 		}
 	}
 
@@ -193,51 +193,57 @@ export class LightningListener extends TransactionListener {
 		});
 
 		this.lightningEvents.onEvent.subscribe(async (e) => {
-			if (e.event == 'sendpay') {
-				const transactions = await this.transactionService.list({
-					where: {
-						txid: e.data.payment_hash,
-						outgoing: true,
-					},
-				});
+			try {
+				if (e.event == 'sendpay') {
+					const transactions = await this.transactionService.list({
+						where: {
+							txid: e.data.payment_hash,
+							outgoing: true,
+						},
+					});
 
-				const status =
-					e.data.status == 'pending'
-						? null
-						: ['paid', 'complete'].includes(e.data.status)
-						? true
-						: false;
+					const status =
+						e.data.status == 'pending'
+							? null
+							: ['paid', 'complete'].includes(e.data.status)
+							? true
+							: false;
 
-				const errorMessage =
-					e.data.failcodename ||
-					e.data.failreason ||
-					(e.data as any).message;
-				const totalAmount = e.data.msatoshi_sent
-					? e.data.msatoshi_sent / MSATOSHIS
-					: null;
-				const amount = e.data.msatoshi || e.data.amount_msat;
-				const fee =
-					totalAmount && amount ? totalAmount - totalAmount : null;
+					const errorMessage =
+						e.data.failcodename ||
+						e.data.failreason ||
+						(e.data as any).message;
+					const totalAmount = e.data.msatoshi_sent
+						? e.data.msatoshi_sent / MSATOSHIS
+						: null;
+					const amount = e.data.msatoshi || e.data.amount_msat;
+					const fee =
+						totalAmount && amount
+							? totalAmount - totalAmount
+							: null;
 
-				if (transactions.metadata.count) {
-					await this.transactionService.update(
-						transactions.data[0].id,
-						{
-							totalAmount:
-								totalAmount != null
-									? totalAmount / MSATOSHIS
-									: null,
-							// fee: fee != null ? fee / MSATOSHIS : null,
-							// feeCurrency: 'BTC',
-							status,
-							...(!status && errorMessage
-								? {
-										errorMessage,
-								  }
-								: {}),
-						}
-					);
+					if (transactions.metadata.count) {
+						await this.transactionService.update(
+							transactions.data[0].id,
+							{
+								totalAmount:
+									totalAmount != null
+										? totalAmount / MSATOSHIS
+										: null,
+								// fee: fee != null ? fee / MSATOSHIS : null,
+								// feeCurrency: 'BTC',
+								status,
+								...(!status && errorMessage
+									? {
+											errorMessage,
+									  }
+									: {}),
+							}
+						);
+					}
 				}
+			} catch (e) {
+				this.logger.error(e);
 			}
 		});
 	}

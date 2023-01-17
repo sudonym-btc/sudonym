@@ -1,9 +1,5 @@
 import { Config } from 'config/config';
-import {
-	createMockApp,
-	createMockEntities,
-	mockScaffold,
-} from './create-mock-entities';
+import { createMockApp, mockScaffold } from './create-mock-entities';
 
 export const scaffoldGroup = (
 	description,
@@ -39,24 +35,22 @@ export const scaffoldGroup = (
 			});
 		};
 
-		beforeEach(async () => {
-			const start = new Date();
+		beforeAll(async () => {
 			scaffold.app = await createMockApp();
-			const appstart = new Date();
-			scaffold.entities = await createMockEntities(scaffold.app);
-			const entities = new Date();
-			console.log(
-				'App: ',
-				appstart.valueOf() - start.valueOf(),
-				'Entities: ',
-				entities.valueOf() - appstart.valueOf()
-			);
-		}, 30000);
+		}, 15000);
 
-		afterEach(async () => {
-			await wipeDB();
+		beforeEach(() => {
+			jest.clearAllMocks();
+			jest.resetAllMocks();
+		});
+
+		// afterEach(async () => {
+		// 	// await wipeDB();
+		// }, 30000);
+
+		afterAll(async () => {
 			await closeApp();
-		}, 30000);
+		});
 
 		callback(scaffold);
 	});

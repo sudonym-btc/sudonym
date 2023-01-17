@@ -4,34 +4,39 @@ import { ContactService } from 'module/contact/contact.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import * as request from 'supertest';
 import { scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldTest } from './mock/scaffold-test';
 
 scaffoldGroup('Validation', (scaffold) => {
-	it('DTO validation error should be in same format as DB validation', async () => {
-		await runAsUser(scaffold.entities.user[0], async () => {
-			const data = await request(scaffold.app.getHttpServer()).get(
-				`/receiver/invoice?potId=${scaffold.entities.pot[0].id}&type=lnurl&amount=str`
-			);
+	scaffoldTest(
+		scaffold,
+		'DTO validation error should be in same format as DB validation',
+		async (entities) => {
+			await runAsUser(entities.user[0], async () => {
+				const data = await request(scaffold.app.getHttpServer()).get(
+					`/receiver/invoice?potId=${entities.pot[0].id}&type=lnurl&amount=str`
+				);
 
-			expect(data.statusCode).toBe(400);
-			expect(data.body);
-			console.log(data.body);
+				expect(data.statusCode).toBe(400);
+				expect(data.body);
+				console.log(data.body);
 
-			const response = scaffold.app.get(ReceiverService).create({
-				potId: scaffold.entities.pot[0].id,
-				type: 'lnurl',
-				amount: 'str',
-			} as any);
+				const response = scaffold.app.get(ReceiverService).create({
+					potId: entities.pot[0].id,
+					type: 'lnurl',
+					amount: 'str',
+				} as any);
 
-			await expect(response).rejects.toThrowError();
+				await expect(response).rejects.toThrowError();
 
-			// todo: Compare that errors are returned the same way
-		});
-	});
-	it('create or update unique keys', async () => {
+				// todo: Compare that errors are returned the same way
+			});
+		}
+	);
+	scaffoldTest(scaffold, 'create or update unique keys', async (entities) => {
 		const { entity: first } = await scaffold.app
 			.get(ContactService)
 			.createOrUpdate({
-				userId: scaffold.entities.user[0].id,
+				userId: entities.user[0].id,
 				name: 'tester',
 				ContactAddresses: [
 					{
@@ -44,7 +49,7 @@ scaffoldGroup('Validation', (scaffold) => {
 			.get(ContactService)
 			.createOrUpdate({
 				name: 'tester',
-				userId: scaffold.entities.user[0].id,
+				userId: entities.user[0].id,
 				ContactAddresses: [
 					{
 						address: 'lnurl32423423',
@@ -56,36 +61,40 @@ scaffoldGroup('Validation', (scaffold) => {
 		expect(second.ContactAddresses.length).toBe(1);
 	});
 
-	it('should classify address types correctly', async () => {
-		const addresses = {
-			lightningaddress: [
-				'patrick@sudonym.app',
-				'paco@coincorner.io',
-				'a@b.com',
-			],
-			onchain: [
-				'bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st',
-				'bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=1.2',
-				'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09',
-				'3Eu6iMWSD64MYtf69CqT3V7DssSkBM4Un9',
-			],
-			bolt11: [
-				'lnbc1p3kggh9pp5ax50adfnnltg0a2evqapx9dfxuyv6904z880ytu2ywmx6aktxfxqdqu2askcmr9wssx7e3q2dshgmmndp5scqzpgxqyz5vqsp5353ne50r6tt5aprppnhnyn3mj3aqyc6pz8vm70543z54x09qxr6s9qyyssq2z9nvel938mvptmk27qnfa6yza6xx8l67sv4lvyju26s7208njtz2fm8hmmvhf675m4jur7z9j67jx3z0zetzlwcnshu7gmngdg6g4qpvn00xh', // without amount
-				'lnbcrt9849383230p1p3kgwy7sp5t5e3n4w60dxntfvejf7xssscn9r4rs533a937mgeyejuhaqragtspp55qjjg0g67txkkxd2ttay0r0f2me3ggq9eghfrepy9k9kxamlxdhqdp6x93k2en98yckgtf5xymxxtf5xe3k2tfcx9nxztf3vyerzdrpxdjr2vrxvyxqyjw5qcqp29qyysgqsyjr8pzfzejavzuec9zx502v68vp47vennf5cctt3nqgllym6s9xsvjy7ced9sz7yy80qldpgyfkvaxqwtqn7dtawf0uvrakl7kcw7gpff0gxy', // with amount
-			],
-			lnurl: [
-				'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09&lightning=lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
-				'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
-				'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv?picc=23432',
-			],
-		};
+	scaffoldTest(
+		scaffold,
+		'should classify address types correctly',
+		async () => {
+			const addresses = {
+				lightningaddress: [
+					'patrick@sudonym.app',
+					'paco@coincorner.io',
+					'a@b.com',
+				],
+				onchain: [
+					'bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st',
+					'bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=1.2',
+					'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09',
+					'3Eu6iMWSD64MYtf69CqT3V7DssSkBM4Un9',
+				],
+				bolt11: [
+					'lnbc1p3kggh9pp5ax50adfnnltg0a2evqapx9dfxuyv6904z880ytu2ywmx6aktxfxqdqu2askcmr9wssx7e3q2dshgmmndp5scqzpgxqyz5vqsp5353ne50r6tt5aprppnhnyn3mj3aqyc6pz8vm70543z54x09qxr6s9qyyssq2z9nvel938mvptmk27qnfa6yza6xx8l67sv4lvyju26s7208njtz2fm8hmmvhf675m4jur7z9j67jx3z0zetzlwcnshu7gmngdg6g4qpvn00xh', // without amount
+					'lnbcrt9849383230p1p3kgwy7sp5t5e3n4w60dxntfvejf7xssscn9r4rs533a937mgeyejuhaqragtspp55qjjg0g67txkkxd2ttay0r0f2me3ggq9eghfrepy9k9kxamlxdhqdp6x93k2en98yckgtf5xymxxtf5xe3k2tfcx9nxztf3vyerzdrpxdjr2vrxvyxqyjw5qcqp29qyysgqsyjr8pzfzejavzuec9zx502v68vp47vennf5cctt3nqgllym6s9xsvjy7ced9sz7yy80qldpgyfkvaxqwtqn7dtawf0uvrakl7kcw7gpff0gxy', // with amount
+				],
+				lnurl: [
+					'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09&lightning=lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
+					'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv',
+					'lnurl1dp68gurn8ghj7ctsdyhxcmmrv9kzuer9wejkcmmsd4jkuap0d3h82unv9ajnycejxcuxyvpdvscrvwfdxsukgved8ycn2d3dvenrjcm9xcerydfevgms35vlmv?picc=23432',
+				],
+			};
 
-		for (const section of Object.keys(addresses)) {
-			for (const addr of addresses[section]) {
-				expect(
-					scaffold.app.get(AddressParser).getAddressType(addr)[0]
-				).toBe(section);
+			for (const section of Object.keys(addresses)) {
+				for (const addr of addresses[section]) {
+					expect(
+						scaffold.app.get(AddressParser).getAddressType(addr)[0]
+					).toBe(section);
+				}
 			}
 		}
-	});
+	);
 });

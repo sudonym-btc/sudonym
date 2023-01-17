@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
 import { SentryInterceptor } from './sentry.interceptor';
+import { MockSentryInterceptor } from './sentry.interceptor.mock';
 import { SentryService } from './sentry.service';
 
 export const SENTRY_OPTIONS = 'SENTRY_OPTIONS';
@@ -11,8 +12,9 @@ export const SENTRY_OPTIONS = 'SENTRY_OPTIONS';
 })
 export class SentryModule {
 	static forRoot(options: Sentry.NodeOptions) {
-		// initialization of Sentry, this is where Sentry will create a Hub
-		Sentry.init(options);
+		if (process.env.NODE_ENV !== 'mock')
+			// initialization of Sentry, this is where Sentry will create a Hub
+			Sentry.init(options);
 
 		return {
 			module: SentryModule,
@@ -24,7 +26,10 @@ export class SentryModule {
 				SentryService,
 				{
 					provide: APP_INTERCEPTOR,
-					useClass: SentryInterceptor,
+					useClass:
+						process.env.NODE_ENV == 'mock'
+							? MockSentryInterceptor
+							: SentryInterceptor,
 				},
 			],
 			exports: [SentryService],

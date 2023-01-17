@@ -1,12 +1,17 @@
 import { scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldTest } from './mock/scaffold-test';
 
 scaffoldGroup('CLS transactions', (scaffold) => {
-	it('should emit events when successful', async () => {});
+	scaffoldTest(
+		scaffold,
+		'should emit events when successful',
+		async () => {}
+	);
 
-	it('should not emit if error caught', async () => {
+	scaffoldTest(scaffold, 'should not emit if error caught', async () => {
 		// scaffold.app.get(TransactionService).create({
 		// 	outgoing: true,
-		// 	potId: scaffold.entities.pot[0].id,
+		// 	potId: entities.pot[0].id,
 		// 	type: 'bolt11',
 		// 	currencyCode: 'BTC',
 		// 	originalAddress: exampleInvoice,

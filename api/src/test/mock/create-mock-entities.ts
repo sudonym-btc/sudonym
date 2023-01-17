@@ -33,15 +33,16 @@ import { MockExchangeService } from './classes/exchange.service.mock';
 import { createPots } from './pot';
 import { createUsers } from './user';
 
+export type mockEntities = {
+	user: User[];
+	pot: Pot[];
+	onchainReceiver: Receiver;
+	lnurlReceiver: Receiver;
+	bolt11Receiver: Receiver;
+};
 export type mockScaffold = {
 	app: INestApplication;
-	entities: {
-		user: User[];
-		pot: Pot[];
-		onchainReceiver: Receiver;
-		lnurlReceiver: Receiver;
-		bolt11Receiver: Receiver;
-	};
+	entities: mockEntities;
 };
 
 export const createMockApp = async () => {
@@ -82,26 +83,39 @@ export const createMockApp = async () => {
 };
 
 export const createMockEntities = async (app: INestApplication) => {
-	const user = await createUsers();
-	const pot = await createPots();
+	const user = await createUsers(app.get('SEQUELIZE'));
+	const pot = await createPots(app.get('SEQUELIZE'), user as any);
 
 	return {
 		user,
 		pot,
-		bolt11Receiver: await Receiver.create({
-			potId: pot[0].id,
-			type: 'bolt11',
-			data: 'lnbc1dfghjk',
-		}),
-		onchainReceiver: await Receiver.create({
-			potId: pot[0].id,
-			type: 'onchain',
-			data: 'bc1fgwbsknslkmsd',
-		}),
-		lnurlReceiver: await Receiver.create({
-			potId: pot[0].id,
-			type: 'onchain',
-			data: 'bc1fgwbsknslkmsd',
-		}),
-	};
+		bolt11Receiver: await app
+			.get('SEQUELIZE')
+			.model('Receiver')
+			.create({
+				potId: pot[0].id,
+				type: 'bolt11',
+				data: 'lnbc1dfghjk' + Math.random().toString().replace('.', ''),
+			}),
+		onchainReceiver: await app
+			.get('SEQUELIZE')
+			.model('Receiver')
+			.create({
+				potId: pot[0].id,
+				type: 'onchain',
+				data:
+					'bc1fgwbsknslkmsd' +
+					Math.random().toString().replace('.', ''),
+			}),
+		lnurlReceiver: await app
+			.get('SEQUELIZE')
+			.model('Receiver')
+			.create({
+				potId: pot[0].id,
+				type: 'lnurl',
+				data:
+					'lnurlgwbsknslkmsd' +
+					Math.random().toString().replace('.', ''),
+			}),
+	} as mockEntities;
 };

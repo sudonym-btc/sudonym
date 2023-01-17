@@ -2,122 +2,156 @@ import { MSATOSHIS, SATOSHIS } from '@sudonym/models';
 import { transaction as bolt11Mock } from '@sudonym/models/src/mock/bolt11.mock';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
-import { firstValueFrom } from 'rxjs';
+import { filter, firstValueFrom } from 'rxjs';
 import {
 	BitcoinBlock,
 	BitcoinEvents,
 } from 'service/transaction-listener/bitcoin-events';
 import { LightningEvents } from 'service/transaction-listener/lightning-events';
+import { scaffoldTest } from 'test/mock/scaffold-test';
 import { scaffoldGroup } from '../mock/scaffold-group';
 
 scaffoldGroup('Receive', (scaffold) => {
 	describe('Invoice', () => {
-		it('should add balance from succeeded payment', async () => {
-			const msatoshi = 500;
-			scaffold.app.get(LightningEvents).onEvent.next({
-				event: 'invoice',
-				data: {
-					...bolt11Mock,
-					bolt11: scaffold.entities.bolt11Receiver.data,
-					status: 'paid',
-					msatoshi,
-				},
-			});
-			await Promise.all([
-				firstValueFrom(
-					scaffold.app.get(TransactionService).onAfterCreated
-				).then((x) =>
-					expect(x).toMatchObject({
-						status: true,
-						currencyCode: 'BTC',
-						amount: msatoshi / MSATOSHIS,
-						potId: scaffold.entities.pot[0].id,
-						outgoing: false,
-					})
-				),
-				firstValueFrom(
-					scaffold.app.get(PotService).onAfterUpdated
-				).then((x) => {
-					expect(x.spendableBalance).toBe(
-						scaffold.entities.pot[0].spendableBalance +
-							msatoshi / MSATOSHIS
-					);
-					expect(x.balance).toBe(
-						scaffold.entities.pot[0].balance + msatoshi / MSATOSHIS
-					);
-				}),
-			]);
-		});
+		scaffoldTest(
+			scaffold,
+			'should add balance from succeeded payment',
+			async (entities) => {
+				const msatoshi = 500;
+				scaffold.app.get(LightningEvents).onEvent.next({
+					event: 'invoice',
+					data: {
+						...bolt11Mock,
+						bolt11: entities.bolt11Receiver.data,
+						status: 'paid',
+						msatoshi,
+					},
+				});
+				await Promise.all([
+					firstValueFrom(
+						scaffold.app
+							.get(TransactionService)
+							.onAfterCreated.pipe(
+								filter((x) => x.potId == entities.pot[0].id)
+							)
+					).then((x) =>
+						expect(x).toMatchObject({
+							status: true,
+							currencyCode: 'BTC',
+							amount: msatoshi / MSATOSHIS,
+							potId: entities.pot[0].id,
+							outgoing: false,
+						})
+					),
+					firstValueFrom(
+						scaffold.app
+							.get(PotService)
+							.onAfterUpdated.pipe(
+								filter((x) => x.id == entities.pot[0].id)
+							)
+					).then((x) => {
+						expect(x.spendableBalance).toBe(
+							entities.pot[0].spendableBalance +
+								msatoshi / MSATOSHIS
+						);
+						expect(x.balance).toBe(
+							entities.pot[0].balance + msatoshi / MSATOSHIS
+						);
+					}),
+				]);
+			}
+		);
 	});
 
 	describe('Onchain', () => {
-		it('should make unspendable after received and make spendable after confirmed', async () => {
-			const satoshi = 500;
-			const chainTx = {
-				getId: () => '123',
-				outs: [
-					{
-						fromAddress: 'bc1erwf',
-						address: scaffold.entities.onchainReceiver.data,
-						value: satoshi,
-					} as any,
-				],
-			};
-			scaffold.app.get(BitcoinEvents).onTransaction.next(chainTx);
-			const [tx] = await Promise.all([
-				firstValueFrom(
-					scaffold.app.get(TransactionService).onAfterCreated
-				).then((x) => {
-					expect(x.txid).toBe('123');
-					expect(x.status).toBe(null);
-					expect(x.currencyCode).toBe('BTC');
-					expect(x.amount).toBe(satoshi / SATOSHIS);
-					expect(x.potId).toBe(scaffold.entities.pot[0].id);
-					expect(x.outgoing).toBe(false);
-					return x;
-				}),
-				firstValueFrom(
-					scaffold.app.get(PotService).onAfterUpdated
-				).then((x) => {
-					expect(x.spendableBalance).toBe(
-						scaffold.entities.pot[0].spendableBalance
-					);
-					expect(x.balance).toBe(
-						scaffold.entities.pot[0].balance + satoshi / SATOSHIS
-					);
-				}),
-			]);
+		scaffoldTest(
+			scaffold,
+			'should make unspendable after received and make spendable after confirmed',
+			async (entities) => {
+				const id = Math.random().toString().replace('.', '');
+				const satoshi = 500;
+				const chainTx = {
+					getId: () => id,
+					outs: [
+						{
+							fromAddress: 'bc1erwf',
+							address: entities.onchainReceiver.data,
+							value: satoshi,
+						} as any,
+					],
+				};
+				scaffold.app.get(BitcoinEvents).onTransaction.next(chainTx);
+				const [tx] = await Promise.all([
+					firstValueFrom(
+						scaffold.app
+							.get(TransactionService)
+							.onAfterCreated.pipe(
+								filter((x) => x.potId == entities.pot[0].id)
+							)
+					).then((x) => {
+						expect(x.txid).toBe(id);
+						expect(x.status).toBe(null);
+						expect(x.currencyCode).toBe('BTC');
+						expect(x.amount).toBe(satoshi / SATOSHIS);
+						expect(x.potId).toBe(entities.pot[0].id);
+						expect(x.outgoing).toBe(false);
+						return x;
+					}),
+					firstValueFrom(
+						scaffold.app
+							.get(PotService)
+							.onAfterUpdated.pipe(
+								filter((x) => x.id == entities.pot[0].id)
+							)
+					).then((x) => {
+						expect(x.spendableBalance).toBe(
+							entities.pot[0].spendableBalance
+						);
+						expect(x.balance).toBe(
+							entities.pot[0].balance + satoshi / SATOSHIS
+						);
+					}),
+				]);
 
-			const block = {
-				transactions: [chainTx],
-			} as BitcoinBlock;
+				const block = {
+					transactions: [chainTx],
+				} as BitcoinBlock;
 
-			scaffold.app.get(BitcoinEvents).onBlock.next(block);
+				scaffold.app.get(BitcoinEvents).onBlock.next(block);
 
-			// Trigger block received containing tx id
+				// Trigger block received containing tx id
 
-			await Promise.all([
-				firstValueFrom(
-					scaffold.app.get(TransactionService).onAfterUpdated
-				).then((x) => {
-					expect(x.txid).toBe(tx.txid);
-					expect(x.status).toBe(true);
-					expect(x.currencyCode).toBe('BTC');
-					expect(x.amount).toBe(satoshi / SATOSHIS);
-				}),
-				firstValueFrom(
-					scaffold.app.get(PotService).onAfterUpdated
-				).then((x) => {
-					expect(x.spendableBalance).toBe(
-						scaffold.entities.pot[0].spendableBalance +
-							satoshi / SATOSHIS
-					);
-					expect(x.balance).toBe(
-						scaffold.entities.pot[0].balance + satoshi / SATOSHIS
-					);
-				}),
-			]);
-		});
+				await Promise.all([
+					firstValueFrom(
+						scaffold.app
+							.get(TransactionService)
+							.onAfterUpdated.pipe(
+								filter((x) => x.potId == entities.pot[0].id)
+							)
+					).then((x) => {
+						expect(x.txid).toBe(tx.txid);
+						expect(x.status).toBe(true);
+						expect(x.currencyCode).toBe('BTC');
+						expect(x.amount).toBe(satoshi / SATOSHIS);
+					}),
+					firstValueFrom(
+						scaffold.app
+							.get(PotService)
+							.onAfterUpdated.pipe(
+								filter((x) => x.id == entities.pot[0].id)
+							)
+					).then((x) => {
+						expect(x.spendableBalance).toBe(
+							entities.pot[0].spendableBalance +
+								satoshi / SATOSHIS
+						);
+						expect(x.balance).toBe(
+							entities.pot[0].balance + satoshi / SATOSHIS
+						);
+					}),
+				]);
+			}
+		);
 	});
 });
 

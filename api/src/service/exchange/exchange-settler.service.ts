@@ -60,13 +60,15 @@ export class ExchangeSettlerService {
 		for (const key of Object.keys(liabilities)) {
 			if (liabilities[key] > (funds[key] || 0)) {
 				this.logger.log(key + ' funds lower than liabilities');
-				await this.exchangeService
-					.buy(key, liabilities[key] - (funds[key] || 0))
-					.then((order) => {
-						this.settlementService.create({
-							// fromCurrency: order.dfd
-						});
-					});
+				await this.exchangeService.buy(
+					key,
+					liabilities[key] - (funds[key] || 0)
+				);
+				// .then((order) => {
+				// 	this.settlementService.create({
+				// 		// fromCurrency: order.dfd
+				// 	});
+				// });
 			}
 		}
 	}

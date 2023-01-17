@@ -8,8 +8,9 @@ import { UserService } from 'module/user/user.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import * as request from 'supertest';
 import waitForExpect from 'wait-for-expect';
-import { exampleInvoice } from './bill-split.spec';
+import { bolt11Encode, MockLightningNodeService } from './mock/classes';
 import { scaffoldGroup } from './mock/scaffold-group';
+import { scaffoldTest } from './mock/scaffold-test';
 
 scaffoldGroup('Security', (scaffold) => {
 	const createNewUser = (user: Partial<User>) => {
@@ -19,92 +20,120 @@ scaffoldGroup('Security', (scaffold) => {
 			...user,
 		});
 	};
-	const outgoingTransaction = (params = {}) => ({
-		potId: scaffold.entities.pot[0].id,
-		type: 'lnurl',
-		originalAddress: 'lnurl23423',
-		address: exampleInvoice,
-		currencyCode: 'BTC',
-		amount: 0.001,
-		outgoing: true,
-		...params,
-	});
-	it('should only be able to create transactions for own user', async () => {
-		const newUser = {
-			id: 'abcdefg',
+	const outgoingTransaction = (entities, params = {}) => {
+		const addr = bolt11Encode(1 * MSATOSHIS).paymentRequest;
+		return {
+			potId: entities.pot[0].id,
+			type: 'bolt11',
+			originalAddress: addr,
+			address: addr,
+			currencyCode: 'BTC',
+			amount: 0.001,
+			outgoing: true,
+			...params,
 		};
-		const { entity: user2 } = await runAsUser(newUser, async () =>
-			createNewUser(newUser)
-		);
+	};
+	scaffoldTest(
+		scaffold,
+		'should only be able to create transactions for own user',
+		async (entities) => {
+			const newUser = {
+				id: 'abcdefg',
+			};
+			const { entity: user2 } = await runAsUser(newUser, async () =>
+				createNewUser(newUser)
+			);
 
-		const data = await request(scaffold.app.getHttpServer())
-			.post('/transaction')
-			.set({
-				'x-access-token': scaffold.app
-					.get(JwtService)
-					.sign({ uid: user2.id }),
-			})
-			.send({
-				...outgoingTransaction(),
-				currencyCode: 'BTC',
-				amount: 0.001,
-			});
-
-		expect(data.statusCode).toBe(403);
-	});
-
-	it('should not be able to access create endpoint when not authed', async () => {
-		const data = await request(scaffold.app.getHttpServer())
-			.post('/transaction')
-			.send({
-				...outgoingTransaction(),
-				currencyCode: 'BTC',
-				amount: 0.001,
-			});
-
-		expect(data.statusCode).toBe(403);
-	});
-
-	it('should not be able to spend more than in pot', async () => {
-		await runAsUser(scaffold.entities.user[0], async () => {
-			expect(
-				scaffold.app.get(TransactionService).create({
-					...outgoingTransaction(),
-					currencyCode: 'BTC',
-					amount: 2,
+			const data = await request(scaffold.app.getHttpServer())
+				.post('/transaction')
+				.set({
+					'x-access-token': scaffold.app
+						.get(JwtService)
+						.sign({ uid: user2.id }),
 				})
-			).rejects.toThrowError(); //BalanceLowError
-		});
-	});
-
-	it('should convert GBP transaction to BTC before sending', async () => {
-		const { entity: transaction } = await runAsUser(
-			scaffold.entities.user[0],
-			async () => {
-				return scaffold.app.get(TransactionService).create({
-					...outgoingTransaction(),
-					amount: 1,
-					currencyCode: 'GBP',
+				.send({
+					...outgoingTransaction(entities),
+					currencyCode: 'BTC',
+					amount: 0.001,
 				});
-			}
-		);
 
-		const btcAmount = (
-			await scaffold.app
-				.get(CurrencyService)
-				.convert(transaction.currencyCode, 'BTC', transaction.amount)
-		).amount;
+			expect(data.statusCode).toBe(403);
+		}
+	);
 
-		await waitForExpect(() => {
-			expect(
-				(scaffold.app.get(LightningNodeService).pay as jest.Mock).mock
-					.calls.length
-			).toBe(1);
+	scaffoldTest(
+		scaffold,
+		'should not be able to access create endpoint when not authed',
+		async (entities) => {
+			const data = await request(scaffold.app.getHttpServer())
+				.post('/transaction')
+				.send({
+					...outgoingTransaction(entities),
+					currencyCode: 'BTC',
+					amount: 0.001,
+				});
 
-			expect(
-				(scaffold.app.get(LightningNodeService).pay as jest.Mock).mock
-					.calls[0][1]
-			).toBe(Math.ceil(btcAmount * MSATOSHIS));
-		});
-	});
+			expect(data.statusCode).toBe(403);
+		}
+	);
+
+	scaffoldTest(
+		scaffold,
+		'should not be able to spend more than in pot',
+		async (entities) => {
+			await runAsUser(entities.user[0], async () => {
+				expect(
+					scaffold.app.get(TransactionService).create({
+						...outgoingTransaction(entities),
+						currencyCode: 'BTC',
+						amount: 2,
+					})
+				).rejects.toThrowError(); //BalanceLowError
+			});
+		}
+	);
+
+	scaffoldTest(
+		scaffold,
+		'should convert GBP transaction to BTC before sending',
+		async (entities) => {
+			const mockedPay = jest
+				.spyOn(scaffold.app.get(LightningNodeService), 'pay')
+				.mockImplementationOnce(
+					(
+						scaffold.app.get(
+							LightningNodeService
+						) as MockLightningNodeService
+					).mockPay({})
+				);
+			const { entity: transaction } = await runAsUser(
+				entities.user[0],
+				async () => {
+					return scaffold.app.get(TransactionService).create({
+						...outgoingTransaction(entities),
+						amount: 1,
+						currencyCode: 'GBP',
+					});
+				}
+			);
+
+			const btcAmount = (
+				await scaffold.app
+					.get(CurrencyService)
+					.convert(
+						transaction.currencyCode,
+						'BTC',
+						transaction.amount
+					)
+			).amount;
+
+			await waitForExpect(() => {
+				expect(mockedPay.mock.calls.length).toBe(1);
+
+				expect(mockedPay.mock.calls[0][1]).toBe(
+					Math.ceil(btcAmount * MSATOSHIS)
+				);
+			});
+		}
+	);
 });

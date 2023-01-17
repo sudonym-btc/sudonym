@@ -31,7 +31,7 @@ class MockActionRepository implements ActionRepository {
           'originalAddress': trimmedAddress,
           'isLnUrl': true,
           'isLightningAddress': true,
-          'remoteResponse': await fetchRemoteLightningAddress(trimmedAddress)
+          'remoteResponses': [await fetchRemoteLightningAddress(trimmedAddress)]
         });
       case 'lnurl':
         var response = await fetchRemoteLnUrl(trimmedAddress);
@@ -39,14 +39,14 @@ class MockActionRepository implements ActionRepository {
           'type': response['data']['tag'].replaceAll('Request', ''),
           'originalAddress': trimmedAddress,
           'isLnUrl': true,
-          'remoteResponse': response
+          'remoteResponses': [response]
         });
       default:
         return Action.from({
           'type': 'pay',
           'originalAddress': trimmedAddress,
           'isBolt11': true,
-          'remoteResponse': await fetchBolt11(trimmedAddress)
+          'remoteResponses': [await fetchBolt11(trimmedAddress)]
         });
     }
   }
