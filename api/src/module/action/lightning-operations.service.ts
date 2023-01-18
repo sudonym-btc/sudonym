@@ -22,6 +22,8 @@ export class LightningOperationsService {
 			type: 'pay',
 			isBolt11: true,
 			remoteResponses: [await this.fetchBolt11(addr)],
+			description: (await this.lightningNodeService.decodeInvoice(addr))
+				.tagsObject.description,
 		});
 	}
 

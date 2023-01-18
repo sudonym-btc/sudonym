@@ -96,7 +96,7 @@
 	"noQRFound": "Kein QR code gefunden.",
 	"description": "Beschreibung",
 	"trackInMempool": "Im mempool verfolgen",
-	"billSplit": "Teile Rechnung",
+	"billSplit": "Rechnung teilen",
 	"comment": "Kommentar",
 	"ok": "OK",
 	"owed": "Geschuldet",
