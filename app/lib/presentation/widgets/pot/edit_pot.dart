@@ -16,25 +16,25 @@ class EditPot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-            child: Scaffold(
-                appBar: AppBar(
-                  title: Text(entity?.id == null
-                      ? AppLocalizations.of(context)!.createPot
-                      : AppLocalizations.of(context)!.editPot),
-                  actions: entity?.id != null && entity?.PotUser.index != 1
-                      ? [
-                          IconButton(
-                              onPressed: () {
-                                getIt<PotRepository>().delete(entity!.id);
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
-                              },
-                              icon: const FaIcon(FontAwesomeIcons.trashCan))
-                        ]
-                      : [],
-                ),
-                body: CustomPadding(
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(entity?.id == null
+                  ? AppLocalizations.of(context)!.createPot
+                  : AppLocalizations.of(context)!.editPot),
+              actions: entity?.id != null && entity?.PotUser.index != 1
+                  ? [
+                      IconButton(
+                          onPressed: () {
+                            getIt<PotRepository>().delete(entity!.id);
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                          },
+                          icon: const FaIcon(FontAwesomeIcons.trashCan))
+                    ]
+                  : [],
+            ),
+            body: SafeArea(
+                child: CustomPadding(
                     multiplier: 2,
                     child: EditPotForm(
                         onSave: (p) async => Navigator.pop(context),

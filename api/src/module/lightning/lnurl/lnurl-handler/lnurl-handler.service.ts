@@ -21,6 +21,16 @@ import { SenderService } from 'module/sender/sender.service';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { LnUrlService } from '../lnurl.service';
 
+export const skimDescription = (metadata) =>
+	((parseMetadata(metadata) || []).find((i) => i[0] === 'text/plain') ||
+		[])[1];
+export const skimLongDescription = (metadata) =>
+	((parseMetadata(metadata) || []).find((i) => i[0] === 'text/long-desc') ||
+		[])[1];
+
+const parseMetadata = (metadata) =>
+	typeof metadata == 'string' ? JSON.parse(metadata) : metadata;
+
 export class LnUrlHandlerService {
 	@Inject(CurrencyService) currencyService: CurrencyService;
 	@Inject(LnUrlService) lnUrlService: LnUrlService;
@@ -57,12 +67,8 @@ export class LnUrlHandlerService {
 					},
 				});
 
-				const skimDescription = (metadata) =>
-					((metadata || []).find((i) => i[0] === 'text/plain') ||
-						[])[1];
-				const skimLongDescription = (metadata) =>
-					((metadata || []).find((i) => i[0] === 'text/long-desc') ||
-						[])[1];
+				console.log(description);
+
 				// Create a new receiver, this time bolt11 not lnurl
 				const { entity: receiver } = await this.receiveService.create({
 					parentId: parentReceiver.id,
@@ -118,6 +124,7 @@ export class LnUrlHandlerService {
 						sender.potId
 					);
 					this.logger.debug(pot);
+					// TODO pull in descriptions
 					await this.transactionService.create({
 						outgoing: true,
 						potId: pot.id,

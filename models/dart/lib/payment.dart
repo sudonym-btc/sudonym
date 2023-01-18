@@ -38,7 +38,6 @@ class Payment extends ActionTypeWithAmount {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {
-    print(json);
     final a = json["remoteResponses"] != null
         ? json["remoteResponses"]
             .map((e) => ActionRemoteResponse.fromJson(e))
@@ -87,8 +86,6 @@ class Payment extends ActionTypeWithAmount {
         p.amount = p.minAmount;
       }
     }
-    print('AFTRER');
-    print(p.fee);
     return p;
   }
 

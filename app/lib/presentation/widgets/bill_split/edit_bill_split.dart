@@ -20,14 +20,14 @@ class EditBillSplit extends StatelessWidget {
     } else {
       return Container(
           color: Theme.of(context).backgroundColor,
-          child: SafeArea(
-              child: Scaffold(
-                  appBar: AppBar(
-                    title: Text(entity?.id == null
-                        ? AppLocalizations.of(context)!.billSplit
-                        : AppLocalizations.of(context)!.billSplit),
-                  ),
-                  body: CustomPadding(
+          child: Scaffold(
+              appBar: AppBar(
+                title: Text(entity?.id == null
+                    ? AppLocalizations.of(context)!.billSplit
+                    : AppLocalizations.of(context)!.billSplit),
+              ),
+              body: SafeArea(
+                  child: CustomPadding(
                       multiplier: 2, child: ViewBillSplit(entity: entity!)))));
     }
   }
@@ -58,6 +58,7 @@ class BillSplitParticipantController {
     (control.findControl('amount')!.valueChanges
             as Stream<CurrencyInputOutput?>)
         .listen((CurrencyInputOutput? event) {
+      print(event);
       if (listening) {
         onInput.add(this);
       }
@@ -100,7 +101,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
 
     onUpdated.stream.asyncMap((controller) async {
       calcBillSplit(widget.entity!, controllers.indexOf(controller),
-          controller.cubit.controller!.numberValue, changed);
+          controller.cubit.options.controller!.value.amount, changed);
 
       controller.changed = true;
       await setInputs(controllers.indexOf(controller));
@@ -145,19 +146,19 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-            child: Scaffold(
-                appBar: AppBar(
-                  title: Text(AppLocalizations.of(context)!.billSplit),
-                  actions: [
-                    IconButton(
-                        onPressed: () {
-                          addParticipant(null);
-                        },
-                        icon: Icon(Icons.person_add))
-                  ],
-                ),
-                body: CustomForm<BillSplitCubit, BillSplitCubitState,
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.billSplit),
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      addParticipant(null);
+                    },
+                    icon: Icon(Icons.person_add))
+              ],
+            ),
+            body: SafeArea(
+                child: CustomForm<BillSplitCubit, BillSplitCubitState,
                         BillSplit>(
                     entity: widget.entity ??
                         BillSplit.fromJson({'amount': 0, 'currency': 'BTC'}),

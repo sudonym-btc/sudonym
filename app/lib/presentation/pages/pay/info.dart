@@ -171,12 +171,11 @@ class _InfoPageState extends State<_InfoPage> {
                       pot: widget.pot,
                     ),
                     ReactiveTextField(
-                      formControlName: 'comment',
-                      decoration: InputDecoration(
-                        labelText: 'Comment',
-                      ),
-                      textCapitalization: TextCapitalization.words,
-                    ),
+                        formControlName: 'comment',
+                        maxLines: 5,
+                        minLines: 1,
+                        decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.comment)),
                   ]),
                   actions: Column(children: [
                     if (state.error != null)
@@ -197,18 +196,19 @@ class _InfoPageState extends State<_InfoPage> {
                           ),
                         )
                       else
-                        Button(
-                          text: AppLocalizations.of(context)!.send,
-                          // icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                          //     size: iconSize),
-                          onPressed: form.valid
-                              ? () {
-                                  widget.action.comment =
-                                      form.control('comment').value;
-                                  widget.onDone(widget.action);
-                                }
-                              : null,
-                        )
+                        ReactiveFormConsumer(
+                            builder: ((context, formGroup, child) => Button(
+                                  text: AppLocalizations.of(context)!.send,
+                                  // icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                                  //     size: iconSize),
+                                  onPressed: form.valid
+                                      ? () {
+                                          widget.action.comment =
+                                              form.control('comment').value;
+                                          widget.onDone(widget.action);
+                                        }
+                                      : null,
+                                )))
                     ])
                   ])));
         }));

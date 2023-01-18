@@ -41,7 +41,7 @@ export class Withdraw extends ActionTypeWithAmount {
 				? json['remoteResponses']
 						.map((e) => ActionRemoteResponse.fromJson(e))
 						.toList()
-				: null;
+				: [];
 
 		const w = new Withdraw(
 			json['potId'],
@@ -51,13 +51,13 @@ export class Withdraw extends ActionTypeWithAmount {
 			json['amount'],
 			json['minAmount'] != null
 				? json['minAmount']
-				: a != null && a.success
-				? a.data['minWithdrawable'] / MSATOSHIS
+				: a.length != 0 && a[0].success
+				? a[0].data['minWithdrawable'] / MSATOSHIS
 				: null,
 			json['maxAmount'] != null
 				? json['maxAmount']
-				: a != null && a.success
-				? a.data['maxWithdrawable'] / MSATOSHIS
+				: a.length != 0 && a[0].success
+				? a[0].data['maxWithdrawable'] / MSATOSHIS
 				: null,
 			a,
 			json['isLnUrl'],

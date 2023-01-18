@@ -17,6 +17,8 @@ export class LightningOperationsService {
 
 	async parse(addr: string) {
 		return Action.from({
+			originalAddress: addr,
+			address: addr,
 			type: 'pay',
 			isBolt11: true,
 			remoteResponses: [await this.fetchBolt11(addr)],
@@ -25,8 +27,7 @@ export class LightningOperationsService {
 
 	async getInfo(action: Payment | Withdraw) {
 		return Action.from({
-			type: 'pay',
-			isBolt11: true,
+			...action,
 			remoteResponses: [
 				...action.remoteResponses,
 				await this.fetchBolt11(action.originalAddress),

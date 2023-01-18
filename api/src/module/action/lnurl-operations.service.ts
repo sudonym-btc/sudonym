@@ -13,6 +13,7 @@ import {
 import axios from 'axios';
 import { bech32 } from 'bech32';
 import { LNURLProtocolError } from 'helper/errors';
+import { skimDescription } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { AddressParser } from './address-parser.service';
 import { fetchHttpOpts } from './http-agent';
@@ -56,7 +57,7 @@ export class LnurlOperationsService {
 					{
 						amount: await this.addressParser.getMSatAmount(action),
 						comment: action.comment,
-						payerData: {
+						payerData: JSON.stringify({
 							name: 'Sudonym wallet', // free form string
 							// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
 							// "auth": {
@@ -66,16 +67,10 @@ export class LnurlOperationsService {
 							// },
 							// "email": string,
 							// "identifier": string,
-						},
+						}) as any,
 					}
 				);
-			console.log(
-				'getting fees',
-				await this.lightningNodeService.getFeesInvoice(
-					remoteResponse.data.pr,
-					await this.addressParser.getMSatAmount(action)
-				)
-			);
+
 			return Action.from({
 				...action,
 				remoteResponses: [...action.remoteResponses, remoteResponse],
@@ -85,11 +80,17 @@ export class LnurlOperationsService {
 						await this.addressParser.getMSatAmount(action)
 					)) / MSATOSHIS,
 				address: remoteResponse.data.pr,
-				description: await (
-					await this.lightningNodeService.decodeInvoice(
-						remoteResponse.data.pr
-					)
-				).tagsObject.description,
+				description:
+					(await (
+						await this.lightningNodeService.decodeInvoice(
+							remoteResponse.data.pr
+						)
+					).tagsObject.description) ||
+					(action.remoteResponses[0].data.metadata
+						? skimDescription(
+								action.remoteResponses[0].data.metadata
+						  )
+						: null),
 			});
 		}
 

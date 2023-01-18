@@ -33,6 +33,16 @@ class StatusPage extends StatelessWidget {
             appBarTheme: color != null
                 ? darkTheme.appBarTheme.copyWith(backgroundColor: color)
                 : currTheme.appBarTheme,
+            inputDecorationTheme: color != null
+                ? const InputDecorationTheme(
+                    labelStyle: TextStyle(color: Colors.white),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          style: BorderStyle.solid,
+                          width: 2,
+                          color: Colors.white),
+                    ))
+                : currTheme.inputDecorationTheme,
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: currTheme.elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
@@ -80,13 +90,13 @@ class StatusPage extends StatelessWidget {
       data: newTheme,
       child: Container(
           color: color,
-          child: SafeArea(
-            child: Scaffold(
-                backgroundColor: color,
-                appBar: AppBar(
-                  title: Text(pageTitle),
-                ),
-                body: CustomPadding(
+          child: Scaffold(
+            backgroundColor: color,
+            appBar: AppBar(
+              title: Text(pageTitle),
+            ),
+            body: SafeArea(
+                child: CustomPadding(
                     multiplier: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -46,12 +46,12 @@ class _AmountPageState extends State<AmountPage> with AmountLogger, SafeState {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      child: SafeArea(
-          child: Scaffold(
-              appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.amount),
-              ),
-              body: CustomPadding(
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.amount),
+          ),
+          body: SafeArea(
+              child: CustomPadding(
                   multiplier: 2,
                   child: ReactiveForm(
                       formGroup: formGroup,

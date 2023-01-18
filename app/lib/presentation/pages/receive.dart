@@ -20,33 +20,33 @@ class ReceivePage extends StatelessWidget {
 
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-            child: DefaultTabController(
-                length: children.length,
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Text(AppLocalizations.of(context)!.receive),
-                    // bottom: const TabBar(
-                    //   tabs: [
-                    //     Tab(
-                    //         text: 'LNURL',
-                    //         icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
-                    //     Tab(
-                    //         text: 'ONCHAIN',
-                    //         icon: FaIcon(FontAwesomeIcons.link, size: 12)),
-                    //     Tab(
-                    //         text: 'BOLT11',
-                    //         icon: FaIcon(
-                    //           FontAwesomeIcons.bolt,
-                    //           size: 12,
-                    //         )),
-                    //     // Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
-                    //   ],
-                    // ),
-                  ),
-                  body: TabBarView(
-                    children: children,
-                  ),
-                ))));
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.receive),
+              // bottom: const TabBar(
+              //   tabs: [
+              //     Tab(
+              //         text: 'LNURL',
+              //         icon: FaIcon(FontAwesomeIcons.wifi, size: 12)),
+              //     Tab(
+              //         text: 'ONCHAIN',
+              //         icon: FaIcon(FontAwesomeIcons.link, size: 12)),
+              //     Tab(
+              //         text: 'BOLT11',
+              //         icon: FaIcon(
+              //           FontAwesomeIcons.bolt,
+              //           size: 12,
+              //         )),
+              //     // Tab(icon: FaIcon(FontAwesomeIcons.bolt, size: 12)),
+              //   ],
+              // ),
+            ),
+            body: SafeArea(
+                child: DefaultTabController(
+              length: children.length,
+              child: TabBarView(
+                children: children,
+              ),
+            ))));
   }
 }

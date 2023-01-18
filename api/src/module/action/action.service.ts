@@ -98,24 +98,33 @@ export class ActionService {
 			const btcAmountWanted = await this.addressParser.getMSatAmount(
 				action
 			);
-			// Throw error if amounts not the same
+
 			if (
-				btcAmountWanted /
-					Math.abs(
-						parseInt(
-							bolt11.decode(
-								(
-									refreshedAction.remoteResponses.at(-1)
-										.data as PaymentRequestCallback
-								).pr
-							).millisatoshis
-						) - btcAmountWanted
-					) <
-				100
+				['lnurl', 'lightningaddress'].includes(
+					this.addressParser.getAddressType(
+						refreshedAction.originalAddress
+					)[0]
+				)
 			) {
-				throw new LNURLProtocolError(
-					'Returned an invoice of a higher amount than requested'
-				);
+				// Throw error if amounts not the same
+				if (
+					btcAmountWanted /
+						Math.abs(
+							parseInt(
+								bolt11.decode(
+									(
+										refreshedAction.remoteResponses.at(-1)
+											.data as PaymentRequestCallback
+									).pr
+								).millisatoshis
+							) - btcAmountWanted
+						) <
+					100
+				) {
+					throw new LNURLProtocolError(
+						'Returned an invoice of a higher amount than requested'
+					);
+				}
 			}
 			this.logger.log({
 				originalAddress: refreshedAction.originalAddress,

@@ -53,22 +53,22 @@ class _SendPageState extends State<SendPage> {
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-          child: Scaffold(
-              appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.send),
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => QRPage(widget.pot)));
-                      },
-                      icon: const FaIcon(Icons.camera_alt))
-                ],
-              ),
-              body: CustomPadding(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.send),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QRPage(widget.pot)));
+                  },
+                  icon: const FaIcon(Icons.camera_alt))
+            ],
+          ),
+          body: SafeArea(
+              child: CustomPadding(
                   multiplier: 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

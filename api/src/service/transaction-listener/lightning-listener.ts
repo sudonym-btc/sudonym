@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { MSATOSHIS } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
 import { CurrencyService } from 'module/currency/currency.service';
+import { skimDescription } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { Transaction } from 'module/transaction/transaction.model';
 import { Op } from 'sequelize';
 import { LightningNodeService } from '../lightning-node/lightning-node.service';
@@ -17,36 +18,43 @@ export class LightningListener extends TransactionListener {
 	@Inject() currencyService: CurrencyService;
 
 	listenIncoming() {
-		this.lightningEvents.onEvent.subscribe(async (e) => {
+		this.lightningEvents.onEvent.subscribe(async (event) => {
 			if (
-				e.event == 'invoice' &&
-				e.data &&
-				['paid', 'complete'].includes(e.data.status)
+				event.event == 'invoice' &&
+				event.data &&
+				['paid', 'complete'].includes(event.data.status)
 			) {
 				const receivers = await this.receiveService.list({
 					where: {
-						data: e.data.bolt11,
+						data: event.data.bolt11,
 					},
 				});
 
 				if (receivers.metadata.count) {
-					console.log(e.data);
-					console.log(receivers.data[0].comment);
+					let description = '';
+					try {
+						description = skimDescription(
+							JSON.parse(event.data.description)
+						);
+					} catch (e) {
+						description = event.data.description;
+					}
 					await this.transactionService.create({
 						type: 'bolt11',
 						originalAddress: receivers.data[0].data,
 						address: receivers.data[0].data,
 						potId: receivers.data[0].potId,
 						receiverId: receivers.data[0].id,
-						description: e.data.description,
+						description: description,
 						comment: receivers.data[0].comment,
 						outgoing: false,
 						amount:
-							(e.data.msatoshi || e.data.msatoshi_received) / //depends if amount in invoice as to which key to access
+							(event.data.msatoshi ||
+								event.data.msatoshi_received) / //depends if amount in invoice as to which key to access
 							MSATOSHIS,
 						status: true,
 						currencyCode: 'BTC',
-						txid: e.data.bolt11,
+						txid: event.data.payment_hash,
 					});
 
 					await this.receiveService.update(receivers.data[0].id, {

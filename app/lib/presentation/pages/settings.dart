@@ -18,37 +18,36 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-            child: Scaffold(
-                appBar:
-                    AppBar(title: Text(AppLocalizations.of(context)!.settings)),
-                body: SingleChildScrollView(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    const LightningSection(),
-                    // const CardSection(),
-                    const VertDivider(2),
-                    ExpansionTile(
-                      textColor: Theme.of(context).primaryColor,
-                      iconColor: Theme.of(context).primaryColor,
-                      tilePadding: const EdgeInsets.fromLTRB(
-                          padding * 2, 0, padding * 2, 0),
-                      title: Text(AppLocalizations.of(context)!.appInfo),
-                      children: const <Widget>[
-                        AboutSection(),
-                      ],
-                    ),
-                    ListTile(
-                      contentPadding: const EdgeInsets.fromLTRB(
-                          padding * 2, 0, padding * 2, 0),
-                      title: Text(AppLocalizations.of(context)!.logout),
-                      // foregroundColor: Colors.red,
-                      onTap: (() async {
-                        await getIt<AuthCubit>().logout();
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                      }),
-                    ),
-                  ]),
-                ))));
+        child: Scaffold(
+            appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
+            body: SafeArea(
+                child: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                const LightningSection(),
+                // const CardSection(),
+                const VertDivider(2),
+                ExpansionTile(
+                  textColor: Theme.of(context).primaryColor,
+                  iconColor: Theme.of(context).primaryColor,
+                  tilePadding:
+                      const EdgeInsets.fromLTRB(padding * 2, 0, padding * 2, 0),
+                  title: Text(AppLocalizations.of(context)!.appInfo),
+                  children: const <Widget>[
+                    AboutSection(),
+                  ],
+                ),
+                ListTile(
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(padding * 2, 0, padding * 2, 0),
+                  title: Text(AppLocalizations.of(context)!.logout),
+                  // foregroundColor: Colors.red,
+                  onTap: (() async {
+                    await getIt<AuthCubit>().logout();
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }),
+                ),
+              ]),
+            ))));
   }
 }
 

@@ -72,18 +72,18 @@ class _HomePageState extends State<HomePage> {
 
             return Container(
                 color: Theme.of(context).backgroundColor,
-                child: SafeArea(
-                    child: Scaffold(
-                        appBar: AppBar(actions: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/settings');
-                            },
-                            icon: const FaIcon(FontAwesomeIcons.gear,
-                                size: iconSize),
-                          )
-                        ]),
-                        body: state.loading && state.data.isEmpty
+                child: Scaffold(
+                    appBar: AppBar(actions: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/settings');
+                        },
+                        icon:
+                            const FaIcon(FontAwesomeIcons.gear, size: iconSize),
+                      )
+                    ]),
+                    body: SafeArea(
+                        child: state.loading && state.data.isEmpty
                             ? const Center(child: CircularProgressIndicator())
                             : Column(
                                 children: [

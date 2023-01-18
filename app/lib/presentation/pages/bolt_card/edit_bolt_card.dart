@@ -16,18 +16,18 @@ class EditBoltCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-            child: Scaffold(
-          appBar: AppBar(
-            title: Text(entity?.id == null
-                ? AppLocalizations.of(context)!.createBoltCard
-                : AppLocalizations.of(context)!.editBoltCard),
-          ),
-          body: CustomPadding(
-            child: EditBoltCardForm(
-                entity: entity), // onSave: () => Navigator.pop(context),
-          ),
-        )));
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(entity?.id == null
+                  ? AppLocalizations.of(context)!.createBoltCard
+                  : AppLocalizations.of(context)!.editBoltCard),
+            ),
+            body: SafeArea(
+              child: CustomPadding(
+                child: EditBoltCardForm(
+                    entity: entity), // onSave: () => Navigator.pop(context),
+              ),
+            )));
   }
 }
 

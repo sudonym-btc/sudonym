@@ -8,7 +8,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:sudonym/config/index.dart';
 import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
-import 'package:sudonym/logic/bloc/current_pot.service.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
@@ -185,6 +184,8 @@ class ActionTriggerService with ActionLogger {
 
     return (Withdraw a) => Stream.fromIterable([a])
         .map((event) {
+          print(event.toJson());
+          print('------');
           event.potId = actionStream.pot?.id;
           return event;
         })
@@ -204,22 +205,22 @@ class ActionTriggerService with ActionLogger {
           }
           return next(value);
         })
-        .switchMapCallback((value, Function(Withdraw) next, err) {
-          final route = MaterialPageRoute(
-              builder: (context) => WithdrawInfoPage(
-                  action: value,
-                  // pot: actionStream.pot,
-                  onDone: next,
-                  onError: err));
-          if (firstPageAmount) {
-            Navigator.push(
-              actionStream.context,
-              route,
-            );
-          } else {
-            Navigator.pushReplacement(actionStream.context, route);
-          }
-        })
+        // .switchMapCallback((value, Function(Withdraw) next, err) {
+        //   final route = MaterialPageRoute(
+        //       builder: (context) => WithdrawInfoPage(
+        //           action: value,
+        //           // pot: actionStream.pot,
+        //           onDone: next,
+        //           onError: err));
+        //   if (firstPageAmount) {
+        //     Navigator.push(
+        //       actionStream.context,
+        //       route,
+        //     );
+        //   } else {
+        //     Navigator.pushReplacement(actionStream.context, route);
+        //   }
+        // })
         .switchMapCallback((value, Function(Receiver) next, err) =>
             Navigator.pushReplacement(
                 actionStream.context,
@@ -264,22 +265,16 @@ getCurrencyInputOptions(Pot pot, dynamic a) {
         'BTC'
       ],
       max: [
-        ...(a.maxAmount != null
-            ? [CurrencyInputOutput(a.maxAmount, a.currency)]
-            : []),
-        ...(pot != null
-            ? [
-                CurrencyInputOutput(pot.spendableBalance, pot.currency),
-              ]
-            : [])
+        if (a.maxAmount != null) CurrencyInputOutput(a.maxAmount, a.currency),
+        if (pot != null && a is Payment)
+          CurrencyInputOutput(pot.spendableBalance, pot.currency)
       ],
       min: [
-        ...(a.minAmount != null
-            ? [CurrencyInputOutput(a.minAmount, a.currency)]
-            : [])
+        if (a.minAmount != null) CurrencyInputOutput(a.minAmount, a.currency)
       ],
       initialCurrency: pot.currency,
-      initialValue: CurrencyInputOutput(a.minAmount ?? 0, a.currency));
+      initialValue: CurrencyInputOutput(
+          a is Withdraw ? a.maxAmount : a.minAmount ?? 0, a.currency));
 }
 
 class CallbackHandler<T> {

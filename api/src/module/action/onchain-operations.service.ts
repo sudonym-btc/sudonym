@@ -14,8 +14,10 @@ export class OnchainOperationsService {
 		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
 		return Action.from({
 			originalAddress: trimmedAddress,
+			type: 'pay',
 			fee: fees.opening / SATOSHIS,
 			feeCurrency: 'BTC',
+			isOnChain: true,
 		});
 	}
 
@@ -26,7 +28,6 @@ export class OnchainOperationsService {
 		);
 		return Action.from({
 			address: trimmedAddress,
-			type: 'pay',
 			minAmount: query.amount ? Number(query.amount) : null,
 			amount: query.amount ? Number(query.amount) : null,
 			currency: 'BTC',
@@ -36,7 +37,6 @@ export class OnchainOperationsService {
 					data: {},
 				}),
 			],
-			isOnChain: true,
 		});
 	}
 }

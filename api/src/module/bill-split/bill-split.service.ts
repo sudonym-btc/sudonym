@@ -17,15 +17,18 @@ export class BillSplitService extends BaseService(BillSplit) {
 	onModuleInit() {
 		this.beforeCreate.hook((params) => {
 			// Check that the participant amounts make up the complete amount
-			if (
-				roundToDisplay(
-					calcAmountLeft(params, [
-						...Array(params.BillSplitParticipants.length).keys(),
-					]),
-					params.currency
-				)
-			) {
-				throw new HttpException('Bill split wrong amounts', 400);
+			const amountLeft = roundToDisplay(
+				calcAmountLeft(params, [
+					...Array(params.BillSplitParticipants.length).keys(),
+				]),
+				params.currency
+			);
+			if (Math.abs(amountLeft) > Math.pow(1, -8)) {
+				// Must be closer than 1 sat
+				throw new HttpException(
+					'Bill split amounts off by ' + amountLeft.toString(),
+					400
+				);
 			}
 			// Fulfill the first contribution if the user has already paid the bill
 			if (params.transactionId) {
