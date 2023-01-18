@@ -93,7 +93,39 @@ export class ActionService {
 
 	async execute<T = Transaction | Receiver>(action: Action): Promise<T> {
 		if (action instanceof Payment) {
-			const refreshedAction = (await this.info(action)) as Payment; // Refetch info to get the newest information and make sure receiving end gets input comment information
+			const [type] = await this.addressParser.getAddressType(
+				action.originalAddress
+			);
+			let refreshedAction: Payment;
+			switch (type) {
+				case 'lnurl':
+				case 'lightningaddress': {
+					refreshedAction =
+						(await this.lnurlOperationsService.execute(
+							action
+						)) as Payment;
+					break;
+				}
+				case 'onchain': {
+					refreshedAction =
+						(await this.onchainOperationsService.execute(
+							action
+						)) as Payment;
+					break;
+				}
+				case 'bolt11': {
+					refreshedAction =
+						(await this.lightningOperationsService.execute(
+							action
+						)) as Payment;
+					break;
+				}
+				default: {
+					throw new HttpException('Invalid address', 400);
+				}
+			}
+
+			console.log('here');
 
 			const btcAmountWanted = await this.addressParser.getMSatAmount(
 				action
@@ -126,19 +158,8 @@ export class ActionService {
 					);
 				}
 			}
-			this.logger.log({
-				originalAddress: refreshedAction.originalAddress,
-				address: refreshedAction.address,
-				type: this.addressParser.getAddressType(
-					refreshedAction.originalAddress
-				)[0],
-				amount: refreshedAction.amount,
-				currencyCode: refreshedAction.currency,
-				description: refreshedAction.description,
-				comment: refreshedAction.comment,
-				outgoing: true,
-				potId: refreshedAction.potId,
-			});
+			console.log('now here');
+			this.logger.log(refreshedAction);
 			return (
 				await this.transactionService.create({
 					originalAddress: refreshedAction.originalAddress,

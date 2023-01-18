@@ -74,20 +74,22 @@ class PaymentInfoPreview extends StatelessWidget {
                 toCurrency: pot?.currency ?? entity.currency,
                 builder: (state) => Text(state))
           ]),
-          TableRow(children: [
-            TableKey(child: Subtitle(AppLocalizations.of(context)!.fee)),
-            AmountText(
-                showLoader: false,
-                amount: entity.fee,
-                fromCurrency: entity.feeCurrency,
-                toCurrency: pot?.currency ?? entity.feeCurrency,
-                builder: (state) => Text(state))
-          ]),
-          if (entity.originalAddress != entity.address)
+          if (entity.fee != null)
+            TableRow(children: [
+              TableKey(child: Subtitle(AppLocalizations.of(context)!.fee)),
+              AmountText(
+                  showLoader: false,
+                  amount: entity.fee,
+                  fromCurrency: entity.feeCurrency,
+                  toCurrency: pot?.currency ?? entity.feeCurrency,
+                  builder: (state) => Text(state))
+            ]),
+          if (entity.originalAddress != entity.address &&
+              entity.address != null)
             TableRow(children: [
               TableKey(child: Subtitle(AppLocalizations.of(context)!.address)),
               Text(
-                entity.address ?? '',
+                entity.address,
                 style: const TextStyle(
                   overflow: TextOverflow.ellipsis,
                 ),

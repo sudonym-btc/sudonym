@@ -1,10 +1,18 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Action, ActionRemoteResponse, SATOSHIS } from '@sudonym/models';
+import {
+	Action,
+	ActionRemoteResponse,
+	Payment,
+	SATOSHIS,
+} from '@sudonym/models';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { AddressParser, parseQuery } from './address-parser.service';
 
 @Injectable()
 export class OnchainOperationsService {
+	execute(action: Payment) {
+		return action;
+	}
 	private readonly logger = new Logger(this.constructor.name);
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(AddressParser) private addressParser: AddressParser;

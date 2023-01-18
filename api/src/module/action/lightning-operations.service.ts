@@ -11,6 +11,9 @@ import { AddressParser } from './address-parser.service';
 
 @Injectable()
 export class LightningOperationsService {
+	execute(action: Payment) {
+		return action;
+	}
 	private readonly logger = new Logger(this.constructor.name);
 	@Inject(LightningNodeService) lightningNodeService: LightningNodeService;
 	@Inject(AddressParser) private addressParser: AddressParser;

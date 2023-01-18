@@ -46,55 +46,53 @@ export class LnurlOperationsService {
 	}
 
 	async getInfo(action: Action) {
-		if (action instanceof Payment) {
-			const remoteResponse =
-				await this.fetchRemoteLnUrl<PaymentRequestCallback>(
-					(
-						action.remoteResponses.at(
-							0
-						) as ActionRemoteResponse<PaymentRequest>
-					).data.callback,
-					{
-						amount: await this.addressParser.getMSatAmount(action),
-						comment: action.comment,
-						payerData: JSON.stringify({
-							name: 'Sudonym wallet', // free form string
-							// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
-							// "auth": {
-							//   "key": string, // hex(<linkingKey>)
-							//   "k1": string, // same as received from service on section 1
-							//   "sig": string, // following LUD-04: hex(sign(hexToBytes(<k1>), <linkingPrivKey>))
-							// },
-							// "email": string,
-							// "identifier": string,
-						}) as any,
-					}
-				);
-
-			return Action.from({
-				...action,
-				remoteResponses: [...action.remoteResponses, remoteResponse],
-				fee:
-					(await this.lightningNodeService.getFeesInvoice(
-						remoteResponse.data.pr,
-						await this.addressParser.getMSatAmount(action)
-					)) / MSATOSHIS,
-				address: remoteResponse.data.pr,
-				description:
-					(await (
-						await this.lightningNodeService.decodeInvoice(
-							remoteResponse.data.pr
-						)
-					).tagsObject.description) ||
-					(action.remoteResponses[0].data.metadata
-						? skimDescription(
-								action.remoteResponses[0].data.metadata
-						  )
-						: null),
-			});
-		}
-
 		return action;
+	}
+
+	async execute(action: Payment) {
+		const remoteResponse =
+			await this.fetchRemoteLnUrl<PaymentRequestCallback>(
+				(
+					action.remoteResponses.at(
+						0
+					) as ActionRemoteResponse<PaymentRequest>
+				).data.callback,
+				{
+					amount: await this.addressParser.getMSatAmount(action),
+					comment: action.comment,
+					payerData: JSON.stringify({
+						name: 'Sudonym wallet', // free form string
+						// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
+						// "auth": {
+						//   "key": string, // hex(<linkingKey>)
+						//   "k1": string, // same as received from service on section 1
+						//   "sig": string, // following LUD-04: hex(sign(hexToBytes(<k1>), <linkingPrivKey>))
+						// },
+						// "email": string,
+						// "identifier": string,
+					}) as any,
+				}
+			);
+		console.log('got remote');
+		return Action.from({
+			...action,
+			remoteResponses: [...action.remoteResponses, remoteResponse],
+			fee:
+				(await this.lightningNodeService.getFeesInvoice(
+					remoteResponse.data.pr,
+					await this.addressParser.getMSatAmount(action)
+				)) / MSATOSHIS,
+			address: remoteResponse.data.pr,
+			description:
+				(await (
+					await this.lightningNodeService.decodeInvoice(
+						remoteResponse.data.pr
+					)
+				).tagsObject.description) ||
+				(action.remoteResponses[0].data.metadata
+					? skimDescription(action.remoteResponses[0].data.metadata)
+					: null),
+		});
 	}
 
 	fetchRemoteLnUrl = async <
