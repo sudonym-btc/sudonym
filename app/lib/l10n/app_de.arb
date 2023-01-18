@@ -95,5 +95,14 @@
 	"potCurrencyDescription": "Alles, wass an diesem Topf geschickt wird, wird in der spezifizierten Währung aufbewahrt.",
 	"noQRFound": "Kein QR code gefunden.",
 	"description": "Beschreibung",
-	"trackInMempool": "Im mempool verfolgen"
+	"trackInMempool": "Im mempool verfolgen",
+	"billSplit": "Teile Rechnung",
+	"comment": "Kommentar",
+	"ok": "OK",
+	"owed": "Geschuldet",
+	"paid": "Bezahlt",
+	"person": "Person",
+	"remove": "Löschen",
+	"viewBillSplit": "Bill-Split ansehen",
+	"you": "Sie"
 }

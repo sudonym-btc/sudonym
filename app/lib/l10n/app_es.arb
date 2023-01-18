@@ -91,5 +91,18 @@
 	"maxAmount": "Monto debe ser menos de {amount}",
 	"time": "Hora",
 	"to": "Para",
-	"potCurrencyDescription": "Cualquier envio a esta billetera inmediatamente sera convertido a la moneda eligida."
+	"potCurrencyDescription": "Cualquier envio a esta billetera inmediatamente sera convertido a la moneda eligida.",
+	"back": "Atrás",
+	"billSplit": "Dividir Factura",
+	"comment": "Comentario",
+	"description": "",
+	"noQRFound": "No se encontró el código QR.",
+	"ok": "OK",
+	"owed": "Adeudado",
+	"paid": "Pagado",
+	"person": "Persona",
+	"remove": "Retirar",
+	"trackInMempool": "Seguir en mempool",
+	"viewBillSplit": "Ver división de facturas",
+	"you": "Tú"
 }

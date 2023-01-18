@@ -38,8 +38,8 @@ class WithdrawExecutePage extends ActionFlow<Withdraw, Receiver> {
   StatusPage loadingPage(BuildContext context) {
     return StatusPage(
       color: Colors.indigo.shade800,
-      title: 'Withdrawing',
-      subtitleText: 'Withdrawal in progress',
+      // title: 'Withdrawing',
+      // subtitleText: 'Withdrawal in progress',
       content: loader,
     );
   }

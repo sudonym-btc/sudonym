@@ -160,7 +160,7 @@
 				"type": "String"
 			}
 		}
-	},	
+	},
 	"time": "Time",
 	"to": "To",
 	"ok": "OK",

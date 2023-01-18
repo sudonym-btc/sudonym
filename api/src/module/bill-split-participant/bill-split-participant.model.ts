@@ -1,4 +1,3 @@
-import { HttpException } from '@nestjs/common';
 import * as Models from '@sudonym/models';
 import { BillSplit } from 'module/bill-split/bill-split.model';
 import { PotUser } from 'module/pot-user/pot-user.model';
@@ -15,7 +14,6 @@ import {
 	ForeignKey,
 	PrimaryKey,
 	Table,
-	Validate,
 } from 'sequelize-typescript';
 import { BaseModel } from '../base.model';
 
@@ -41,12 +39,6 @@ export class BillSplitParticipant
 	billSplitId: number;
 
 	@AllowNull(false)
-	@Validate({
-		greaterThanZero(val) {
-			if (val <= 0)
-				throw new HttpException('Must be greater than zero', 400);
-		},
-	})
 	@Column(DataType.DOUBLE(21, 11))
 	amount: number;
 
