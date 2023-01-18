@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Action, ActionParseResponse, SATOSHIS } from '@sudonym/models';
+import { Action, ActionRemoteResponse, SATOSHIS } from '@sudonym/models';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { AddressParser, parseQuery } from './address-parser.service';
 
@@ -11,14 +11,23 @@ export class OnchainOperationsService {
 
 	async parse(addr: string) {
 		const fees = await this.lightningNodeService.onChainFees();
-		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
-		return Action.from({
-			originalAddress: trimmedAddress,
-			type: 'pay',
-			fee: fees.opening / SATOSHIS,
-			feeCurrency: 'BTC',
-			isOnChain: true,
-		});
+		try {
+			return Action.from({
+				originalAddress: addr,
+				type: 'pay',
+				fee: fees.opening / SATOSHIS,
+				feeCurrency: 'BTC',
+				remoteResponses: [
+					ActionRemoteResponse.fromJson({
+						success: true,
+						data: {},
+					}),
+				],
+				isOnChain: true,
+			});
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 	async getInfo(action: Action) {
@@ -32,7 +41,7 @@ export class OnchainOperationsService {
 			amount: query.amount ? Number(query.amount) : null,
 			currency: 'BTC',
 			remoteResponses: [
-				ActionParseResponse.from({
+				ActionRemoteResponse.fromJson({
 					success: true,
 					data: {},
 				}),

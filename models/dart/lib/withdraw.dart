@@ -53,12 +53,6 @@ class Withdraw extends ActionTypeWithAmount {
             .map((e) => ActionRemoteResponse.fromJson(e))
             .toList()
         : [];
-    print(a[0].data);
-    print(json["maxAmount"] != null
-        ? json["maxAmount"]
-        : a.length > 0 && a[0].success
-            ? a[0].data["maxWithdrawable"] / MSATOSHIS
-            : null);
     final w = new Withdraw(
         json["potId"],
         json["billSplitParticipantId"],
@@ -67,12 +61,12 @@ class Withdraw extends ActionTypeWithAmount {
         json["amount"],
         json["minAmount"] != null
             ? json["minAmount"]
-            : a.length > 0 && a[0].success
+            : a.length != 0 && a[0].success
                 ? a[0].data["minWithdrawable"] / MSATOSHIS
                 : null,
         json["maxAmount"] != null
             ? json["maxAmount"]
-            : a.length > 0 && a[0].success
+            : a.length != 0 && a[0].success
                 ? a[0].data["maxWithdrawable"] / MSATOSHIS
                 : null,
         a,
@@ -87,7 +81,6 @@ class Withdraw extends ActionTypeWithAmount {
     if (w.amount == null && w.minAmount == w.maxAmount) {
       w.amount = w.minAmount;
     }
-    print(w.maxAmount);
     return w;
   }
 

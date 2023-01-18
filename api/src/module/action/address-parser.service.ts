@@ -25,7 +25,7 @@ export class AddressParser {
 	}
 
 	getAddressType(originalAddress: string): [TAddressType, string] {
-		this.logger.debug('Parsing', originalAddress);
+		this.logger.debug('Getting address type', originalAddress);
 
 		// Trim whitespace and remove protocol and query
 		let address = originalAddress.trim().replace(/(^\w+:|^)\/\//, '');

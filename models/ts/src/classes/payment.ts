@@ -45,7 +45,7 @@ export class Payment extends ActionTypeWithAmount {
 				? json['remoteResponses']
 						.map((e) => ActionRemoteResponse.fromJson(e))
 						.toList()
-				: null;
+				: [];
 
 		const p = new Payment(
 			json['potId'],
@@ -115,7 +115,7 @@ export class Payment extends ActionTypeWithAmount {
 			remoteResponses:
 				this.remoteResponses !== null
 					? this.remoteResponses.map((e) => e.toJson()).toList()
-					: null,
+					: [],
 			comment: this.comment,
 			description: this.description,
 			commentAllowed: this.commentAllowed,
