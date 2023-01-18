@@ -30,14 +30,16 @@ export class LightningListener extends TransactionListener {
 				});
 
 				if (receivers.metadata.count) {
+					console.log(e.data);
+					console.log(receivers.data[0].comment);
 					await this.transactionService.create({
 						type: 'bolt11',
 						originalAddress: receivers.data[0].data,
 						address: receivers.data[0].data,
 						potId: receivers.data[0].potId,
 						receiverId: receivers.data[0].id,
-						description:
-							receivers.data[0].comment || e.data.description,
+						description: e.data.description,
+						comment: receivers.data[0].comment,
 						outgoing: false,
 						amount:
 							(e.data.msatoshi || e.data.msatoshi_received) / //depends if amount in invoice as to which key to access
@@ -61,7 +63,7 @@ export class LightningListener extends TransactionListener {
 			const pay = (
 				await this.lightningNodeService.listPays(payment_hash)
 			)[0];
-			this.logger.debug('Pay', pay, this.lightningNodeService.listPays);
+			this.logger.debug('Pay', pay);
 
 			const waitSendPay = async (partid) => {
 				this.logger.debug('Waiting for sendpay', payment_hash, partid);

@@ -25,8 +25,6 @@ import waitForExpect from 'wait-for-expect';
 import { scaffoldGroup } from '../mock/scaffold-group';
 jest.mock('axios');
 
-const mAxios = axios as jest.MockedFunction<typeof axios>;
-
 scaffoldGroup('LnUrl', (scaffold) => {
 	describe('Incoming Requests', () => {
 		describe('Withdraw', () => {

@@ -19,7 +19,7 @@
 		"watch:wait": "bash -c 'while ksync get | grep watching > /dev/null; do sleep 1 echo \"working...\" done'",
 		"minikube:dashboard": "pkill 'minikube dashboard' || true && minikube dashboard >/dev/null &",
 		"minikube:tunnel": "pkill 'minikube tunnel' || true && minikube tunnel >/dev/null &",
-		"minikube:start": "minikube start --driver=docker",
+		"minikube:start": "minikube start --memory 6500 --driver=docker",
 		"minikube:dns": "sudo echo && npm run minikube:tunnel && npm run minikube:dashboard && parallelshell 'minikube addons enable gcp-auth' 'minikube addons enable ingress' 'minikube addons enable ingress-dns' 'npx ts-node infrastructure/minikube/minikube-dns.ts'",
 		"minikube:deploy": "echo $(kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission) && python3 infrastructure/minikube/minikube.py && minikube kubectl -- apply -f infrastructure/minikube/minikube.yaml --validate=false",
 		"minikube:loadHomepage": "eval $(minikube docker-env) && (docker image inspect gcr.io/$(gcloud config get project)/homepage:latest >/dev/null 2>&1 && echo no || npm run build:homepage)",

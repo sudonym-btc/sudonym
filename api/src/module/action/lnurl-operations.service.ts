@@ -69,6 +69,13 @@ export class LnurlOperationsService {
 						},
 					}
 				);
+			console.log(
+				'getting fees',
+				await this.lightningNodeService.getFeesInvoice(
+					remoteResponse.data.pr,
+					await this.addressParser.getMSatAmount(action)
+				)
+			);
 			return Action.from({
 				...action,
 				remoteResponses: [...action.remoteResponses, remoteResponse],

@@ -10,7 +10,7 @@ class Withdraw extends ActionTypeWithAmount {
   dynamic /* num | null */ amount;
   dynamic /* num | null */ minAmount;
   dynamic /* num | null */ maxAmount;
-  dynamic /* List < ActionRemoteResponse< dynamic > > | null */ remoteResponses;
+  dynamic /* List < ActionRemoteResponse< dynamic > > | dynamic */ remoteResponses;
   dynamic /* bool | null */ isLnUrl;
   dynamic /* bool | null */ isLnAddress;
   dynamic /* bool | null */ isBolt11;
@@ -49,7 +49,9 @@ class Withdraw extends ActionTypeWithAmount {
   }
   static Withdraw fromJson(Map<String, dynamic> json) {
     final a = json["remoteResponses"] != null
-        ? json["remoteResponses"].map((e) => ActionRemoteResponse.fromJson(e))
+        ? json["remoteResponses"]
+            .map((e) => ActionRemoteResponse.fromJson(e))
+            .toList()
         : null;
     final w = new Withdraw(
         json["potId"],
@@ -93,7 +95,7 @@ class Withdraw extends ActionTypeWithAmount {
       "minAmount": this.minAmount,
       "maxAmount": this.maxAmount,
       "remoteResponses": !identical(this.remoteResponses, null)
-          ? this.remoteResponses.map((e) => e.toJson())
+          ? this.remoteResponses.map((e) => e.toJson()).toList()
           : null,
       "comment": this.comment
     };

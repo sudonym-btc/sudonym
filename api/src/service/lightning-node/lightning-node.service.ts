@@ -426,29 +426,27 @@ export class LightningNodeService {
 	}
 
 	async makeRequest(options) {
-		const response = await axios
-			.get({
-				url: this.config.lightningREST + options.path,
-				method: 'GET',
-				httpsAgent: new https.Agent({
-					rejectUnauthorized: false,
-				}),
-				headers: {
-					macaroon: this.macaroon,
-				},
-				...options,
-			})
-			.catch((e) => {
-				this.logger.error('Lightning error', e, e.response?.data);
-				if (e.response?.data?.error)
-					throw new LightningError(
-						e.response.data.error,
-						e.response.data.error.message,
-						500,
-						e.response.data.error.code
-					);
-				throw new LightningError(e, e, e.statusCode, e);
-			});
+		const response = await axios({
+			url: this.config.lightningREST + options.path,
+			method: 'GET',
+			httpsAgent: new https.Agent({
+				rejectUnauthorized: false,
+			}),
+			headers: {
+				macaroon: this.macaroon,
+			},
+			...options,
+		}).catch((e) => {
+			this.logger.error('Lightning error', e, e.response?.data);
+			if (e.response?.data?.error)
+				throw new LightningError(
+					e.response.data.error,
+					e.response.data.error.message,
+					500,
+					e.response.data.error.code
+				);
+			throw new LightningError(e, e, e.statusCode, e);
+		});
 		return response.data;
 	}
 }

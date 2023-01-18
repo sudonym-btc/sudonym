@@ -11,7 +11,7 @@ export class Withdraw extends ActionTypeWithAmount {
 		public amount: number | null,
 		public minAmount: number | null,
 		public maxAmount: number | null,
-		public remoteResponses: ActionRemoteResponse<any>[] | null, // can't add withdrawrequest type here
+		public remoteResponses: ActionRemoteResponse<any>[] | any, // can't add withdrawrequest type here
 		public isLnUrl: boolean | null = false,
 		public isLnAddress: boolean | null = false,
 		public isBolt11: boolean | null = false,
@@ -38,9 +38,9 @@ export class Withdraw extends ActionTypeWithAmount {
 	static fromJson(json: Object): Withdraw {
 		const a =
 			json['remoteResponses'] != null
-				? json['remoteResponses'].map((e) =>
-						ActionRemoteResponse.fromJson(e)
-				  )
+				? json['remoteResponses']
+						.map((e) => ActionRemoteResponse.fromJson(e))
+						.toList()
 				: null;
 
 		const w = new Withdraw(
@@ -88,7 +88,7 @@ export class Withdraw extends ActionTypeWithAmount {
 			maxAmount: this.maxAmount,
 			remoteResponses:
 				this.remoteResponses !== null
-					? this.remoteResponses.map((e) => e.toJson())
+					? this.remoteResponses.map((e) => e.toJson()).toList()
 					: null,
 			comment: this.comment,
 		};

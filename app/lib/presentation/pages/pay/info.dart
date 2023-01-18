@@ -30,7 +30,7 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
   }
 
   Widget donePage(BuildContext context, r) {
-    return _InfoPage(action, pot, onDone);
+    return _InfoPage(r, pot, onDone);
   }
 
   StatusPage errorPage(BuildContext context, Object err) {
@@ -102,7 +102,7 @@ class PaymentInfoPreview extends StatelessWidget {
               ),
             )
           ]),
-          if (entity.description)
+          if (entity.description != null && entity.description != '')
             TableRow(children: [
               TableKey(
                   child: Subtitle(AppLocalizations.of(context)!.description)),
@@ -176,8 +176,6 @@ class _InfoPageState extends State<_InfoPage> {
                         labelText: 'Comment',
                       ),
                       textCapitalization: TextCapitalization.words,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(backgroundColor: Colors.white),
                     ),
                   ]),
                   actions: Column(children: [

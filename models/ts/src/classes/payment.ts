@@ -13,7 +13,7 @@ export class Payment extends ActionTypeWithAmount {
 		public maxAmount: number | null,
 		public fee: number | null,
 		public feeCurrency: string | null = 'BTC',
-		public remoteResponses: ActionRemoteResponse<any>[] | null, // can't add paymentrequest type here
+		public remoteResponses: ActionRemoteResponse<any>[] | any, // can't add paymentrequest type here
 		public isLnUrl: boolean | null = false,
 		public isLnAddress: boolean | null = false,
 		public isBolt11: boolean | null = false,
@@ -42,9 +42,9 @@ export class Payment extends ActionTypeWithAmount {
 	static fromJson(json: Object): Payment {
 		const a =
 			json['remoteResponses'] != null
-				? json['remoteResponses'].map((e) =>
-						ActionRemoteResponse.fromJson(e)
-				  )
+				? json['remoteResponses']
+						.map((e) => ActionRemoteResponse.fromJson(e))
+						.toList()
 				: null;
 
 		const p = new Payment(
@@ -114,7 +114,7 @@ export class Payment extends ActionTypeWithAmount {
 			feeCurrency: this.feeCurrency,
 			remoteResponses:
 				this.remoteResponses !== null
-					? this.remoteResponses.map((e) => e.toJson())
+					? this.remoteResponses.map((e) => e.toJson()).toList()
 					: null,
 			comment: this.comment,
 			description: this.description,

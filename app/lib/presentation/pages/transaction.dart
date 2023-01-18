@@ -4,7 +4,6 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym/presentation/widgets/bill_split/edit_bill_split.dart';
 import 'package:sudonym.models/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timeago_flutter/timeago_flutter.dart';
@@ -161,33 +160,32 @@ class _OutgoingComplete extends _TransactionStatusPage {
                     date: transaction.createdAt,
                   )
                 ]),
-                ...((transaction.originalAddress != '' &&
-                        transaction.originalAddress != null)
-                    ? [
-                        TableRow(children: [
-                          TableKey(
-                              child: Subtitle(
-                                  AppLocalizations.of(context)!.address)),
-                          Text(
-                            transaction.originalAddress,
-                            style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
-                        ])
-                      ]
-                    : []),
-                ...((transaction.description != null &&
-                        transaction.description != '')
-                    ? [
-                        TableRow(children: [
-                          TableKey(
-                              child: Subtitle(
-                                  AppLocalizations.of(context)!.description)),
-                          Text(transaction.description ?? '')
-                        ])
-                      ]
-                    : []),
+                if (transaction.originalAddress != '' &&
+                    transaction.originalAddress != null)
+                  TableRow(children: [
+                    TableKey(
+                        child: Subtitle(AppLocalizations.of(context)!.address)),
+                    Text(
+                      transaction.originalAddress,
+                      style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  ]),
+                if (transaction.description != null &&
+                    transaction.description != '')
+                  TableRow(children: [
+                    TableKey(
+                        child: Subtitle(
+                            AppLocalizations.of(context)!.description)),
+                    Text(transaction.description ?? '')
+                  ]),
+                if (transaction.comment != null && transaction.comment != '')
+                  TableRow(children: [
+                    TableKey(
+                        child: Subtitle(AppLocalizations.of(context)!.comment)),
+                    Text(transaction.comment!)
+                  ]),
                 TableRow(children: [
                   TableKey(child: Subtitle(AppLocalizations.of(context)!.time)),
                   Timeago(
@@ -288,33 +286,31 @@ class _IncomingComplete extends _TransactionStatusPage {
                 date: transaction.createdAt,
               )
             ]),
-            ...((transaction.originalAddress != '' &&
-                    transaction.originalAddress != null)
-                ? [
-                    TableRow(children: [
-                      TableKey(
-                          child:
-                              Subtitle(AppLocalizations.of(context)!.address)),
-                      Text(
-                        transaction.originalAddress ?? '',
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )
-                    ])
-                  ]
-                : []),
-            ...((transaction.description != null &&
-                    transaction.description != '')
-                ? [
-                    TableRow(children: [
-                      TableKey(
-                          child: Subtitle(
-                              AppLocalizations.of(context)!.description)),
-                      Text(transaction.description ?? '')
-                    ])
-                  ]
-                : []),
+            if (transaction.originalAddress != '' &&
+                transaction.originalAddress != null)
+              TableRow(children: [
+                TableKey(
+                    child: Subtitle(AppLocalizations.of(context)!.address)),
+                Text(
+                  transaction.originalAddress!,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ]),
+            if (transaction.description != null &&
+                transaction.description != '')
+              TableRow(children: [
+                TableKey(
+                    child: Subtitle(AppLocalizations.of(context)!.description)),
+                Text(transaction.description!)
+              ]),
+            if (transaction.comment != null && transaction.comment != '')
+              TableRow(children: [
+                TableKey(
+                    child: Subtitle(AppLocalizations.of(context)!.comment)),
+                Text(transaction.comment!)
+              ]),
             TableRow(children: [
               TableKey(child: Subtitle(AppLocalizations.of(context)!.time)),
               Timeago(

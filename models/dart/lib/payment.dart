@@ -12,7 +12,7 @@ class Payment extends ActionTypeWithAmount {
   dynamic /* num | null */ maxAmount;
   dynamic /* num | null */ fee;
   dynamic /* String | null */ feeCurrency;
-  dynamic /* List < ActionRemoteResponse< dynamic > > | null */ remoteResponses;
+  dynamic /* List < ActionRemoteResponse< dynamic > > | dynamic */ remoteResponses;
   dynamic /* bool | null */ isLnUrl;
   dynamic /* bool | null */ isLnAddress;
   dynamic /* bool | null */ isBolt11;
@@ -38,8 +38,11 @@ class Payment extends ActionTypeWithAmount {
     /* super call moved to initializer */;
   }
   static Payment fromJson(Map<String, dynamic> json) {
+    print(json);
     final a = json["remoteResponses"] != null
-        ? json["remoteResponses"].map((e) => ActionRemoteResponse.fromJson(e))
+        ? json["remoteResponses"]
+            .map((e) => ActionRemoteResponse.fromJson(e))
+            .toList()
         : null;
     final p = new Payment(
         json["potId"],
@@ -84,6 +87,8 @@ class Payment extends ActionTypeWithAmount {
         p.amount = p.minAmount;
       }
     }
+    print('AFTRER');
+    print(p.fee);
     return p;
   }
 
@@ -100,7 +105,7 @@ class Payment extends ActionTypeWithAmount {
       "fee": this.fee,
       "feeCurrency": this.feeCurrency,
       "remoteResponses": !identical(this.remoteResponses, null)
-          ? this.remoteResponses.map((e) => e.toJson())
+          ? this.remoteResponses.map((e) => e.toJson()).toList()
           : null,
       "comment": this.comment,
       "description": this.description,
