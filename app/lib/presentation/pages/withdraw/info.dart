@@ -30,30 +30,26 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
 
   StatusPage donePage(BuildContext context, action) {
     return StatusPage(
-      color: loadingColor,
-      title: 'Withdrawing',
-      subtitleText: AppLocalizations.of(context)!.gatheredWithdrawalInformation,
-      content: Column(children: [
-        Table(
-          children: [
-            TableRow(children: [
-              TableKey(child: Subtitle(AppLocalizations.of(context)!.amount)),
-              Text(FormatCurrency()
-                  .format(action.currency ?? 'BTC', action.amount ?? 0))
-            ]),
-            TableRow(children: [
-              TableKey(child: Subtitle(AppLocalizations.of(context)!.address)),
-              Text(
-                action.originalAddress,
-                style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                ),
-              )
-            ]),
-          ],
-        )
-      ]),
-    );
+        color: loadingColor,
+        title: 'Withdrawing',
+        subtitleText:
+            AppLocalizations.of(context)!.gatheredWithdrawalInformation,
+        content: Column(children: [
+          Table(children: [
+            getRow(
+                Subtitle(AppLocalizations.of(context)!.amount),
+                Text(FormatCurrency()
+                    .format(action.currency ?? 'BTC', action.amount ?? 0))),
+            getRow(
+                Subtitle(AppLocalizations.of(context)!.address),
+                Text(
+                  action.originalAddress,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ))
+          ]),
+        ]));
   }
 
   StatusPage loadingPage(BuildContext context) {

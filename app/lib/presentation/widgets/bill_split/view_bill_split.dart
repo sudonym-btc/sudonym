@@ -60,7 +60,11 @@ class BillSplitParticipantListItem extends StatelessWidget {
           if (state.loading) return Container();
           return ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(child: Text(index.toString())),
+              leading: index > -1
+                  ? CircleAvatar(
+                      backgroundColor: Colors.indigo.shade100,
+                      child: Text(index.toString()))
+                  : null,
               title: Text(getParticipantName(index, context)),
               subtitle: AmountText(
                 amount: state.entity!.amount,
@@ -86,6 +90,7 @@ class BillSplitParticipantListItem extends StatelessWidget {
                                       Navigator.of(context).pop();
                                     },
                                     billSplit: billSplit,
+                                    amountEnabled: false,
                                     participant: state.entity)),
                             fullscreenDialog: true));
                       },

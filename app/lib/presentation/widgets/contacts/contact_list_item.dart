@@ -74,7 +74,10 @@ class ContactListItem extends StatelessWidget {
                   onTap: onPressed,
                   leading: CircleAvatar(
                     backgroundColor: Colors.blue.shade100,
-                    child: Text(state.entity!.name.substring(0, 1).toString()),
+                    child: Text(state.entity!.name
+                        .substring(0, 1)
+                        .toString()
+                        .toUpperCase()),
                   ),
                   title: Text(state.entity!.name.toString()),
                   subtitle: Text(state.entity?.ContactAddresses[0].address),

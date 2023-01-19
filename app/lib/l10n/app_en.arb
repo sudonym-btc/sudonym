@@ -168,5 +168,8 @@
 	"potCurrencyDescription": "Anything sent to this pot will immediately be converted and held in the specified currency.",
 	"noQRFound": "No QR code found.",
 	"description": "Description",
-	"trackInMempool": "Track in mempool"
+	"trackInMempool": "Track in mempool",
+	"anyAmountError": "Not possible to select any amount",
+	"moveLeft": "Move left",
+	"moveRight": "Move right"
 }

@@ -8,11 +8,11 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 
-class CurrencyInput extends FormField<CurrencyInputOutput> {
+class CurrencyInput extends FormField<CurrencyValue> {
   final CurrencyInputOptions? options;
   final CurrencyInputCubit? cubit;
   final FormGroup? form;
-  final void Function(CurrencyInputOutput)? onChanged;
+  final void Function(CurrencyValue)? onChanged;
   final bool large;
 
   CurrencyInput({
@@ -23,34 +23,31 @@ class CurrencyInput extends FormField<CurrencyInputOutput> {
     this.onChanged,
     super.key,
   }) : super(
-            builder: (FormFieldState<CurrencyInputOutput> state) =>
-                BlocProvider(
-                    // dispose: false,
-                    create: (_) {
-                      CurrencyInputCubit c =
-                          cubit ?? CurrencyInputCubit(options!);
-                      if (form != null) {
-                        c.options.controller!.outputStream.stream
-                            .listen((event) {
-                          form.control('amount').updateValue(event);
-                          form.control('amount').markAsDirty();
-                        });
-                      }
+            builder: (FormFieldState<CurrencyValue> state) => BlocProvider(
+                // dispose: false,
+                create: (_) {
+                  CurrencyInputCubit c = cubit ?? CurrencyInputCubit(options!);
+                  if (form != null) {
+                    c.options.controller!.outputStream.stream.listen((event) {
+                      form.control('amount').updateValue(event);
+                      form.control('amount').markAsDirty();
+                    });
+                  }
 
-                      return c;
-                    },
-                    child: (state as _CurrencyInputState).constructWidget(
-                        state.context, form, cubit, options, large)));
+                  return c;
+                },
+                child: (state as _CurrencyInputState).constructWidget(
+                    state.context, form, cubit, options, large)));
 
   @override
-  FormFieldState<CurrencyInputOutput> createState() => _CurrencyInputState();
+  FormFieldState<CurrencyValue> createState() => _CurrencyInputState();
 }
 
-class CurrencyInputOutput extends Equatable {
+class CurrencyValue extends Equatable {
   String? id;
   num amount;
   String currency;
-  CurrencyInputOutput(this.amount, this.currency) {
+  CurrencyValue(this.amount, this.currency) {
     amount = num.parse(amount.toStringAsFixed(8));
   }
 
@@ -58,7 +55,7 @@ class CurrencyInputOutput extends Equatable {
   List<Object?> get props => [amount, currency];
 }
 
-class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
+class _CurrencyInputState extends FormFieldState<CurrencyValue> {
   Widget constructWidget(BuildContext context, FormGroup? form,
       CurrencyInputCubit? cubit, CurrencyInputOptions? options, bool large) {
     return BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
@@ -70,40 +67,45 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
             form.control('amount').removeError('amount');
           }
         }
-        Material negativeButton = Material(
-            type: MaterialType.circle,
-            color: Colors.transparent,
-            child: Ink(
-                decoration: buttonDecoration(context, state.negativeEnabled),
-                child: IconButton(
-                  onPressed: state.negativeEnabled
-                      ? () => BlocProvider.of<CurrencyInputCubit>(context)
-                          .decrementValue()
-                      : null,
-                  color: Theme.of(context)
-                      .elevatedButtonTheme
-                      .style!
-                      .foregroundColor!
-                      .resolve({}),
-                  icon: const Icon(Icons.remove, size: iconSize * 1.5),
-                )));
-        Material positiveButton = Material(
-            type: MaterialType.circle,
-            color: Colors.transparent,
-            child: Ink(
-                decoration: buttonDecoration(context, state.positiveEnabled),
-                child: IconButton(
-                  onPressed: state.positiveEnabled
-                      ? () => BlocProvider.of<CurrencyInputCubit>(context)
-                          .incrementValue()
-                      : null,
-                  color: Theme.of(context)
-                      .elevatedButtonTheme
-                      .style!
-                      .foregroundColor!
-                      .resolve({}),
-                  icon: const Icon(Icons.add, size: iconSize * 1.5),
-                )));
+        Widget negativeButton = ClipOval(
+            child: Material(
+                child: InkWell(
+                    child: Ink(
+                        decoration:
+                            buttonDecoration(context, state.negativeEnabled),
+                        child: IconButton(
+                          onPressed: state.negativeEnabled
+                              ? () =>
+                                  BlocProvider.of<CurrencyInputCubit>(context)
+                                      .decrementValue()
+                              : null,
+                          color: Theme.of(context)
+                              .elevatedButtonTheme
+                              .style!
+                              .foregroundColor!
+                              .resolve({}),
+                          icon: const Icon(Icons.remove, size: iconSize * 1.5),
+                        )))));
+        Widget positiveButton = ClipOval(
+            child: Material(
+                shape: const CircleBorder(),
+                child: InkWell(
+                    child: Ink(
+                        decoration:
+                            buttonDecoration(context, state.positiveEnabled),
+                        child: IconButton(
+                          onPressed: state.positiveEnabled
+                              ? () =>
+                                  BlocProvider.of<CurrencyInputCubit>(context)
+                                      .incrementValue()
+                              : null,
+                          color: Theme.of(context)
+                              .elevatedButtonTheme
+                              .style!
+                              .foregroundColor!
+                              .resolve({}),
+                          icon: const Icon(Icons.add, size: iconSize * 1.5),
+                        )))));
 
         Widget input = Column(
             crossAxisAlignment:
@@ -208,5 +210,8 @@ formatError(BuildContext context, Map<String, dynamic>? error) {
   }
   if (error['max'] != null) {
     return AppLocalizations.of(context)!.maxAmount(error['max']);
+  }
+  if (error['constraints'] != null) {
+    return AppLocalizations.of(context)!.anyAmountError;
   }
 }

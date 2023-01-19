@@ -109,6 +109,5 @@ BoxDecoration buttonDecoration(BuildContext context, bool enabled) {
           .style!
           .backgroundColor!
           .resolve(Set.of(states)),
-      shape: BoxShape.rectangle,
-      borderRadius: const BorderRadius.all(Radius.elliptical(100, 100)));
+      shape: BoxShape.circle);
 }

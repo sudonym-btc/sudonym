@@ -55,10 +55,8 @@ class BillSplitParticipantController {
   bool listening = true;
   BillSplitParticipantController(
       this.control, this.cubit, this.key, this.changed) {
-    (control.findControl('amount')!.valueChanges
-            as Stream<CurrencyInputOutput?>)
-        .listen((CurrencyInputOutput? event) {
-      print(event);
+    (control.findControl('amount')!.valueChanges as Stream<CurrencyValue?>)
+        .listen((CurrencyValue? event) {
       if (listening) {
         onInput.add(this);
       }
@@ -132,7 +130,7 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     List<Future> updates = [];
     controllers.asMap().forEach((key, value) {
       if (key == ignore) return;
-      updates.add(value.cubit.setValue(CurrencyInputOutput(
+      updates.add(value.cubit.setValue(CurrencyValue(
           widget.entity!.BillSplitParticipants[key].amount,
           widget.entity!.currency)));
     });
@@ -211,15 +209,8 @@ class _EditBillSplitState extends State<_EditBillSplit> {
             startActionPane: controllers.indexOf(controller) > 0 &&
                     widget.entity!.BillSplitParticipants.length > 2
                 ? ActionPane(
-                    // A motion is a widget used to control how the pane animates.
                     motion: const ScrollMotion(),
-
-                    // A pane can dismiss the Slidable.
-                    // dismissible: DismissiblePane(onDismissed: () {}),
-
-                    // All actions are defined in the children parameter.
                     children: [
-                      // A SlidableAction can have an icon and/or a label.
                       SlidableAction(
                         onPressed: (BuildContext context) async {
                           removeParticipant(controllers.indexOf(controller));
@@ -268,8 +259,8 @@ class _EditBillSplitState extends State<_EditBillSplit> {
     calcBillSplit(widget.entity!, null, null, changed);
 
     FormGroup billSplitFormGroup = FormGroup({
-      'amount': FormControl<CurrencyInputOutput>(
-          value: CurrencyInputOutput(
+      'amount': FormControl<CurrencyValue>(
+          value: CurrencyValue(
               recalculatedPart.amount ?? 0, widget.entity!.currency),
           validators: [Validators.required]),
     });
@@ -278,10 +269,8 @@ class _EditBillSplitState extends State<_EditBillSplit> {
         enabled: controllers.isNotEmpty,
         showAltCurrency: widget.entity!.currency == 'BTC',
         canSwitchCurrency: false,
-        max: [
-          CurrencyInputOutput(widget.entity!.amount, widget.entity!.currency)
-        ],
-        initialValue: CurrencyInputOutput(
+        max: [CurrencyValue(widget.entity!.amount, widget.entity!.currency)],
+        initialValue: CurrencyValue(
             recalculatedPart.amount ?? 0, widget.entity!.currency)));
     BillSplitParticipantController controller = BillSplitParticipantController(
         billSplitFormGroup, c, UniqueKey(), false);
@@ -299,10 +288,10 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   setMax() async {
     controllers.asMap().forEach((key, value) async {
       if (key > 0) {
-        value.cubit.options.min = [CurrencyInputOutput(0.00000001, 'BTC')];
+        value.cubit.options.min = [CurrencyValue(0.00000001, 'BTC')];
       }
       value.cubit.options.max = [
-        CurrencyInputOutput(
+        CurrencyValue(
             max(
                 (value.changed
                         ? widget.entity!.BillSplitParticipants[key].amount

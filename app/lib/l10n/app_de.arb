@@ -104,5 +104,8 @@
 	"person": "Person",
 	"remove": "Löschen",
 	"viewBillSplit": "Bill-Split ansehen",
-	"you": "Sie"
+	"you": "Sie",
+	"anyAmountError": "Kein Betrag auswählbar",
+	"moveLeft": "Nach links schieben",
+	"moveRight": "Nach rechts schieben"
 }

@@ -265,15 +265,15 @@ getCurrencyInputOptions(Pot pot, dynamic a) {
         'BTC'
       ],
       max: [
-        if (a.maxAmount != null) CurrencyInputOutput(a.maxAmount, a.currency),
+        if (a.maxAmount != null) CurrencyValue(a.maxAmount, a.currency),
         if (pot != null && a is Payment)
-          CurrencyInputOutput(pot.spendableBalance, pot.currency)
+          CurrencyValue(pot.spendableBalance, pot.currency)
       ],
       min: [
-        if (a.minAmount != null) CurrencyInputOutput(a.minAmount, a.currency)
+        if (a.minAmount != null) CurrencyValue(a.minAmount, a.currency)
       ],
       initialCurrency: pot.currency,
-      initialValue: CurrencyInputOutput(
+      initialValue: CurrencyValue(
           a is Withdraw ? a.maxAmount : a.minAmount ?? 0, a.currency));
 }
 

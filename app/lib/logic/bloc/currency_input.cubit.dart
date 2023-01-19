@@ -16,12 +16,11 @@ import 'package:sudonym.models/index.dart';
 const List<String> defaultCurrencies = ['USD', 'BTC'];
 
 class CurrencyInputController {
-  CurrencyInputOutput value;
-  StreamController<CurrencyInputOutput> outputStream =
-      StreamController.broadcast();
-  StreamController<CurrencyInputOutput> maskedInputStream = StreamController();
-  BehaviorSubject<CurrencyInputOutput> inputStream = BehaviorSubject();
-  StreamController<CurrencyInputOutput> processingStream =
+  CurrencyValue value;
+  StreamController<CurrencyValue> outputStream = StreamController.broadcast();
+  StreamController<CurrencyValue> maskedInputStream = StreamController();
+  BehaviorSubject<CurrencyValue> inputStream = BehaviorSubject();
+  StreamController<CurrencyValue> processingStream =
       StreamController.broadcast();
 
   CurrencyInputController(this.value) {
@@ -40,9 +39,9 @@ class CurrencyInputOptions {
   String? initialCurrency;
   String? outputCurrency;
   Duration? debounceOutput;
-  CurrencyInputOutput initialValue;
-  List<CurrencyInputOutput>? min;
-  List<CurrencyInputOutput>? max;
+  CurrencyValue initialValue;
+  List<CurrencyValue>? min;
+  List<CurrencyValue>? max;
 
   CurrencyInputOptions(
       {this.controller,
@@ -59,8 +58,13 @@ class CurrencyInputOptions {
     max ??= List.empty();
     initialCurrency ??= initialValue.currency;
     controller ??= CurrencyInputController(initialValue);
-    currencies = {...currencies, ...defaultCurrencies, initialValue.currency}
-        .toList(); // Deduplicate
+    currencies = {
+      ...currencies,
+      ...defaultCurrencies,
+      initialValue.currency,
+      if (initialCurrency != null) initialCurrency!
+    }.toList(); // Deduplicate
+    print(currencies);
     debounceOutput ??= const Duration(milliseconds: 0);
   }
 }
@@ -80,7 +84,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     id = new DateTime.now().millisecondsSinceEpoch;
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
 
-    CurrencyInputOutput? previousInput;
+    CurrencyValue? previousInput;
 
     options.controller!.maskedInputStream.stream.listen((event) {
       options.controller!.inputStream.add(event);
@@ -118,10 +122,9 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
             toCurrency: options.initialCurrency!,
             amount: options.initialValue.amount)
         .then((value) {
-      print('Setting initial value as ' + value.amount.toString());
       safeEmit(state.copyWith(maxLoading: false, minLoading: false));
 
-      setValue(CurrencyInputOutput(value.amount, options.initialCurrency!));
+      setValue(CurrencyValue(value.amount, options.initialCurrency!));
     });
   }
 
@@ -140,12 +143,12 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   }
 
   inputChangeHandler() {
-    options.controller!.maskedInputStream.add(CurrencyInputOutput(
+    options.controller!.maskedInputStream.add(CurrencyValue(
         getRealValue(getCurrentCurrency(), controller!.numberValue),
         getCurrentCurrency()));
   }
 
-  quietInputUpdate(CurrencyInputOutput val) {
+  quietInputUpdate(CurrencyValue val) {
     // print('Quietly updating text' + val.amount.toString());
     controller!.removeListener(inputChangeHandler);
     controller!
@@ -162,7 +165,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
         altCurrency:
             newCurr + 1 >= options.currencies.length ? 0 : newCurr + 1));
     createController();
-    setValue(CurrencyInputOutput(newCurrVal, getCurrentCurrency()));
+    setValue(CurrencyValue(newCurrVal, getCurrentCurrency()));
     clickValueBase = getCurrentCurrency() == 'BTC' ? 1000 : 1;
   }
 
@@ -170,13 +173,12 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     setCurrentCurrency(state.currCurrency + 1);
   }
 
-  Stream<CurrencyInputOutput> enforceConstraints(
-      CurrencyInputOutput val) async* {
+  Stream<CurrencyValue> enforceConstraints(CurrencyValue val) async* {
     safeEmit(
         state.copyWith(hasError: false, minLoading: true, maxLoading: true));
     Map<String, dynamic>? error;
     double min = await getMinInCurrentCurrency();
-    CurrencyInputOutput response = val;
+    CurrencyValue response = val;
 
     bool positiveEnabled = true;
     bool negativeEnabled = true;
@@ -192,7 +194,9 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     double max = await getMaxInCurrentCurrency();
 
     if (min > max) {
-      error = {'max': FormatCurrency().format(getCurrentCurrency(), max)};
+      error = {
+        'constraints': FormatCurrency().format(getCurrentCurrency(), max)
+      };
     }
 
     positiveEnabled =
@@ -201,9 +205,12 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     // print(numToCurrentPrecision(max));
     if (!positiveEnabled) {
       // print('Quietly updating right here to ' + max.toString());
-      quietInputUpdate(CurrencyInputOutput(max,
+      quietInputUpdate(CurrencyValue(max,
           getCurrentCurrency())); // Must set true value as dislay value is vague
-      response = CurrencyInputOutput(max, getCurrentCurrency());
+      response = CurrencyValue(max, getCurrentCurrency());
+    } else if (!negativeEnabled) {
+      // Dont update the input here though, because 0 must be available to start typing new number
+      response = CurrencyValue(min, getCurrentCurrency());
     }
 
     safeEmit(state.copyWith(
@@ -217,7 +224,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     yield response;
   }
 
-  Stream<CurrencyResponse> resolveAlt(CurrencyInputOutput val) async* {
+  Stream<CurrencyResponse> resolveAlt(CurrencyValue val) async* {
     CurrencyResponse value = await _currencyRespository.getRate(
         fromCurrency: getCurrentCurrency(),
         toCurrency: getAltCurrency(),
@@ -225,7 +232,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     yield value;
   }
 
-  setValue(CurrencyInputOutput val) async {
+  setValue(CurrencyValue val) async {
     val.id = new DateTime.now().millisecondsSinceEpoch.toString();
     options.controller!.inputStream.add(val);
     await options.controller!.processingStream.stream
@@ -282,7 +289,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     num clickVal = (clickValueBase * pow(10, getMultiplier()));
     num newVal = getCurrentDisplayValue() + clickVal;
     newVal = (newVal / clickVal).round() * clickVal;
-    setValue(CurrencyInputOutput(
+    setValue(CurrencyValue(
       min(await getMaxInCurrentCurrency(),
           getRealValue(getCurrentCurrency(), newVal).toDouble()),
       getCurrentCurrency(),
@@ -296,7 +303,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     newVal = (numToCurrentPrecision(newVal / clickVal)).ceil() *
         clickVal; // should be display precision
 
-    setValue(CurrencyInputOutput(
+    setValue(CurrencyValue(
         max(await getMinInCurrentCurrency(),
             getRealValue(getCurrentCurrency(), newVal.toDouble())),
         getCurrentCurrency())); // Must set exact value too due to precision

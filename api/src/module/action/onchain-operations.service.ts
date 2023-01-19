@@ -22,6 +22,7 @@ export class OnchainOperationsService {
 		try {
 			return Action.from({
 				originalAddress: addr,
+				address: addr,
 				type: 'pay',
 				fee: fees.opening / SATOSHIS,
 				feeCurrency: 'BTC',

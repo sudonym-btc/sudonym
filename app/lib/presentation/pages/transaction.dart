@@ -142,60 +142,7 @@ class _OutgoingComplete extends _TransactionStatusPage {
             if (shouldDisplaySplitBill) _SplitBillSection(transaction)
           ]),
           VertDivider(2),
-          Table(
-              columnWidths: const {
-                0: IntrinsicColumnWidth(),
-                1: FlexColumnWidth(),
-              },
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                TableRow(children: [
-                  TableKey(
-                      child: Subtitle(AppLocalizations.of(context)!.amount)),
-                  AmountText(
-                    showLoader: false,
-                    amount: transaction.amount,
-                    fromCurrency: transaction.currencyCode,
-                    toCurrency: transaction.Pot.currency,
-                    date: transaction.createdAt,
-                  )
-                ]),
-                if (transaction.originalAddress != '' &&
-                    transaction.originalAddress != null)
-                  TableRow(children: [
-                    TableKey(
-                        child: Subtitle(AppLocalizations.of(context)!.address)),
-                    Text(
-                      transaction.originalAddress,
-                      style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    )
-                  ]),
-                if (transaction.description != null &&
-                    transaction.description != '')
-                  TableRow(children: [
-                    TableKey(
-                        child: Subtitle(
-                            AppLocalizations.of(context)!.description)),
-                    Text(transaction.description ?? '')
-                  ]),
-                if (transaction.comment != null && transaction.comment != '')
-                  TableRow(children: [
-                    TableKey(
-                        child: Subtitle(AppLocalizations.of(context)!.comment)),
-                    Text(transaction.comment!)
-                  ]),
-                TableRow(children: [
-                  TableKey(child: Subtitle(AppLocalizations.of(context)!.time)),
-                  Timeago(
-                    builder: ((context, value) => Text(timeago.format(
-                        transaction.createdAt,
-                        locale: Localizations.localeOf(context).toString()))),
-                    date: transaction.createdAt,
-                  )
-                ]),
-              ]),
+          _TransactionInfo(transaction)
         ]),
         actions: ButtonBar(children: [
           Button(
@@ -269,59 +216,7 @@ class _IncomingComplete extends _TransactionStatusPage {
             date: transaction.createdAt,
             builder: (val) => Subtitle(
                 AppLocalizations.of(context)!.incomingPaymentSuccess(val))),
-        content: Table(
-          columnWidths: const {
-            0: IntrinsicColumnWidth(),
-            1: FlexColumnWidth(),
-          },
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: [
-            TableRow(children: [
-              TableKey(child: Subtitle(AppLocalizations.of(context)!.amount)),
-              AmountText(
-                showLoader: false,
-                amount: transaction.amount,
-                fromCurrency: transaction.currencyCode,
-                toCurrency: transaction.Pot.currency,
-                date: transaction.createdAt,
-              )
-            ]),
-            if (transaction.originalAddress != '' &&
-                transaction.originalAddress != null)
-              TableRow(children: [
-                TableKey(
-                    child: Subtitle(AppLocalizations.of(context)!.address)),
-                Text(
-                  transaction.originalAddress!,
-                  style: const TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                )
-              ]),
-            if (transaction.description != null &&
-                transaction.description != '')
-              TableRow(children: [
-                TableKey(
-                    child: Subtitle(AppLocalizations.of(context)!.description)),
-                Text(transaction.description!)
-              ]),
-            if (transaction.comment != null && transaction.comment != '')
-              TableRow(children: [
-                TableKey(
-                    child: Subtitle(AppLocalizations.of(context)!.comment)),
-                Text(transaction.comment!)
-              ]),
-            TableRow(children: [
-              TableKey(child: Subtitle(AppLocalizations.of(context)!.time)),
-              Timeago(
-                builder: ((context, value) => Text(timeago.format(
-                    transaction.createdAt,
-                    locale: Localizations.localeOf(context).toString()))),
-                date: transaction.createdAt,
-              )
-            ]),
-          ],
-        ),
+        content: _TransactionInfo(transaction),
         actions: ButtonBar(children: [
           Button(
               onPressed: () => Navigator.of(context).pop(),
@@ -331,18 +226,16 @@ class _IncomingComplete extends _TransactionStatusPage {
   }
 }
 
-class TableKey extends StatelessWidget {
-  final Widget child;
-  const TableKey({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-          right: padding * 2, bottom: padding / 4, top: padding / 4),
-      child: child,
-    );
-  }
+TableRow getRow(Widget left, Widget right) {
+  return TableRow(children: [
+    Padding(
+        padding: EdgeInsets.only(
+            right: padding * 2, bottom: padding / 4, top: padding / 4),
+        child: left),
+    Padding(
+        padding: EdgeInsets.only(bottom: padding / 4, top: padding / 4),
+        child: right)
+  ]);
 }
 
 class _IncomingFailed extends _TransactionStatusPage {
@@ -442,5 +335,54 @@ class _SplitBillSection extends StatelessWidget {
                               'currency': entity.Pot.currency
                             }))));
         });
+  }
+}
+
+class _TransactionInfo extends StatelessWidget {
+  final Transaction transaction;
+  const _TransactionInfo(this.transaction);
+  @override
+  Widget build(BuildContext context) {
+    return Table(
+        columnWidths: const {
+          0: IntrinsicColumnWidth(),
+          1: FlexColumnWidth(),
+        },
+        defaultVerticalAlignment: TableCellVerticalAlignment.top,
+        children: [
+          getRow(
+              Subtitle(AppLocalizations.of(context)!.amount),
+              AmountText(
+                showLoader: false,
+                amount: transaction.amount,
+                fromCurrency: transaction.currencyCode,
+                toCurrency: transaction.Pot.currency,
+                date: transaction.createdAt,
+              )),
+          if (transaction.originalAddress != '' &&
+              transaction.originalAddress != null)
+            getRow(
+                Subtitle(AppLocalizations.of(context)!.address),
+                Text(
+                  transaction.originalAddress,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )),
+          if (transaction.description != null && transaction.description != '')
+            getRow(Subtitle(AppLocalizations.of(context)!.description),
+                Text(transaction.description)),
+          if (transaction.comment != null && transaction.comment != '')
+            getRow(Subtitle(AppLocalizations.of(context)!.comment),
+                Text(transaction.comment!)),
+          getRow(
+              Subtitle(AppLocalizations.of(context)!.time),
+              Timeago(
+                builder: ((context, value) => Text(timeago.format(
+                    transaction.createdAt,
+                    locale: Localizations.localeOf(context).toString()))),
+                date: transaction.createdAt,
+              )),
+        ]);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rxdart/rxdart.dart';
@@ -11,12 +10,17 @@ import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
-const defaultPaymentTypes = ['lnurl', 'onchain', 'bolt11'];
+const defaultPaymentTypes = [
+  'lnurl',
+  'bolt11',
+  'onchain',
+];
 
 class ReceiveOptions {
   List<String> types;
   Pot? pot;
   BillSplit? billSplit;
+  bool amountEnabled;
   BillSplitParticipant? participant;
 
   Function(Receiver t, BuildContext context)? onReceive;
@@ -25,6 +29,7 @@ class ReceiveOptions {
       {this.types = defaultPaymentTypes,
       this.pot,
       this.billSplit,
+      this.amountEnabled = true,
       this.participant,
       this.onReceive});
 }
@@ -45,8 +50,8 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
   // Add the amount of the current widget to the withdraw actions triggered while on this page
   ActionParseResponse cb(ActionParseResponse a) {
     if (a.withdraw != null) {
-      CurrencyInputOutput lastEvent = widget.opts.billSplit != null
-          ? CurrencyInputOutput(
+      CurrencyValue lastEvent = widget.opts.billSplit != null
+          ? CurrencyValue(
               widget.opts.participant!.amount, widget.opts.billSplit!.currency)
           : inputOptions.controller!.value;
       a.withdraw.currency = lastEvent.currency;
@@ -65,11 +70,14 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
 
     if (widget.opts.billSplit != null) {
       inputOptions = CurrencyInputOptions(
-          initialValue: CurrencyInputOutput(0, widget.opts.billSplit!.currency),
+          enabled: widget.opts.amountEnabled,
+          initialValue: CurrencyValue(
+              widget.opts.participant!.amount, widget.opts.billSplit!.currency),
           currencies: [widget.opts.billSplit!.currency, 'USD', 'BTC']);
     } else if (widget.opts.pot != null) {
       inputOptions = CurrencyInputOptions(
-          initialValue: CurrencyInputOutput(0, widget.opts.pot!.currency),
+          enabled: widget.opts.amountEnabled,
+          initialValue: CurrencyValue(0, widget.opts.pot!.currency),
           currencies: [widget.opts.pot!.currency, 'USD', 'BTC']);
     }
     inputOptions.showAltCurrency = false;
@@ -164,7 +172,9 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
               onPressed: loading
                   ? null
                   : () {
-                      Share.share(state.entity!.data);
+                      Share.share(state.entity!.data,
+                          subject:
+                              'Payment request${state.entity!.amount > 0 ? ': ${FormatCurrency().format(state.entity!.amountCurrency, state.entity!.amount)}' : ''}');
                     },
               text: (AppLocalizations.of(context)!.share),
             ),
@@ -210,9 +220,8 @@ class ReceiveWidgetState extends State<ReceiveWidget> {
                 ],
               )),
               const VertDivider(),
-              if (widget.opts.billSplit == null)
-                CustomPadding(
-                    child: CurrencyInput(options: inputOptions, large: false)),
+              CustomPadding(
+                  child: CurrencyInput(options: inputOptions, large: false)),
               CustomPadding(child: ButtonBar(children: buttons))
             ],
           ));

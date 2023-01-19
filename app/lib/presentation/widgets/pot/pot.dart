@@ -70,6 +70,7 @@ class NarrowLayout extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PotHeader(entity: BlocProvider.of<PotCubit>(context).state.entity!),
+          const VertDivider(1),
           SendReceive(entity: BlocProvider.of<PotCubit>(context).state.entity!)
         ],
       ),

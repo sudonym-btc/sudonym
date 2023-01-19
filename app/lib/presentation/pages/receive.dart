@@ -13,8 +13,8 @@ class ReceivePage extends StatelessWidget {
 
     List<Widget> children = [
       if (data.types.contains('lnurl')) ReceiveLnUrl(opts: data),
-      if (data.types.contains('onchain')) ReceiveOnchain(opts: data),
       if (data.types.contains('bolt11')) ReceiveBolt11(opts: data),
+      if (data.types.contains('onchain')) ReceiveOnchain(opts: data),
       // ReceiveBolt12(potId: data.potId),
     ];
 

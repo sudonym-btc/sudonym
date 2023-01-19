@@ -104,5 +104,8 @@
 	"remove": "Retirar",
 	"trackInMempool": "Seguir en mempool",
 	"viewBillSplit": "Ver división de facturas",
-	"you": "Tú"
+	"you": "Tú",
+	"anyAmountError": "No es posible seleccionar ninguna cantidad",
+	"moveLeft": "Mover a la izquierda",
+	"moveRight": "Mover a la derecha"
 }

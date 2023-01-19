@@ -11,18 +11,24 @@ import 'package:sudonym.models/index.dart';
 class PayInfoPage extends ActionFlow<Payment, Payment> {
   final Payment action;
   final Pot pot;
-  const PayInfoPage(
+  PayInfoPage(
       {super.key,
       required super.onDone,
       required super.onError,
       required this.pot,
-      required this.action});
+      required this.action}) {
+    print('hjell');
+  }
 
   @override
   Widget build(BuildContext context) {
     return TaskBuilder(
       future: () {
-        return PayManager().info(action);
+        print('Calling');
+        return PayManager().info(action).then((value) {
+          print(value);
+          return value;
+        });
       },
       onSuccess: donePage,
       onError: errorPage,
@@ -65,56 +71,50 @@ class PaymentInfoPreview extends StatelessWidget {
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
-          TableRow(children: [
-            TableKey(child: Subtitle(AppLocalizations.of(context)!.amount)),
-            AmountText(
-                showLoader: false,
-                amount: entity.amount,
-                fromCurrency: entity.currency,
-                toCurrency: pot?.currency ?? entity.currency,
-                builder: (state) => Text(state))
-          ]),
-          if (entity.fee != null)
-            TableRow(children: [
-              TableKey(child: Subtitle(AppLocalizations.of(context)!.fee)),
+          getRow(
+              Subtitle(AppLocalizations.of(context)!.amount),
               AmountText(
                   showLoader: false,
-                  amount: entity.fee,
-                  fromCurrency: entity.feeCurrency,
-                  toCurrency: pot?.currency ?? entity.feeCurrency,
-                  builder: (state) => Text(state))
-            ]),
+                  amount: entity.amount,
+                  fromCurrency: entity.currency,
+                  toCurrency: pot?.currency ?? entity.currency,
+                  builder: (state) => Text(state))),
+          if (entity.fee != null)
+            getRow(
+                Subtitle(AppLocalizations.of(context)!.fee),
+                AmountText(
+                    showLoader: false,
+                    amount: entity.fee,
+                    fromCurrency: entity.feeCurrency,
+                    toCurrency: pot?.currency ?? entity.feeCurrency,
+                    builder: (state) => Text(state))),
           if (entity.originalAddress != entity.address &&
               entity.address != null)
-            TableRow(children: [
-              TableKey(child: Subtitle(AppLocalizations.of(context)!.address)),
+            getRow(
+                Subtitle(AppLocalizations.of(context)!.address),
+                Text(
+                  entity.address,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )),
+          getRow(
+              Subtitle(AppLocalizations.of(context)!.to),
               Text(
-                entity.address,
+                entity.originalAddress,
                 style: const TextStyle(
                   overflow: TextOverflow.ellipsis,
                 ),
-              )
-            ]),
-          TableRow(children: [
-            TableKey(child: Subtitle(AppLocalizations.of(context)!.to)),
-            Text(
-              entity.originalAddress,
-              style: const TextStyle(
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          ]),
+              )),
           if (entity.description != null && entity.description != '')
-            TableRow(children: [
-              TableKey(
-                  child: Subtitle(AppLocalizations.of(context)!.description)),
-              Text(
-                entity.description,
-                style: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                ),
-              )
-            ]),
+            getRow(
+                Subtitle(AppLocalizations.of(context)!.description),
+                Text(
+                  entity.description,
+                  style: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )),
         ],
       )
     ]);
@@ -149,14 +149,13 @@ class _InfoPageState extends State<_InfoPage> {
     return BlocProvider(
         create: (_) => CurrencyInputCubit(CurrencyInputOptions(
                 max: [
-                  CurrencyInputOutput(
+                  CurrencyValue(
                       widget.pot.spendableBalance, widget.pot.currency)
                 ],
                 min: [
-                  CurrencyInputOutput(
-                      widget.action.minAmount, widget.action.currency)
+                  CurrencyValue(widget.action.minAmount, widget.action.currency)
                 ],
-                initialValue: CurrencyInputOutput(
+                initialValue: CurrencyValue(
                     widget.action.amount, widget.action.currency))),
         child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
             builder: (context, state) {

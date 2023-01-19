@@ -62,6 +62,7 @@ class Payment extends ActionTypeWithAmount {
         json["comment"],
         json["description"],
         json["commentAllowed"]);
+    print(p.toJson());
     final remoteResponse = p.remoteResponses[p.remoteResponses.length - 1];
     if (remoteResponse != null) {
       if (p.isBolt11) {
