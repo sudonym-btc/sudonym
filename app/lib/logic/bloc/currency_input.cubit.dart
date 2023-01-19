@@ -111,12 +111,16 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
           options.controller!.outputStream.add(event);
           options.controller!.processingStream.add(event);
         });
+    safeEmit(state.copyWith(maxLoading: true, minLoading: true));
     _currencyRespository
         .getRate(
             fromCurrency: options.initialValue.currency,
             toCurrency: options.initialCurrency!,
             amount: options.initialValue.amount)
         .then((value) {
+      print('Setting initial value as ' + value.amount.toString());
+      safeEmit(state.copyWith(maxLoading: false, minLoading: false));
+
       setValue(CurrencyInputOutput(value.amount, options.initialCurrency!));
     });
   }

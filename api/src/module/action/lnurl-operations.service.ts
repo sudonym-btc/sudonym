@@ -59,7 +59,11 @@ export class LnurlOperationsService {
 				).data.callback,
 				{
 					amount: await this.addressParser.getMSatAmount(action),
-					comment: action.comment,
+					...(action.comment != null && action.comment != ''
+						? {
+								comment: action.comment,
+						  }
+						: {}),
 					payerData: JSON.stringify({
 						name: 'Sudonym wallet', // free form string
 						// "pubkey": string, // hex(<randomly generated secp256k1 pubkey>),
@@ -73,7 +77,6 @@ export class LnurlOperationsService {
 					}) as any,
 				}
 			);
-		console.log('got remote');
 		return Action.from({
 			...action,
 			remoteResponses: [...action.remoteResponses, remoteResponse],

@@ -71,6 +71,8 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
           }
         }
         Material negativeButton = Material(
+            type: MaterialType.circle,
+            color: Colors.transparent,
             child: Ink(
                 decoration: buttonDecoration(context, state.negativeEnabled),
                 child: IconButton(
@@ -86,6 +88,8 @@ class _CurrencyInputState extends FormFieldState<CurrencyInputOutput> {
                   icon: const Icon(Icons.remove, size: iconSize * 1.5),
                 )));
         Material positiveButton = Material(
+            type: MaterialType.circle,
+            color: Colors.transparent,
             child: Ink(
                 decoration: buttonDecoration(context, state.positiveEnabled),
                 child: IconButton(

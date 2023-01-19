@@ -125,8 +125,6 @@ export class ActionService {
 				}
 			}
 
-			console.log('here');
-
 			const btcAmountWanted = await this.addressParser.getMSatAmount(
 				action
 			);
@@ -158,7 +156,6 @@ export class ActionService {
 					);
 				}
 			}
-			console.log('now here');
 			this.logger.log(refreshedAction);
 			return (
 				await this.transactionService.create({
