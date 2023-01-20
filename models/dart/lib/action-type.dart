@@ -40,8 +40,31 @@ class ActionTypeWithAmount extends ActionType {
       this.maxAmount,
       this.amount,
       this.currency = "BTC"])
-      : super("pay", originalAddress, isLnUrl, isLnAddress, isBolt11, isBolt12,
-            isOnChain, comment) {
+      : super(
+            "pay",
+            originalAddress,
+            isLnUrl != null ? isLnUrl : false,
+            isLnAddress != null ? isLnAddress : false,
+            isBolt11 != null ? isBolt11 : false,
+            isBolt12 != null ? isBolt12 : false,
+            isOnChain != null ? isOnChain : false,
+            comment) {
     /* super call moved to initializer */;
+  }
+  dynamic toJson() {
+    return {
+      "type": this.type,
+      "originalAddress": this.originalAddress,
+      "isLnAddress": this.isLnAddress,
+      "isLnUrl": this.isLnUrl,
+      "isBolt11": this.isBolt11,
+      "isBolt12": this.isBolt12,
+      "isOnChain": this.isOnChain,
+      "amount": this.amount,
+      "comment": this.comment,
+      "minAmount": this.minAmount,
+      "maxAmount": this.maxAmount,
+      "currency": this.currency
+    };
   }
 }

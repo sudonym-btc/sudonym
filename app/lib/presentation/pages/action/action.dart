@@ -1,48 +1,21 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
 import 'package:sudonym.models/index.dart';
 
-class ActionPage extends StatelessWidget {
+class ActionPage extends ActionFlow<ActionType, ActionParseResponse> {
   final String address;
-  final void Function(ActionParseResponse) onDone;
-  final Function onError;
 
   const ActionPage(
       {required this.address,
-      required this.onDone,
-      required this.onError,
+      required super.onDone,
+      required super.onError,
       Key? key})
       : super(key: key);
 
   StatusPage loadingPage(BuildContext context, dynamic succ) {
     return StatusPage(content: loader, color: Colors.indigo.shade800);
-  }
-
-  StatusPage errorPage(BuildContext context, dynamic err) {
-    // print(err);
-    // print("-------");
-    // Error came from remote service
-    if (err is DioError &&
-        err.response != null &&
-        (err.response as dynamic).statusCode == 503) {
-      var el =
-          err.response?.data?['withdraw'] ?? err.response?.data?['payment'];
-      var reason = el['remoteResponse']?['data']?['reason'];
-      return StatusPage(
-          title: 'Error',
-          subtitleText: 'Could not get OK response from remote server',
-          content: Text(
-              err.message.toString() + (reason != null ? ': $reason' : '')),
-          color: Theme.of(context).errorColor);
-    }
-    return StatusPage(
-        title: 'Error',
-        subtitleText: 'Encountered an unrecoverable error',
-        content: Text(err.toString()),
-        color: Theme.of(context).errorColor);
   }
 
   needsAmount(ActionParseResponse parse) {

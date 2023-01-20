@@ -29,12 +29,29 @@ export class ActionTypeWithAmount extends ActionType {
 		super(
 			'pay',
 			originalAddress,
-			isLnUrl,
-			isLnAddress,
-			isBolt11,
-			isBolt12,
-			isOnChain,
+			isLnUrl != null ? isLnUrl : false,
+			isLnAddress != null ? isLnAddress : false,
+			isBolt11 != null ? isBolt11 : false,
+			isBolt12 != null ? isBolt12 : false,
+			isOnChain != null ? isOnChain : false,
 			comment
 		);
+	}
+
+	toJson(): any {
+		return {
+			type: this.type,
+			originalAddress: this.originalAddress,
+			isLnAddress: this.isLnAddress,
+			isLnUrl: this.isLnUrl,
+			isBolt11: this.isBolt11,
+			isBolt12: this.isBolt12,
+			isOnChain: this.isOnChain,
+			amount: this.amount,
+			comment: this.comment,
+			minAmount: this.minAmount,
+			maxAmount: this.maxAmount,
+			currency: this.currency,
+		};
 	}
 }

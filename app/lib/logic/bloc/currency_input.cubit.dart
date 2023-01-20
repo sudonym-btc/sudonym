@@ -64,7 +64,6 @@ class CurrencyInputOptions {
       initialValue.currency,
       if (initialCurrency != null) initialCurrency!
     }.toList(); // Deduplicate
-    print(currencies);
     debounceOutput ??= const Duration(milliseconds: 0);
   }
 }
@@ -83,7 +82,6 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
       : super(CurrencyInputCubitState(options: options)) {
     id = new DateTime.now().millisecondsSinceEpoch;
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
-
     CurrencyValue? previousInput;
 
     options.controller!.maskedInputStream.stream.listen((event) {

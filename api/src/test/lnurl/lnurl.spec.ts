@@ -1,5 +1,6 @@
 import {
 	ActionRemoteResponse,
+	LNURLProtocolError,
 	LnurlStatusResponse,
 	MSATOSHIS,
 	Payment,
@@ -11,7 +12,6 @@ import {
 } from '@sudonym/models';
 import axios from 'axios';
 import * as bolt11 from 'bolt11';
-import { LNURLProtocolError } from 'helper/errors';
 import { ActionService } from 'module/action/action.service';
 import { LightningAddressController } from 'module/lightning/lnurl/lightning-address/lightning-address.controller';
 import { LnUrlHandlerService } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
@@ -486,10 +486,8 @@ scaffoldGroup('LnUrl', (scaffold) => {
 								.parse('test@domain.com');
 							throw new Error();
 						} catch (e) {
-							expect(e).toBeInstanceOf(ActionRemoteResponse);
-							expect(e.success).toBe(false);
-							expect(e.data).toBeInstanceOf(LNURLProtocolError);
-							expect(e.data.message).toBe('LNURL ERROR');
+							expect(e).toBeInstanceOf(LNURLProtocolError);
+							expect(e.message).toBe('LNURL ERROR');
 						}
 					}
 				);
@@ -510,10 +508,8 @@ scaffoldGroup('LnUrl', (scaffold) => {
 								.parse('test@domain.com');
 							throw new Error();
 						} catch (e) {
-							expect(e).toBeInstanceOf(ActionRemoteResponse);
-							expect(e.success).toBe(false);
-							expect(e.data).toBeInstanceOf(LNURLProtocolError);
-							expect(e.data.message).toBe('LNURL ERROR');
+							expect(e).toBeInstanceOf(LNURLProtocolError);
+							expect(e.message).toBe('LNURL ERROR');
 						}
 					}
 				);

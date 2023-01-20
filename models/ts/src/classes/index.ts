@@ -10,6 +10,7 @@ export * from './bolt11';
 export * from './contact';
 export * from './contact-address';
 export * from './created-or-updated';
+export * from './errors';
 export * from './event';
 export * from './lightning-transaction';
 export * from './lnurl';

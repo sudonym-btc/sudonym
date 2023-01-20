@@ -13,21 +13,6 @@ class WithdrawInfoPage extends ActionFlow<Withdraw, Withdraw> {
       required super.onError,
       required this.action});
 
-  StatusPage errorPage(BuildContext context, Object err) {
-    return StatusPage(
-        color: Theme.of(context).errorColor,
-        title: AppLocalizations.of(context)!.failed,
-        content: Text(err.toString()),
-        actions: ButtonBar(
-          children: [
-            Button(
-              onPressed: () {},
-              text: AppLocalizations.of(context)!.retry,
-            )
-          ],
-        ));
-  }
-
   StatusPage donePage(BuildContext context, action) {
     return StatusPage(
         color: loadingColor,

@@ -42,7 +42,7 @@ class Payment extends ActionTypeWithAmount {
         ? json["remoteResponses"]
             .map((e) => ActionRemoteResponse.fromJson(e))
             .toList()
-        : null;
+        : [];
     final p = new Payment(
         json["potId"],
         json["originalAddress"],
@@ -62,7 +62,6 @@ class Payment extends ActionTypeWithAmount {
         json["comment"],
         json["description"],
         json["commentAllowed"]);
-    print(p.toJson());
     final remoteResponse = p.remoteResponses[p.remoteResponses.length - 1];
     if (remoteResponse != null) {
       if (p.isBolt11) {
@@ -96,6 +95,11 @@ class Payment extends ActionTypeWithAmount {
       "potId": this.potId,
       "originalAddress": this.originalAddress,
       "address": this.address,
+      "isLnAddress": this.isLnAddress,
+      "isLnUrl": this.isLnUrl,
+      "isBolt11": this.isBolt11,
+      "isBolt12": this.isBolt12,
+      "isOnChain": this.isOnChain,
       "currency": this.currency,
       "amount": this.amount,
       "minAmount": this.minAmount,
@@ -104,7 +108,7 @@ class Payment extends ActionTypeWithAmount {
       "feeCurrency": this.feeCurrency,
       "remoteResponses": !identical(this.remoteResponses, null)
           ? this.remoteResponses.map((e) => e.toJson()).toList()
-          : null,
+          : [],
       "comment": this.comment,
       "description": this.description,
       "commentAllowed": this.commentAllowed

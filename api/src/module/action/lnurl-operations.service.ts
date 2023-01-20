@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
 	Action,
 	ActionRemoteResponse,
+	LNURLProtocolError,
 	MSATOSHIS,
 	Payment,
 	PaymentRequest,
@@ -12,7 +13,6 @@ import {
 } from '@sudonym/models';
 import axios from 'axios';
 import { bech32 } from 'bech32';
-import { LNURLProtocolError } from 'helper/errors';
 import { skimDescription } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
 import { AddressParser } from './address-parser.service';
@@ -118,16 +118,10 @@ export class LnurlOperationsService {
 			.then((r) => {
 				this.logger.log('Fetched lnurl', r.data);
 				if (r.data.status == 'ERROR') {
-					throw ActionRemoteResponse.fromJson({
-						success: false,
-						data: new LNURLProtocolError(r.data.reason),
-					});
+					throw new LNURLProtocolError(r.data.reason);
 				}
 				if (!r.status.toString().startsWith('2')) {
-					throw ActionRemoteResponse.fromJson({
-						success: false,
-						data: r,
-					});
+					throw r;
 				}
 				return ActionRemoteResponse.fromJson({
 					success: true,
@@ -135,17 +129,10 @@ export class LnurlOperationsService {
 				});
 			})
 			.catch((e) => {
-				if (e instanceof ActionRemoteResponse) throw e;
 				if (e.data?.status === 'ERROR') {
-					throw ActionRemoteResponse.fromJson({
-						success: false,
-						data: new LNURLProtocolError(e.data.reason),
-					});
+					throw new LNURLProtocolError(e.data.reason);
 				}
-				throw ActionRemoteResponse.fromJson({
-					success: false,
-					message: e.toString(),
-				});
+				throw e;
 			});
 	};
 

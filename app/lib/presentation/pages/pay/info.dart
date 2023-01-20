@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,20 +15,12 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
       required super.onDone,
       required super.onError,
       required this.pot,
-      required this.action}) {
-    print('hjell');
-  }
+      required this.action}) {}
 
   @override
   Widget build(BuildContext context) {
     return TaskBuilder(
-      future: () {
-        print('Calling');
-        return PayManager().info(action).then((value) {
-          print(value);
-          return value;
-        });
-      },
+      future: () => PayManager().info(action),
       onSuccess: donePage,
       onError: errorPage,
     );
@@ -37,15 +28,6 @@ class PayInfoPage extends ActionFlow<Payment, Payment> {
 
   Widget donePage(BuildContext context, r) {
     return _InfoPage(r, pot, onDone);
-  }
-
-  StatusPage errorPage(BuildContext context, Object err) {
-    return StatusPage(
-        color: Colors.red,
-        title: AppLocalizations.of(context)!.failed,
-        content: err is DioError
-            ? Text(err.response.toString())
-            : Text(err.toString()));
   }
 
   StatusPage loadingPage(BuildContext context) {
@@ -146,72 +128,71 @@ class _InfoPageState extends State<_InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => CurrencyInputCubit(CurrencyInputOptions(
-                max: [
-                  CurrencyValue(
-                      widget.pot.spendableBalance, widget.pot.currency)
-                ],
-                min: [
-                  CurrencyValue(widget.action.minAmount, widget.action.currency)
-                ],
-                initialValue: CurrencyValue(
-                    widget.action.amount, widget.action.currency))),
-        child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
-            builder: (context, state) {
-          return ReactiveForm(
-              formGroup: form,
-              child: StatusPage(
-                  color: Colors.indigo.shade800,
-                  title: AppLocalizations.of(context)!.paymentInfo,
-                  subtitleText:
-                      AppLocalizations.of(context)!.gatheredPaymentInformation,
-                  content: Column(children: [
-                    PaymentInfoPreview(
-                      entity: widget.action,
-                      pot: widget.pot,
-                    ),
-                    ReactiveTextField(
-                        formControlName: 'comment',
-                        maxLines: 5,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.comment)),
-                  ]),
-                  actions: Column(children: [
-                    if (state.error != null)
-                      CustomPadding(
-                          child: ErrorText(formatError(context, state.error))),
-                    ButtonBar(children: [
-                      if (state.error != null)
-                        Button(
-                          text: AppLocalizations.of(context)!.back,
-                          onPressed: () => Navigator.of(context).pop(),
-                        )
-                      else if (state.maxLoading || state.minLoading)
-                        const Button(
-                          icon: SizedBox(
-                            height: iconSize,
-                            width: iconSize,
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      else
-                        ReactiveFormConsumer(
-                            builder: ((context, formGroup, child) => Button(
-                                  text: AppLocalizations.of(context)!.send,
-                                  // icon: const FaIcon(FontAwesomeIcons.paperPlane,
-                                  //     size: iconSize),
-                                  onPressed: form.valid
-                                      ? () {
-                                          widget.action.comment =
-                                              form.control('comment').value;
-                                          widget.onDone(widget.action);
-                                        }
-                                      : null,
-                                )))
-                    ])
-                  ])));
-        }));
+    return BlocProvider(create: (_) {
+      return CurrencyInputCubit(CurrencyInputOptions(
+          max: [
+            CurrencyValue(widget.pot.spendableBalance, widget.pot.currency)
+          ],
+          min: [
+            CurrencyValue(widget.action.minAmount, widget.action.currency)
+          ],
+          initialValue:
+              CurrencyValue(widget.action.amount, widget.action.currency)));
+    }, child: BlocBuilder<CurrencyInputCubit, CurrencyInputCubitState>(
+        builder: (context, state) {
+      return ReactiveForm(
+          formGroup: form,
+          child: StatusPage(
+              color: Colors.indigo.shade800,
+              title: AppLocalizations.of(context)!.paymentInfo,
+              subtitleText:
+                  AppLocalizations.of(context)!.gatheredPaymentInformation,
+              content: Column(children: [
+                PaymentInfoPreview(
+                  entity: widget.action,
+                  pot: widget.pot,
+                ),
+                ReactiveTextField(
+                    formControlName: 'comment',
+                    maxLines: 5,
+                    minLines: 1,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.comment)),
+              ]),
+              actions: Column(children: [
+                if (state.error != null)
+                  CustomPadding(
+                      child: ErrorText(formatError(context, state.error))),
+                ButtonBar(children: [
+                  if (state.error != null)
+                    Button(
+                      text: AppLocalizations.of(context)!.back,
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  else if (state.maxLoading || state.minLoading)
+                    const Button(
+                      icon: SizedBox(
+                        height: iconSize,
+                        width: iconSize,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else
+                    ReactiveFormConsumer(
+                        builder: ((context, formGroup, child) => Button(
+                              text: AppLocalizations.of(context)!.send,
+                              // icon: const FaIcon(FontAwesomeIcons.paperPlane,
+                              //     size: iconSize),
+                              onPressed: form.valid
+                                  ? () {
+                                      widget.action.comment =
+                                          form.control('comment').value;
+                                      widget.onDone(widget.action);
+                                    }
+                                  : null,
+                            )))
+                ])
+              ])));
+    }));
   }
 }

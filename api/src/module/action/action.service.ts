@@ -2,12 +2,12 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import {
 	Action,
 	ActionParseResponse,
+	LNURLProtocolError,
 	Payment,
 	PaymentRequestCallback,
 	Withdraw,
 } from '@sudonym/models';
 import * as bolt11 from 'bolt11';
-import { LNURLProtocolError } from 'helper/errors';
 import { Receiver } from 'module/receiver/receiver.model';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import { LightningNodeService } from '../../service/lightning-node/lightning-node.service';
@@ -62,11 +62,7 @@ export class ActionService {
 				throw new HttpException('Invalid address', 400);
 			}
 		}
-		const a = ActionParseResponse.from(returnedAction);
-		if (returnedAction.remoteResponses[0]?.success == false) {
-			throw a;
-		}
-		return a;
+		return ActionParseResponse.from(returnedAction);
 	}
 
 	async info<T = Payment | Withdraw>(action): Promise<T> {

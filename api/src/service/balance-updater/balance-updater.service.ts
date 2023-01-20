@@ -1,5 +1,5 @@
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { BalanceLowError } from 'helper/errors';
+import { BalanceLowError } from '@sudonym/models';
 import { CurrencyService } from 'module/currency/currency.service';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';

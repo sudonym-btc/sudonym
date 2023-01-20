@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart' hide ButtonBar;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
@@ -46,4 +48,32 @@ abstract class ActionFlow<Model extends ActionType, Response>
 
   final void Function(Response obj) onDone;
   final Function(Object obj) onError;
+
+  StatusPage errorPage(BuildContext context, Object err) {
+    Text content = Text(err.toString());
+    if (err is DioError) {
+      content = Text(err.response.toString());
+      if (err.response?.data is LNURLProtocolError) {
+        content = Text(err.response?.data.data);
+      }
+      if (err.response?.data is BalanceLowError) {
+        content = Text(err.response?.data.data);
+      }
+    }
+    print(content.data);
+    return StatusPage(
+        color: Theme.of(context).errorColor,
+        title: AppLocalizations.of(context)!.failed,
+        content: content,
+        actions: ButtonBar(
+          children: [
+            Button(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              text: AppLocalizations.of(context)!.back,
+            )
+          ],
+        ));
+  }
 }
