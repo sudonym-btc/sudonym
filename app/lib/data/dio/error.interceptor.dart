@@ -6,7 +6,7 @@ class ErrorInterceptor extends Interceptor {
 
   @override
   onError(DioError err, ErrorInterceptorHandler handler) {
-    if (err.response?.data['code'] != null) {
+    if (err.response?.data is Map && err.response?.data['code'] != null) {
       err.response!.data = parseError(err.response!.data);
       return handler.next(err);
     }

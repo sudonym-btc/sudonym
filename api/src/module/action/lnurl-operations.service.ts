@@ -173,11 +173,10 @@ export class LnurlOperationsService {
 				});
 			})
 			.catch((e) => {
-				if (e instanceof ActionRemoteResponse) throw e;
-				if (e.data instanceof LNURLProtocolError) throw e;
+				if (e instanceof LNURLProtocolError) throw e;
 				throw ActionRemoteResponse.fromJson({
 					...e,
-					status: false,
+					success: false,
 					message:
 						'This identifier does not support Lightning Address yet.',
 				});

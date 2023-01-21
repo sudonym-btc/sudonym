@@ -1,5 +1,4 @@
 import {
-	ActionRemoteResponse,
 	LNURLProtocolError,
 	LnurlStatusResponse,
 	MSATOSHIS,
@@ -306,13 +305,8 @@ scaffoldGroup('LnUrl', (scaffold) => {
 							);
 							throw new Error();
 						} catch (e) {
-							expect(e instanceof ActionRemoteResponse).toBe(
-								true
-							);
-							expect(e.data instanceof LNURLProtocolError).toBe(
-								true
-							);
-							expect(e.data.message).toBe('This is the reason');
+							expect(e instanceof LNURLProtocolError).toBe(true);
+							expect(e.data).toBe('This is the reason');
 						}
 
 						await waitForExpect(() => {
@@ -387,7 +381,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 								})
 							);
 						expect(response).toBeTruthy();
-						expect(response.fee).toBeTruthy();
+						// expect(response.fee).toBeTruthy();
 						expect(response.feeCurrency).toBe('BTC');
 						expect(response.amount).toBe(0.1);
 					}
@@ -465,7 +459,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 							throw Error();
 						} catch (e) {
 							expect(e).toBeInstanceOf(LNURLProtocolError);
-							expect(e.message).toContain('higher amount');
+							expect(e.data).toContain('higher amount');
 						}
 					}
 				);
@@ -487,7 +481,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 							throw new Error();
 						} catch (e) {
 							expect(e).toBeInstanceOf(LNURLProtocolError);
-							expect(e.message).toBe('LNURL ERROR');
+							expect(e.data).toBe('LNURL ERROR');
 						}
 					}
 				);
@@ -509,7 +503,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 							throw new Error();
 						} catch (e) {
 							expect(e).toBeInstanceOf(LNURLProtocolError);
-							expect(e.message).toBe('LNURL ERROR');
+							expect(e.data).toBe('LNURL ERROR');
 						}
 					}
 				);

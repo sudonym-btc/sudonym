@@ -209,10 +209,10 @@ scaffoldGroup('Bill Split', (scaffold) => {
 		async (entities) => {
 			const participants: RecursivePartial<BillSplitParticipant>[] = [
 				{
-					amount: 0,
+					amount: 2,
 				},
 				{
-					amount: 2,
+					amount: 0,
 				},
 			];
 

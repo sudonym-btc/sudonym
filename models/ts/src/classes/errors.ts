@@ -7,7 +7,7 @@ export class AppError extends Error {
 
 export class BalanceLowError extends AppError {
 	static code = 'BALANCE_LOW';
-	constructor(public data: string | null) {
+	constructor() {
 		super();
 	}
 }

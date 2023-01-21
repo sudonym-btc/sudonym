@@ -1,8 +1,9 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
-import { calcAmountLeft } from '@sudonym/models';
+import { BillSplitParticipant, calcAmountLeft } from '@sudonym/models';
 import { BillSplitParticipantService } from 'module/bill-split-participant/bill-split-participant.service';
 import { roundToDisplay } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
+import { ValidationError, ValidationErrorItem } from 'sequelize';
 import { BaseService } from '../base.service';
 import { BillSplit } from './bill-split.model';
 
@@ -23,12 +24,27 @@ export class BillSplitService extends BaseService(BillSplit) {
 				]),
 				params.currency
 			);
-			if (Math.abs(amountLeft) > Math.pow(1, -8)) {
+			if (Math.abs(amountLeft) > Math.pow(10, -8)) {
 				// Must be closer than 1 sat
 				throw new HttpException(
 					'Bill split amounts off by ' + amountLeft.toString(),
 					400
 				);
+			}
+
+			if (!validateParticipants(params.BillSplitParticipants)) {
+				throw new ValidationError('unique', [
+					new ValidationErrorItem(
+						'',
+						'validation error',
+						'amount',
+						params.BillSplitParticipants.toString(),
+						params,
+						'',
+						'',
+						[]
+					),
+				]);
 			}
 			// Fulfill the first contribution if the user has already paid the bill
 			if (params.transactionId) {
@@ -59,3 +75,10 @@ export class BillSplitService extends BaseService(BillSplit) {
 		});
 	}
 }
+
+export const validateParticipants = (participtants: BillSplitParticipant[]) => {
+	return (
+		Array.isArray(participtants) &&
+		participtants.slice(1).filter((p) => p.amount <= 0).length == 0
+	);
+};
