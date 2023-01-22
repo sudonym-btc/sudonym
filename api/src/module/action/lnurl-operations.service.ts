@@ -120,6 +120,7 @@ export class LnurlOperationsService {
 				if (r.data.status == 'ERROR') {
 					throw new LNURLProtocolError(r.data.reason);
 				}
+
 				if (!r.status.toString().startsWith('2')) {
 					throw r;
 				}
@@ -174,12 +175,12 @@ export class LnurlOperationsService {
 			})
 			.catch((e) => {
 				if (e instanceof LNURLProtocolError) throw e;
-				throw ActionRemoteResponse.fromJson({
-					...e,
-					success: false,
-					message:
-						'This identifier does not support Lightning Address yet.',
-				});
+				if (e.status == 404) {
+					throw new LNURLProtocolError(
+						'This identifier does not support lightning addresses yet'
+					);
+				}
+				throw new LNURLProtocolError('Could not contact remote server');
 			});
 	};
 

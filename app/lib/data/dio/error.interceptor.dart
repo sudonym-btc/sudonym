@@ -15,10 +15,10 @@ class ErrorInterceptor extends Interceptor {
 }
 
 dynamic parseError(dynamic data) {
-  if (data['code'] == LNURLProtocolError.code) {
+  if (data['code'] == LNURLProtocolError.staticCode) {
     return LNURLProtocolError(data['data']);
-  } else if (data['code'] == BalanceLowError.code) {
-    return BalanceLowError(data['data']);
+  } else if (data['code'] == BalanceLowError.staticCode) {
+    return BalanceLowError();
   }
   return data;
 }

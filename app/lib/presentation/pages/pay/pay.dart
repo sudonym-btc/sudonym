@@ -80,6 +80,7 @@ class _SendPageState extends State<SendPage> {
                               formControlName: 'address',
                               onEditingComplete: null,
                               autocorrect: false,
+                              textInputAction: TextInputAction.go,
                               onSubmitted: form.valid
                                   ? (control) => getIt<ActionTriggerService>()
                                       .trigger(ActionStream(
@@ -88,6 +89,11 @@ class _SendPageState extends State<SendPage> {
                                           pot: widget.pot))
                                   : null,
                               keyboardType: TextInputType.emailAddress,
+                              validationMessages: {
+                                'invalid': (error) =>
+                                    AppLocalizations.of(context)!
+                                        .mustBeValidAddress
+                              },
                               decoration: InputDecoration(
                                   suffixIcon: ReactiveFormConsumer(
                                     builder: (context, form, child) {

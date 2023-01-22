@@ -107,5 +107,7 @@
 	"you": "Sie",
 	"anyAmountError": "Kein Betrag auswählbar",
 	"moveLeft": "Nach links schieben",
-	"moveRight": "Nach rechts schieben"
+	"moveRight": "Nach rechts schieben",
+	"mustBeValidAddress": "Muss eine gültige Lightning-, Onchain- oder Lnurl-Adresse sein",
+	"mustBeValidLightningAddress": "Muss eine gültige Lightning-Adresse sein"
 }

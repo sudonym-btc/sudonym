@@ -10,6 +10,7 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
+import 'package:sudonym/presentation/pages/action/action_flow.dart';
 import 'package:sudonym.models/index.dart';
 
 extension EitherX<L, R> on Either<L, R> {
@@ -112,7 +113,11 @@ class ActionTriggerService with ActionLogger {
         .handleError(
           (err) {
             loggy.e(err);
-            throw err;
+            Navigator.pushReplacement(
+                action.context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        errorPageGenerator(action.context, err)));
           },
           // test: (error) => error instanceof DioErr,
         )

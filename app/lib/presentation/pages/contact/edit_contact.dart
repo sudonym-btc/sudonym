@@ -89,6 +89,10 @@ class EditContactFormState extends State<EditContactForm> {
                 decoration: const InputDecoration(
                   labelText: 'Address',
                 ),
+                validationMessages: {
+                  'invalid': (error) =>
+                      AppLocalizations.of(context)!.mustBeValidLightningAddress
+                },
               ),
             ),
             // IconButton(

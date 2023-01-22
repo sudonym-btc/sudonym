@@ -50,30 +50,33 @@ abstract class ActionFlow<Model extends ActionType, Response>
   final Function(Object obj) onError;
 
   StatusPage errorPage(BuildContext context, Object err) {
-    Text content = Text(err.toString());
-    if (err is DioError) {
-      content = Text(err.response.toString());
-      if (err.response?.data is LNURLProtocolError) {
-        content = Text(err.response?.data.data);
-      }
-      if (err.response?.data is BalanceLowError) {
-        content = Text(err.response?.data.data);
-      }
-    }
-    print(content.data);
-    return StatusPage(
-        color: Theme.of(context).errorColor,
-        title: AppLocalizations.of(context)!.failed,
-        content: content,
-        actions: ButtonBar(
-          children: [
-            Button(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              text: AppLocalizations.of(context)!.back,
-            )
-          ],
-        ));
+    return errorPageGenerator(context, err);
   }
+}
+
+StatusPage errorPageGenerator(BuildContext context, Object err) {
+  Text content = Text(err.toString());
+  if (err is DioError) {
+    content = Text(err.response.toString());
+    if (err.response?.data is LNURLProtocolError) {
+      content = Text(err.response?.data.data);
+    }
+    if (err.response?.data is BalanceLowError) {
+      content = Text(err.response?.data.data);
+    }
+  }
+  return StatusPage(
+      color: Theme.of(context).errorColor,
+      title: AppLocalizations.of(context)!.failed,
+      content: content,
+      actions: ButtonBar(
+        children: [
+          Button(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            text: AppLocalizations.of(context)!.back,
+          )
+        ],
+      ));
 }

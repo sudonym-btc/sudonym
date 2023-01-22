@@ -107,5 +107,7 @@
 	"you": "Tú",
 	"anyAmountError": "No es posible seleccionar ninguna cantidad",
 	"moveLeft": "Mover a la izquierda",
-	"moveRight": "Mover a la derecha"
+	"moveRight": "Mover a la derecha",
+	"mustBeValidAddress": "Debe ser una dirección lightning, onchain o lnurl válida",
+	"mustBeValidLightningAddress": "Debe ser una dirección lightning válida"
 }

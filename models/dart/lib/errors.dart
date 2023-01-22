@@ -1,21 +1,22 @@
 class AppError extends Error {
-  static var code = "";
+  static var staticCode = "";
   AppError() : super() {
     /* super call moved to initializer */;
   }
 }
 
 class BalanceLowError extends AppError {
-  dynamic /* String | null */ data;
-  static var code = "BALANCE_LOW";
-  BalanceLowError(this.data) : super() {
+  static var staticCode = "BALANCE_LOW";
+  var code = BalanceLowError.staticCode;
+  BalanceLowError() : super() {
     /* super call moved to initializer */;
   }
 }
 
 class LNURLProtocolError extends AppError {
   String data;
-  static var code = "LNURL_ERROR";
+  static var staticCode = "LNURL_ERROR";
+  var code = LNURLProtocolError.staticCode;
   LNURLProtocolError(this.data) : super() {
     /* super call moved to initializer */;
   }

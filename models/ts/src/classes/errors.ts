@@ -1,19 +1,21 @@
 export class AppError extends Error {
-	static code = '';
+	static staticCode = '';
 	constructor() {
 		super();
 	}
 }
 
 export class BalanceLowError extends AppError {
-	static code = 'BALANCE_LOW';
+	static staticCode = 'BALANCE_LOW';
+	code = BalanceLowError.staticCode;
 	constructor() {
 		super();
 	}
 }
 
 export class LNURLProtocolError extends AppError {
-	static code = 'LNURL_ERROR';
+	static staticCode = 'LNURL_ERROR';
+	code = LNURLProtocolError.staticCode;
 	constructor(public data: string) {
 		super();
 	}
