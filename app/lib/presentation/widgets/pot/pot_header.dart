@@ -31,23 +31,13 @@ class PotHeaderState extends State<PotHeader> {
             child: CustomPadding(
                 multiplierWidth: 0,
                 child: Slidable(
-                    // Specify a key if the Slidable is dismissible.
                     key: const ValueKey(0),
-
-                    // The start action pane is the one at the left or the top side.
                     startActionPane: BlocProvider.of<PotListReorganizerCubit>(
                                 context)
                             .canMoveLeft(widget.entity)
                         ? ActionPane(
-                            // A motion is a widget used to control how the pane animates.
                             motion: const ScrollMotion(),
-
-                            // A pane can dismiss the Slidable.
-                            // dismissible: DismissiblePane(onDismissed: () {}),
-
-                            // All actions are defined in the children parameter.
                             children: [
-                              // A SlidableAction can have an icon and/or a label.
                               SlidableAction(
                                 onPressed: (BuildContext context) async {
                                   BlocProvider.of<PotListReorganizerCubit>(
@@ -66,15 +56,8 @@ class PotHeaderState extends State<PotHeader> {
                                 context)
                             .canMoveRight(widget.entity)
                         ? ActionPane(
-                            // A motion is a widget used to control how the pane animates.
                             motion: const ScrollMotion(),
-
-                            // A pane can dismiss the Slidable.
-                            // dismissible: DismissiblePane(onDismissed: () {}),
-
-                            // All actions are defined in the children parameter.
                             children: [
-                              // A SlidableAction can have an icon and/or a label.
                               SlidableAction(
                                 onPressed: (BuildContext context) async {
                                   BlocProvider.of<PotListReorganizerCubit>(
@@ -89,33 +72,36 @@ class PotHeaderState extends State<PotHeader> {
                             ],
                           )
                         : null,
-
-                    // The child of the Slidable is what the user sees when the
-                    // component is not dragged.
-                    child: InkWell(
-                        onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    EditPot(entity: widget.entity))),
-                        child: CustomPadding(
-                            multiplierWidth: 2,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Subtitle(widget.entity.name ?? ''),
-                                  Header(FormatCurrency().format(
-                                      widget.entity.currency,
-                                      widget.entity.spendableBalance)),
-                                  widget.entity.currency == 'BTC'
-                                      ? AmountText(
-                                          amount:
-                                              widget.entity.spendableBalance,
-                                          fromCurrency: widget.entity.currency,
-                                          toCurrency: 'USD',
-                                          builder: (val) => Info('≈ $val'),
-                                        )
-                                      : Container()
-                                ]))))))
+                    child: Row(children: [
+                      Expanded(
+                          child: InkWell(
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditPot(entity: widget.entity))),
+                              child: CustomPadding(
+                                  multiplierWidth: 2,
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Subtitle(widget.entity.name ?? ''),
+                                        Header(FormatCurrency().format(
+                                            widget.entity.currency,
+                                            widget.entity.spendableBalance)),
+                                        widget.entity.currency == 'BTC'
+                                            ? AmountText(
+                                                amount: widget
+                                                    .entity.spendableBalance,
+                                                fromCurrency:
+                                                    widget.entity.currency,
+                                                toCurrency: 'USD',
+                                                builder: (val) =>
+                                                    Info('≈ $val'),
+                                              )
+                                            : Container()
+                                      ]))))
+                    ]))))
       ]);
     }));
   }
