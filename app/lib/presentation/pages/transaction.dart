@@ -352,13 +352,24 @@ class _TransactionInfo extends StatelessWidget {
         children: [
           getRow(
               Subtitle(AppLocalizations.of(context)!.amount),
-              AmountText(
-                showLoader: false,
-                amount: transaction.amount,
-                fromCurrency: transaction.currencyCode,
-                toCurrency: transaction.Pot.currency,
-                date: transaction.createdAt,
-              )),
+              Row(children: [
+                AmountText(
+                  showLoader: false,
+                  amount: transaction.amount,
+                  fromCurrency: transaction.currencyCode,
+                  toCurrency: transaction.Pot.currency,
+                  date: transaction.createdAt,
+                ),
+                if (transaction.Pot.currency == 'BTC')
+                  AmountText(
+                    showLoader: false,
+                    amount: transaction.amount,
+                    fromCurrency: transaction.currencyCode,
+                    toCurrency: 'USD',
+                    date: transaction.createdAt,
+                    builder: (val) => Text('($val)'),
+                  )
+              ])),
           if (transaction.originalAddress != '' &&
               transaction.originalAddress != null)
             getRow(
