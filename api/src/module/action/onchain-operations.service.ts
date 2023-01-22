@@ -19,11 +19,16 @@ export class OnchainOperationsService {
 
 	async parse(addr: string) {
 		const fees = await this.lightningNodeService.onChainFees();
+		const query = parseQuery(addr.split('?').pop());
+		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
+
 		try {
 			return Action.from({
 				originalAddress: addr,
-				address: addr,
+				address: trimmedAddress,
 				type: 'pay',
+				minAmount: query.amount ? Number(query.amount) : null,
+				amount: query.amount ? Number(query.amount) : null,
 				fee: fees.opening / SATOSHIS,
 				feeCurrency: 'BTC',
 				remoteResponses: [
@@ -40,15 +45,8 @@ export class OnchainOperationsService {
 	}
 
 	async getInfo(action: Action) {
-		const query = parseQuery(action.originalAddress.split('?').pop());
-		const [type, trimmedAddress] = this.addressParser.getAddressType(
-			action.originalAddress
-		);
 		return Action.from({
-			address: trimmedAddress,
-			minAmount: query.amount ? Number(query.amount) : null,
-			amount: query.amount ? Number(query.amount) : null,
-			currency: 'BTC',
+			...action,
 			remoteResponses: [
 				ActionRemoteResponse.fromJson({
 					success: true,

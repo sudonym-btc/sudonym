@@ -41,20 +41,18 @@ export class ActionService {
 		switch (type) {
 			case 'lnurl':
 			case 'lightningaddress': {
-				returnedAction = await this.lnurlOperationsService.parse(
-					trimmedAddress
-				);
+				returnedAction = await this.lnurlOperationsService.parse(addr);
 				break;
 			}
 			case 'onchain': {
 				returnedAction = await this.onchainOperationsService.parse(
-					trimmedAddress
+					addr
 				);
 				break;
 			}
 			case 'bolt11': {
 				returnedAction = await this.lightningOperationsService.parse(
-					trimmedAddress
+					addr
 				);
 				break;
 			}

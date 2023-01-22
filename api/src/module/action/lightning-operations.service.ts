@@ -19,9 +19,10 @@ export class LightningOperationsService {
 	@Inject(AddressParser) private addressParser: AddressParser;
 
 	async parse(addr: string) {
+		const [type, trimmedAddress] = this.addressParser.getAddressType(addr);
 		return Action.from({
-			originalAddress: addr,
-			address: addr,
+			originalAddress: trimmedAddress,
+			address: trimmedAddress,
 			type: 'pay',
 			isBolt11: true,
 			remoteResponses: [await this.fetchBolt11(addr)],

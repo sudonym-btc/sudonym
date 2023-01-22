@@ -367,7 +367,7 @@ class _TransactionInfo extends StatelessWidget {
                     fromCurrency: transaction.currencyCode,
                     toCurrency: 'USD',
                     date: transaction.createdAt,
-                    builder: (val) => Text('($val)'),
+                    builder: (val) => Text(' ($val)'),
                   )
               ])),
           if (transaction.originalAddress != '' &&
