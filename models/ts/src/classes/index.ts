@@ -28,6 +28,7 @@ export * from './sender';
 export * from './settlement';
 export * from './settlement-transaction';
 export * from './transaction';
+export * from './transaction-tag';
 export * from './types/index';
 export * from './user';
 export * from './user-device';

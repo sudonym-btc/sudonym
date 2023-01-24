@@ -18,6 +18,7 @@ import { BoltCard } from 'module/bolt-card/bolt-card.model';
 import { ContactAddress } from 'module/contact-address/contact-address.model';
 import { Contact } from 'module/contact/contact.model';
 import { Sender } from 'module/sender/sender.model';
+import { TransactionTag } from 'module/transaction-tag/transaction-tag.model';
 
 export const sequelizeCls = cls.createNamespace('sequelize');
 Sequelize.useCLS(sequelizeCls);
@@ -64,6 +65,7 @@ export const databaseProviders = [
 					UserDevice,
 					LnUrl,
 					Transaction,
+					TransactionTag,
 					Settlement,
 					SettlementTransaction,
 				],

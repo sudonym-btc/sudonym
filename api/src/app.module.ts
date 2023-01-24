@@ -9,10 +9,12 @@ import { BoltCardModule } from 'module/bolt-card/bolt-card.module';
 import { ContactModule } from 'module/contact/contact.module';
 import { PotUserModule } from 'module/pot-user/pot-user.module';
 import { SenderModule } from 'module/sender/sender.module';
+import { TransactionTagModule } from 'module/transaction-tag/transaction-tag.module';
 import { BalanceModule } from 'service/exchange/balance.module';
 import { ExchangeSettlerModule } from 'service/exchange/exchange-settler.module';
 import { ExchangeModule } from 'service/exchange/exchange.module';
 import { FirebaseNotificationModule } from 'service/firebase-notification/firebase-notification.module';
+import { RoundupModule } from 'service/roundup/roundup.module';
 import { SentryModule } from 'service/sentry/sentry.module';
 import { TransactionBillSplitLinkerModule } from 'service/transaction-bill-split-linker/transaction-bill-split-linker.module';
 import { TransactionContactLinkerModule } from 'service/transaction-contact-linker/transaction-contact-linker.module';
@@ -67,11 +69,13 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 		BillSplitModule,
 		ActionModule,
 		BalanceUpdaterModule,
+		RoundupModule,
 		FirebaseNotificationModule,
 		ReceiverModule,
 		SenderModule,
 		BoltCardModule,
 		TransactionModule,
+		TransactionTagModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

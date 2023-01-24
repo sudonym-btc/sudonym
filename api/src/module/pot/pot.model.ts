@@ -99,6 +99,11 @@ export class Pot extends BaseModel implements Models.Pot {
 	@HasMany(() => Sender)
 	Senders: Sender[];
 
+	@Default(false)
+	@AllowNull(false)
+	@Column
+	roundup: boolean;
+
 	// Must be here as used in create hook
 
 	@AfterCreate

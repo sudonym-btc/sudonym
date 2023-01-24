@@ -28,6 +28,7 @@ export "sender.dart";
 export "settlement.dart";
 export "settlement-transaction.dart";
 export "transaction.dart";
+export "transaction-tag.dart";
 export "types/index.dart";
 export "user.dart";
 export "user-device.dart";
