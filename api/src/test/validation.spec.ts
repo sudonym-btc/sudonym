@@ -1,4 +1,5 @@
 import { runAsUser } from 'helper/context-request';
+import { ActionService } from 'module/action/action.service';
 import { AddressParser } from 'module/action/address-parser.service';
 import { ContactService } from 'module/contact/contact.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
@@ -96,6 +97,11 @@ scaffoldGroup('Validation', (scaffold) => {
 					expect(
 						scaffold.app.get(AddressParser).getAddressType(addr)[0]
 					).toBe(section);
+
+					const parse = await scaffold.app
+						.get(ActionService)
+						.parse(addr);
+					expect(parse.payment.type).toBe('pay');
 				}
 			}
 		}
