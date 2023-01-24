@@ -25,9 +25,10 @@ export class LightningOperationsService {
 			address: trimmedAddress,
 			type: 'pay',
 			isBolt11: true,
-			remoteResponses: [await this.fetchBolt11(addr)],
-			description: (await this.lightningNodeService.decodeInvoice(addr))
-				.tagsObject.description,
+			remoteResponses: [await this.fetchBolt11(trimmedAddress)],
+			description: (
+				await this.lightningNodeService.decodeInvoice(trimmedAddress)
+			).tagsObject.description,
 		});
 	}
 
