@@ -22,7 +22,7 @@ DioError errorObjPreParse = DioError(
     requestOptions: RequestOptions(path: 'test'),
     response: Response(
         requestOptions: RequestOptions(path: 'test'),
-        data: {'code': LNURLProtocolError.code, 'data': errorString}));
+        data: {'code': LNURLProtocolError.staticCode, 'data': errorString}));
 
 class MockTestActionRepository extends MockActionRepository {
   MockTestActionRepository(

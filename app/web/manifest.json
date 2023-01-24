@@ -7,10 +7,12 @@
 	"display": "standalone",
 	"background_color": "#0175C2",
 	"theme_color": "#0175C2",
-	"description": "A new Flutter project.",
+	"description": "Sudonym lightning wallet",
 	"orientation": "portrait-primary",
 	"prefer_related_applications": false,
 	"action": {
 		"default_popup": "index.html"
-	}
+	},
+	"background": [],
+	"permissions": ["activeTab", "scripting"]
 }
