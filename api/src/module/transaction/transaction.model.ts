@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import * as Models from '@sudonym/models';
+import { TRANSACTION_TAGS } from '@sudonym/models';
 import { authUserIdGetter } from 'helper/context-request';
 import { BillSplit } from 'module/bill-split/bill-split.model';
 import { BoltCard } from 'module/bolt-card/bolt-card.model';
@@ -11,7 +12,7 @@ import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
 import { TransactionTag } from 'module/transaction-tag/transaction-tag.model';
 import { User } from 'module/user/user.model';
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import {
 	AllowNull,
 	AutoIncrement,
@@ -229,12 +230,30 @@ export class Transaction extends BaseModel implements Models.Transaction {
 					model: Receiver,
 					as: 'Receiver',
 				},
-
 				{
 					model: TransactionTag,
 					as: 'Tags',
 				},
 			],
+			where: {
+				[Op.not]: [
+					{
+						id: {
+							[Op.in]: Sequelize.literal(
+								'(SELECT `transactionId` from `' +
+									TransactionTag.tableName +
+									'` WHERE `tagId` = ' +
+									Object.keys(TRANSACTION_TAGS).find(
+										(key) =>
+											TRANSACTION_TAGS[key] == 'roundup'
+									) +
+									')'
+							),
+						},
+						outgoing: true,
+					},
+				],
+			},
 		}),
 	};
 }

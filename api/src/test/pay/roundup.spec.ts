@@ -5,9 +5,14 @@ import { Transaction } from 'module/transaction/transaction.model';
 import { TransactionService } from 'module/transaction/transaction.service';
 import { filter, firstValueFrom } from 'rxjs';
 import { RecursivePartial } from 'sequelize-typescript/dist/shared/types';
-import { bolt11Encode } from 'test/mock/classes';
+import { FirebaseNotificationService } from 'service/firebase-notification/firebase-notification.service';
+import {
+	bolt11Encode,
+	MockFirebaseNotificationService,
+} from 'test/mock/classes';
 import { mockEntities } from 'test/mock/create-mock-entities';
 import { scaffoldTest } from 'test/mock/scaffold-test';
+import waitForExpect from 'wait-for-expect';
 import { scaffoldGroup } from '../mock/scaffold-group';
 
 scaffoldGroup('Roundup', (scaffold) => {
@@ -89,8 +94,6 @@ scaffoldGroup('Roundup', (scaffold) => {
 				return pot;
 			});
 
-			console.log(roundUpPot);
-
 			attempt(entities, {
 				amount: 0.5,
 				currencyCode: 'USD',
@@ -116,6 +119,40 @@ scaffoldGroup('Roundup', (scaffold) => {
 	scaffoldTest(
 		scaffold,
 		'should not send alerts for roundup payments',
-		async (entities) => {}
+		async (entities) => {
+			await runAsUser(entities.user[0], async () => {
+				const { entity: pot } = await scaffold.app
+					.get(PotService)
+					.create({
+						name: 'Roundup',
+						currency: 'BTC',
+						roundup: true,
+					});
+				expect(pot.PotUser.index).toBe(2);
+				return pot;
+			});
+
+			const transaction = await attempt(entities, {
+				amount: 0.5,
+				currencyCode: 'USD',
+			});
+
+			await waitForExpect(async () => {
+				expect(
+					await Transaction.count({
+						where: {
+							transactionId: transaction.entity.id,
+						},
+					})
+				).toBe(2);
+				expect(
+					(
+						scaffold.app.get(
+							FirebaseNotificationService
+						) as MockFirebaseNotificationService
+					).sendNotification.mock.calls.length
+				).toBe(1);
+			});
+		}
 	);
 });

@@ -31,7 +31,7 @@ import { MockAuthService } from './classes/auth.service.mock';
 import { MockExchangeSettlerService } from './classes/exchange-settler.service.mock';
 import { MockExchangeService } from './classes/exchange.service.mock';
 import { createPots } from './pot';
-import { createUsers } from './user';
+import { createUserDevices, createUsers } from './user';
 
 export type mockEntities = {
 	user: User[];
@@ -84,6 +84,7 @@ export const createMockApp = async () => {
 
 export const createMockEntities = async (app: INestApplication) => {
 	const user = await createUsers(app.get('SEQUELIZE'));
+	const userDevice = await createUserDevices(app.get('SEQUELIZE'), user);
 	const pot = await createPots(app.get('SEQUELIZE'), user as any);
 
 	return {

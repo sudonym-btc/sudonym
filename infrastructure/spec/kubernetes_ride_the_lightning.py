@@ -185,8 +185,8 @@ def ride_the_lightning(config, cluster_types):
 
                                         "resources": {
                                             "limits": {
-                                                "cpu": "0.01",
-                                                "memory": "60Mi"
+                                                "cpu": "0.1",
+                                                "memory": "100Mi"
                                             },
                                             "requests": {
                                                 "cpu": "0.0001",

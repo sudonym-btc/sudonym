@@ -31,6 +31,7 @@ export class FirebaseNotificationService {
 	}
 
 	async triggerNotification(entity: Transaction) {
+		if (entity.type == 'internal') return;
 		if (!entity.isNewRecord && !entity.changed('status')) return;
 
 		const users = await this.transactionService.getUserIds(entity.id);

@@ -99,6 +99,7 @@
 			"json",
 			"ts"
 		],
+		"testTimeout": 10000,
 		"coverageDirectory": "../coverage",
 		"testEnvironment": "node"
 	}

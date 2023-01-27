@@ -64,6 +64,27 @@ export class RoundupService {
 					);
 					const leftOver = Math.ceil(usd.amount) - usd.amount;
 					for (const pot of pots) {
+						const roundupOutgoing =
+							await this.transactionService.create({
+								outgoing: true,
+								amount: leftOver,
+								currencyCode: 'USD',
+								type: 'internal',
+								status: true,
+								potId: transaction.potId,
+								transactionId: transaction.id,
+								Tags: [
+									{
+										tagId: parseInt(
+											Object.keys(TRANSACTION_TAGS).find(
+												(key) =>
+													TRANSACTION_TAGS[key] ==
+													'roundup'
+											)
+										),
+									},
+								],
+							});
 						await this.transactionService.create({
 							outgoing: false,
 							amount: leftOver,

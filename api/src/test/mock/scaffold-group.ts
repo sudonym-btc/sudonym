@@ -37,16 +37,12 @@ export const scaffoldGroup = (
 
 		beforeAll(async () => {
 			scaffold.app = await createMockApp();
-		}, 15000);
+		}, 45000);
 
 		beforeEach(() => {
 			jest.clearAllMocks();
 			jest.resetAllMocks();
 		});
-
-		// afterEach(async () => {
-		// 	// await wipeDB();
-		// }, 30000);
 
 		afterAll(async () => {
 			await closeApp();

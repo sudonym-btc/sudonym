@@ -107,13 +107,14 @@ class EditPotFormState extends State<EditPotForm> {
                 const VertDivider(2),
                 Info(AppLocalizations.of(context)!.potCurrencyDescription),
                 const VertDivider(4),
-                ReactiveCheckboxListTile(
-                  title: Text(AppLocalizations.of(context)!.roundupPot),
-                  subtitle:
-                      Text(AppLocalizations.of(context)!.roundupPotDescription),
-                  formControlName: 'roundup',
-                  contentPadding: EdgeInsets.zero,
-                )
+                if (widget.entity?.PotUser.index != 1 || widget.entity?.roundup)
+                  ReactiveCheckboxListTile(
+                    title: Text(AppLocalizations.of(context)!.roundupPot),
+                    subtitle: Text(
+                        AppLocalizations.of(context)!.roundupPotDescription),
+                    formControlName: 'roundup',
+                    contentPadding: EdgeInsets.zero,
+                  )
               ],
             ));
   }
