@@ -75,6 +75,12 @@ export class MockLightningNodeService extends LightningNodeService {
 		// destination (pubkey, optional): the final destination of the payment
 	};
 
+	async onChainFees() {
+		return {
+			opening: 1000,
+		};
+	}
+
 	findCircular(): Promise<any> {
 		throw new Error('Method not implemented.');
 	}

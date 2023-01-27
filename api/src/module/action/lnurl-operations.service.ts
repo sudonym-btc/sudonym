@@ -15,7 +15,7 @@ import axios from 'axios';
 import { bech32 } from 'bech32';
 import { skimDescription } from 'module/lightning/lnurl/lnurl-handler/lnurl-handler.service';
 import { LightningNodeService } from 'service/lightning-node/lightning-node.service';
-import { AddressParser } from './address-parser.service';
+import { AddressParser, parseQuery } from './address-parser.service';
 import { fetchHttpOpts } from './http-agent';
 
 @Injectable()
@@ -180,6 +180,7 @@ export class LnurlOperationsService {
 						'This identifier does not support lightning addresses yet'
 					);
 				}
+				this.logger.error(e);
 				throw new LNURLProtocolError('Could not contact remote server');
 			});
 	};
@@ -195,8 +196,15 @@ export class LnurlOperationsService {
 			}
 			return str;
 		} else {
-			const decodedLNURL = bech32.decode(str, 1500);
-			return Buffer.from(bech32.fromWords(decodedLNURL.words)).toString();
+			const query = parseQuery(str.split('?').pop());
+			const decodedLNURL = bech32.decode(str.split('?')[0], 1500);
+			const url = new URL(
+				Buffer.from(bech32.fromWords(decodedLNURL.words)).toString()
+			);
+			Object.keys(query).forEach((key) =>
+				url.searchParams.append(key, query[key])
+			);
+			return url.toString();
 		}
 	}
 }

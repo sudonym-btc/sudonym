@@ -2,6 +2,7 @@ import { BaseClass } from './base-class';
 import * as BillSplitModel from './bill-split';
 import * as ContactModel from './contact-address';
 import * as PotModel from './pot';
+import * as TransactionTagModel from './transaction-tag';
 
 export class Transaction extends BaseClass {
 	constructor(
@@ -18,6 +19,7 @@ export class Transaction extends BaseClass {
 		public type: string | null,
 		public contactAddressId: number | null,
 		public ContactAddress: ContactModel.ContactAddress | null,
+		public Tags: TransactionTagModel.TransactionTag[] | null,
 		public billSplitId: number | null,
 		public BillSplit: BillSplitModel.BillSplit | null,
 		public originalAddress: string | null,
@@ -52,6 +54,13 @@ export class Transaction extends BaseClass {
 			json['ContactAddress'] != null
 				? ContactModel.ContactAddress.fromJson(json['ContactAddress'])
 				: null,
+			json['Tags'] != null
+				? json['Tags']
+						.map((t) =>
+							TransactionTagModel.TransactionTag.fromJson(t)
+						)
+						.toList()
+				: null,
 			json['billSplitId'],
 			json['BillSplit'] != null
 				? BillSplitModel.BillSplit.fromJson(json['BillSplit'])
@@ -85,6 +94,7 @@ export class Transaction extends BaseClass {
 			type: this.type,
 			contactAddressId: this.contactAddressId,
 			ContactAddress: this.ContactAddress,
+			Tags: this.Tags,
 			billSplitId: this.billSplitId,
 			BillSplit: this.BillSplit,
 			originalAddress: this.originalAddress,

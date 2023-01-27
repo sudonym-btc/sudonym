@@ -40,7 +40,7 @@ class TransactionHandlerState extends State<TransactionHandler>
     loggy.i('Transaction callback ${event.entity.id}');
 
     // When receiving a transaction popup the transaction details page
-    if (event.entity.outgoing == false) {
+    if (event.entity.outgoing == false && event.entity.type != 'internal') {
       Navigator.of(context).push(
         MaterialPageRoute(
             builder: (context) => TransactionPage(entity: event.entity),

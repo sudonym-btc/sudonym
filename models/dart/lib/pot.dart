@@ -8,6 +8,7 @@ class Pot extends BaseClass {
   dynamic /* String | null */ currency;
   dynamic /* num | null */ balance;
   dynamic /* num | null */ spendableBalance;
+  dynamic /* bool | null */ roundup;
   dynamic /* PotUserModel . PotUser | dynamic */ PotUser;
   dynamic /* List < PotUserModel . PotUser > | dynamic */ PotUsers;
   Pot(this.id,
@@ -15,6 +16,7 @@ class Pot extends BaseClass {
       this.currency = "BTC",
       this.balance = 0,
       this.spendableBalance = 0,
+      this.roundup = false,
       this.PotUser,
       this.PotUsers])
       : super() {
@@ -27,6 +29,7 @@ class Pot extends BaseClass {
         json["currency"],
         json["balance"],
         json["spendableBalance"],
+        json["roundup"],
         json["PotUser"] != null
             ? PotUserModel.PotUser.fromJson(json["PotUser"])
             : null,
@@ -44,6 +47,7 @@ class Pot extends BaseClass {
       "currency": this.currency,
       "balance": this.balance,
       "spendableBalance": this.spendableBalance,
+      "roundup": this.roundup,
       "PotUser": this.PotUser != null ? this.PotUser.toJson() : null,
       "PotUsers": this.PotUsers.map((i) => i.toJson()).toList()
     };

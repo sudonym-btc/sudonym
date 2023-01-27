@@ -8,6 +8,7 @@ export class Pot extends BaseClass {
 		public currency: string | null = 'BTC',
 		public balance: number | null = 0,
 		public spendableBalance: number | null = 0,
+		public roundup: boolean | null = false,
 		public PotUser: PotUserModel.PotUser | any,
 		public PotUsers: PotUserModel.PotUser[] | any
 	) {
@@ -21,6 +22,7 @@ export class Pot extends BaseClass {
 			json['currency'],
 			json['balance'],
 			json['spendableBalance'],
+			json['roundup'],
 			json['PotUser'] != null
 				? PotUserModel.PotUser.fromJson(json['PotUser'])
 				: null,
@@ -39,6 +41,7 @@ export class Pot extends BaseClass {
 			currency: this.currency,
 			balance: this.balance,
 			spendableBalance: this.spendableBalance,
+			roundup: this.roundup,
 			PotUser: this.PotUser != null ? this.PotUser.toJson() : null,
 			PotUsers: this.PotUsers.map((i) => i.toJson()).toList(),
 		};

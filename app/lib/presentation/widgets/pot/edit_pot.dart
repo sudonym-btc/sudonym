@@ -69,6 +69,9 @@ class EditPotFormState extends State<EditPotForm> {
                   validators: [Validators.required, Validators.maxLength(21)]),
               'currency': FormControl<String>(
                   value: widget.entity?.currency ?? 'BTC',
+                  validators: [Validators.required]),
+              'roundup': FormControl<bool>(
+                  value: widget.entity?.roundup ?? false,
                   validators: [Validators.required])
             }),
         builder: (BuildContext context, state) => Column(
@@ -102,7 +105,15 @@ class EditPotFormState extends State<EditPotForm> {
                       .toList(),
                 ),
                 const VertDivider(2),
-                Info(AppLocalizations.of(context)!.potCurrencyDescription)
+                Info(AppLocalizations.of(context)!.potCurrencyDescription),
+                const VertDivider(4),
+                ReactiveCheckboxListTile(
+                  title: Text(AppLocalizations.of(context)!.roundupPot),
+                  subtitle:
+                      Text(AppLocalizations.of(context)!.roundupPotDescription),
+                  formControlName: 'roundup',
+                  contentPadding: EdgeInsets.zero,
+                )
               ],
             ));
   }

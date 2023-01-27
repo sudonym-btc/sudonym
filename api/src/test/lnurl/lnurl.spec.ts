@@ -305,7 +305,7 @@ scaffoldGroup('LnUrl', (scaffold) => {
 							);
 							throw new Error();
 						} catch (e) {
-							expect(e instanceof LNURLProtocolError).toBe(true);
+							expect(e).toBeInstanceOf(LNURLProtocolError);
 							expect(e.data).toBe('This is the reason');
 						}
 
@@ -407,10 +407,6 @@ scaffoldGroup('LnUrl', (scaffold) => {
 										{
 											success: true,
 											data: tag,
-										},
-										{
-											success: true,
-											data: responseTag,
 										},
 									],
 								})

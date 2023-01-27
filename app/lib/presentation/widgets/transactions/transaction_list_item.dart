@@ -97,6 +97,9 @@ getTitle(BuildContext context, Transaction entity) {
   } else if (entity.type == 'onchain') {
     if (entity.outgoing) return AppLocalizations.of(context)!.spentOnChain;
     return AppLocalizations.of(context)!.receivedOnChain;
+  } else if (entity.Tags.map((t) => t.tagId).contains(TRANSACTION_TAGS.keys
+      .firstWhere((element) => TRANSACTION_TAGS[element] == 'roundup'))) {
+    return AppLocalizations.of(context)!.roundupPotPayment;
   }
 
   return '';

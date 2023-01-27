@@ -173,5 +173,8 @@
 	"moveLeft": "Move left",
 	"moveRight": "Move right",
 	"mustBeValidAddress": "Must be a valid lightning, onchain or lnurl address",
-	"mustBeValidLightningAddress": "Must be a valid lightning address"
+	"mustBeValidLightningAddress": "Must be a valid lightning address",
+	"roundupPot": "Round up pot",
+	"roundupPotDescription": "Whenever you make a payment from another pot, we will round it up to the nearest dollar and deposit the rest into this pot.",
+	"roundupPotPayment": "Roundup payment"
 }

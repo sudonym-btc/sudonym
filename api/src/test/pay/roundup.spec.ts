@@ -1,4 +1,4 @@
-import { MSATOSHIS } from '@sudonym/models';
+import { MSATOSHIS, TRANSACTION_TAGS } from '@sudonym/models';
 import { runAsUser } from 'helper/context-request';
 import { PotService } from 'module/pot/pot.service';
 import { Transaction } from 'module/transaction/transaction.model';
@@ -29,6 +29,50 @@ scaffoldGroup('Roundup', (scaffold) => {
 		});
 		return t;
 	};
+
+	scaffoldTest(
+		scaffold,
+		'should not create roundup payments for roundup payments',
+		async (entities) => {
+			const roundUpPot = await runAsUser(entities.user[0], async () => {
+				const { entity: pot } = await scaffold.app
+					.get(PotService)
+					.create({
+						name: 'Roundup',
+						currency: 'BTC',
+						roundup: true,
+					});
+				expect(pot.PotUser.index).toBe(2);
+				return pot;
+			});
+
+			attempt(entities, {
+				amount: 0.5,
+				currencyCode: 'USD',
+				Tags: [
+					{
+						tagId: parseInt(
+							Object.keys(TRANSACTION_TAGS).find(
+								(key) => TRANSACTION_TAGS[key] == 'roundup'
+							)
+						),
+					},
+				],
+			});
+
+			await new Promise((res, rej) => {
+				setTimeout(res, 1000);
+				firstValueFrom(
+					scaffold.app
+						.get(TransactionService)
+						.onAfterCreated.pipe(
+							filter((x) => x.potId == roundUpPot.id)
+						)
+				).then(rej);
+			});
+		}
+	);
+
 	scaffoldTest(
 		scaffold,
 		'should create child payment into roundup pot',

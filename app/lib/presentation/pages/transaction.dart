@@ -142,7 +142,9 @@ class _OutgoingComplete extends _TransactionStatusPage {
             if (shouldDisplaySplitBill) _SplitBillSection(transaction)
           ]),
           VertDivider(2),
-          _TransactionInfo(transaction)
+          _TransactionInfo(transaction),
+          VertDivider(2),
+          _ChildTransactions(transaction)
         ]),
         actions: ButtonBar(children: [
           Button(
@@ -395,5 +397,14 @@ class _TransactionInfo extends StatelessWidget {
                 date: transaction.createdAt,
               )),
         ]);
+  }
+}
+
+class _ChildTransactions extends StatelessWidget {
+  final Transaction transaction;
+  const _ChildTransactions(this.transaction);
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

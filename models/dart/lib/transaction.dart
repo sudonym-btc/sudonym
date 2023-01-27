@@ -2,6 +2,7 @@ import "base-class.dart" show BaseClass;
 import "bill-split.dart" as BillSplitModel;
 import "contact-address.dart" as ContactModel;
 import "pot.dart" as PotModel;
+import "transaction-tag.dart" as TransactionTagModel;
 
 class Transaction extends BaseClass {
   num id;
@@ -17,6 +18,7 @@ class Transaction extends BaseClass {
   dynamic /* String | null */ type;
   dynamic /* num | null */ contactAddressId;
   dynamic /* ContactModel . ContactAddress | null */ ContactAddress;
+  dynamic /* List < TransactionTagModel . TransactionTag > | null */ Tags;
   dynamic /* num | null */ billSplitId;
   dynamic /* BillSplitModel . BillSplit | null */ BillSplit;
   dynamic /* String | null */ originalAddress;
@@ -44,6 +46,7 @@ class Transaction extends BaseClass {
       this.type,
       this.contactAddressId,
       this.ContactAddress,
+      this.Tags,
       this.billSplitId,
       this.BillSplit,
       this.originalAddress,
@@ -77,6 +80,11 @@ class Transaction extends BaseClass {
         json["ContactAddress"] != null
             ? ContactModel.ContactAddress.fromJson(json["ContactAddress"])
             : null,
+        json["Tags"] != null
+            ? json["Tags"]
+                .map((t) => TransactionTagModel.TransactionTag.fromJson(t))
+                .toList()
+            : null,
         json["billSplitId"],
         json["BillSplit"] != null
             ? BillSplitModel.BillSplit.fromJson(json["BillSplit"])
@@ -109,6 +117,7 @@ class Transaction extends BaseClass {
       "type": this.type,
       "contactAddressId": this.contactAddressId,
       "ContactAddress": this.ContactAddress,
+      "Tags": this.Tags,
       "billSplitId": this.billSplitId,
       "BillSplit": this.BillSplit,
       "originalAddress": this.originalAddress,

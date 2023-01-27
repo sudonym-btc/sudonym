@@ -9,6 +9,7 @@ import { PotUser } from 'module/pot-user/pot-user.model';
 import { Pot } from 'module/pot/pot.model';
 import { Receiver } from 'module/receiver/receiver.model';
 import { Sender } from 'module/sender/sender.model';
+import { TransactionTag } from 'module/transaction-tag/transaction-tag.model';
 import { User } from 'module/user/user.model';
 import { DataTypes } from 'sequelize';
 import {
@@ -21,6 +22,7 @@ import {
 	DataType,
 	Default,
 	ForeignKey,
+	HasMany,
 	HasOne,
 	PrimaryKey,
 	Table,
@@ -88,6 +90,9 @@ export class Transaction extends BaseModel implements Models.Transaction {
 	@AllowNull(true)
 	@Column
 	contactAddressId: number;
+
+	@HasMany(() => TransactionTag)
+	Tags: TransactionTag[];
 
 	// @BelongsTo(() => BillSplit)
 	// BillSplit: BillSplit;
@@ -223,6 +228,11 @@ export class Transaction extends BaseModel implements Models.Transaction {
 				{
 					model: Receiver,
 					as: 'Receiver',
+				},
+
+				{
+					model: TransactionTag,
+					as: 'Tags',
 				},
 			],
 		}),

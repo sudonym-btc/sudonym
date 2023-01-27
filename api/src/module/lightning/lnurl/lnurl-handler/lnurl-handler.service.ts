@@ -67,7 +67,7 @@ export class LnUrlHandlerService {
 					},
 				});
 
-				console.log(description);
+				this.logger.log(description);
 
 				// Create a new receiver, this time bolt11 not lnurl
 				const { entity: receiver } = await this.receiveService.create({

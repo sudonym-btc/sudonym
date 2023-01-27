@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { PartialType } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 import { BaseController } from '../base.controller';
 import { Pot } from './pot.model';
 import { PotService } from './pot.service';
@@ -11,6 +11,9 @@ export class CreatePot {
 
 	@IsString()
 	currency: string;
+
+	@IsBoolean()
+	roundup: boolean;
 }
 
 export class UpdatePot extends PartialType(CreatePot) {}

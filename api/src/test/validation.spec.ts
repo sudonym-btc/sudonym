@@ -1,9 +1,11 @@
 import { runAsUser } from 'helper/context-request';
 import { ActionService } from 'module/action/action.service';
 import { AddressParser } from 'module/action/address-parser.service';
+import { LnurlOperationsService } from 'module/action/lnurl-operations.service';
 import { ContactService } from 'module/contact/contact.service';
 import { ReceiverService } from 'module/receiver/receiver.service';
 import * as request from 'supertest';
+import { MockLnurlOperationsService } from './mock/classes';
 import { scaffoldGroup } from './mock/scaffold-group';
 import { scaffoldTest } from './mock/scaffold-test';
 
@@ -66,6 +68,16 @@ scaffoldGroup('Validation', (scaffold) => {
 		scaffold,
 		'should classify address types correctly',
 		async () => {
+			jest.spyOn(
+				scaffold.app.get(LnurlOperationsService),
+				'fetchRemoteLnUrl'
+			).mockImplementation(
+				(
+					scaffold.app.get(
+						LnurlOperationsService
+					) as MockLnurlOperationsService
+				).mockFetchRemoteLnUrl
+			);
 			const addresses = {
 				lightningaddress: [
 					'patrick@sudonym.app',
@@ -80,6 +92,7 @@ scaffoldGroup('Validation', (scaffold) => {
 				],
 				bolt11: [
 					'bitcoin:bcrt1q9fuwd0amk2cz8n5g6h85xgjfjpkf6rn22k84st?amount=2.09&lightning=lnbc1p3kggh9pp5ax50adfnnltg0a2evqapx9dfxuyv6904z880ytu2ywmx6aktxfxqdqu2askcmr9wssx7e3q2dshgmmndp5scqzpgxqyz5vqsp5353ne50r6tt5aprppnhnyn3mj3aqyc6pz8vm70543z54x09qxr6s9qyyssq2z9nvel938mvptmk27qnfa6yza6xx8l67sv4lvyju26s7208njtz2fm8hmmvhf675m4jur7z9j67jx3z0zetzlwcnshu7gmngdg6g4qpvn00xh',
+					'bitcoin:bc1qvvxn9v3xq3yxdrq482nd5h7mhlpxa6faxl68ja?amount=0.00001&lightning=lnbc10u1p3a9cj9pp5e8c6qpqpe5f5d8ys2w2mp4u24j5dl8v00lgnxvr5kvmejk05xmvqdqqcqzpgxqyz5t7sp52rkdju08sqn8f5duaf8m5mfx8glrd7xx8nwghkvvreseavsmutgq9qyyssqt9utw4426wk092sep8jjttssn8vxajt8yqq3hc4exjx395xm870yx4fxddnxyjtfr7x5u42qkjgl4f09x4unf35hfnwldqxhyadg4mqqtsdlcz',
 					'lightning:lnbc1p3kggh9pp5ax50adfnnltg0a2evqapx9dfxuyv6904z880ytu2ywmx6aktxfxqdqu2askcmr9wssx7e3q2dshgmmndp5scqzpgxqyz5vqsp5353ne50r6tt5aprppnhnyn3mj3aqyc6pz8vm70543z54x09qxr6s9qyyssq2z9nvel938mvptmk27qnfa6yza6xx8l67sv4lvyju26s7208njtz2fm8hmmvhf675m4jur7z9j67jx3z0zetzlwcnshu7gmngdg6g4qpvn00xh', // without amount
 					'lnbc1p3kggh9pp5ax50adfnnltg0a2evqapx9dfxuyv6904z880ytu2ywmx6aktxfxqdqu2askcmr9wssx7e3q2dshgmmndp5scqzpgxqyz5vqsp5353ne50r6tt5aprppnhnyn3mj3aqyc6pz8vm70543z54x09qxr6s9qyyssq2z9nvel938mvptmk27qnfa6yza6xx8l67sv4lvyju26s7208njtz2fm8hmmvhf675m4jur7z9j67jx3z0zetzlwcnshu7gmngdg6g4qpvn00xh', // without amount
 					'lightning:lnbcrt9849383230p1p3kgwy7sp5t5e3n4w60dxntfvejf7xssscn9r4rs533a937mgeyejuhaqragtspp55qjjg0g67txkkxd2ttay0r0f2me3ggq9eghfrepy9k9kxamlxdhqdp6x93k2en98yckgtf5xymxxtf5xe3k2tfcx9nxztf3vyerzdrpxdjr2vrxvyxqyjw5qcqp29qyysgqsyjr8pzfzejavzuec9zx502v68vp47vennf5cctt3nqgllym6s9xsvjy7ced9sz7yy80qldpgyfkvaxqwtqn7dtawf0uvrakl7kcw7gpff0gxy', // with amount
@@ -97,7 +110,6 @@ scaffoldGroup('Validation', (scaffold) => {
 					expect(
 						scaffold.app.get(AddressParser).getAddressType(addr)[0]
 					).toBe(section);
-
 					const parse = await scaffold.app
 						.get(ActionService)
 						.parse(addr);
@@ -105,5 +117,5 @@ scaffoldGroup('Validation', (scaffold) => {
 				}
 			}
 		}
-	);
+	); //todo should check for query parameters on each type of tx
 });
