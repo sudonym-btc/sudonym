@@ -35,11 +35,9 @@ class TransactionListState extends State<TransactionList>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    loggy.v('Changed app state registered in transaction list');
     if (state == AppLifecycleState.resumed) {
-      print(getIt<CurrentPotService>().pot?.id.toString());
-      print(widget.pot.id);
       if (getIt<CurrentPotService>().pot?.id == widget.pot.id) {
+        loggy.d('Changed app state registered in transaction list');
         list.loadPrevious();
       }
     }

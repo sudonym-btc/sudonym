@@ -109,5 +109,8 @@
 	"moveLeft": "Nach links schieben",
 	"moveRight": "Nach rechts schieben",
 	"mustBeValidAddress": "Muss eine gültige Lightning-, Onchain- oder Lnurl-Adresse sein",
-	"mustBeValidLightningAddress": "Muss eine gültige Lightning-Adresse sein"
+	"mustBeValidLightningAddress": "Muss eine gültige Lightning-Adresse sein",
+	"roundupPot": "Sparschwein wallet",
+	"roundupPotDescription": "Wann immer Sie eine Zahlung aus einem anderen Topf tätigen, runden wir diese auf den nächsten Dollar auf und zahlen den Rest in diesen Topf ein.",
+	"roundupPotPayment": "Aufgerundete zahlung"
 }

@@ -28,7 +28,7 @@ class _QRPageState extends State<QRPage> {
     super.initState();
 
     controller.barcodes
-        .map((event) => event.rawValue)
+        .map((event) => event.barcodes.first.rawValue)
         .distinct()
         .listen((code) {
       getIt<ActionTriggerService>().trigger(
@@ -39,12 +39,12 @@ class _QRPageState extends State<QRPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         child: Stack(children: [
           MobileScanner(
-              controller: controller,
-              allowDuplicates: false,
-              onDetect: (barcode, args) {}),
+            controller: controller,
+            onDetect: (barcodes) => {},
+          ),
           SafeArea(
               child: Scaffold(
                   appBar: AppBar(

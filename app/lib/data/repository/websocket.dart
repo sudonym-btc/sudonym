@@ -109,7 +109,6 @@ class WebsocketImpl extends Websocket
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    loggy.v('Changed app state registered in websocket');
     if (state == AppLifecycleState.resumed) {
       loggy.i('Websocket reconnecting due to state change');
       forceReconnect();

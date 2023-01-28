@@ -109,5 +109,8 @@
 	"moveLeft": "Mover a la izquierda",
 	"moveRight": "Mover a la derecha",
 	"mustBeValidAddress": "Debe ser una dirección lightning, onchain o lnurl válida",
-	"mustBeValidLightningAddress": "Debe ser una dirección lightning válida"
+	"mustBeValidLightningAddress": "Debe ser una dirección lightning válida",
+	"roundupPot": "Billetera hucha",
+	"roundupPotDescription": "Cada vez que realiza un pago de otra billetera, lo redondeamos al dólar más cercano y pagamos el resto en esa billetera.",
+	"roundupPotPayment": "Pago redondeado"
 }

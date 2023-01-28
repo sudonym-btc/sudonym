@@ -127,13 +127,13 @@ class _CurrencyInputState extends FormFieldState<CurrencyValue> {
                   helperText: BlocProvider.of<CurrencyInputCubit>(context)
                           .options
                           .showAltCurrency
-                      ? (state.altLoading
+                      ? (state.altLoading || state.altVal == null
                           ? '...'
                           : FormatCurrency().format(
                               BlocProvider.of<CurrencyInputCubit>(context)
                                   .options
                                   .currencies[state.altCurrency],
-                              state.altVal))
+                              state.altVal!))
                       : '',
                   prefixText:
                       '${getCurrencySymbol(BlocProvider.of<CurrencyInputCubit>(context).options.currencies[state.currCurrency])}  ',

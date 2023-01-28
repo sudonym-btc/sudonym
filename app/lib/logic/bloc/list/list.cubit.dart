@@ -146,6 +146,8 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
     await onCreated?.cancel();
     await onUpdated?.cancel();
     await onDeleted?.cancel();
+    emit(state.copyWith(
+        loading: false, loadingPrevious: false, loadingNext: false));
     return super.close();
   }
 

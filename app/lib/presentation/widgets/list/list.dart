@@ -35,7 +35,7 @@ class _ListWidgetState extends State<ListWidget>
   late ListCubit c;
   late final AnimationController _previousLoadingController =
       AnimationController(
-    duration: const Duration(milliseconds: 50),
+    duration: const Duration(milliseconds: 250),
     vsync: this,
   );
   late final Animation<double> _previousLoadingAnimation = CurvedAnimation(
@@ -43,7 +43,7 @@ class _ListWidgetState extends State<ListWidget>
     curve: Curves.easeInOut,
   );
   late final AnimationController _nextLoadingController = AnimationController(
-    duration: const Duration(milliseconds: 50),
+    duration: const Duration(milliseconds: 250),
     vsync: this,
   );
   late final Animation<double> _nextLoadingAnimation = CurvedAnimation(
@@ -86,16 +86,33 @@ class _ListWidgetState extends State<ListWidget>
         create: (_) => c,
         child: BlocConsumer<ListCubit<dynamic>, ListCubitState<dynamic>>(
           listener: (context, state) {
-            if (state.loadingPrevious) {
-              _previousLoadingController.forward();
-            } else {
-              _previousLoadingController.reverse();
+            void executePrev(status) {
+              if (state.loadingPrevious) {
+                _previousLoadingController.forward();
+              } else {
+                _previousLoadingController.reverse();
+              }
+              _previousLoadingController.removeStatusListener(executePrev);
             }
 
-            if (state.loadingNext) {
-              _nextLoadingController.forward();
+            void executeNext(status) {
+              if (state.loadingNext) {
+                _nextLoadingController.forward();
+              } else {
+                _nextLoadingController.reverse();
+              }
+              _nextLoadingController.removeStatusListener(executeNext);
+            }
+
+            if (_previousLoadingController.isAnimating) {
+              _previousLoadingController.addStatusListener(executePrev);
             } else {
-              _nextLoadingController.reverse();
+              executePrev(null);
+            }
+            if (_nextLoadingController.isAnimating) {
+              _nextLoadingController.addStatusListener(executeNext);
+            } else {
+              executeNext(null);
             }
           },
           builder: (context, state) {

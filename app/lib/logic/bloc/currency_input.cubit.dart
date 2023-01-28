@@ -85,6 +85,8 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     CurrencyValue? previousInput;
 
     options.controller!.maskedInputStream.stream.listen((event) {
+      loggy.v('Manual input');
+      loggy.v(event);
       options.controller!.inputStream.add(event);
     });
 
@@ -109,6 +111,9 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
         // .debounceTime(options.debounceOutput!)
         .switchMap(enforceConstraints)
         .doOnData(quietInputUpdate)
+        .doOnData((event) {
+          loggy.d('Input update ' + event.toString());
+        })
         .listen((event) {
           options.controller!.outputStream.add(event);
           options.controller!.processingStream.add(event);
@@ -155,16 +160,19 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   }
 
   setCurrentCurrency(int i) {
-    num newCurrVal = state.altVal;
-
     int newCurr = i >= options.currencies.length ? 0 : i;
     safeEmit(state.copyWith(
         currCurrency: newCurr,
         altCurrency:
             newCurr + 1 >= options.currencies.length ? 0 : newCurr + 1));
     createController();
-    setValue(CurrencyValue(newCurrVal, getCurrentCurrency()));
     clickValueBase = getCurrentCurrency() == 'BTC' ? 1000 : 1;
+
+    // If next currency value is set, convert current val
+    if (state.altVal != null) {
+      num newCurrVal = state.altVal!;
+      setValue(CurrencyValue(newCurrVal, getCurrentCurrency()));
+    }
   }
 
   toggleCurrency() {
@@ -346,7 +354,7 @@ class CurrencyInputCubitState extends Equatable {
   final int currCurrency;
   final int altCurrency;
   final num currVal;
-  final num altVal;
+  final num? altVal;
   final Map<String, dynamic>? error;
 
   const CurrencyInputCubitState({
@@ -361,7 +369,7 @@ class CurrencyInputCubitState extends Equatable {
     this.currCurrency = 0,
     this.altCurrency = 1,
     this.currVal = 0,
-    this.altVal = 0,
+    this.altVal,
     this.error,
   });
 

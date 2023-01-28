@@ -14,7 +14,7 @@
 		"deploy:development:clear": "parallelshell 'minikube delete --all' 'npm run clearcloudcache'",
 		"build:homepage": "DOCKER_BUILDKIT=1 docker buildx build --platform linux/amd64 -t gcr.io/$(gcloud config get project)/homepage -f infrastructure/homepage.Dockerfile ./homepage --push -t gcr.io/$(gcloud config get project)/homepage",
 		"prewatch:api": "echo $(killall ksync) && echo $(killall syncthing)",
-		"watch:api": "echo $(ksync init) && (ksync watch &) && sleep 5 && ksync delete --all && ksync create --reload=false --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
+		"watch:api": "echo $(ksync init) && (ksync watch > /dev/null &) && sleep 5 && ksync delete --all && ksync create --reload=false --selector=app=development-api $(pwd)/api/src /usr/src/app/api/src && kubectl logs --follow --selector=app=development-api",
 		"watch:models": "ksync create --selector=app=development-api $(pwd)/models /usr/src/app/models",
 		"watch:wait": "bash -c 'while ksync get | grep watching > /dev/null; do sleep 1 echo \"working...\" done'",
 		"minikube:dashboard": "pkill 'minikube dashboard' || true && minikube dashboard >/dev/null &",
