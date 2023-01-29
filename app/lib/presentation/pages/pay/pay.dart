@@ -7,7 +7,7 @@ import 'package:sudonym/data/index.dart';
 import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/index.dart' hide CurrencyValue;
 
 class SendPage extends StatefulWidget {
   final Pot pot;

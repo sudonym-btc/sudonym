@@ -7,7 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/index.dart' hide CurrencyValue;
 
 class EditBillSplit extends StatelessWidget {
   final BillSplit entity;

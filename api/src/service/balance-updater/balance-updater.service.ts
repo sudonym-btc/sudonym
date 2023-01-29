@@ -1,5 +1,5 @@
-import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
-import { BalanceLowError } from '@sudonym/models';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { BalanceLowError, CurrencyValue } from '@sudonym/models';
 import { CurrencyService } from 'module/currency/currency.service';
 import { PotService } from 'module/pot/pot.service';
 import { TransactionService } from 'module/transaction/transaction.service';
@@ -35,22 +35,30 @@ export class BalanceUpdaterService {
 		});
 		this.transactionService.afterCreate.hook(async ({ entity }) => {
 			const pot = await this.potService.findOne(entity.potId);
-			let newBalance = pot.balance;
-			let newSpendableBalance = pot.spendableBalance;
+			let newBalance = parseFloat(pot.balance.toFixed(8));
+			let newSpendableBalance = parseFloat(
+				pot.spendableBalance.toFixed(8)
+			);
 			const amountInPotCurrency = (
 				await this.currencyService.convert(
 					entity.currencyCode,
 					pot.currency,
 					entity.totalAmount || entity.amount
+					// todo: transaciton.createdAt
 				)
 			).amount;
 
 			if (entity.outgoing) {
-				newBalance -= amountInPotCurrency;
-				newSpendableBalance -= amountInPotCurrency;
+				newBalance -= parseFloat(amountInPotCurrency.toFixed(8));
+				newSpendableBalance -= parseFloat(
+					amountInPotCurrency.toFixed(8)
+				);
 
 				if (newBalance < 0 || newSpendableBalance < 0) {
-					throw new HttpException(new BalanceLowError().name, 400);
+					throw new BalanceLowError(
+						new CurrencyValue(entity.amount, entity.currencyCode),
+						new CurrencyValue(pot.spendableBalance, pot.currency)
+					);
 				}
 			} else {
 				newBalance += amountInPotCurrency;

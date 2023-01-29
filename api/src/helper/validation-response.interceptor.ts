@@ -17,6 +17,8 @@ export class ValidationErrorInterceptor implements NestInterceptor {
 		return next.handle().pipe(
 			catchError((err) => {
 				if (err instanceof ValidationError || err.errors) {
+					this.logger.warn(err);
+
 					err.errors.map((e) => {
 						e.property = e.path;
 						return e;
@@ -28,7 +30,6 @@ export class ValidationErrorInterceptor implements NestInterceptor {
 							})
 					);
 				}
-				this.logger.warn(err);
 				return throwError(() => err);
 			})
 		);

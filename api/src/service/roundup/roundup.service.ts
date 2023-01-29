@@ -63,6 +63,8 @@ export class RoundupService {
 						transaction.createdAt
 					);
 					const leftOver = Math.ceil(usd.amount) - usd.amount;
+					if (leftOver <= 0) return;
+					// test
 					for (const pot of pots) {
 						const roundupOutgoing =
 							await this.transactionService.create({

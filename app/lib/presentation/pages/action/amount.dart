@@ -4,7 +4,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:sudonym/config/logger.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
-import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/index.dart' hide CurrencyValue;
 
 class AmountPage<T extends ActionTypeWithAmount> extends StatefulWidget
     with AmountLogger {

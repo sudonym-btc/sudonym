@@ -11,7 +11,7 @@ import 'package:sudonym/injection.dart';
 import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym/presentation/pages/action/action_flow.dart';
-import 'package:sudonym.models/index.dart';
+import 'package:sudonym.models/index.dart' hide CurrencyValue;
 
 extension EitherX<L, R> on Either<L, R> {
   R asRight() => (this as Right).value; //

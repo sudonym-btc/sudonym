@@ -176,5 +176,16 @@
 	"mustBeValidLightningAddress": "Must be a valid lightning address",
 	"roundupPot": "Round up pot",
 	"roundupPotDescription": "Whenever you make a payment from another pot, we will round it up to the nearest dollar and deposit the rest into this pot.",
-	"roundupPotPayment": "Roundup payment"
+	"roundupPotPayment": "Roundup payment",
+	"balanceLowError": "Balance low. Tried to spend {amount} with only {amountLeft} available",
+	"@balanceLowError": {
+		"placeholders": {
+			"amount": {
+				"type": "String"
+			},
+			"amountLeft": {
+				"type": "String"
+			}
+		}
+	}
 }

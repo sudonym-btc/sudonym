@@ -10,6 +10,7 @@ export "bolt11.dart";
 export "contact.dart";
 export "contact-address.dart";
 export "created-or-updated.dart";
+export "currency-value.dart";
 export "errors.dart";
 export "event.dart";
 export "lightning-transaction.dart";

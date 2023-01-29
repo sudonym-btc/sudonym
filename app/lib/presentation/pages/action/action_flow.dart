@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide ButtonBar;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sudonym/logic/index.dart';
 import 'package:sudonym/presentation/index.dart';
 import 'package:sudonym.models/index.dart';
 
@@ -62,7 +63,11 @@ StatusPage errorPageGenerator(BuildContext context, Object err) {
       content = Text(err.response?.data.data);
     }
     if (err.response?.data is BalanceLowError) {
-      content = Text(err.response?.data.data);
+      content = Text(AppLocalizations.of(context)!.balanceLowError(
+          FormatCurrency().format(err.response?.data.amount.currency,
+              err.response?.data.amount.amount),
+          FormatCurrency().format(err.response?.data.amountLeft.currency,
+              err.response?.data.amountLeft.amount)));
     }
   }
   return StatusPage(
