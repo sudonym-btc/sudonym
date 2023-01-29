@@ -81,25 +81,39 @@ class PotHeaderState extends State<PotHeader> {
                                           EditPot(entity: widget.entity))),
                               child: CustomPadding(
                                   multiplierWidth: 2,
-                                  child: Column(
+                                  child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Subtitle(widget.entity.name ?? ''),
-                                        Header(FormatCurrency().format(
-                                            widget.entity.currency,
-                                            widget.entity.spendableBalance)),
-                                        widget.entity.currency == 'BTC'
-                                            ? AmountText(
-                                                amount: widget
-                                                    .entity.spendableBalance,
-                                                fromCurrency:
-                                                    widget.entity.currency,
-                                                toCurrency: 'USD',
-                                                builder: (val) =>
-                                                    Info('≈ $val'),
-                                              )
-                                            : Container()
+                                        Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Subtitle(
+                                                  widget.entity.name ?? ''),
+                                              Header(FormatCurrency().format(
+                                                  widget.entity.currency,
+                                                  widget.entity
+                                                      .spendableBalance)),
+                                              widget.entity.currency == 'BTC'
+                                                  ? AmountText(
+                                                      amount: widget.entity
+                                                          .spendableBalance,
+                                                      fromCurrency: widget
+                                                          .entity.currency,
+                                                      toCurrency: 'USD',
+                                                      builder: (val) =>
+                                                          Info('≈ $val'),
+                                                    )
+                                                  : Container()
+                                            ]),
+                                        // IconButton(
+                                        //     iconSize: iconSize,
+                                        //     color: Colors.grey,
+                                        //     onPressed: () {},
+                                        //     icon: FaIcon(FontAwesomeIcons.pen))
                                       ]))))
                     ]))))
       ]);

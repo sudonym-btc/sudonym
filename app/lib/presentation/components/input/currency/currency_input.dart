@@ -44,10 +44,10 @@ class CurrencyInput extends FormField<CurrencyValue> {
 }
 
 class CurrencyValue extends Equatable {
-  String? id;
+  num id = 0;
   num amount;
   String currency;
-  CurrencyValue(this.amount, this.currency) {
+  CurrencyValue(this.amount, this.currency, [this.id = 0]) {
     amount = num.parse(amount.toStringAsFixed(8));
   }
 

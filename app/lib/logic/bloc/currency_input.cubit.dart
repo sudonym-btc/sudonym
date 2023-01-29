@@ -77,16 +77,16 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   late num id;
 
   num clickValueBase = 1;
+  num changeCount = 0;
 
   CurrencyInputCubit(this.options)
       : super(CurrencyInputCubitState(options: options)) {
     id = new DateTime.now().millisecondsSinceEpoch;
     setCurrentCurrency(options.currencies.indexOf(options.initialCurrency!));
-    CurrencyValue? previousInput;
 
     options.controller!.maskedInputStream.stream.listen((event) {
-      loggy.v('Manual input');
-      loggy.v(event);
+      loggy.d('Manual input');
+      loggy.d(event);
       options.controller!.inputStream.add(event);
     });
 
@@ -102,17 +102,15 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
         .listen((event) {});
 
     options.controller!.inputStream.stream
-        .doOnData((event) {
-          if (previousInput == event) {
-            options.controller!.processingStream.add(previousInput!);
-          }
-          previousInput = event;
-        })
         // .debounceTime(options.debounceOutput!)
-        .switchMap(enforceConstraints)
+        .map((event) {
+          event.id = changeCount++;
+          return event;
+        })
         .doOnData(quietInputUpdate)
+        .switchMap(enforceConstraints)
         .doOnData((event) {
-          loggy.d('Input update ' + event.toString());
+          loggy.d('Input has been updated to $event');
         })
         .listen((event) {
           options.controller!.outputStream.add(event);
@@ -152,7 +150,6 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
   }
 
   quietInputUpdate(CurrencyValue val) {
-    // print('Quietly updating text' + val.amount.toString());
     controller!.removeListener(inputChangeHandler);
     controller!
         .updateValue(getDisplayValue(val.currency, val.amount).toDouble());
@@ -207,16 +204,14 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
 
     positiveEnabled =
         numToCurrentPrecision(val.amount) < numToCurrentPrecision(max);
-    // print(numToCurrentPrecision(val.amount));
-    // print(numToCurrentPrecision(max));
     if (!positiveEnabled) {
-      // print('Quietly updating right here to ' + max.toString());
+      // loggy.d('Quietly updating right here to ' + max.toString());
       quietInputUpdate(CurrencyValue(max,
           getCurrentCurrency())); // Must set true value as dislay value is vague
-      response = CurrencyValue(max, getCurrentCurrency());
+      response = CurrencyValue(max, getCurrentCurrency(), val.id);
     } else if (!negativeEnabled) {
       // Dont update the input here though, because 0 must be available to start typing new number
-      response = CurrencyValue(min, getCurrentCurrency());
+      response = CurrencyValue(min, getCurrentCurrency(), val.id);
     }
 
     safeEmit(state.copyWith(
@@ -238,11 +233,10 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     yield value;
   }
 
-  setValue(CurrencyValue val) async {
-    val.id = new DateTime.now().millisecondsSinceEpoch.toString();
+  Future<void> setValue(CurrencyValue val) async {
     options.controller!.inputStream.add(val);
     await options.controller!.processingStream.stream
-        .firstWhere((event) => event.id == val.id);
+        .firstWhere((event) => event.id >= val.id);
   }
 
   setEnabled(bool enabled) {

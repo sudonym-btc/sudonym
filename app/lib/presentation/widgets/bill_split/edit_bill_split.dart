@@ -286,14 +286,14 @@ class _EditBillSplitState extends State<_EditBillSplit> {
   }
 
   setMax() async {
-    controllers.asMap().forEach((key, value) async {
+    controllers.asMap().forEach((key, controller) async {
       if (key > 0) {
-        value.cubit.options.min = [CurrencyValue(0.00000001, 'BTC')];
+        controller.cubit.options.min = [CurrencyValue(0.00000001, 'BTC')];
       }
-      value.cubit.options.max = [
+      controller.cubit.options.max = [
         CurrencyValue(
             max(
-                (value.changed
+                (controller.changed
                         ? widget.entity!.BillSplitParticipants[key].amount
                         : 0) +
                     calcAmountLeft(widget.entity, changed),
@@ -304,8 +304,8 @@ class _EditBillSplitState extends State<_EditBillSplit> {
       setState(
         () {},
       );
-      value.cubit
-          .enforceConstraints(value.cubit.options.controller!.value)
+      controller.cubit
+          .enforceConstraints(controller.cubit.options.controller!.value)
           .listen((event) {});
     });
   }

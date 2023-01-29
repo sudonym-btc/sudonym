@@ -189,8 +189,7 @@ class ActionTriggerService with ActionLogger {
 
     return (Withdraw a) => Stream.fromIterable([a])
         .map((event) {
-          print(event.toJson());
-          print('------');
+          loggy.d(event.toJson());
           event.potId = actionStream.pot?.id;
           return event;
         })

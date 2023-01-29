@@ -41,7 +41,6 @@ class ReceiverCubit
 
   @override
   Future<void> close() {
-    print('closing receiver cubit');
     onReceived.close();
     return super.close();
   }

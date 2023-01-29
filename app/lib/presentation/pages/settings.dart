@@ -144,6 +144,7 @@ class LightningSectionState extends State<LightningSection> {
                             hintText: 'satoshi',
                             labelText: AppLocalizations.of(context)!.address,
                             suffixText: '@${getIt<Config>().domain}')),
+                    VertDivider()
                   ],
                 );
               })

@@ -28,7 +28,7 @@ ThemeData getTheme({bool light = true}) {
       progressIndicatorTheme: const ProgressIndicatorThemeData(color: primary),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-              minimumSize: const MaterialStatePropertyAll(Size(120, 44)),
+              minimumSize: const MaterialStatePropertyAll(Size(120, 50)),
               textStyle: const MaterialStatePropertyAll(
                   TextStyle(overflow: TextOverflow.fade)),
               elevation: const MaterialStatePropertyAll(0),
@@ -86,7 +86,7 @@ ThemeData getTheme({bool light = true}) {
 }
 
 const padding = 12.0;
-const buttonRadius = 44 / 2;
+const buttonRadius = 50 / 2;
 
 //colors
 const primary = Colors.indigo;
