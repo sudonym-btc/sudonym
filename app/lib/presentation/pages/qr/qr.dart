@@ -65,6 +65,7 @@ class _QRPageState extends State<QRPage> {
                                   controller
                                       .analyzeImage(image.path)
                                       .then((value) {
+                                    print(value);
                                     if (!value) {
                                       SnackBar snackBar = SnackBar(
                                         content: Text(

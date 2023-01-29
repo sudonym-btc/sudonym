@@ -91,6 +91,7 @@ class CurrencyInputCubit extends Cubit<CurrencyInputCubitState>
     });
 
     options.controller!.inputStream.stream
+        .concatWith([options.controller!.outputStream.stream])
         .distinct()
         .doOnData((event) {
           safeEmit(state.copyWith(altLoading: true));

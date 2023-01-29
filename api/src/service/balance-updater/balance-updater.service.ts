@@ -44,7 +44,7 @@ export class BalanceUpdaterService {
 					entity.currencyCode,
 					pot.currency,
 					entity.totalAmount || entity.amount
-					// todo: transaciton.createdAt
+					// todo: transactoon.createdAt
 				)
 			).amount;
 
