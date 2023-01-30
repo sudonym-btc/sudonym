@@ -64,60 +64,70 @@ class ListCubit<T> extends Cubit<ListCubitState> with ListLogger, SafeEmit {
   }
 
   Future<ListCubitState> loadNext() async {
-    if (!state.loading) {
-      loggy.d('Loading next ${_repository.endpoint}');
+    try {
+      if (!state.loading) {
+        loggy.d('Loading next ${_repository.endpoint}');
 
-      safeEmit(state.copyWith(loading: true, loadingNext: true));
+        safeEmit(state.copyWith(loading: true, loadingNext: true));
 
-      var response = await _repository.list(
-          where: {
-            ...where,
-            column: order == 'DESC'
-                ? {'lt': getSmallestId()}
-                : {'lt': getLargestId()}
-          },
-          limit: limit,
-          order: [
-            [...column.replaceAll('\$', '').split('.'), order]
-          ].toList());
-      List filtered = filter(response.data);
-      List elements = [...state.data, ...filtered];
+        var response = await _repository.list(
+            where: {
+              ...where,
+              column: order == 'DESC'
+                  ? {'lt': getSmallestId()}
+                  : {'lt': getLargestId()}
+            },
+            limit: limit,
+            order: [
+              [...column.replaceAll('\$', '').split('.'), order]
+            ].toList());
+        List filtered = filter(response.data);
+        List elements = [...state.data, ...filtered];
 
-      safeEmit(state.copyWith(
-          data: elements,
-          metadata: response.metadata,
-          loading: false,
-          loadingNext: false));
+        safeEmit(state.copyWith(
+            data: elements,
+            metadata: response.metadata,
+            loading: false,
+            loadingNext: false));
+      }
+    } catch (e) {
+      loggy.e(e);
+      safeEmit(state.copyWith(loading: false, loadingNext: false));
     }
     return state;
   }
 
   Future<ListCubitState> loadPrevious() async {
-    if (!state.loading) {
-      loggy.d('Loading previous ${_repository.endpoint}');
+    try {
+      if (!state.loading) {
+        loggy.d('Loading previous ${_repository.endpoint}');
 
-      safeEmit(state.copyWith(loading: true, loadingPrevious: true));
+        safeEmit(state.copyWith(loading: true, loadingPrevious: true));
 
-      var response = await _repository.list(
-          where: {
-            ...where,
-            column: order == 'DESC'
-                ? {'gt': getLargestId()}
-                : {'gt': getSmallestId()}
-          },
-          limit: limit,
-          order: [
-            [...column.replaceAll('\$', '').split('.'), order]
-          ].toList());
+        var response = await _repository.list(
+            where: {
+              ...where,
+              column: order == 'DESC'
+                  ? {'gt': getLargestId()}
+                  : {'gt': getSmallestId()}
+            },
+            limit: limit,
+            order: [
+              [...column.replaceAll('\$', '').split('.'), order]
+            ].toList());
 
-      List filtered = filter(response.data);
-      List elements = [...filtered, ...state.data];
+        List filtered = filter(response.data);
+        List elements = [...filtered, ...state.data];
 
-      safeEmit(state.copyWith(
-          data: elements,
-          metadata: response.metadata,
-          loading: false,
-          loadingPrevious: false));
+        safeEmit(state.copyWith(
+            data: elements,
+            metadata: response.metadata,
+            loading: false,
+            loadingPrevious: false));
+      }
+    } catch (e) {
+      loggy.e(e);
+      safeEmit(state.copyWith(loading: false, loadingPrevious: false));
     }
     return state;
   }
