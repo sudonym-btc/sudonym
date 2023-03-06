@@ -71,6 +71,7 @@ export const databaseProviders = [
 				],
 			});
 			await sequelize.sync({
+				alter: false,
 				force: config.env == 'production' ? false : false,
 			});
 			return sequelize;
