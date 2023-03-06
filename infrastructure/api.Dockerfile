@@ -8,8 +8,7 @@ RUN apk update
 RUN apk add --no-cache --virtual build-dependencies g++ make py3-pip libzmq zeromq-dev zeromq 
 RUN npm set progress=false \
     && npm config set fetch-retry-mintimeout 6000000 \
-    && npm config set fetch-retry-maxtimeout 6000000 \
-    && npm config set timeout 6000000
+    && npm config set fetch-retry-maxtimeout 6000000 
 ENV NODE_ENV development
 
 # Install packages

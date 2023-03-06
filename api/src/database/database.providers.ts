@@ -71,7 +71,7 @@ export const databaseProviders = [
 				],
 			});
 			await sequelize.sync({
-				alter: false,
+				alter: false, // ERR: too many keys specified; max 64 keys allowed, change unique keys to be set at table level to prevent recreation every time OR update to sequelize 7 https://github.com/sequelize/sequelize/issues/9653
 				force: config.env == 'production' ? false : false,
 			});
 			return sequelize;
