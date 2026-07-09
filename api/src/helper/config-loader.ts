@@ -9,9 +9,15 @@ export const CONFIG_FOLDER = __dirname + '/../config';
 export async function downloadFiles(
 	force = false,
 	alreadyDone = () =>
-		['mock', 'development'].includes(getConfig().env) &&
+		['mock', 'development', 'test'].includes(getConfig().env) ||
 		fs.existsSync(CONFIG_FOLDER + '/service-account.json')
 ) {
+	// Load ignored local values before deciding whether cloud configuration is needed.
+	const envFile = `${process.cwd()}/src/config/.env`;
+	if (fs.existsSync(envFile)) {
+		dotenv.config({ path: envFile });
+	}
+
 	console.log('Downloading files already done? ' + alreadyDone());
 	if (!alreadyDone() || force) {
 		const buckets = (await storage.getBuckets())[0];
@@ -41,16 +47,6 @@ export async function downloadFiles(
 				console.error(e);
 			}
 		}
-	}
-
-	/**
-	 * Set environment variables if a .env file is found
-	 */
-	const envFile = `${process.cwd()}/src/config/.env`;
-	if (fs.existsSync(envFile)) {
-		dotenv.config({
-			path: envFile,
-		});
 	}
 }
 if (require.main === module) {

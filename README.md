@@ -1,131 +1,118 @@
-# sudonym
+# Sudonym
 
-This monorepo contains all code related to the sudonym whitelabel-able bitcoin
-and lightning wallet. The folder structure is outlined below:
+Sudonym is a white-label Bitcoin and Lightning wallet built as a Flutter mobile application with a NestJS API, shared TypeScript/Dart models, and Google Cloud infrastructure.
+
+<p align="center">
+  <img src="./homepage/assets/images/screens.jpeg" alt="Sudonym wallet screens" width="860">
+</p>
+
+> [!NOTE]
+> This is a historical codebase from 2022–2023. It targets Node.js 18, NestJS 9, Dart 2.18, and the corresponding Flutter generation. Use an isolated legacy toolchain to reproduce it, and upgrade its dependencies and infrastructure before operating it with real funds or personal data.
+
+## Architecture
 
 ```text
-📦 sudonym
- ┣ 📂 api    // Contains code that runs on the backend
- ┣ 📂 app    // Contains code for the mobile app
- ┣ 📂 models // Contains any shared data structures
- ┗ 📂 infrastructure    // Contains infrastructure as code
+.
+├── api             # NestJS REST/WebSocket backend
+├── app             # Flutter wallet for iOS and Android
+├── models          # Shared TypeScript and generated Dart models
+├── infrastructure  # GCP, Kubernetes, Docker, and minikube tooling
+└── homepage        # Historical product landing page
 ```
 
-<details>
-  <summary>Installation</summary>
+The product includes account and pot balances, Lightning and on-chain payments, LNURL flows, contacts, bill splitting, BOLT card support, notifications, and app-store build pipelines.
 
-## Prerequisites
+## Getting Started
 
-Check that the `curl` command is available.
-On Debian, make sure the following is installed: `sudo apt install build-essential`.
+### Prerequisites
 
-## Install
+- Node.js 18 and npm 8
+- A Flutter SDK compatible with Dart `>=2.18.0 <3.0.0`
+- Docker and MySQL 8 for local API development
+- A Firebase project plus the Firebase and FlutterFire CLIs for the app
+- Google Cloud CLI, kubectl, and minikube only for the full infrastructure workflow
+
+### Clone and install
 
 ```bash
-git clone https://github.com/sudonym-btc/sudonym.git && cd sudonym && \
-./install.sh && \
-npm run deploy:development:hard
+git clone https://github.com/sudonym-btc/sudonym.git
+cd sudonym
+npm install
 ```
 
-You are welcome to try the install.sh script.
-However you can also manually install the following tools:
+The historical `install.sh` installs system tools and starts interactive Google Cloud configuration. Review it before running it; it is not required for the smaller local workflows below.
 
-- Docker
-- Minikube
-- Google Cloud SDK
-- kubectl
-- Flutter
-- Github Cli
-- NVM
-- Python
+### Run the Flutter app with mock data
 
-You will need to add the installed packages to your PATH variable in order to
-access them via the terminal.
-Run the brew installation command again in order to find the code to
-add brew to PATH if it isn't already.
-Call the `brew info nvm` command to see what
-you need to add to your .zshrc file for example.
-
-To be able to use Google APIs on Flutter,
-you will need to add your developer key to the firebase project.
-
-For android development, add command-line tools in android studio to be able to
-create virtual devices from VS Code.
-
-</details>
-
-<details>
-<summary>Run project</summary>
-
-## API
+Generate local Firebase configuration first. The generated files are intentionally ignored by Git.
 
 ```bash
-# Setup the backend
-# Makes sure the API is launched on local cluster
-npm run deploy:development
-# Optionally watch the API logs and hot reload changes
-npm run watch:api
+cd app
+flutter pub get
+dart pub global activate flutterfire_cli
+flutterfire configure
+flutter run -t lib/main_mock.dart
 ```
 
-## Frontend
+Sentry and Twitter authentication are disabled unless their build-time values are provided. Client applications cannot safely conceal provider secrets, so use only credentials intended for a public/mobile client and prefer a server-side OAuth exchange for production.
 
-To run Flutter without a backend, run in the flutter - mock profile,
-can be found in the Run & Debug panel.
-Else, change to flutter - development
-When running on a real device in development mode,
-you will need to setup your computer as a proxy
-so that the phone can route requests to the local API.
-Use quid, allow all connections and setup phone to connect via laptop.
+### Run the API locally
 
-</details>
+Start a disposable MySQL database:
 
-<details>
-<summary>Infrastructure/Cloud</summary>
-
-## Setup
-
-After you have installed the project locally using the instructions above,
-you should have logged into your Google Cloud account.
-
-If you are the admin of an empty Google Cloud project, you can run
-
-```npm run init:gcloud ["test" | "staging" | "production"]
+```bash
+docker run --name sudonym-mysql \
+  -e MYSQL_DATABASE=app \
+  -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+  -p 3306:3306 \
+  -d mysql:8
 ```
 
-You might have to run this multiple times as it takes a
-few minutes for APIs to be enabled.
+Create the ignored local configuration:
 
-The above command enables the necessary APIs in the cloud project
-and sets up triggers to your repo, so that deploys happen via Git commits.
+```bash
+cp api/src/config/.env.example api/src/config/.env
+```
 
-Creating and merging PRs for the production and staging banches
-will cause deployment manager to read the specs found in the "infrastructure" folder
-and roll out the changes.
+Set a unique `JWT_SECRET` and adjust the database values, then start NestJS:
 
-The first deployment of each environment can take multiple executions
-as the clusters start up and there may be race conditions.
+```bash
+NODE_ENV=development npm --workspace api run start:dev
+```
 
-To publish your app to play store etc you will have to follow codemagic
-instructions here <https://docs.codemagic.io/yaml-publishing/google-play/>
+The API listens on [http://localhost:3000](http://localhost:3000), with Swagger UI at [http://localhost:3000/api](http://localhost:3000/api).
 
-Might have to run
-`gcloud beta deployment-manager type-providers delete test-cluster-type`
-if you abandon a deployment, otherwise the next deployment will use the old
-typeprovider with outdates IP address for spec.
+### Configuration
 
-Get kubectl credentials for cluster
-`gcloud container clusters get-credentials test-cluster --zone us-central1-c`
+| Setting | Used by | Purpose |
+| --- | --- | --- |
+| `DB_HOST`, `DB_USER`, `DB_PASS`, `DB_NAME` | API | MySQL connection |
+| `JWT_SECRET` | API | JWT signing; required outside tests |
+| `SENTRY_DSN` | API and app | Optional error reporting |
+| `TWITTER_API_KEY`, `TWITTER_API_SECRET_KEY`, `TWITTER_REDIRECT_URI` | App | Legacy Twitter login configuration |
 
-If cannot validate ingress
-`kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission`
+Pass app values with Flutter's `--dart-define`, for example `--dart-define=SENTRY_DSN=...`. Never commit populated environment, Firebase, service-account, signing, or provider-credential files.
 
-Backups will be sent to cloud storage. Can become corrupted if a new pod starts
-up while another syncing.
+## Commands
 
-While synching to the real chain, you might want to increase memory size
-on the cloud computers. To do this, cordon default node and create a
-new node with more memory. Relaunch the bitcoin pod on the new node until
-chain has synched, then you can uncordon and move bitcoin pod back to default
-node.
+| Command | Purpose |
+| --- | --- |
+| `npm run deploy:development` | Build the historical minikube development stack |
+| `npm run deploy:development:hard` | Recreate the stack and initialize Lightning; destructive to local state |
+| `npm run watch:api` | Synchronize and follow the API running in minikube |
+| `npm run lint` | Lint TypeScript workspaces |
+| `npm --workspace api run build` | Compile the NestJS API |
+| `npm --workspace api test` | Run API tests against the disposable MySQL container |
+| `flutter run -t app/lib/main_mock.dart` | Run the app with mock repositories from the repository root |
 
-</details>
+## Infrastructure
+
+The `infrastructure/` directory preserves the original GCP, Kubernetes, Cloud Build, Bitcoin Core, and Core Lightning deployment. Some scripts create or delete cloud and local resources. Review project IDs, IAM roles, storage buckets, cluster settings, and costs before running any deployment command.
+
+## Security
+
+This repository handles wallet, authentication, and payment code. It is not an audited wallet release. Do not use it with meaningful funds without a current dependency review, threat model, and independent security audit. See [SECURITY.md](SECURITY.md) for configuration and disclosure guidance.
+
+## License
+
+Licensed under the [ISC License](LICENSE).

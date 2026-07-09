@@ -11,3 +11,17 @@ release
 infrastructure/local-volumes/*/*
 !*.gitkeep
 key.json
+
+# Local application and provider configuration.
+api/src/config/.env
+api/src/config/*.json
+app/android/app/google-services.json
+app/ios/Runner/GoogleService-Info.plist
+app/lib/firebase_options.dart
+
+# Local credentials and signing material.
+**/*service-account*.json
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx

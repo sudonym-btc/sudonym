@@ -26,9 +26,7 @@ Future<void> mainSetup(String? env) async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   configureInjection(env);
   FlutterError.onError = (details) => print(details);
   timeago.setLocaleMessages('de_short', timeago.DeShortMessages());
@@ -43,16 +41,19 @@ void mainCommon(String? env) async {
   await mainSetup(env);
 
   await SentryFlutter.init(
-      (options) => options.dsn =
-          'REDACTED_SENTRY_DSN',
-      appRunner: () => runZonedGuarded(() async {
-            runApp(const App());
-          }, (error, stackTrace) {
-            print('Error FROM OUT_SIDE FRAMEWORK ');
-            print('--------------------------------');
-            print('Error :  $error');
-            print('StackTrace :  $stackTrace');
-          }));
+    (options) => options.dsn = const String.fromEnvironment('SENTRY_DSN'),
+    appRunner: () => runZonedGuarded(
+      () async {
+        runApp(const App());
+      },
+      (error, stackTrace) {
+        print('Error FROM OUT_SIDE FRAMEWORK ');
+        print('--------------------------------');
+        print('Error :  $error');
+        print('StackTrace :  $stackTrace');
+      },
+    ),
+  );
 }
 
 class App extends StatelessWidget {
@@ -68,26 +69,16 @@ class App extends StatelessWidget {
       darkTheme: getTheme(light: false),
       home: const AuthGate(child: HomePage()),
       builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
-          child: child!),
-      // builder: (BuildContext context, Widget? widget) {
-      //   ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-      //     return StatusPage(
-      //         title: 'Error',
-      //         subtitle: 'Encountered an unrecoverable error',
-      //         content: Text(errorDetails.toString()),
-      //         color: Colors.red);
-      //   };
-
-      //   return widget!;
-      // },
+        data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+        child: child!,
+      ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routes: {
         '/receive': (context) => const ReceivePage(),
         '/settings': (context) => const SettingsPage(),
         '/contact': (context) => const ContactPage(),
-        '/transaction': (context) => const TransactionPage()
+        '/transaction': (context) => const TransactionPage(),
       },
     );
   }

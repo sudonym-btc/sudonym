@@ -55,7 +55,9 @@ export class Config {
 	settle = true;
 	intervalSettle = true;
 	wsPort = env == 'mock' ? Math.floor(Math.random() * 60000) + 1000 : 3001;
-	jwtSecret = 'testing'; // jwtSecret used in testing
+	jwtSecret =
+		process.env.JWT_SECRET ||
+		(['mock', 'test'].includes(env) ? 'testing' : '');
 
 	set(config?: Partial<Config>) {
 		if (config) {

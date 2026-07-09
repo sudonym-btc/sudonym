@@ -2,52 +2,59 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sudonym/injection.dart';
 import 'package:twitter_login/twitter_login.dart';
 
 @Injectable(as: AuthRepository, env: Env.allButMock)
 class AuthRepositoryImpl implements AuthRepository {
+  TwitterLogin _twitterLogin() {
+    const apiKey = String.fromEnvironment('TWITTER_API_KEY');
+    const apiSecretKey = String.fromEnvironment('TWITTER_API_SECRET_KEY');
+    const redirectUri = String.fromEnvironment('TWITTER_REDIRECT_URI');
+
+    if (apiKey.isEmpty || apiSecretKey.isEmpty || redirectUri.isEmpty) {
+      throw StateError(
+        'Twitter login requires TWITTER_API_KEY, '
+        'TWITTER_API_SECRET_KEY, and TWITTER_REDIRECT_URI.',
+      );
+    }
+
+    return TwitterLogin(
+      apiKey: apiKey,
+      apiSecretKey: apiSecretKey,
+      redirectURI: redirectUri,
+    );
+  }
+
   @override
   Future<UserCredential?> loginWithGoogle() async {
-    // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) return null;
-    // Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
-    // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    return FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   @override
   Future<UserCredential?> loginWithTwitter() async {
-    // Create a TwitterLogin instance
-    final twitterLogin = TwitterLogin(
-        apiKey: 'REDACTED',
-        apiSecretKey: 'REDACTED',
-        redirectURI: 'sudonym://');
-
-    // Trigger the sign-in flow
-    final authResult = await twitterLogin.loginV2(forceLogin: true);
+    final authResult = await _twitterLogin().loginV2(forceLogin: true);
 
     switch (authResult.status!) {
       case TwitterLoginStatus.loggedIn:
-        // Create a credential from the access token
         final twitterAuthCredential = TwitterAuthProvider.credential(
           accessToken: authResult.authToken!,
           secret: authResult.authTokenSecret!,
         );
-
-        // Once signed in, return the UserCredential
-        return await FirebaseAuth.instance
-            .signInWithCredential(twitterAuthCredential);
+        return FirebaseAuth.instance.signInWithCredential(
+          twitterAuthCredential,
+        );
       case TwitterLoginStatus.cancelledByUser:
         return null;
       case TwitterLoginStatus.error:
@@ -57,36 +64,22 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<UserCredential?> loginWithApple() async {
-    // Create a TwitterLogin instance
-    final twitterLogin = TwitterLogin(
-        apiKey: 'REDACTED',
-        apiSecretKey: 'REDACTED',
-        redirectURI: '<your_scheme>://');
-
-    // Trigger the sign-in flow
-    final authResult = await twitterLogin.login();
-
-    // Create a credential from the access token
-    final twitterAuthCredential = TwitterAuthProvider.credential(
-      accessToken: authResult.authToken!,
-      secret: authResult.authTokenSecret!,
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [AppleIDAuthorizationScopes.email],
     );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance
-        .signInWithCredential(twitterAuthCredential);
+    final oauthCredential = OAuthProvider('apple.com').credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+    return FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 
   @override
   Future<UserCredential?> loginWithFacebook() async {
-    // Trigger the sign-in flow
     final LoginResult loginResult = await FacebookAuth.instance.login();
     if (loginResult.status != LoginStatus.success) return null;
-    // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 

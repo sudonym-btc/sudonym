@@ -37,7 +37,7 @@ import { TransactionListenerModule } from './service/transaction-listener/transa
 @Module({
 	imports: [
 		SentryModule.forRoot({
-			dsn: 'REDACTED_SENTRY_DSN',
+			dsn: process.env.SENTRY_DSN,
 			environment: getConfig().env,
 			integrations: [
 				new Integrations.Express(),
