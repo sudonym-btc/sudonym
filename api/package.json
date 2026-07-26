@@ -40,7 +40,7 @@
 		"axios": "^1.2.0",
 		"bitcoin-address-validation": "^2.2.1",
 		"bitcoinjs-lib": "^6.1.0-rc.0",
-		"body-parser": "^1.20.1",
+		"body-parser": "^1.20.6",
 		"bolt11": "^1.4.0",
 		"cache-manager": "^5.1.4",
 		"ccxt": "^2.2.46",
