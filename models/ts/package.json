@@ -9,7 +9,7 @@
 		"build": "if [ \"$NODE_ENV\" = \"production\" ]; then tsc  --project tsconfig.build.json; else tsc; fi"
 	},
 	"devDependencies": {
-		"@faker-js/faker": "^7.6.0",
+		"@faker-js/faker": "^10.6.0",
 		"@types/node": "^18.11.7",
 		"factory.ts": "^1.3.0",
 		"typescript": "^4.8.4"
